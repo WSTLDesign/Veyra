@@ -209,7 +209,7 @@ info = {'blender': bpy.app.version_string, 'verts': len(H.data.vertices), 'faces
 for draco in (False, True):
     fn = os.path.join(OUT, 'testkopf_draco.glb' if draco else 'testkopf.glb'); t1 = time.time()
     bpy.ops.export_scene.gltf(filepath=fn, export_format='GLB', export_apply=True, export_morph=True, export_morph_normal=True,
-                              export_draco_mesh_compression_enable=draco, export_draco_mesh_compression_level=6)
+                              export_draco_mesh_compression_enable=draco, export_try_sparse_sk=False, export_draco_mesh_compression_level=6)
     info['draco' if draco else 'plain'] = {'bytes': os.path.getsize(fn), 'export_s': round(time.time() - t1, 2)}
 # Kontrollbild aus Blender (Workbench, schnell)
 sc = bpy.context.scene; sc.render.engine = 'BLENDER_WORKBENCH'; sc.render.resolution_x, sc.render.resolution_y = 800, 800

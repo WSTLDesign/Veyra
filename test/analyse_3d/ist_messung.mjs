@@ -43,7 +43,7 @@ await p.evaluate(() => {
   AN.inspect = (o) => { o.updateMatrixWorld(true); const r = { meshes: 0, skinned: 0, bones: 0, tris: 0, olTris: 0, mats: {}, shaderMods: 0, tex: [], morph: 0, outline: 0, sprite: !!o.userData.sprite, terra: !!o.userData.terra, rig: !!o.userData.rig };
     const seenT = new Set(), bonesSeen = new Set();
     o.traverse(q => { if (!q.isMesh && !q.isPoints && !q.isSprite) return; if (q.visible === false) return; const g = q.geometry, n = g.index ? g.index.count / 3 : g.attributes.position.count / 3;
-      const ms = Array.isArray(q.material) ? q.material : [q.material]; const isOl = !!(q.userData.outline || q.userData.ol || ms.some(m => m.side === THREE.BackSide && (m.isMeshBasicMaterial || m.isShaderMaterial)));
+      const ms = Array.isArray(q.material) ? q.material : [q.material]; const isOl = !!(q.userData.outline === 1 || q.userData.ol === 1 || q.userData.ol === true || ms.some(m => m.side === THREE.BackSide && (m.isMeshBasicMaterial || m.isShaderMaterial)));
       r.meshes++; if (isOl) { r.outline++; r.olTris += n; } else r.tris += n; if (q.isSkinnedMesh) { r.skinned++; q.skeleton.bones.forEach(b => bonesSeen.add(b)); } if (g.morphAttributes && g.morphAttributes.position) r.morph += g.morphAttributes.position.length;
       ms.forEach(m => { r.mats[m.type] = (r.mats[m.type] || 0) + 1; if (m.onBeforeCompile && m.onBeforeCompile.toString().length > 30) r.shaderMods++;
         ['map', 'gradientMap', 'normalMap', 'bumpMap', 'emissiveMap', 'alphaMap', 'roughnessMap', 'matcap'].forEach(k => { const t = m[k]; if (t && !seenT.has(t)) { seenT.add(t); const im = t.image; r.tex.push(k + ':' + (im ? (im.width || '?') + '×' + (im.height || '?') : '?')); } }); }); });
@@ -72,7 +72,7 @@ const studio = async (code, view, file, opt = {}) => { const d = await p.evaluat
     if (opt.wire) f.traverse(q => { if (q.isMesh && !q.userData.outline) { q.material = q.material.clone(); q.material.wireframe = true; } if (q.userData && q.userData.outline === 1) q.visible = false; });
     // eigene Kameras für 16:9
     const cam = CS.cam; cam.aspect = CS.W / CS.H; cam.fov = 24; cam.updateProjectionMatrix();
-    const a = { vorn: 0, schraeg: -.65, nah: -.3, seite: -Math.PI / 2 }[view] ?? 0, near = view === 'nah', d = near ? (opt.d || .95) : h * 2.9, ty = near ? h * .9 : h * .52;
+    const a = { vorn: 0, schraeg: -.65, nah: -.3, seite: -Math.PI / 2 }[view] ?? 0, near = view === 'nah', d = near ? (opt.d || .95) : h * 2.2, ty = near ? h * .9 : h * .52;
     cam.position.set(Math.sin(a) * -d, ty + (near ? .01 : .15), Math.cos(a) * -d); cam.lookAt(0, ty, 0); cam.updateMatrixWorld();
     CS.sun.position.set(-2.5, 6, -4); CS.rr.render(CS.S, cam); return CS.rr.domElement.toDataURL('image/png'); }, [code, view, opt]); await toWebp(d, file); };
 await studio(FIG_CODE('held'), 'vorn', 'held_vorn.webp');
@@ -94,7 +94,7 @@ res.welt = {};
 for (const [id, n] of [[1, 'funki'], [4, 'plippi'], [7, 'knospi']]) {
   await p.evaluate(([id]) => { G.team = [mk(id, 12)]; mode = 'world'; loadMap('route1', 9, 12); setView('third', true); VILL && (VILL.list = []); ROAM && (ROAM.want = 0, ROAM.list = []); P.dir = 'down'; P.ang = Math.PI; G.time = 11 * 60; }, [id]);
   await p.waitForTimeout(2500); await p.evaluate(() => { P.run = false; STICK.y = 1; }); await p.waitForTimeout(700); await p.evaluate(() => { STICK.y = 0; }); await p.waitForTimeout(2200);
-  await p.evaluate(() => document.querySelectorAll('.toast,#toast').forEach(e => e.remove()));
+  await p.evaluate(() => document.querySelectorAll('.toast,#toast').forEach(e => e.style.visibility = 'hidden'));
   await shotPage(`welt_${n}.webp`);
   const r = await p.evaluate(() => { const S = R3.scene, mm = S.userData.mm, o = mm && COMP && mm.get(COMP); if (!o) return { fehlt: 1 }; const info = AN.inspect(o);
     const r = R3.r; r.info.autoReset = false; r.info.reset(); r.render(S, R3.activeCam || R3.cam); const calls = r.info.render.calls, tris = r.info.render.triangles; r.info.autoReset = true;
@@ -112,7 +112,7 @@ for (const [me, foe, n] of [[7, 1, 'funki'], [1, 4, 'plippi'], [4, 7, 'knospi']]
   await p.waitForTimeout(1500);
   await p.evaluate(([foe]) => { SET.skipBattleIntro = 1; SET.btl = 'runde'; startBattle({ wild: mk(foe, 12) }); }, [foe]);
   await p.waitForTimeout(5500);
-  await p.evaluate(() => document.querySelectorAll('.toast,#toast').forEach(e => e.remove()));
+  await p.evaluate(() => document.querySelectorAll('.toast,#toast').forEach(e => e.style.visibility = 'hidden'));
   await shotPage(`kampf_${n}.webp`);
   res.kampf[n] = await p.evaluate(() => { const f = BT && BT.foe, m = BT && BT.me; return { mode, gegner: f ? AN.inspect(f) : null, eigen: m ? AN.inspect(m) : null, bufferPx: BT ? [BT.r.domElement.width, BT.r.domElement.height] : null, pr: BT ? BT.r.getPixelRatio() : null }; });
   await p.evaluate(() => { try { endBattle && endBattle(); } catch (e) { } mode = 'world'; });

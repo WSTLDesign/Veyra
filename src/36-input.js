@@ -9,6 +9,7 @@
 //  SET: ctrl 'dyn'|'kreuz'|'stick', inSens (50–150 %), camInv ''|'x'|'y'|'xy', inHint, inV (Migration); Stick-Größe = SET.stick (S|M|L); Vibration = SET.vib.
 //  Abblenden nach 4 s: body.hud-idle (42-fullscreen.js, SET.hudDim). Optionen stehen in 15-ui.js rSettings (Abschnitt Steuerung).
 (function(){
+const CAMF={max:.7,rate:.7};// Kamera-Nachführung beim Laufen mit dem Stick (rad, 1/s)
 const PITCH0=.30,TAU=Math.PI*2,DEAD_ON=.2,DEAD_OFF=.12,RUN_ON=.95,RUN_OFF=.84;
 const wrap=a=>{a%=TAU;if(a>Math.PI)a-=TAU;else if(a<-Math.PI)a+=TAU;return a;};
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
@@ -296,6 +297,8 @@ function tick(){requestAnimationFrame(tick);const t=now(),dt=Math.min(100,t-last
    if(KC.Comma||KC.Period){C.yaw=wrap(C.yaw+((KC.Comma?1:0)-(KC.Period?1:0))*1.8*dt/1000);INP.cen=null;}
    // Alte Eingaben (Pfeiltasten/Tests über STICK): Kamera folgt wie zuvor
    else if(!ST.on&&!AIM.on&&CM.id==null&&!INP.cen&&mode==='world'&&(STICK.x||STICK.y||held)&&!C.applied)C.yaw=wrap(C.yaw+wrap(R3?R3.yaw-C.yaw:0)*(1-Math.exp(-2.4*dt/1000)));
+   // Stick (Übergänge & Bewegung 12.11.): Kamera zieht beim Laufen gemächlich hinter die Figur, solange sie grob nach vorn läuft (< 40°) – seitlich laufen bleibt seitlich (kein Kreisen)
+   else if(ST.on&&ST.act&&!AIM.on&&CM.id==null&&!INP.cen&&mode==='world'&&!C.applied&&Math.abs(P.v||0)>.6){const d=wrap(playerAng()-C.yaw);if(Math.abs(d)<CAMF.max)C.yaw=wrap(C.yaw+d*(1-Math.exp(-CAMF.rate*dt/1000)));}
    if(!C.applied&&(C.mode==='explore')&&R3&&R3.player){const p=R3.player.position;C.target.x=p.x;C.target.y=p.y;C.target.z=p.z;if(R3.lk){C.lookAt.x=R3.lk.x;C.lookAt.y=R3.lk.y;C.lookAt.z=R3.lk.z;}if(R3.cd)C.dist=R3.cd;}}
   if(!B&&mode!=='battle'&&G&&G.throwBonus)G.throwBonus=false;
  }catch(e){if(!INP._err){INP._err=1;console.error('Steuerung',e);}}}

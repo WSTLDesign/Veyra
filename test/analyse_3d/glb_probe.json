@@ -1,0 +1,35 @@
+{
+ "three": "128",
+ "testkopf.glb": {
+  "bytes": 1138808,
+  "fetchMs": 8.1,
+  "parseMs": [
+   11.1,
+   6.4,
+   5.1
+  ]
+ },
+ "testkopf_draco.glb": {
+  "bytes": 822296,
+  "fetchMs": 11.3,
+  "parseMs": [
+   63,
+   11,
+   9.9
+  ]
+ },
+ "renderToon": {
+  "calls": 17,
+  "tris": 65360
+ },
+ "renderStandard": {
+  "calls": 14,
+  "tris": 44736
+ },
+ "modell": {
+  "primitive": 7,
+  "tris": 22368,
+  "morphZiele": 2
+ },
+ "fehler": []
+}

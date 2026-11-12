@@ -1,0 +1,30 @@
+/* Ladebildschirm bei Gebietswechseln (55-laden.js, docs/uebergaenge.md) – Vollbild, Safe Areas, nur transform/opacity animiert (läuft auch, während die Szene aufgebaut wird) */
+.ld{position:fixed;inset:0;z-index:33;pointer-events:auto;opacity:0;transition:opacity 240ms var(--ease-out);background:color-mix(in srgb,var(--ld-lead,#4cb85c) 30%,#0b1118);
+ overflow:hidden;contain:strict;font-family:var(--font-display);color:#fff;-webkit-user-select:none;user-select:none;touch-action:none}
+.ld[hidden]{display:none!important}
+.ld.on{opacity:1}.ld.out{opacity:0;transition-duration:320ms}
+.ld-bg{position:absolute;inset:-4%;will-change:transform;transform:scale(1.04);animation:ld-drift 6s var(--ease-sheet) infinite alternate}
+.ld-bg img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.08)}
+.ld.noimg .ld-bg{background:radial-gradient(120% 90% at 30% 20%,color-mix(in srgb,var(--ld-lead,#4cb85c) 70%,#fff) 0,color-mix(in srgb,var(--ld-lead,#4cb85c) 55%,#0b1118) 55%,#0b1118 100%)}
+.ld.noimg .ld-bg img{display:none}
+.ld-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,20,0) 35%,rgba(8,12,20,.55) 72%,rgba(8,12,20,.82) 100%)}
+.ld-box{position:absolute;left:max(28px,calc(var(--sa-l) + 20px));right:max(28px,calc(var(--sa-r) + 20px));bottom:max(22px,calc(var(--sa-b) + 16px));display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.ld-reg{font:var(--fw-ui) var(--fs-sm)/1.2 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;opacity:.9;padding:3px 10px;border-radius:var(--r-pill);background:rgba(255,255,255,.16);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ld-name{font-weight:var(--fw-display);font-size:clamp(28px,7vh,var(--fs-hero));line-height:1.05;text-shadow:0 3px 14px rgba(0,0,0,.45);transform:translateY(8px);opacity:0;transition:transform var(--t-500) var(--ease-out),opacity var(--t-500) var(--ease-out)}
+.ld.on .ld-name{transform:none;opacity:1}
+.ld-name::after{content:'';display:block;height:4px;width:64px;margin-top:8px;border-radius:2px;background:var(--sig-line)}
+/* kleine Pfotenspur: läuft im Kreis über die Leiste */
+.ld-trail{display:flex;gap:10px;height:18px;margin-top:4px}
+.ld-trail i{width:14px;height:12px;border-radius:50% 50% 45% 45%;background:#fff;opacity:.15;position:relative;animation:ld-paw 1.25s linear infinite}
+.ld-trail i::before,.ld-trail i::after{content:'';position:absolute;top:-6px;width:5px;height:5px;border-radius:50%;background:#fff}
+.ld-trail i::before{left:1px}.ld-trail i::after{right:1px}
+.ld-trail i:nth-child(odd){transform:translateY(5px) rotate(-8deg)}.ld-trail i:nth-child(even){transform:rotate(8deg)}
+.ld-trail i:nth-child(2){animation-delay:.25s}.ld-trail i:nth-child(3){animation-delay:.5s}.ld-trail i:nth-child(4){animation-delay:.75s}.ld-trail i:nth-child(5){animation-delay:1s}
+.ld-bar{width:min(320px,52vw);height:8px;border-radius:var(--r-pill);background:rgba(255,255,255,.22);overflow:hidden;margin-top:2px}
+.ld-bar i{display:block;height:100%;width:100%;border-radius:inherit;background:var(--sig-line);transform-origin:0 50%;transform:scaleX(var(--ld-p,0));transition:transform 260ms var(--ease-out)}
+.ld-tip{margin:4px 0 0;font:var(--fw-ui) var(--fs-sm)/1.35 var(--font-ui);opacity:.92;max-width:60ch;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+@keyframes ld-paw{0%,100%{opacity:.15}20%{opacity:1}60%{opacity:.35}}
+@keyframes ld-drift{from{transform:scale(1.04) translate3d(-1%,0,0)}to{transform:scale(1.09) translate3d(1%,-1%,0)}}
+@media (orientation:portrait){.ld-name{font-size:clamp(28px,5vh,44px)}}
+body.red .ld,body.red .ld *{animation:none!important;transition:none!important}
+@media (prefers-reduced-motion:reduce){.ld,.ld *{animation:none!important;transition:none!important}}

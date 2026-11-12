@@ -4,9 +4,13 @@
 // Reiten ist entfernt (Nutzer 12.11.): kein Zustand 'ride' mehr; alte Werte (P.state 'ride', G.flags.ride/rideTip) werden ignoriert bzw. auf 'walk' gesetzt.
 // speed = Felder/s im 3D-Freilauf · ms = 2D-Schritttakt · camH/camD = Kamera-Höhe/-Abstand (3. Person)
 // Bewegungsdynamik 12.11.: Gehen-Taste/voller Stick 2,8 (= 2D-Takt 360 ms, lockerer Trab), Rennen 5 (vorher 3,75/7,5 – bei 0,37 Beinlänge nur mit 9 Schritten/s möglich = „Zappeln“)
+// Übergänge & Bewegung 12.11.: Tempo als Konstanten (leicht änderbar). Rennen 5 (Nutzerentscheidung offen „5 statt 7,5“ → 5 = Standard, s. docs/uebergaenge.md)
+const WALK_SPEED=2.8,RUN_SPEED=5;
+// Anfahren/Bremsen begrenzt (Felder/s²): sanfter Start statt Ruck, Bremsweg Rennen ≈ 0,8 Feld
+const MOVE_ACC={up:8,upRun:9,down:20,iceUp:2,iceDown:3};
 const MOVE_PARAMS={
- walk:{speed:2.8,accel:6,turn:1.7,camH:2.3,camD:3.6,anim:'walk',ms:360},
- run:{speed:5,accel:4.5,turn:1.55,camH:2.4,camD:3.9,anim:'run',ms:230},
+ walk:{speed:WALK_SPEED,accel:6,turn:1.7,camH:2.3,camD:3.6,anim:'walk',ms:360},
+ run:{speed:RUN_SPEED,accel:4.5,turn:1.55,camH:2.4,camD:3.9,anim:'run',ms:230},
  swim:{speed:2.5,accel:2.6,turn:1.25,camH:1.75,camD:3.3,anim:'swim',ms:420},
  glide:{speed:4,accel:2,turn:1.15,camH:2.7,camD:4.8,anim:'glide',ms:230,sink:.55,lift:2.4},
  climb:{speed:1.2,accel:8,turn:1.7,camH:2.1,camD:3.1,anim:'climb',ms:520}};
@@ -67,7 +71,7 @@ function setMoveState(s){if(!G||!MOVE_PARAMS[s])return false;if(!moveUnlocked(s)
  if(s==='walk'||s==='run')MV.rw=s==='run';
  else if(s==='glide'){if(!canGlide())return false;if(!MV.glide&&!MV.g2){if(view!=='2d')startGlide3();else{const gp=glidePath(P.dir,1);if(!gp)return false;startGlide2(gp);P.fx=P.x;P.fy=P.y;P.x=gp.to[0];P.y=gp.to[1];P.moving=true;P.t=0;}}}
  moveResolve();return P.state===s;}
-function moveReset(){MV.glide=null;MV.g2=null;MV.hop2=null;MV.hop3=null;MV.hopY=0;MV.slide=null;MV.push=null;MV.climbGo=0;P.alt=0;P.roll=0;P.lean=0;
+function moveReset(){portalArm();MV.glide=null;MV.g2=null;MV.hop2=null;MV.hop3=null;MV.hopY=0;MV.slide=null;MV.push=null;MV.climbGo=0;P.alt=0;P.roll=0;P.lean=0;
  if(!MOVE_PARAMS[P.state])P.state='walk';if(G&&cur)moveResolve();}
 // ---------- Kanten, Gleitpfad, Klettern ----------
 function landable(x,y){return tileAt(cur,x,y)!==null&&!blocked(x,y)&&!roamAt(x,y);}
@@ -167,7 +171,8 @@ function stepInput(h){if(view==='2d'){if(MV.slide&&tileAt(cur,P.x,P.y)==='I')ret
 function dirFromAng(){const a=((P.ang%(2*Math.PI))+2*Math.PI)%(2*Math.PI);P.dir=['up','left','down','right'][Math.round(a/(Math.PI/2))%4];}
 // Schwelle .2 statt .45: die Eckenprüfung in freeMove (±.27) sperrt sonst schon vorher – der Kartenrand war nie erreichbar
 function edgeOut(nx,ny){if(nx<-.2||ny<-.2||nx>cur.w-.8||ny>cur.h-.8){const d=nx<-.2?'left':nx>cur.w-.8?'right':ny<-.2?'up':'down';
- if(MV.glide)endGlide(true);P.x=Math.max(0,Math.min(cur.w-1,Math.round(P.px)));P.y=Math.max(0,Math.min(cur.h-1,Math.round(P.py)));P.walk=false;tryMove(d);P.moving=false;P.px=P.x;P.py=P.y;return true;}return false;}
+ if(!MV.armed&&!MV.glide){P.v=0;P.walk=false;return true;}// Sperre nach Ankunft: nicht sofort zurück
+ MV.armed=false;if(MV.glide)endGlide(true);P.x=Math.max(0,Math.min(cur.w-1,Math.round(P.px)));P.y=Math.max(0,Math.min(cur.h-1,Math.round(P.py)));P.walk=false;tryMove(d);P.moving=false;P.px=P.x;P.py=P.y;return true;}return false;}
 function pass3(tx,ty){const t=tileAt(cur,tx,ty);if(t===null)return false;
  if(MV.hop3&&t==='R')return!npcAt(tx,ty);
  if(isWaterT(t)){if(npcAt(tx,ty)||villAt(tx,ty))return false;if(canSwim())return true;if(t!=='Q')lockToast('swim');return false;}
@@ -179,6 +184,33 @@ function ledge3(rx,ry,fx,fy){const d=Math.abs(fx)>Math.abs(fy)?(fx>0?'right':'le
  if(gp&&gp.n>2&&canGlide()&&P.state!=='swim'){startGlide3();return true;}
  if(d==='down'&&landable(rx+dx,ry+dy)){MV.hop3={t:0,dur:.5};sfx('whoosh');return false;}
  if(gp&&gp.n>2&&!canGlide())lockToast('glide');return false;}
+// ---------- Übergänge (Agent Übergänge & Bewegung, 12.11.): Auslösezonen statt Einzelkachel ----------
+// Ursache vorher: Tür/Höhleneingang lösten nur aus, wenn die gerundete Position die Türkachel erreichte; die Eckenprüfung (±0,27) ließ die Figur
+// an den Nachbarkacheln (Hauswand, Fels X) abprallen, sobald sie mehr als 0,23 Feld seitlich versetzt war → mehrere Anläufe nötig.
+// Jetzt: je Tür/Ausgang/Kartenrand eine Zone vor der Öffnung (Tiefe PORTAL.door bzw. .edge, Breite ±PORTAL.lat), Auslösen beim Hineinlaufen
+// (Blick innerhalb ≈ 70° zur Öffnung, Stick nach vorn), dazu Ecken-Gleiten (Figur rutscht an Kanten seitlich in die Öffnung).
+// Sperre: nach jeder Ankunft (moveReset) erst „scharf“, wenn die Figur außerhalb aller Zonen ist und ≥ 0,35 s vergangen sind (spätestens nach 1,5 s).
+const PORTAL={door:.95,edge:.8,lat:.76,dot:.34,armMs:350,armMax:1500};
+function portalArm(){MV.armed=false;MV.armT=performance.now()+PORTAL.armMs;}
+function portalList(){if(MV.pz&&MV.pz.m===cur)return MV.pz.l;const L=[],m=cur,walk=(x,y)=>{const t=tileAt(m,x,y);return t!==null&&!SOLID.has(t)&&t!=='E'&&!m.doors[t];};
+ for(let y=0;y<m.h;y++)for(let x=0;x<m.w;x++){const t=m.rows[y][x];if(t!=='E'&&!m.doors[t])continue;
+  for(const[dx,dy]of Object.values(DIRV))if(walk(x+dx,y+dy))L.push({k:'door',x,y,ax:x+dx,ay:y+dy,nx:-dx,ny:-dy,d:PORTAL.door});}
+ const lk=m.links||{};for(const[key,dir,nx,ny]of[['n','up',0,-1],['s','down',0,1],['w','left',-1,0],['e','right',1,0]]){if(!lk[key])continue;
+  const n=key==='n'||key==='s'?m.w:m.h;for(let i=0;i<n;i++){const x=key==='w'?0:key==='e'?m.w-1:i,y=key==='n'?0:key==='s'?m.h-1:i,t=tileAt(m,x,y);
+   if(t!==null&&!SOLID.has(t))L.push({k:'edge',x,y,dir,nx,ny,d:PORTAL.edge});}}
+ MV.pz={m,l:L};return L;}
+// Lage der Figur zur Öffnung: along = Abstand vor der Öffnung (Achse), lat = seitlicher Versatz
+function portalRel(q,px,py){const rx=px-q.x,ry=py-q.y;return{along:-(rx*q.nx+ry*q.ny),lat:Math.abs(rx*q.ny-ry*q.nx)};}
+function portalIn(q,px,py,pad){const r=portalRel(q,px,py);return r.along>=-.6&&r.along<=q.d+(pad||0)&&r.lat<=PORTAL.lat+(pad||0);}
+function portalTick(want,fx,fy){const L=portalList(),now=performance.now();if(!L.length)return false;
+ if(!MV.armed){const inZ=L.some(q=>portalIn(q,P.px,P.py,.15));if(now>=MV.armT&&(!inZ||now-MV.armT>PORTAL.armMax))MV.armed=true;else return false;}
+ if(want<.4||MV.glide||MV.hop3||mode!=='world')return false;let best=null,bs=9;
+ for(const q of L){if(fx*q.nx+fy*q.ny<PORTAL.dot||!portalIn(q,P.px,P.py))continue;const r=portalRel(q,P.px,P.py),s=r.lat+r.along*.3;if(s<bs){bs=s;best=q;}}
+ if(!best)return false;MV.armed=false;MV.portalLast={k:best.k,x:best.x,y:best.y,map:cur.id,t:now};P.walk=false;P.v=0;
+ if(best.k==='edge'){P.x=best.x;P.y=best.y;G.px=P.x;G.py=P.y;tryMove(best.dir);P.moving=false;return true;}
+ const id=cur.id,ox=P.x,oy=P.y;if(npcAt(best.x,best.y))return false;P.x=best.x;P.y=best.y;G.px=P.x;G.py=P.y;if(ox!==P.x||oy!==P.y)compFollow(ox,oy);onStep();
+ // Rückkehrpunkt = Feld, von dem aus man hineinging (03 nimmt sonst immer das Feld darunter)
+ if(G.ret&&G.ret.map===id&&tileAt(cur,P.x,P.y)!=='E')G.ret={map:id,x:best.ax,y:best.ay};return true;}
 function freeMove(dt){if(mode!=='world'){P.walk=false;return;}let sx=STICK.x,sy=STICK.y;
  if(!sx&&!sy&&held){sx=held==='left'?-1:held==='right'?1:0;sy=held==='up'?-1:held==='down'?1:0;}
  if(P.ang==null)P.ang=YAW[P.dir];const s=Math.min(dt,120)/1000;const dz=v=>Math.abs(v)<.16?0:Math.sign(v)*(Math.abs(v)-.16)/.84;sx=dz(sx);sy=dz(sy);
@@ -186,9 +218,11 @@ function freeMove(dt){if(mode!=='world'){P.walk=false;return;}let sx=STICK.x,sy=
  const M=MOVE_PARAMS[P.state]||MOVE_PARAMS.walk,ice=tileAt(cur,P.x,P.y)==='I';
  P.tv=(P.tv||0)+((-sx*M.turn*(ice?.45:1)*(Math.abs(sy)>.3?.65:1))-(P.tv||0))*Math.min(1,s*9);P.ang+=P.tv*s;dirFromAng();
  let want=-sy*M.speed;if(MV.hop3)want=Math.max(want,3,P.v||0);
- const up=Math.abs(want)>Math.abs(P.v||0),k=ice?(up?1.2:.75):(up?M.accel:7);// Bremsen τ ≈ 0,14 s: Auslaufen mit Ausfallschritt statt Einfrieren
- P.v=(P.v||0)+(want-(P.v||0))*Math.min(1,s*k);const sp=P.v*s;P.walk=Math.abs(P.v)>.08;if(!P.walk){P.v=0;return;}
+ // Anfahren/Bremsen: exponentiell (τ wie bisher) mit begrenzter Beschleunigung → kein Ruck beim Losgehen, weiches Auslaufen (Ausfallschritt bleibt)
+ const v0=P.v||0,up=Math.abs(want)>Math.abs(v0),k=ice?(up?1.2:.75):(up?M.accel:7),amax=ice?(up?MOVE_ACC.iceUp:MOVE_ACC.iceDown):up?(P.state==='run'?MOVE_ACC.upRun:MOVE_ACC.up):MOVE_ACC.down;
+ let dv=(want-v0)*Math.min(1,s*k);dv=Math.max(-amax*s,Math.min(amax*s,dv));P.v=v0+dv;const sp=P.v*s;P.walk=Math.abs(P.v)>.08;if(!P.walk){P.v=0;return;}
  const fx=-Math.sin(P.ang),fy=-Math.cos(P.ang),nx=P.px+fx*sp,ny=P.py+fy*sp;
+ if(!MV.hop3&&portalTick(want,fx,fy))return;
  if(edgeOut(nx,ny))return;
  if(P.v>.5&&!MV.hop3&&P.state!=='climb'){const ax=Math.round(P.px+fx*.62),ay=Math.round(P.py+fy*.62);
   if((ax!==P.x||ay!==P.y)&&tileAt(cur,ax,ay)==='R'){if(ledge3(ax,ay,fx,fy))return;}
@@ -196,7 +230,15 @@ function freeMove(dt){if(mode!=='world'){P.walk=false;return;}let sx=STICK.x,sy=
    if(d0-d1>.6&&!blocked(Math.round(P.px+fx*1.1),Math.round(P.py+fy*1.1))){startGlide3();return;}}}
  const free=(x,y)=>{for(const[ox,oy]of[[-.27,-.27],[.27,-.27],[-.27,.27],[.27,.27]]){const tx=Math.round(x+ox),ty=Math.round(y+oy);if(tx===P.x&&ty===P.y)continue;if(!pass3(tx,ty))return false;}return true;};
  const rr=roamAt(Math.round(P.px+fx*.65),Math.round(P.py+fy*.65));if(rr&&G.team.some(m=>m.hp>0)&&!MV.hop3){P.walk=false;return startWild(rr);}
- if(free(nx,P.py))P.px=nx;else bump();if(free(P.px,ny))P.py=ny;
+ // Kollision je Achse + Ecken-Gleiten: stößt nur eine Ecke an (Türrahmen, Baumkante), rutscht die Figur seitlich weiter statt hängen zu bleiben
+ const x0=P.px,y0=P.py,dx=nx-P.px,dy=ny-P.py,slipR=Math.abs(sp)*.9;
+ const slip=(ax)=>{const d=ax?dy:dx,o=ax?dx:dy;if(Math.abs(d)<Math.abs(o)*.35)return;let pick=null;
+  for(let k=1;k<=8&&!pick;k++){const off=k*.06;for(const sg of[-1,1]){const lx=ax?P.px+sg*off:P.px+d,ly=ax?P.py+d:P.py+sg*off;if(free(lx,ly)){pick=sg*off;break;}}}
+  if(!pick)return;const st=Math.sign(pick)*Math.min(Math.abs(pick),slipR);if(ax){if(free(P.px+st,P.py))P.px+=st;}else if(free(P.px,P.py+st))P.py+=st;};
+ if(free(nx,P.py))P.px=nx;else slip(0);if(free(P.px,ny))P.py=ny;else slip(1);
+ const moved=Math.hypot(P.px-x0,P.py-y0);if(moved<Math.abs(sp)*.15)bump();
+ // An der Wand: Tempo auf das tatsächlich Gelaufene begrenzen (Gang/Neigung passen, kein „Laufen auf der Stelle“), weich statt abrupt
+ if(s>0&&moved<Math.abs(sp)*.95){const act=moved/s*Math.sign(P.v);P.v+=(act-P.v)*Math.min(1,s*10);}
  const tx=Math.round(P.px),ty=Math.round(P.py);if(tx!==P.x||ty!==P.y){const ox=P.x,oy=P.y;P.x=tx;P.y=ty;G.px=tx;G.py=ty;compFollow(ox,oy);onStep();}
  if(MV.hop3&&MV.hop3.t>=MV.hop3.dur&&tileAt(cur,P.x,P.y)!=='R'){MV.hop3=null;MV.hopY=0;sfx('land');vib(12);if(window.THREE)spawnFx('land',P.px+.5,terrainY(P.px+.5,P.py+.5)+.02,P.py+.5);}}
 // Gleitflug 3D: konstante Vorwärtsfahrt, Sinkrate, Lenken mit Rollen

@@ -109,10 +109,10 @@ def build_body():
         pa0 = node(tuple(W + A * hl * .2), (T['wr'] * H * 1.05, T['wr'] * H * .62)); pa = node(tuple(W + A * hl * .42), (fw * 1.0, T['wr'] * H * .6)); E += [(wr, pa0), (pa0, pa)]
         tips = []
         for f in range(4):
-            off = (f - 1.45) * fw * .5; L = hl * (.55 if f in (1, 2) else .5 if f == 0 else .42) * .5
+            off = (f - 1.45) * fw * .42; L = hl * (.55 if f in (1, 2) else .5 if f == 0 else .42) * .5
             b0 = W + A * hl * .55 + side * off; ids = [node(tuple(b0), fw * .26)]; p = b0.copy(); d = A.copy()
             for k in range(3):
-                d = (d + Vector((-s * .22 * (k + 1), 0, 0))).normalized(); p = p + d * L * (1 - .18 * k); ids.append(node(tuple(p), fw * (.235 - .03 * k)))
+                d = (d + Vector((-s * .12 * (k + 1), 0, 0))).normalized(); p = p + d * L * (1 - .18 * k); ids.append(node(tuple(p), fw * (.235 - .03 * k)))
             E.append((pa, ids[0])); chain(ids); tips.append(p)
         tb0 = W + A * hl * .28 + side * fw * .62 + Vector((-s * .01 * H / 1.45, 0, 0)); tb1 = tb0 + (A * .45 + side * .75 + Vector((-s * .25, 0, 0))).normalized() * hl * .24
         tb2 = tb1 + (A * .8 + side * .3 + Vector((-s * .35, 0, 0))).normalized() * hl * .2
@@ -144,10 +144,10 @@ def body_shape(p):
         bl = (1 - ss(sz - .015 * H, sz + .035 * H, p.z)) * ss(hz - .07 * H, hz + .01 * H, p.z)
         p.x *= lerp(1, w / rn, bl); p.y *= lerp(1, d / rn, bl); p.y += .006 * H * T['stoop'] * ss(hz, sz, p.z)
         if p.y < 0: p.y += off * ss(.0, .5, -p.y / (d + 1e-4))
-        if T['bust'] and p.y < 0: p.y -= T['bust'] * .018 * H * gauss((abs(p.x) - .045 * H) ** 2 + ((p.z - lerp(hz, sz, .74)) * 1.3) ** 2, (.03 * H) ** 2 * 2) * bl
-        if p.y > 0 and p.z < hz + .1 * H: p.y += .016 * H * gauss((p.z - (hz + .02 * H)) ** 2, (.05 * H) ** 2) * ss(.0, .04 * H, abs(p.x)) * (1.2 if T['fem'] else 1)  # Gesäß
-        if p.y > 0 and p.z > lerp(hz, sz, .7): p.y += .007 * H * gauss((p.z - lerp(hz, sz, .85)) ** 2, (.05 * H) ** 2)                  # Schulterblätter
-        if T['stoop'] and p.y > 0: p.y += .014 * H * gauss((p.z - lerp(hz, sz, .9)) ** 2, (.07 * H) ** 2)                             # Rundrücken
+        if T['bust'] and p.y < 0: p.y -= T['bust'] * .018 * H * gauss((abs(p.x) - .045 * H) ** 2 + ((p.z - lerp(hz, sz, .74)) * 1.3) ** 2, .035 * H) * bl
+        if p.y > 0 and p.z < hz + .1 * H: p.y += .016 * H * gauss((p.z - (hz + .02 * H)) ** 2, .05 * H) * ss(.0, .04 * H, abs(p.x)) * (1.2 if T['fem'] else 1)  # Gesäß
+        if p.y > 0 and p.z > lerp(hz, sz, .7): p.y += .007 * H * gauss((p.z - lerp(hz, sz, .85)) ** 2, .05 * H)                  # Schulterblätter
+        if T['stoop'] and p.y > 0: p.y += .014 * H * gauss((p.z - lerp(hz, sz, .9)) ** 2, .07 * H)                             # Rundrücken
     if ac and ac[1] < .02 * H:   # Schulter/Deltoid rund
         s, t, rr = ac; p.z += .004 * H * (1 - ss(-.03 * H, .02 * H, t))
     # Trapez: Hals → Schulter schräg (kein Kleiderbügel)
@@ -156,8 +156,8 @@ def body_shape(p):
     # Wade, Knie
     if D.ANK.z + .02 * H < p.z < D.KNEE.z and abs(p.x) > .015 * H:
         s, t, c = leg_coord(p)
-        if p.y > c.y - .005 * H: p.y += .012 * H * gauss((p.z - lerp(D.KNEE.z, D.ANK.z, .3)) ** 2, (.06 * H) ** 2)
-    if abs(p.z - D.KNEE.z) < .04 * H and p.y < 0: p.y -= .004 * H * gauss((p.z - D.KNEE.z - .01 * H) ** 2, (.02 * H) ** 2)
+        if p.y > c.y - .005 * H: p.y += .012 * H * gauss((p.z - lerp(D.KNEE.z, D.ANK.z, .3)) ** 2, .06 * H)
+    if abs(p.z - D.KNEE.z) < .04 * H and p.y < 0: p.y -= .004 * H * gauss((p.z - D.KNEE.z - .01 * H) ** 2, .02 * H)
     return p
 
 # =====================================================================
@@ -396,8 +396,8 @@ def build_hair(style):
         hl = hairline_std(.7, 1.55, 2.1); out.append(hair_cap(hl, .006 * k, wav=.002))
         for i in range(13):
             ph = .7 + i / 12 * (2 * math.pi - 1.4); th = 1.15 + .25 * rnd.random()
-            c = head_dir_point(sdir(th, ph), .03 * k); r = (.05 + .02 * rnd.random()) * k
-            o = blob('Wolke', c, (r, r * .9, r * .85), 3, lambda v, q: q * (1 + .12 * math.sin(v.x * 7 + v.z * 5))); set_region(o, 'haar'); out.append(o)
+            c = head_dir_point(sdir(th, ph), .022 * k); r = (.045 + .015 * rnd.random()) * k
+            o = blob('Wolke', c, (r * 1.2, r * .9, r * .85), 3, lambda v, q: q * (1 + .12 * math.sin(v.x * 7 + v.z * 5))); set_region(o, 'haar'); out.append(o)
         for i in range(6):
             ph = i / 6 * 2 * math.pi; out.append(flow(ph, .05, .55, .5, .045 * k, .012 * k, lift=.02 * k, base=.012 * k, flick=.02 * k, curl=.01 * k))
     elif style == 'kurz':             # kurz, ordentlich, Seitenscheitel
@@ -435,21 +435,27 @@ def build_hair(style):
     return out
 
 def build_beard(kind):
+    """Bart als geschlossene Schale über Kiefer/Kinn (Mund bleibt frei) + Schnurrbart aus zwei Büscheln"""
     out = []; k = D.hh / .12
     if kind in ('vollbart', 'kurzbart'):
-        L = 1.0 if kind == 'vollbart' else .5
-        for i in range(11):
-            a = (i - 5) / 5; xn = a * .78; zn = -.35 - .45 * (1 - a * a) ** .5
-            p0, n0 = surf(xn * .95, -.25 + .05 * abs(a)) if abs(a) > .55 else surf(xn, D.MZ - .1)
-            p, n = surf(xn, zn * .9)
-            tip = p + Vector((0, -.012, -.06 * L * (1 - .4 * abs(a)))) * k + n * .01 * k
-            out.append(clump([p0 + n0 * .004, p + n * .012 * k, tip], .07 * k * (1 - .3 * abs(a)), .02 * k, region='bart', n=6))
-    if kind in ('vollbart', 'schnurr'):
+        L = 1.0 if kind == 'vollbart' else .45; U_, V_ = 7, 18; CV = []; CF = []
+        for i in range(U_ + 1):
+            for j in range(V_ + 1):
+                ph = (-1 + 2 * j / V_) * 1.75; a = abs(ph)
+                th0 = lerp(2.62, 1.98, ss(.35, .75, a)); th1 = math.pi * .995
+                th = lerp(th0, th1, i / U_); off = (.006 + .012 * L * (i / U_) ** .7 * (1 - .5 * ss(1.2, 1.75, a))) * k
+                q = head_dir_point(sdir(th, ph), off)
+                if i == U_: q += Vector((0, -.012 * L, -.035 * L * (1 - ss(.0, 1.3, a)))) * k
+                CV.append(q)
+        for i in range(U_):
+            for j in range(V_): a = i * (V_ + 1) + j; CF.append((a, a + 1, a + V_ + 2, a + V_ + 1))
+        o = obj_data('Bart', CV, CF); smooth(o); orient_out(o, D.HC); set_region(o, 'bart'); mod(o, 'SOLIDIFY', thickness=.004 * k, offset=-1); apply_mods(o); smooth(o); out.append(o)
+    if kind in ('vollbart', 'schnurr', 'kurzbart'):
         for s in (-1, 1):
             P = []
             for j in range(5):
-                xn = s * (.02 + j * .07); p, n = surf(xn, D.MZ + .075 - .03 * j * j / 16); P.append(p + n * .006 * k + Vector((0, 0, -.004 * j)) * k)
-            out.append(clump(P, .035 * k, .012 * k, region='bart', n=7, up=(0, -1, 0)))
+                xn = s * (.02 + j * .075); p, n = surf(xn, D.MZ + .08 - .035 * (j / 4) ** 2); P.append(p + n * .006 * k + Vector((0, 0, -.006 * (j / 4) ** 2)) * k)
+            out.append(clump(P, .03 * k, .011 * k, region='bart', n=7, up=(0, -1, 0)))
     return out
 
 # =====================================================================
@@ -495,7 +501,7 @@ def dress_body(body, spec):
             if p.z > D.HIP.z - .01 * H: n = Vector((p.x, p.y, 0)).normalized()
             else: n = (p - ctr); n.z *= .3; n.normalize()
             weit = bot.get('weit', .006) * H / 1.45
-            fold = .0035 * H / 1.45 * math.sin(p.z / H * 150 + s * 2) * (gauss((p.z - D.KNEE.z) ** 2, (.035 * H) ** 2) + 1.6 * ss(D.ANK.z + .1 * H, D.ANK.z + .02 * H, p.z))
+            fold = .0035 * H / 1.45 * math.sin(p.z / H * 150 + s * 2) * (gauss((p.z - D.KNEE.z) ** 2, .035 * H) + 1.6 * ss(D.ANK.z + .1 * H, D.ANK.z + .02 * H, p.z))
             hem = bot.get('bis', 0) * H
             q = p + n * (.0055 * H / 1.45 + weit * (.5 + .7 * ss(D.KNEE.z, hem + .02 * H, p.z) if hem < D.KNEE.z else .4) + fold)
         elif c == 'socke':

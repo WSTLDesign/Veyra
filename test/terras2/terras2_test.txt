@@ -1,0 +1,4 @@
+# Terra-Serie: Welt + Kampf mit Schalter modelle3d an
+✓ alle Modelle geladen → {"1":{"ok":true,"ms":9723},"4":{"ok":true,"ms":9500},"7":{"ok":true,"ms":11601},"gesamt":11601,"pilotFunki":"serie"}
+✓ Pilot-Funki nicht doppelt geladen → serie
+✗ Welt 1: Modell → {"tm":false,"clips":0}

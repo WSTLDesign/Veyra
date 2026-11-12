@@ -197,7 +197,8 @@ for s_ in (-1, 1):
     sel = (np.sign(X) == s_) & (np.abs(X) > D.SH.x * .72) & (t_ > -.03 * H) & (rad < .09 * kk) & (Z > HZ * .9); armT = np.where(sel, t_, armT)
 isArm = armT > 0; TOP = K_.get('top'); BOT = K_.get('unten')
 zTop = np.zeros(X.shape, bool); zBot = np.zeros(X.shape, bool); zSock = np.zeros(X.shape, bool)
-if TOP: zTop = np.where(isArm, armT < TOP['arm'] * L_, (Z > TOP['saum'] * H - .002 * H) & (Z < D.NECK0.z - .005 * H))
+nkr = D.T['neck'] * H * (1.5 if TOP and TOP['art'] in ('hemd', 'bluse', 'pulli') else 1.75)
+if TOP: zTop = np.where(isArm, armT < TOP['arm'] * L_, (Z > TOP['saum'] * H - .002 * H) & ((Z < D.NECK0.z - .005 * H) | ((np.hypot(X, Y - D.NECK0.y) >= nkr) & (Z < D.CHIN))))
 if BOT: zBot = (~isArm) & (Z < BOT.get('bund', .6) * H + .004 * H) & (Z > BOT.get('bis', 0) * H) & ~zTop
 if K_.get('socken'): zSock = (~isArm) & (Z < D.ANK.z + K_['socken'] * H) & ~zTop & ~zBot
 BOD = M('haut', 'top', 'hose', 'socke')
@@ -271,7 +272,7 @@ for nm in ('jacke', 'kittel'):
         J = K_.get(nm); mk = M(nm)
         seam(mk, np.abs(X) - J['offen'] * H * 1.15, w=.0014, c=shade_of(nm, .72), a=.45)                    # Vorderkante Steppnaht
         seam(mk, Z - (J['saum'] * H + .012 * H), c=shade_of(nm, .72), a=.4)
-        mix(mk & ((np.abs(X) - J['offen'] * H * 1.05) < .006 * kk) & (Y < 0), FC.get('saum', '#888888'), .9)   # Blende in Saumfarbe
+        mix(mk & (np.abs(np.abs(X) - J['offen'] * H * 1.05) < .006 * kk) & (Y < 0), FC.get('saum', '#888888'), .9)   # Blende in Saumfarbe
         if nm == 'kittel':
             for s in (-1, 1):   # Brusttasche + Seitentaschen
                 seam(mk & (Y < 0), np.maximum(np.abs(X - s * .065 * H) - .03 * H, np.abs(Z - (D.SH.z - .1 * H)) - .025 * H), w=.0012, c=shade_of(nm, .72), a=.5)
@@ -280,6 +281,9 @@ if 'schuerze' in FC:
     seam(M('schuerze'), np.abs(np.abs(X) - .0) - 10, w=.001)
     if 'karo_schuerze' in SPEC.get('muster', []):
         ch = (np.sin(X / kk * 260) > .6) | (np.sin(Z / kk * 260) > .6); mix(M('schuerze') & ch, shade_of('schuerze', .86), .55)
+if 'schuerze' in FC:
+    pk = M('schuerze') & (np.abs(X) < .06 * H) & (np.abs(Z - (HZ - .03 * H)) < .04 * H); mix(pk, shade_of('schuerze', .85), .9)
+    seam(M('schuerze'), np.maximum(np.abs(X) - .06 * H, np.abs(Z - (HZ - .03 * H)) - .04 * H), w=.0014, c=shade_of('schuerze', .6), a=.6)
 if 'rock' in FC:
     mix(M('rock'), shade_of('rock', 1.12), .2 * ss(.55, .9, n2))
 if 'strick' in SPEC.get('muster', []) and 'jacke' in FC:
@@ -317,6 +321,7 @@ if 'kreuz_blatt' in SPEC.get('extras', []) and 'kittel' in FC:   # Heil-Zeichen 
 # Mütze: Strick (Beanie) bzw. Naht (Schirmmütze)
 if 'muetze' in FC:
     mk = M('muetze'); rib = np.sin(np.arctan2(Y - HC.y, X - HC.x) * 40) > 0; mix(mk, shade_of('muetze', .85), .35 * rib); hgt += mk * rib * .5
+    mix(mk, shade_of('muetze', .82), ss(HC.z + .2 * hh, HC.z + .12 * hh, Z) * .8)
 if 'rucksack' in FC:
     seam(M('rucksack'), np.abs(X) - .05 * H, w=.0012, c=shade_of('rucksack', .7), a=.5)
 # Schuhe

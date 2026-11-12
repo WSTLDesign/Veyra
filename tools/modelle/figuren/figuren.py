@@ -118,15 +118,12 @@ def apron(spec, S_):
         rings.append(r)
     o = loft_rings('Schuerze', rings, 'schuerze', closed=False); solidify(o, .0035 * k, 1); out.append(o)
     # Bänder: Nacken + Taille
-    bvb = _BVB['body']
+    import fkit; bvb = fkit._BVB['body']
     ring_fit(bvb, 'Schuerzenband', (0, 0, lerp(D.HIP.z, D.SH.z, .38)), (0, 0, 1), .007 * k, .0025 * k, 'saum2', .009 * k, 30, out=out)
     for s in (-1, 1):
         a = Vector((s * torso_prof(S_['oben'] * H)[0] * .58, -torso_prof(S_['oben'] * H)[1] - .012 * H, S_['oben'] * H)); b = Vector((s * .03 * H, -.01 * H, D.NECK0.z + .01 * H)); c = Vector((0, .03 * H, D.NECK0.z))
         o = loft('Traeger', [a, a.lerp(b, .5) + Vector((s * .004 * H, -.006 * H, 0)), b, Vector((s * .02 * H, .02 * H, D.NECK0.z + .006 * H)), c], lambda t: .006 * k, lambda t: .0022 * k, ring=4, n=10, cap0=False)
         set_region(o, 'saum2'); out.append(o)
-    # Tasche vorn
-    pc = Vector((0, -torso_prof(D.HIP.z)[1] - .034 * H, D.HIP.z - .03 * H))
-    o = blob('Schuerzentasche', pc, (.06 * H, .006 * H, .04 * H), 3, lambda v, q: Vector((q.x, q.y * (1 if v.y < 0 else .2), q.z))); set_region(o, 'saum2'); out.append(o)
     return out
 
 def accessories(spec, bvb):
@@ -230,8 +227,6 @@ def accessories(spec, bvb):
         for i in range(U_):
             for j in range(V_): j1 = (j + 1) % V_; CF.append((i * V_ + j, i * V_ + j1, (i + 1) * V_ + j1, (i + 1) * V_ + j))
         o = obj_data('Muetze', CV, CF); smooth(o); set_region(o, 'muetze'); out.append(o)
-        rp = [head_dir_point(sdir(hl - .08, j / 26 * 2 * math.pi), .03 * k) for j in range(27)]
-        o = loft('Umschlag', rp, lambda t: .022 * k, lambda t: .006 * k, ring=4, n=28, cap0=False, flat_up=(0, 0, 1)); set_region(o, 'muetze'); out.append(o)
     return out
 
 def join_all(parts):
@@ -265,6 +260,9 @@ if __name__ == '__main__':
     BODY, FACE, EYE = join_all(parts)
     nk = cull_hidden(BODY, {'haut_kopf'}, .05 * D.H / 1.45)
     log('verdeckt entfernt', nk)
+    tb = SPEC.get('budget', 11800)
+    if tris(BODY) > tb:   # Dreiecksbudget 8–14 k je Figur: Körper sanft reduzieren (Kollaps, Formen bleiben)
+        dm = BODY.modifiers.new('Dez', 'DECIMATE'); dm.ratio = tb / tris(BODY); apply_mods(BODY); smooth(BODY)
     log('Dreiecke Körper', tris(BODY), 'Gesicht', tris(FACE), 'Augen', tris(EYE), 'gesamt', tris(BODY) + tris(FACE) + tris(EYE))
     if ONLY_FORM:
         H = D.H; hz = D.HC.z

@@ -95,14 +95,14 @@ if (has('welt') || has('kampf')) {
       console.log('Welt', nm, img.tm); await toWebp(P, img.img, 'welt_' + nm + '.webp');
     }
     if (has('kampf')) {
-      const ok = await P.evaluate(async (id) => { G.team = [mk(id, 12)]; await tmLoad(id); await tmLoad(4); startBattle({ s: [4, 1, 7][(id - 1) / 3 % 3 | 0] === id ? 59 : [4, 1, 7][(id - 1) / 3 % 3 | 0], l: 6 }); return true; }, id);
+      const ok = await P.evaluate(async (id) => { const foe = { 1: 4, 4: 7, 7: 1 }[id]; G.team = [mk(id, 12)]; await tmLoad(id); await tmLoad(foe); G.time = 11 * 60; loadMap('route1', 9, 12); SET.btl = 'runde'; startBattle({ wild: mk(foe, 6) }); return true; }, id);
       await P.waitForTimeout(3500);
       await P.evaluate(() => { if (B) { B.lunge = { who: 'me', t: performance.now() - 300 }; BT.me && (BT.me.userData.act.atk = performance.now() - 200); } });
       await P.waitForTimeout(400);
       const info = await P.evaluate(() => ({ me: !!(BT && BT.me && BT.me.userData.tm), foe: !!(BT && BT.foe && BT.foe.userData.tm), sprite: !!(BT && BT.foe && BT.foe.userData.sprite) }));
       console.log('Kampf', nm, JSON.stringify(info)); res['kampf_' + nm] = info;
       const shot = 'data:image/png;base64,' + (await P.screenshot()).toString('base64'); await toWebp(P, shot, 'kampf_' + nm + '.webp');
-      await P.evaluate(() => { try { if (B) { B.over = 1; endBattle && endBattle(); } } catch (e) { } mode = 'world'; });
+      await P.evaluate(() => { try { if (B) endBattle('run'); } catch (e) { } mode = 'world'; });
       await P.waitForTimeout(800);
     }
   }

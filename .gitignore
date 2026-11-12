@@ -7,3 +7,4 @@ test/*.png
 # Referenzbilder (127 MB) bleiben lokal beim Nutzer, nicht im Repo
 public/art_ref/
 tools/leitstand/spiel/
+test/*.log

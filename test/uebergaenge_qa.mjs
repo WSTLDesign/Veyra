@@ -29,7 +29,7 @@ const page = await browser.newPage({ viewport: { width: 860, height: 484 }, devi
 page.on('pageerror', e => errs.push('PAGEERROR ' + e.message)); page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|GPU stall|favicon|ReadPixels/.test(m.text())) errs.push(m.text().slice(0, 240)); });
 await page.route(/fonts\.googleapis|fonts\.gstatic/, r => r.fulfill({ body: '', contentType: 'text/css' }));
 await page.route(/sw\.js$/, r => r.fulfill({ status: 404, body: '' }));
-await page.addInitScript(() => { try { localStorage.setItem('veyra_set', JSON.stringify({ res: 'native', gfx: 'high', fps: 0, hudDim: 'aus', ctrl: 'dyn', inV: 1, inHint: 1 })); } catch (e) { } });
+await page.addInitScript(() => { try { localStorage.setItem('veyra_set', JSON.stringify({ res: '720', gfx: 'low', fps: 0, hudDim: 'aus', ctrl: 'dyn', inV: 1, inHint: 1 })); } catch (e) { } });
 await page.goto(URL0 + 'index.html', { waitUntil: 'load' });
 try { await page.click('#iPrompt', { timeout: 5000 }); } catch (e) { } await page.waitForTimeout(500);
 try { await page.click('#iSkip', { timeout: 5000 }); } catch (e) { } await page.waitForTimeout(900);

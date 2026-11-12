@@ -9,3 +9,4 @@
 ✓ [vorher] Labor → Morgenau (rechts, rennen): ausgelöst nach 2396 ms
 ✗ [vorher] Morgenau → Route 1 (links): NICHT ausgelöst (Anstöße 0)
 ✗ [vorher] Morgenau → Route 1 (rechts, rennen): NICHT ausgelöst (Anstöße 0)
+✗ [vorher] Route 1 → Morgenau (links): NICHT ausgelöst (Anstöße 0)

@@ -173,7 +173,8 @@ async function line(run) {
   const after = r.filter(p => p.t >= tUp); let bd = 0, bt = 0; for (let i = 1; i < after.length; i++) { const d = Math.hypot(after[i].x - after[i - 1].x, after[i].y - after[i - 1].y); if (d > 1e-4) { bd += d; bt = after[i].t - tUp; } }
   // Ruck beim Anfahren: größte Beschleunigungsänderung in den ersten 0,3 s (Felder/s³)
   let jerk = 0; const st = r.filter(p => p.t >= tDown && p.t <= tDown + 300); for (let i = 2; i < st.length; i++) { const a1 = (st[i].v - st[i - 1].v) / ((st[i].t - st[i - 1].t) / 1000), a0 = (st[i - 1].v - st[i - 2].v) / ((st[i - 1].t - st[i - 2].t) / 1000); jerk = Math.max(jerk, Math.abs(a1 - a0) / ((st[i].t - st[i - 1].t) / 1000)); }
-  return { tempo: +vmax.toFixed(2), anfahren90ms: t90 && Math.round(t90), bremsweg: +bd.toFixed(2), bremszeitMs: Math.round(bt), amaxStart: +Math.max(...st.slice(1).map((p, i) => (p.v - st[i].v) / ((p.t - st[i].t) / 1000))).toFixed(1) };
+  const fps = r.length > 2 ? +((r.length - 1) / ((r[r.length - 1].t - r[0].t) / 1000)).toFixed(1) : 0;
+  return { fps, tempo: +vmax.toFixed(2), anfahren90ms: t90 && Math.round(t90), bremsweg: +bd.toFixed(2), bremszeitMs: Math.round(bt), amaxStart: +Math.max(...st.slice(1).map((p, i) => (p.v - st[i].v) / ((p.t - st[i].t) / 1000))).toFixed(1) };
 }
 R.bewegung.gehen = await line(false); R.bewegung.rennen = await line(true);
 // Drehen: aus dem Stand Stick nach rechts (90°) bzw. nach unten (180°)

@@ -16,13 +16,17 @@ let body = fs.readFileSync(src, 'utf8');
 // Loader und Draco-Decoder aus eigenen Dateien (spiel/vendor/), denn die Artifact-Sicherheitsregeln blockieren Datei-Abrufe von CDNs
 body = body.replace(/window\.VENDOR_JS=\[[^\]]*\];/, 'window.VENDOR_JS=["vendor/"];');
 if (!body.includes('window.VENDOR_JS=["vendor/"]')) { console.error('ABBRUCH: VENDOR_JS nicht gefunden'); process.exit(1); }
-// Pilot-Modelle: GLB werden als Skriptdateien (data-URI) ausgeliefert, weil Artifacts keine .glb-Dateien bereitstellen
-const modDir = path.join(root, 'public/models/pilot'), modOut = path.join(root, 'tools/leitstand/spiel/models/pilot'); fs.mkdirSync(modOut, { recursive: true });
+// 3D-Modelle: GLB werden als Skriptdateien (data-URI) ausgeliefert, weil Artifacts keine .glb-Dateien bereitstellen.
+// Alle Bereichs-Ordner unter public/models/ (pilot, figuren, …) → spiel/models/<bereich>/<id>.js, Schlüssel = Modell-ID (Dateiname ohne .glb)
+const modRoot = path.join(root, 'public/models');
 let modTags = '';
-for (const f of fs.existsSync(modDir) ? fs.readdirSync(modDir).filter(x => x.endsWith('.glb')) : []) {
-  const id = f.replace(/\.glb$/, ''), b64 = fs.readFileSync(path.join(modDir, f)).toString('base64');
-  fs.writeFileSync(path.join(modOut, id + '.js'), `(window.PILOT_SRC=window.PILOT_SRC||{})[${JSON.stringify(id)}]="data:model/gltf-binary;base64,${b64}";\n`);
-  modTags += `<script src="models/pilot/${id}.js"></script>`;
+for (const area of fs.existsSync(modRoot) ? fs.readdirSync(modRoot).filter(d => fs.statSync(path.join(modRoot, d)).isDirectory()).sort() : []) {
+  const modDir = path.join(modRoot, area), modOut = path.join(root, 'tools/leitstand/spiel/models', area); fs.mkdirSync(modOut, { recursive: true });
+  for (const f of fs.readdirSync(modDir).filter(x => x.endsWith('.glb')).sort()) {
+    const id = f.replace(/\.glb$/, ''), b64 = fs.readFileSync(path.join(modDir, f)).toString('base64');
+    fs.writeFileSync(path.join(modOut, id + '.js'), `(window.PILOT_SRC=window.PILOT_SRC||{})[${JSON.stringify(id)}]="data:model/gltf-binary;base64,${b64}";\n`);
+    modTags += `<script src="models/${area}/${id}.js"></script>`;
+  }
 }
 fs.writeFileSync(path.join(tmp, 'index.html'),
   '<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">' +

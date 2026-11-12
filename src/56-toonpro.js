@@ -26,7 +26,7 @@ void main(){
  vUv=uv;vN=normalize(transformedNormal);vV=-mvPosition.xyz;vMask=uHasMask>.5?color:vec4(1.,.3,0.,0.);
 }`;
 const TP_FS=`
-uniform sampler2D map;uniform sampler2D normalMap;uniform float uNrm;uniform float uEye;uniform float uAlphaTest;uniform float uSrgb;
+uniform sampler2D map;uniform sampler2D normalMap;uniform float uNrm;uniform float uEye;uniform float uAlphaTest;uniform float uSrgb;uniform float uVtm;
 uniform vec3 uTint;uniform vec3 uShade;uniform float uShadowLv;uniform float uBright;uniform float uWrap;uniform float uT1;uniform float uT2;uniform float uSoft;
 uniform vec3 uSSS;uniform vec3 uRim;uniform float uRimStr;uniform float uGlow;uniform float uFlash;uniform float uRef;
 varying vec2 vUv;varying vec3 vN;varying vec3 vV;varying vec4 vMask;
@@ -65,8 +65,9 @@ void main(){
   float g1=pow(max(dot(R,normalize(vec3(-.35,.55,.76))),0.),90.),g2=pow(max(dot(R,normalize(vec3(.4,-.3,.87))),0.),260.);col+=vec3(1.)*(smoothstep(.45,.6,g1)*.9+smoothstep(.4,.55,g2)*.5)*vMask.b;}
  col+=alb*vMask.a*uGlow+vec3(uFlash);
  gl_FragColor=vec4(col,1.);
+ if(uVtm>.5)gl_FragColor.rgb=pow(max(gl_FragColor.rgb,0.),vec3(1./2.2));
  #include <tonemapping_fragment>
- if(uSrgb>.5)gl_FragColor.rgb=tpSrgb(gl_FragColor.rgb);
+ if(uSrgb>.5&&uVtm<.5)gl_FragColor.rgb=tpSrgb(gl_FragColor.rgb);
  #include <encodings_fragment>
  #include <fog_fragment>
 }`;
@@ -89,20 +90,21 @@ void main(){
  vec3 nv=normalize(normalMatrix*objectNormal);vec2 nc=(projectionMatrix*vec4(nv,0.)).xy;float l=length(nc);
  float w=uPx*(uHasMask>.5?color.r:1.);if(l>1e-5)gl_Position.xy+=nc/l*w*2./uRes*gl_Position.w;gl_Position.z+=.00002*gl_Position.w;vUv=uv;
 }`;
-const TP_OFS=`uniform sampler2D map;uniform float uDark;uniform float uSrgb;varying vec2 vUv;
+const TP_OFS=`uniform sampler2D map;uniform float uDark;uniform float uSrgb;uniform float uVtm;varying vec2 vUv;
 #include <common>
 #include <fog_pars_fragment>
 vec3 tpLin(vec3 c){return mix(c/12.92,pow((c+.055)/1.055,vec3(2.4)),step(.04045,c));}
 void main(){vec3 c=tpLin(texture2D(map,vUv).rgb);c=c*c*uDark*1.6+c*uDark*.2;gl_FragColor=vec4(c,1.);
+ if(uVtm>.5)gl_FragColor.rgb=pow(max(gl_FragColor.rgb,0.),vec3(1./2.2));
  #include <tonemapping_fragment>
- if(uSrgb>.5)gl_FragColor.rgb=pow(max(gl_FragColor.rgb,0.),vec3(1./2.2));
+ if(uSrgb>.5&&uVtm<.5)gl_FragColor.rgb=pow(max(gl_FragColor.rgb,0.),vec3(1./2.2));
  #include <encodings_fragment>
  #include <fog_fragment>
 }`;
 function toonProMat(map,o){o=o||{};const U=THREE.UniformsUtils.merge([THREE.UniformsLib.lights,THREE.UniformsLib.fog,{
-  map:{value:null},normalMap:{value:null},uNrm:{value:0},uEye:{value:o.eye?1:0},uAlphaTest:{value:o.alphaTest||0},uSrgb:{value:1},uHasMask:{value:1},
+  map:{value:null},normalMap:{value:null},uNrm:{value:0},uEye:{value:o.eye?1:0},uAlphaTest:{value:o.alphaTest||0},uSrgb:{value:1},uVtm:{value:0},uHasMask:{value:1},
   uTint:{value:new THREE.Color(1,1,1)},uShade:{value:new THREE.Color(o.shade||'#b9a6d6')},uShadowLv:{value:o.shadowLv??.62},uBright:{value:o.bright??1.08},
-  uWrap:{value:.35},uT1:{value:.42},uT2:{value:.74},uSoft:{value:o.soft??.07},uSSS:{value:new THREE.Color(o.sss||'#ff6a48')},uRim:{value:new THREE.Color(o.rim||'#cfe6ff')},
+  uWrap:{value:.4},uT1:{value:.4},uT2:{value:.72},uSoft:{value:o.soft??.1},uSSS:{value:new THREE.Color(o.sss||'#ff6a48')},uRim:{value:new THREE.Color(o.rim||'#cfe6ff')},
   uRimStr:{value:o.rimStr??.32},uGlow:{value:o.glow??1.2},uFlash:{value:0},uRef:{value:o.ref??1.5}}]);
  U.map.value=map;if(o.normalMap){U.normalMap.value=o.normalMap;U.uNrm.value=o.nrm??1;}
  const m=new THREE.ShaderMaterial({uniforms:U,vertexShader:TP_VS,fragmentShader:TP_FS,lights:true,fog:true,skinning:!!o.skinning,morphTargets:!!o.morph});
@@ -112,7 +114,7 @@ function toonProSmooth(g){if(g.attributes.aSmooth)return;const p=g.attributes.po
  const ks=new Array(cnt);for(let i=0;i<cnt;i++){const k=ks[i]=key(i);let a=map.get(k);if(!a)map.set(k,a=[0,0,0]);a[0]+=n.getX(i);a[1]+=n.getY(i);a[2]+=n.getZ(i);}
  const o=new Float32Array(cnt*3);for(let i=0;i<cnt;i++){const a=map.get(ks[i]),l=Math.hypot(a[0],a[1],a[2])||1;o[i*3]=a[0]/l;o[i*3+1]=a[1]/l;o[i*3+2]=a[2]/l;}g.setAttribute('aSmooth',new THREE.BufferAttribute(o,3));}
 function toonProOutline(mesh,variant){const V=TOONPRO.variants[variant||'duenn']||TOONPRO.variants.duenn;if(!V.px)return null;const g=mesh.geometry;toonProSmooth(g);
- const mat=new THREE.ShaderMaterial({uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{map:{value:mesh.material.uniforms?mesh.material.uniforms.map.value:mesh.material.map},uPx:{value:V.px},uRes:{value:TOONPRO.res},uDark:{value:V.dark},uSrgb:{value:1},uHasMask:{value:g.attributes.color?1:0}}]),
+ const mat=new THREE.ShaderMaterial({uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{map:{value:mesh.material.uniforms?mesh.material.uniforms.map.value:mesh.material.map},uPx:{value:V.px},uRes:{value:TOONPRO.res},uDark:{value:V.dark},uSrgb:{value:1},uVtm:{value:0},uHasMask:{value:g.attributes.color?1:0}}]),
   vertexShader:TP_OVS,fragmentShader:TP_OFS,side:THREE.BackSide,fog:true,skinning:!!mesh.isSkinnedMesh,morphTargets:!!(g.morphAttributes&&g.morphAttributes.position)});
  mat.userData.toonPro=1;mat.userData.px=V.px;TOONPRO.ol.add(mat);
  const o=mesh.isSkinnedMesh?new THREE.SkinnedMesh(g,mat):new THREE.Mesh(g,mat);if(mesh.isSkinnedMesh)o.bind(mesh.skeleton,mesh.bindMatrix);
@@ -130,6 +132,6 @@ function toonProApply(root,opts){opts=opts||{};const list=[];root.traverse(m=>{i
  return root;}
 // Je Bild: Ausgabekodierung + Auflösung für Umrissbreite übernehmen (Umriss skaliert mit der Bildhöhe, Bezug 900 Zeilen)
 function toonProSync(r){if(!r)return;const s=r.getDrawingBufferSize?r.getDrawingBufferSize(new THREE.Vector2()):TOONPRO.res;TOONPRO.res.set(s.x,s.y);
- const srgb=r.outputEncoding===THREE.sRGBEncoding?0:1,k=Math.max(.6,s.y/900);for(const m of TOONPRO.mats)m.uniforms.uSrgb.value=srgb;
- for(const m of TOONPRO.ol){m.uniforms.uSrgb.value=srgb;m.uniforms.uPx.value=m.userData.px*k;}}
+ const srgb=r.outputEncoding===THREE.sRGBEncoding?0:1,vtm=r.toneMapping===THREE.CustomToneMapping?1:0,k=Math.max(.6,s.y/900);for(const m of TOONPRO.mats){m.uniforms.uSrgb.value=srgb;m.uniforms.uVtm.value=vtm;}
+ for(const m of TOONPRO.ol){m.uniforms.uSrgb.value=srgb;m.uniforms.uVtm.value=vtm;m.uniforms.uPx.value=m.userData.px*k;}}
 function toonProVariant(root,variant){const V=TOONPRO.variants[variant]||TOONPRO.variants.duenn;root.traverse(o=>{if(o.userData.outline&&o.material&&o.material.userData.toonPro){o.visible=V.px>0;o.material.userData.px=V.px;o.material.uniforms.uDark.value=V.dark;}});}

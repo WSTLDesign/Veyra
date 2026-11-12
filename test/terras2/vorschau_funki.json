@@ -1,0 +1,13 @@
+{
+ "laden": {
+  "1": 347
+ },
+ "fehlerStudio": [
+  "console.error: Sequenz intro TypeError: Cannot read properties of undefined (reading 'rt')\n    at gfxApply (http://127.0.0.1:42755/index.html:13246:138)\n    at gfxSetup (http://127.0.0.1:42755/index.html:13253:2)\n  ",
+  "PAGEERROR Cannot read properties of undefined (reading 'rt')"
+ ],
+ "fehler": [
+  "console.error: Sequenz intro TypeError: Cannot read properties of undefined (reading 'rt')\n    at gfxApply (http://127.0.0.1:42755/index.html:13246:138)\n    at gfxSetup (http://127.0.0.1:42755/index.html:13253:2)\n  ",
+  "PAGEERROR Cannot read properties of undefined (reading 'rt')"
+ ]
+}

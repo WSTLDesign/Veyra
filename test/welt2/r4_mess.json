@@ -1,0 +1,26 @@
+{
+ "hoch_morgenau": {
+  "calls": 85,
+  "tris": 222702,
+  "ms": 4276,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_route1": {
+  "calls": 96,
+  "tris": 263902,
+  "ms": 3542.5,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_hoehle": {
+  "calls": 49,
+  "tris": 66872,
+  "ms": 3107.7,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ }
+}

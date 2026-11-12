@@ -1,0 +1,510 @@
+{
+ "zeit": "2026-11-12T15:58:46.762Z",
+ "renderer": {
+  "pixelRatio": 1,
+  "buffer": [
+   1600,
+   900
+  ],
+  "css": [
+   1600,
+   900
+  ],
+  "antialias": true,
+  "samples": 4,
+  "toneMapping": 4,
+  "expo": 1.02,
+  "shadowType": 2,
+  "shadowOn": true,
+  "shadowMap": [
+   1024,
+   1024
+  ],
+  "physLights": false,
+  "outputEnc": 3000,
+  "SET": {
+   "quality": "eigene",
+   "res": "native",
+   "gfx": "high",
+   "shadows": 1,
+   "fps": 0
+  },
+  "PRESET_niedrig": {
+   "res": "720",
+   "fps": 30,
+   "shadows": 0,
+   "light": 0,
+   "particles": 0,
+   "dist": "nah",
+   "gfx": "low"
+  },
+  "PRESET_hoch": {
+   "res": "1080",
+   "fps": 60,
+   "shadows": 1,
+   "light": 1,
+   "particles": 1,
+   "dist": "mittel",
+   "gfx": "high"
+  },
+  "PERFweak": true,
+  "MON_RENDER": "sprite",
+  "models": []
+ },
+ "objekte": {
+  "held": {
+   "meshes": 2,
+   "skinned": 2,
+   "bones": 14,
+   "tris": 0,
+   "olTris": 4287,
+   "mats": {
+    "MeshToonMaterial": 1,
+    "MeshBasicMaterial": 1
+   },
+   "shaderMods": 2,
+   "tex": [
+    "gradientMap:5×1"
+   ],
+   "morph": 0,
+   "outline": 2,
+   "sprite": false,
+   "terra": false,
+   "rig": true,
+   "parts": 93,
+   "partTypes": {
+    "Kugel 14×11": 1,
+    "eigene Form (Röhre/Loft/Kappe)": 47,
+    "Kugel 8×5": 2,
+    "Kugel 8×4": 2,
+    "Kugel 5×3": 11,
+    "Kugel 4×3": 2,
+    "Torus 3×9": 2,
+    "Torus 2×6": 2,
+    "Kugel 6×5": 2,
+    "Kugel 5×5": 1,
+    "Torus 3×7": 1,
+    "Torus 3×16": 1,
+    "Zylinder 10": 4,
+    "Kugel 6×4": 4,
+    "Kugel 10×6": 4,
+    "Kugel 10×3": 2,
+    "Kugel 4×2": 4,
+    "Kugel 10×7": 1
+   },
+   "label": "Held (Spielerfigur, Stufe 0)",
+   "h": 1.348
+  },
+  "veyran": {
+   "meshes": 2,
+   "skinned": 2,
+   "bones": 14,
+   "tris": 0,
+   "olTris": 5875,
+   "mats": {
+    "MeshToonMaterial": 1,
+    "MeshBasicMaterial": 1
+   },
+   "shaderMods": 2,
+   "tex": [
+    "gradientMap:5×1"
+   ],
+   "morph": 0,
+   "outline": 2,
+   "sprite": false,
+   "terra": false,
+   "rig": true,
+   "parts": 119,
+   "partTypes": {
+    "Kugel 14×11": 1,
+    "eigene Form (Röhre/Loft/Kappe)": 56,
+    "Kugel 8×5": 2,
+    "Kugel 8×4": 4,
+    "Kugel 5×3": 11,
+    "Kugel 4×3": 2,
+    "Torus 3×9": 4,
+    "Torus 2×6": 2,
+    "Kugel 6×5": 6,
+    "Kugel 5×5": 1,
+    "Torus 3×7": 1,
+    "Zylinder 4": 1,
+    "Kugel 10×7": 2,
+    "Kugel 6×4": 7,
+    "Torus 6×14": 2,
+    "Kugel 10×6": 6,
+    "Kugel 10×3": 2,
+    "Kugel 4×2": 4,
+    "Zylinder 10": 3,
+    "BoxGeometry": 2
+   },
+   "label": "Prof. Veyran (NPC)",
+   "h": 1.571
+  },
+  "funki": {
+   "meshes": 5,
+   "skinned": 3,
+   "bones": 26,
+   "tris": 3826,
+   "olTris": 2374,
+   "mats": {
+    "MeshBasicMaterial": 1,
+    "ShaderMaterial": 2,
+    "MeshToonMaterial": 2
+   },
+   "shaderMods": 2,
+   "tex": [
+    "map:128×128",
+    "gradientMap:2×1"
+   ],
+   "morph": 0,
+   "outline": 1,
+   "sprite": false,
+   "terra": true,
+   "rig": false,
+   "parts": 44,
+   "partTypes": {
+    "eigene Form (Röhre/Loft/Kappe)": 20,
+    "Kugel 7×5": 11,
+    "Kugel 5×3": 12,
+    "ExtrudeGeometry": 1
+   },
+   "label": "001 Funki (Glut-Starter, Terra)",
+   "h": 0.745
+  },
+  "plippi": {
+   "meshes": 4,
+   "skinned": 3,
+   "bones": 10,
+   "tris": 3684,
+   "olTris": 2832,
+   "mats": {
+    "MeshBasicMaterial": 1,
+    "MeshToonMaterial": 2,
+    "ShaderMaterial": 1
+   },
+   "shaderMods": 2,
+   "tex": [
+    "map:128×128",
+    "gradientMap:2×1"
+   ],
+   "morph": 0,
+   "outline": 1,
+   "sprite": false,
+   "terra": true,
+   "rig": false,
+   "parts": 39,
+   "partTypes": {
+    "eigene Form (Röhre/Loft/Kappe)": 21,
+    "Kugel 5×3": 9,
+    "Kugel 7×5": 8,
+    "Torus 8×36": 1
+   },
+   "label": "004 Plippi (Flut-Starter, Terra)",
+   "h": 0.725
+  },
+  "knospi": {
+   "meshes": 4,
+   "skinned": 3,
+   "bones": 23,
+   "tris": 3488,
+   "olTris": 2828,
+   "mats": {
+    "MeshBasicMaterial": 1,
+    "MeshToonMaterial": 2,
+    "ShaderMaterial": 1
+   },
+   "shaderMods": 2,
+   "tex": [
+    "map:128×128",
+    "gradientMap:2×1"
+   ],
+   "morph": 0,
+   "outline": 1,
+   "sprite": false,
+   "terra": true,
+   "rig": false,
+   "parts": 64,
+   "partTypes": {
+    "eigene Form (Röhre/Loft/Kappe)": 39,
+    "Kugel 7×5": 11,
+    "Kugel 5×3": 12,
+    "Kugel 10×7": 1,
+    "ConeGeometry": 1
+   },
+   "label": "007 Knospi (Flora-Starter, Terra)",
+   "h": 0.707
+  },
+  "funki_hq": {
+   "meshes": 5,
+   "skinned": 3,
+   "bones": 26,
+   "tris": 11040,
+   "olTris": 7542,
+   "mats": {
+    "MeshBasicMaterial": 1,
+    "ShaderMaterial": 2,
+    "MeshToonMaterial": 2
+   },
+   "shaderMods": 2,
+   "tex": [
+    "map:128×128",
+    "gradientMap:2×1"
+   ],
+   "morph": 0,
+   "outline": 1,
+   "sprite": false,
+   "terra": true,
+   "rig": false,
+   "parts": 44,
+   "partTypes": {
+    "eigene Form (Röhre/Loft/Kappe)": 20,
+    "Kugel 14×10": 11,
+    "Kugel 5×3": 12,
+    "ExtrudeGeometry": 1
+   },
+   "label": "001 Funki Porträt-Qualität (TA_HQ)",
+   "h": 0.745
+  }
+ },
+ "darstellung": [
+  {
+   "id": 1,
+   "name": "Funki",
+   "terra": true,
+   "hasArt": true,
+   "spriteOK": true,
+   "monRender": "sprite",
+   "kampf": "Billboard (gemaltes Bild)"
+  },
+  {
+   "id": 4,
+   "name": "Plippi",
+   "terra": true,
+   "hasArt": true,
+   "spriteOK": true,
+   "monRender": "sprite",
+   "kampf": "Billboard (gemaltes Bild)"
+  },
+  {
+   "id": 7,
+   "name": "Knospi",
+   "terra": true,
+   "hasArt": true,
+   "spriteOK": true,
+   "monRender": "sprite",
+   "kampf": "Billboard (gemaltes Bild)"
+  }
+ ],
+ "gesicht": {
+  "kreaturAugen": {
+   "sty": "ani",
+   "tex": "128×128",
+   "mat": "MeshBasicMaterial"
+  },
+  "kiefer": false,
+  "ausdruecke": "setFace(U,es,ms) tauscht Augen-Textur"
+ },
+ "welt": {
+  "funki": {
+   "info": {
+    "meshes": 5,
+    "skinned": 3,
+    "bones": 26,
+    "tris": 3826,
+    "olTris": 2374,
+    "mats": {
+     "MeshBasicMaterial": 1,
+     "ShaderMaterial": 2,
+     "MeshToonMaterial": 2
+    },
+    "shaderMods": 2,
+    "tex": [
+     "map:128×128",
+     "gradientMap:2×1"
+    ],
+    "morph": 0,
+    "outline": 1,
+    "sprite": false,
+    "terra": true,
+    "rig": false
+   },
+   "szeneCalls": 70,
+   "szeneTris": 187964
+  },
+  "plippi": {
+   "info": {
+    "meshes": 4,
+    "skinned": 3,
+    "bones": 10,
+    "tris": 3684,
+    "olTris": 2832,
+    "mats": {
+     "MeshBasicMaterial": 1,
+     "MeshToonMaterial": 2,
+     "ShaderMaterial": 1
+    },
+    "shaderMods": 2,
+    "tex": [
+     "map:128×128",
+     "gradientMap:2×1"
+    ],
+    "morph": 0,
+    "outline": 1,
+    "sprite": false,
+    "terra": true,
+    "rig": false
+   },
+   "szeneCalls": 66,
+   "szeneTris": 194614
+  },
+  "knospi": {
+   "info": {
+    "meshes": 4,
+    "skinned": 3,
+    "bones": 23,
+    "tris": 3488,
+    "olTris": 2828,
+    "mats": {
+     "MeshBasicMaterial": 1,
+     "MeshToonMaterial": 2,
+     "ShaderMaterial": 1
+    },
+    "shaderMods": 2,
+    "tex": [
+     "map:128×128",
+     "gradientMap:2×1"
+    ],
+    "morph": 0,
+    "outline": 1,
+    "sprite": false,
+    "terra": true,
+    "rig": false
+   },
+   "szeneCalls": 66,
+   "szeneTris": 194218
+  }
+ },
+ "kampf": {
+  "funki": {
+   "mode": "battle",
+   "gegner": {
+    "meshes": 0,
+    "skinned": 0,
+    "bones": 0,
+    "tris": 0,
+    "olTris": 0,
+    "mats": {},
+    "shaderMods": 0,
+    "tex": [],
+    "morph": 0,
+    "outline": 0,
+    "sprite": true,
+    "terra": false,
+    "rig": false
+   },
+   "eigen": {
+    "meshes": 0,
+    "skinned": 0,
+    "bones": 0,
+    "tris": 0,
+    "olTris": 0,
+    "mats": {},
+    "shaderMods": 0,
+    "tex": [],
+    "morph": 0,
+    "outline": 0,
+    "sprite": true,
+    "terra": false,
+    "rig": false
+   },
+   "bufferPx": [
+    1600,
+    900
+   ],
+   "pr": 1
+  },
+  "plippi": {
+   "mode": "battle",
+   "gegner": {
+    "meshes": 0,
+    "skinned": 0,
+    "bones": 0,
+    "tris": 0,
+    "olTris": 0,
+    "mats": {},
+    "shaderMods": 0,
+    "tex": [],
+    "morph": 0,
+    "outline": 0,
+    "sprite": true,
+    "terra": false,
+    "rig": false
+   },
+   "eigen": {
+    "meshes": 0,
+    "skinned": 0,
+    "bones": 0,
+    "tris": 0,
+    "olTris": 0,
+    "mats": {},
+    "shaderMods": 0,
+    "tex": [],
+    "morph": 0,
+    "outline": 0,
+    "sprite": true,
+    "terra": false,
+    "rig": false
+   },
+   "bufferPx": [
+    1600,
+    900
+   ],
+   "pr": 1
+  },
+  "knospi": {
+   "mode": "battle",
+   "gegner": {
+    "meshes": 0,
+    "skinned": 0,
+    "bones": 0,
+    "tris": 0,
+    "olTris": 0,
+    "mats": {},
+    "shaderMods": 0,
+    "tex": [],
+    "morph": 0,
+    "outline": 0,
+    "sprite": true,
+    "terra": false,
+    "rig": false
+   },
+   "eigen": {
+    "meshes": 0,
+    "skinned": 0,
+    "bones": 0,
+    "tris": 0,
+    "olTris": 0,
+    "mats": {},
+    "shaderMods": 0,
+    "tex": [],
+    "morph": 0,
+    "outline": 0,
+    "sprite": true,
+    "terra": false,
+    "rig": false
+   },
+   "bufferPx": [
+    1600,
+    900
+   ],
+   "pr": 1
+  }
+ },
+ "fehler": [
+  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
+  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
+  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
+  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
+  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel"
+ ]
+}

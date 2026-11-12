@@ -110,3 +110,11 @@ Bildfolgen: `test/walk_cycle_0..7.png` (8 Phasen bei 1,8 Feldern/s, links seitli
 - `node test/bewegung_shots.mjs [v] [name]` – nur Bildreihen; `test/bewegung_lib.mjs` – Gang-Simulation ohne Browser (`SIMG`).
 - Angepasst (begründet in den Dateien): `unit_walk` (Spieltempi 0,9/1,4/2,8/5; Gleiten am Drehpunkt; Abheben Laufen/Rennen ≤ 0,4), `qa_mech_walk` (Gehen 1,4, Profil bis 5, Gleiten am Drehpunkt), `qa_lc_run` (Gleiten am Drehpunkt), `unit_loopc` (prüft `GAIT` statt `GAIT_RUN`).
 - **Offen:** Die Figur bleibt eine Kurzbein-Figur (Hüfte bei 33 % der Größe); noch glaubhafter würde es mit längeren Beinen/sichtbaren Oberschenkeln (Ziel 5 „Charaktere echt“, Mantel verdeckt die Hüfte). Sehr hartes Bremsen (5 → 0 linear in 0,5 s) erzeugt beim Aufsetzen einen Fußsprung bis 0,88 rad/Frame (Spiel bremst weicher: 0,46).
+
+## Übergänge & Bewegung (Agent Übergänge & Bewegung, Opus 5.5 hoch, 12.11. abends) – Details: docs/uebergaenge.md
+- **Rennen 5 Felder/s ist Standard** (offene Entscheidung „5 statt 7,5“ umgesetzt): Konstanten `WALK_SPEED=2.8`, `RUN_SPEED=5` oben in 17-move.js – ein Wert zum Ändern.
+- Anfahren/Bremsen mit begrenzter Beschleunigung (`MOVE_ACC`): Start-Ruck 14,9/21,2 → 8/9 F/s², Bremsweg Rennen 0,62 → 0,75 Feld (weich, mit Ausfallschritt).
+- Wirksame Stick-Totzone > 33 % → 22 % (kleines Anfahrtempo wurde vorher jedes Bild auf 0 gesetzt).
+- Ecken-Gleiten an Tür-/Baumkanten, Wand-Gleiten ohne Zittern, Anstoß-Geräusch nur beim echten Stehenbleiben; frontal an der Wand sinkt das Tempo auf das tatsächlich Gelaufene (Gang/Neigung passen).
+- Kamera zieht beim Laufen mit dem Stick gemächlich hinter die Figur (36-input `CAMF`, nur bei < 40° Abweichung).
+- Tür-/Rand-Auslösezonen (`PORTAL`, `portalTick`, Sperre nach Ankunft `portalArm`) – Test `node test/uebergaenge_qa.mjs`.

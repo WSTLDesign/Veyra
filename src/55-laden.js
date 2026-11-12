@@ -32,7 +32,7 @@ function ldArrive(){if(!cur||view==='2d')return;const x=P.x,y=P.y;let d=null;if(
  P.x=P.fx=nx;P.y=P.fy=ny;P.px=nx;P.py=ny;G.px=nx;G.py=ny;try{if(typeof compReset==='function')compReset();}catch(e){}}
 // Laufenden Ladebildschirm sofort beenden (neuer Übergang, Test, Kampf): ausstehendes fn wird noch ausgeführt, damit nie eine Karte fehlt
 function ldAbort(){if(!LADEN.active)return;LADEN.tok++;const fn=LADEN.fn;LADEN.fn=null;if(fn)try{fn();}catch(e){console.error('Laden',e);}
- LADEN.active=false;const el=LADEN.el;if(el){el.classList.remove('on','out');el.hidden=true;}document.body.classList.remove('ld-on');if(mode==='wait')mode='world';ldCard();}
+ LADEN.active=false;LADEN.opaque=false;const el=LADEN.el;if(el){el.classList.remove('on','out');el.hidden=true;}document.body.classList.remove('ld-on');if(mode==='wait')mode='world';ldCard();}
 function ldCard(){const m=LADEN.card;LADEN.card=null;if(m&&cur&&m===cur)try{mapCard(m);}catch(e){}}
 async function ldRun(fn,to,from){if(LADEN.active)ldAbort();const tok=++LADEN.tok,red=ldRed(),t0=performance.now(),rec={from,to,t0:Math.round(t0),shown:0,ms:0};
  LADEN.active=true;LADEN.count++;LADEN.log.push(rec);if(LADEN.log.length>40)LADEN.log.shift();LADEN.fn=fn;
@@ -42,18 +42,18 @@ async function ldRun(fn,to,from){if(LADEN.active)ldAbort();const tok=++LADEN.tok
  el.querySelector('.ld-tip').textContent=LD_TIPS[LADEN.count%LD_TIPS.length];el.style.setProperty('--ld-lead',R[1]||'#4cb85c');
  el.classList.toggle('noimg',!src);if(src){if(img.getAttribute('src')!==src)img.src=src;}else img.removeAttribute('src');
  el.hidden=false;el.classList.remove('out');ldProg(.05);void el.offsetWidth;el.classList.add('on');document.body.classList.add('ld-on');try{sfx('whoosh');}catch(e){}
- await ldWait(red?0:LD_MS.fadeIn);if(tok!==LADEN.tok)return;rec.shown=Math.round(performance.now()-t0);const tShow=performance.now();
+ await ldWait(red?0:LD_MS.fadeIn);if(tok!==LADEN.tok)return;rec.shown=Math.round(performance.now()-t0);const tShow=performance.now();LADEN.opaque=true;
  // 1) Karte (Daten, Figuren, Kreaturen)
  LADEN.fn=null;try{fn();}catch(e){console.error('Laden',e);}ldProg(.3);try{ldArrive();}catch(e){}
  await ldFrame();if(tok!==LADEN.tok)return;
  // 2) Szene aufbauen (Geometrie, Texturen, Himmel) – vorhandene Aufbau-Funktion draw3d/build3d, je Schritt ein eigenes Bild
- const d3=view!=='2d'&&typeof draw3d==='function'&&!!window.THREE;
- if(d3){try{draw3d();}catch(e){console.error('Laden 3D',e);}}ldProg(.7);await ldFrame();if(tok!==LADEN.tok)return;
- if(d3){try{draw3d();}catch(e){console.error('Laden 3D',e);}}ldProg(.9);await ldFrame();if(tok!==LADEN.tok)return;
+ const d3=view!=='2d'&&typeof draw3d==='function'&&!!window.THREE,own=()=>{LADEN.own=true;try{draw3d();}catch(e){console.error('Laden 3D',e);}LADEN.own=false;};
+ if(d3)own();ldProg(.7);await ldFrame();if(tok!==LADEN.tok)return;
+ if(d3)own();ldProg(.9);await ldFrame();if(tok!==LADEN.tok)return;
  if(src&&img.decode)try{await Promise.race([img.decode(),ldWait(150)]);}catch(e){}
  const rest=(red?LD_MS.minRed:LD_MS.min)-(performance.now()-tShow);if(rest>0){ldProg(1);await ldWait(rest);}else ldProg(1);if(tok!==LADEN.tok)return;
- // 3) Aufblende
- el.classList.add('out');el.classList.remove('on');await ldWait(red?0:LD_MS.fadeOut);if(tok!==LADEN.tok)return;
+ // 3) Aufblende (ab hier rendert die Hauptschleife wieder jedes Bild)
+ LADEN.opaque=false;if(d3)own();el.classList.add('out');el.classList.remove('on');await ldWait(red?0:LD_MS.fadeOut);if(tok!==LADEN.tok)return;
  el.hidden=true;el.classList.remove('out');document.body.classList.remove('ld-on');LADEN.active=false;rec.ms=Math.round(performance.now()-t0);
  if(mode==='wait')mode='world';ldCard();}
 // transit-Hülle: Gebietswechsel → Ladebildschirm, sonst (Innenräume) unverändert die kurze Blende
@@ -65,3 +65,5 @@ if(typeof mapCard==='function'){const _mapCardLd=mapCard;mapCard=function(m){if(
 if(typeof hyPlaceShow==='function'){const _hpsLd=hyPlaceShow;hyPlaceShow=function(o){if(LADEN.active){try{HYP.lastKey=o.key;HYP.shownAt=performance.now();}catch(e){}return;}return _hpsLd.apply(this,arguments);};}
 // Kampf o. Ä. während des Ladens (sollte wegen mode 'wait' nicht vorkommen): sofort beenden
 if(typeof startBattle==='function'){const _sbLd=startBattle;startBattle=function(){if(LADEN.active)ldAbort();return _sbLd.apply(this,arguments);};}
+// Solange der Ladebildschirm deckt, zeichnet die Hauptschleife die Welt nicht (spart Rechenzeit fürs Aufbauen); eigene Aufbau-Bilder laufen über LADEN.own
+if(typeof draw3d==='function'){const _d3Ld=draw3d;draw3d=function(){if(LADEN.active&&LADEN.opaque&&!LADEN.own)return;return _d3Ld.apply(this,arguments);};}

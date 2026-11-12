@@ -220,7 +220,9 @@ function freeMove(dt){if(mode!=='world'){P.walk=false;return;}let sx=STICK.x,sy=
  let want=-sy*M.speed;if(MV.hop3)want=Math.max(want,3,P.v||0);
  // Anfahren/Bremsen: exponentiell (τ wie bisher) mit begrenzter Beschleunigung → kein Ruck beim Losgehen, weiches Auslaufen (Ausfallschritt bleibt)
  const v0=P.v||0,up=Math.abs(want)>Math.abs(v0),k=ice?(up?1.2:.75):(up?M.accel:7),amax=ice?(up?MOVE_ACC.iceUp:MOVE_ACC.iceDown):up?(P.state==='run'?MOVE_ACC.upRun:MOVE_ACC.up):MOVE_ACC.down;
- let dv=(want-v0)*Math.min(1,s*k);dv=Math.max(-amax*s,Math.min(amax*s,dv));P.v=v0+dv;const sp=P.v*s;P.walk=Math.abs(P.v)>.08;if(!P.walk){P.v=0;return;}
+ let dv=(want-v0)*Math.min(1,s*k);dv=Math.max(-amax*s,Math.min(amax*s,dv));P.v=v0+dv;const sp=P.v*s;
+ // Totzone: vorher wurde ein kleines Anfahr-Tempo (< 0,08) jedes Bild auf 0 gesetzt → wirksame Totzone ≈ 35 % Auslenkung; jetzt startet die Figur ab der Stick-Totzone (20 %)
+ P.walk=Math.abs(P.v)>(Math.abs(want)>.05?.004:.08);if(!P.walk){P.v=0;return;}
  const fx=-Math.sin(P.ang),fy=-Math.cos(P.ang),nx=P.px+fx*sp,ny=P.py+fy*sp;
  if(!MV.hop3&&portalTick(want,fx,fy))return;
  if(edgeOut(nx,ny))return;
@@ -231,14 +233,14 @@ function freeMove(dt){if(mode!=='world'){P.walk=false;return;}let sx=STICK.x,sy=
  const free=(x,y)=>{for(const[ox,oy]of[[-.27,-.27],[.27,-.27],[-.27,.27],[.27,.27]]){const tx=Math.round(x+ox),ty=Math.round(y+oy);if(tx===P.x&&ty===P.y)continue;if(!pass3(tx,ty))return false;}return true;};
  const rr=roamAt(Math.round(P.px+fx*.65),Math.round(P.py+fy*.65));if(rr&&G.team.some(m=>m.hp>0)&&!MV.hop3){P.walk=false;return startWild(rr);}
  // Kollision je Achse + Ecken-Gleiten: stößt nur eine Ecke an (Türrahmen, Baumkante), rutscht die Figur seitlich weiter statt hängen zu bleiben
- const x0=P.px,y0=P.py,dx=nx-P.px,dy=ny-P.py,slipR=Math.abs(sp)*.9;
+ const x0=P.px,y0=P.py,dx=nx-P.px,dy=ny-P.py,slipR=Math.max(Math.abs(sp),Math.abs(want)*s*.6)*.9;
  const slip=(ax)=>{const d=ax?dy:dx,o=ax?dx:dy;if(Math.abs(d)<Math.abs(o)*.35)return;let pick=null;
   for(let k=1;k<=8&&!pick;k++){const off=k*.06;for(const sg of[-1,1]){const lx=ax?P.px+sg*off:P.px+d,ly=ax?P.py+d:P.py+sg*off;if(free(lx,ly)){pick=sg*off;break;}}}
   if(!pick)return;const st=Math.sign(pick)*Math.min(Math.abs(pick),slipR);if(ax){if(free(P.px+st,P.py))P.px+=st;}else if(free(P.px,P.py+st))P.py+=st;};
  if(free(nx,P.py))P.px=nx;else slip(0);if(free(P.px,ny))P.py=ny;else slip(1);
  const moved=Math.hypot(P.px-x0,P.py-y0);if(moved<Math.abs(sp)*.15)bump();
- // An der Wand: Tempo auf das tatsächlich Gelaufene begrenzen (Gang/Neigung passen, kein „Laufen auf der Stelle“), weich statt abrupt
- if(s>0&&moved<Math.abs(sp)*.95){const act=moved/s*Math.sign(P.v);P.v+=(act-P.v)*Math.min(1,s*10);}
+ // Frontal an der Wand (< 50 % kommt durch): Tempo auf das tatsächlich Gelaufene begrenzen; schräges Entlanggleiten behält das Tempo (Gang/Neigung passen, kein „Laufen auf der Stelle“), weich statt abrupt
+ if(s>0&&moved<Math.abs(sp)*.5){const act=moved/s*Math.sign(P.v);P.v+=(act-P.v)*Math.min(1,s*10);}
  const tx=Math.round(P.px),ty=Math.round(P.py);if(tx!==P.x||ty!==P.y){const ox=P.x,oy=P.y;P.x=tx;P.y=ty;G.px=tx;G.py=ty;compFollow(ox,oy);onStep();}
  if(MV.hop3&&MV.hop3.t>=MV.hop3.dur&&tileAt(cur,P.x,P.y)!=='R'){MV.hop3=null;MV.hopY=0;sfx('land');vib(12);if(window.THREE)spawnFx('land',P.px+.5,terrainY(P.px+.5,P.py+.5)+.02,P.py+.5);}}
 // Gleitflug 3D: konstante Vorwärtsfahrt, Sinkrate, Lenken mit Rollen

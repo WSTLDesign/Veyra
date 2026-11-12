@@ -1,0 +1,1135 @@
+{
+ "anlauf": [
+  {
+   "name": "Morgenau → Haus",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 3.2,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 1200,
+   "arrive": {
+    "id": "haus_spieler",
+    "x": 5,
+    "y": 7,
+    "px": 5,
+    "py": 7,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 4,
+     "y": 5
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Morgenau → Haus",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 2.6,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 750,
+   "arrive": {
+    "id": "haus_spieler",
+    "x": 5,
+    "y": 7,
+    "px": 5,
+    "py": 7,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 4,
+     "y": 5
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Haus → Morgenau",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 2.6,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 983,
+   "arrive": {
+    "id": "morgenau",
+    "x": 4,
+    "y": 5,
+    "px": 4,
+    "py": 5,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 4,
+     "y": 5
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Haus → Morgenau",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 3.2,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 867,
+   "arrive": {
+    "id": "morgenau",
+    "x": 4,
+    "y": 5,
+    "px": 4,
+    "py": 5,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 4,
+     "y": 5
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Morgenau → Labor",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 1.5,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 583,
+   "arrive": {
+    "id": "labor",
+    "x": 5,
+    "y": 7,
+    "px": 5,
+    "py": 7,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Morgenau → Labor",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 1.5,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 500,
+   "arrive": {
+    "id": "labor",
+    "x": 5,
+    "y": 7,
+    "px": 5,
+    "py": 7,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Labor → Morgenau",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 1.5,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 583,
+   "arrive": {
+    "id": "morgenau",
+    "x": 7,
+    "y": 11,
+    "px": 7,
+    "py": 11,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Labor → Morgenau",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 1.5,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 500,
+   "arrive": {
+    "id": "morgenau",
+    "x": 7,
+    "y": 11,
+    "px": 7,
+    "py": 11,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world"
+   },
+   "expLd": false
+  },
+  {
+   "name": "Morgenau → Route 1",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": -0.8
+   },
+   "ok": true,
+   "ms": 950,
+   "arrive": {
+    "id": "route1",
+    "x": 9,
+    "y": 18,
+    "px": 9,
+    "py": 18,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "morgenau",
+     "to": "route1",
+     "t0": 219722,
+     "shown": 753,
+     "ms": 4566
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Morgenau → Route 1",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": 0.8
+   },
+   "ok": true,
+   "ms": 733,
+   "arrive": {
+    "id": "route1",
+    "x": 10,
+    "y": 18,
+    "px": 10,
+    "py": 18,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "morgenau",
+     "to": "route1",
+     "t0": 241496,
+     "shown": 799,
+     "ms": 3589
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 1 → Morgenau",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": -0.8
+   },
+   "ok": true,
+   "ms": 950,
+   "arrive": {
+    "id": "morgenau",
+    "x": 10,
+    "y": 3,
+    "px": 10,
+    "py": 3,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "route1",
+     "to": "morgenau",
+     "t0": 263812,
+     "shown": 710,
+     "ms": 2084
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 1 → Morgenau",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": 0.8
+   },
+   "ok": true,
+   "ms": 733,
+   "arrive": {
+    "id": "morgenau",
+    "x": 9,
+    "y": 3,
+    "px": 9,
+    "py": 3,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "route1",
+     "to": "morgenau",
+     "t0": 283473,
+     "shown": 792,
+     "ms": 2972
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 1 → Kupferhain",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": -0.8
+   },
+   "ok": true,
+   "ms": 950,
+   "arrive": {
+    "id": "kupferhain",
+    "x": 9,
+    "y": 12,
+    "px": 9,
+    "py": 12,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "route1",
+     "to": "kupferhain",
+     "t0": 306882,
+     "shown": 873,
+     "ms": 3811
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 1 → Kupferhain",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": 0.8
+   },
+   "ok": true,
+   "ms": 733,
+   "arrive": {
+    "id": "kupferhain",
+    "x": 10,
+    "y": 12,
+    "px": 10,
+    "py": 12,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "route1",
+     "to": "kupferhain",
+     "t0": 333442,
+     "shown": 948,
+     "ms": 3682
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Kupferhain → Route 1",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": -0.8
+   },
+   "ok": true,
+   "ms": 950,
+   "arrive": {
+    "id": "route1",
+    "x": 10,
+    "y": 3,
+    "px": 10,
+    "py": 3,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route1",
+     "t0": 357171,
+     "shown": 714,
+     "ms": 3194
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Kupferhain → Route 1",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": 0.8
+   },
+   "ok": true,
+   "ms": 733,
+   "arrive": {
+    "id": "route1",
+    "x": 9,
+    "y": 3,
+    "px": 9,
+    "py": 3,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "morgenau",
+     "x": 7,
+     "y": 11
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route1",
+     "t0": 379102,
+     "shown": 776,
+     "ms": 3295
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Kupferhain → Kreaturenstation",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 1.5,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 583,
+   "arrive": {
+    "id": "heil_kupfer",
+    "x": 5,
+    "y": 7,
+    "px": 5,
+    "py": 7,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "kupferhain",
+     "x": 4,
+     "y": 10
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route1",
+     "t0": 379102,
+     "shown": 776,
+     "ms": 3295
+    }
+   },
+   "expLd": false
+  },
+  {
+   "name": "Kupferhain → Kreaturenstation",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 3.2,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 867,
+   "arrive": {
+    "id": "heil_kupfer",
+    "x": 5,
+    "y": 7,
+    "px": 5,
+    "py": 7,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "kupferhain",
+     "x": 4,
+     "y": 10
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route1",
+     "t0": 379102,
+     "shown": 776,
+     "ms": 3295
+    }
+   },
+   "expLd": false
+  },
+  {
+   "name": "Kreaturenstation → Kupferhain",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 3.2,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 1200,
+   "arrive": {
+    "id": "kupferhain",
+    "x": 4,
+    "y": 10,
+    "px": 4,
+    "py": 10,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "kupferhain",
+     "x": 4,
+     "y": 10
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route1",
+     "t0": 379102,
+     "shown": 776,
+     "ms": 3295
+    }
+   },
+   "expLd": false
+  },
+  {
+   "name": "Kreaturenstation → Kupferhain",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 3.2,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 867,
+   "arrive": {
+    "id": "kupferhain",
+    "x": 4,
+    "y": 10,
+    "px": 4,
+    "py": 10,
+    "ld": 0,
+    "fd": 1,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "kupferhain",
+     "x": 4,
+     "y": 10
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route1",
+     "t0": 379102,
+     "shown": 776,
+     "ms": 3295
+    }
+   },
+   "expLd": false
+  },
+  {
+   "name": "Kupferhain → Route 2",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": -1.3
+   },
+   "ok": true,
+   "ms": 933,
+   "arrive": {
+    "id": "route2",
+    "x": 3,
+    "y": 5,
+    "px": 3,
+    "py": 5,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 1,
+    "inZ": false,
+    "ret": {
+     "map": "kupferhain",
+     "x": 4,
+     "y": 10
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route2",
+     "t0": 478074,
+     "shown": 803,
+     "ms": 4679
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Kupferhain → Route 2",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": 1.3
+   },
+   "ok": true,
+   "ms": 717,
+   "arrive": {
+    "id": "route2",
+    "x": 3,
+    "y": 7,
+    "px": 3,
+    "py": 7,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 1,
+    "inZ": false,
+    "ret": {
+     "map": "kupferhain",
+     "x": 4,
+     "y": 10
+    },
+    "mode": "world",
+    "log": {
+     "from": "kupferhain",
+     "to": "route2",
+     "t0": 495670,
+     "shown": 876,
+     "ms": 3797
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 2 → Nebelgrotte (erste Höhle)",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 3.2,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 1200,
+   "arrive": {
+    "id": "nebelgrotte",
+    "x": 9,
+    "y": 12,
+    "px": 9,
+    "py": 12,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "route2",
+     "to": "nebelgrotte",
+     "t0": 523105,
+     "shown": 1017,
+     "ms": 4475
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 2 → Nebelgrotte (erste Höhle)",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 3.2,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 867,
+   "arrive": {
+    "id": "nebelgrotte",
+    "x": 9,
+    "y": 12,
+    "px": 9,
+    "py": 12,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "route2",
+     "to": "nebelgrotte",
+     "t0": 550816,
+     "shown": 989,
+     "ms": 3964
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Nebelgrotte → Route 2",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0.44,
+    "L": 3.2,
+    "e": -0.36
+   },
+   "ok": true,
+   "ms": 1200,
+   "arrive": {
+    "id": "route2",
+    "x": 10,
+    "y": 3,
+    "px": 10,
+    "py": 3,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "nebelgrotte",
+     "to": "route2",
+     "t0": 572944,
+     "shown": 717,
+     "ms": 2662
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Nebelgrotte → Route 2",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 3.2,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 867,
+   "arrive": {
+    "id": "route2",
+    "x": 10,
+    "y": 3,
+    "px": 10,
+    "py": 3,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "nebelgrotte",
+     "to": "route2",
+     "t0": 591736,
+     "shown": 786,
+     "ms": 3152
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 2 → Kupferhain",
+   "side": "links",
+   "run": false,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": -0.8
+   },
+   "ok": true,
+   "ms": 933,
+   "arrive": {
+    "id": "kupferhain",
+    "x": 16,
+    "y": 6,
+    "px": 16,
+    "py": 6,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 1,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "route2",
+     "to": "kupferhain",
+     "t0": 613702,
+     "shown": 928,
+     "ms": 3961
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 2 → Kupferhain",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": 0,
+    "L": 3.2,
+    "e": 0.8
+   },
+   "ok": true,
+   "ms": 717,
+   "arrive": {
+    "id": "kupferhain",
+    "x": 16,
+    "y": 5,
+    "px": 16,
+    "py": 5,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 1,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "route2",
+     "to": "kupferhain",
+     "t0": 636389,
+     "shown": 864,
+     "ms": 4315
+    }
+   },
+   "expLd": true
+  }
+ ],
+ "d2": [
+  {
+   "name": "2D Morgenau → Haus",
+   "ok": true,
+   "ld": 0,
+   "expLd": false
+  },
+  {
+   "name": "2D Haus → Morgenau",
+   "ok": true,
+   "ld": 0,
+   "expLd": false
+  },
+  {
+   "name": "2D Morgenau → Route 1",
+   "ok": true,
+   "ld": 1,
+   "expLd": true
+  },
+  {
+   "name": "2D Route 2 → Nebelgrotte",
+   "ok": true,
+   "ld": 1,
+   "expLd": true
+  }
+ ],
+ "bewegung": {
+  "gehen": {
+   "fps": 60,
+   "tempo": 2.76,
+   "anfahren90ms": 433,
+   "bremsweg": 0.34,
+   "bremszeitMs": 467,
+   "amaxStart": 8
+  },
+  "rennen": {
+   "fps": 60,
+   "tempo": 5,
+   "anfahren90ms": 633,
+   "bremsweg": 0.75,
+   "bremszeitMs": 583,
+   "amaxStart": 9
+  },
+  "dreh90": {
+   "zeitMs": 283,
+   "kameraFigurWinkelEnde": 1.57
+  },
+  "dreh180": {
+   "zeitMs": 517,
+   "kameraFigurWinkelEnde": 3.14
+  },
+  "kamerafolge25": {
+   "kameraDrehungRad": 0.56,
+   "figurDrehungRad": 0.96
+  },
+  "totzonePx": 12,
+  "wand45": {
+   "gleitweg": 2.92,
+   "xMin": 0.77,
+   "zitternWechsel": 0,
+   "anstoss": 0
+  },
+  "ecke": {
+   "vorbei": true,
+   "ms": 1300,
+   "x": 4.78,
+   "anstoss": 0
+  }
+ },
+ "laden": [
+  {
+   "to": "route1",
+   "ms": 4566,
+   "shown": 753
+  },
+  {
+   "to": "route1",
+   "ms": 3589,
+   "shown": 799
+  },
+  {
+   "to": "morgenau",
+   "ms": 2084,
+   "shown": 710
+  },
+  {
+   "to": "morgenau",
+   "ms": 2972,
+   "shown": 792
+  },
+  {
+   "to": "kupferhain",
+   "ms": 3811,
+   "shown": 873
+  },
+  {
+   "to": "kupferhain",
+   "ms": 3682,
+   "shown": 948
+  },
+  {
+   "to": "route1",
+   "ms": 3194,
+   "shown": 714
+  },
+  {
+   "to": "route1",
+   "ms": 3295,
+   "shown": 776
+  },
+  {
+   "to": "route2",
+   "ms": 4679,
+   "shown": 803
+  },
+  {
+   "to": "route2",
+   "ms": 3797,
+   "shown": 876
+  },
+  {
+   "to": "nebelgrotte",
+   "ms": 4475,
+   "shown": 1017
+  },
+  {
+   "to": "nebelgrotte",
+   "ms": 3964,
+   "shown": 989
+  },
+  {
+   "to": "route2",
+   "ms": 2662,
+   "shown": 717
+  },
+  {
+   "to": "route2",
+   "ms": 3152,
+   "shown": 786
+  },
+  {
+   "to": "kupferhain",
+   "ms": 3961,
+   "shown": 928
+  },
+  {
+   "to": "kupferhain",
+   "ms": 4315,
+   "shown": 864
+  }
+ ]
+}

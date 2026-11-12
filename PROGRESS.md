@@ -489,3 +489,8 @@ Grundlage `docs/qa-mechanik.md` (Status je Mangel dort im Abschnitt „Nachbesse
 
 ## Beenden & PC-Notbremse (12.11., 15:20, Fable 5.1 mittel)
 - src/54-beenden.js: Knopf „Speichern & schließen“ im Chronik-Kopf (#mQuit), Strg+Q; quitGame() speichert, verlässt Vollbild, hält Schleife (__quit) und Ton an, versucht window.close(), zeigt Abschalt-Seite mit „Weiterspielen“. PC (Maus): Renderhöhe ≤ 1080, DPR ≤ 1,25; schwacher/Software-Renderer → Voreinstellung niedrig, kein Auto-Vollbild; Wächter: >120 ms/Bild über ~5 s → Stufe niedrig. test/beenden_qa.mjs 7/7.
+
+## Übergänge & Bewegung (12.11., 17:00–20:00, Opus 5.5 hoch)
+- **Übergänge zuverlässig:** Türen, Höhleneingänge und Kartenränder lösen über Auslösezonen vor der Öffnung aus (auch schräg und seitlich versetzt), Ecken-Gleiten statt Abprallen an Türrahmen/Baumkanten, Sperre nach Ankunft (kein Hin-und-her), Ankunft am Rand eine Kachel innen. Ursache vorher: Auslösen nur bei gerundeter Türkachel + Eckenkollision ±0,27 → schon 0,23 Feld Versatz ließ die Figur vor der Tür hängen. Anläufe beim ersten Versuch 16/28 → 28/28 (src/17-move.js).
+- **Ladebildschirm** (neu src/55-laden.js, src/styles-laden.css) nur bei Wechsel zwischen Außenkarten (Route/Stadt/Höhle); Innenräume behalten die kurze Blende. Ortsbild, Gebietsname, Pfotenspur, Fortschritt; Szene wird dahinter aufgebaut, mind. 0,65 s, danach Gebietsschild.
+- **Gehen/Rennen:** Rennen 5 als Konstante `RUN_SPEED`, sanfteres Anfahren, Totzone 33 % → 22 %, Wand-/Ecken-Gleiten, Kamera zieht beim Laufen nach (src/36-input.js). Doku docs/uebergaenge.md, Test test/uebergaenge_qa.mjs, Bilder test/uebergaenge/*.webp.

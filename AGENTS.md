@@ -6,7 +6,7 @@
 - Grafikstil: hell, freundlich, Cel-Shading (MeshToonMaterial + toonGrad()), organisch statt kantig. Designsystem in src/styles.css (Tokens oben in :root) einhalten.
 - Alle Kreaturen, Namen, Orte, Figuren und Grafiken sind EIGENE Entwürfe. Keine Namen, Figuren, Kreaturen, Logos, Musik oder Designs aus Pokémon, Nintendo oder anderen Marken übernehmen oder nachempfinden. Inspiration nur auf Prinzipienebene (Klarheit, Lesbarkeit, Lebendigkeit).
 - Sprache im Spiel: Deutsch. Code-Kommentare kurz, Deutsch.
-- Leistung: Zielgerät ist ein Handy. Keine Bibliotheken außer dem vorhandenen three.js r128 (global THREE). Keine externen Assets, alles prozedural oder inline.
+- Leistung: Zielgerät ist ein Handy. Keine Bibliotheken außer dem vorhandenen three.js r128 (global THREE) samt der vorhandenen Loader in public/vendor. Seit 12.11. 16:55 (Nutzer) erlaubt: selbst gebaute GLB-Modelle für Figuren und Kreaturen in public/models/ (eigene Designs, skriptgesteuert erzeugt; fremde Basismodelle nur mit freier Lizenz wie CC0, Lizenz in docs/ vermerken). Sonst keine externen Assets; Prozedural bleibt Ersatz, wenn ein Modell nicht lädt. Look-Ziel: hochwertig stilisiert wie moderne Pokémon-Spiele (nur Technik/Qualität als Maßstab, keine Designs) – siehe docs/ziele.md.
 - Vor dem Abschluss: `node build.mjs && node test/smoke.mjs` muss fehlerfrei durchlaufen. Melde am Ende in 5–10 Zeilen, was du geändert hast und was offen blieb.
 
 

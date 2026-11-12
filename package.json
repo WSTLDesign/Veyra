@@ -1,0 +1,16 @@
+{
+  "name": "veyra",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "staging": "node tools/make-staging.mjs web build/staging",
+    "smoke": "node tools/smoke-staging.mjs build/staging"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  },
+  "private": true
+}

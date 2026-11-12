@@ -12,10 +12,21 @@ const src = path.join(root, 'dist/artifact.html');
 if (!fs.existsSync(src)) { console.error('ABBRUCH: dist/artifact.html fehlt – zuerst node build.mjs'); process.exit(1); }
 const tmp = path.join(root, 'build/werkstatt-src'), out = path.join(root, 'build/werkstatt');
 fs.rmSync(tmp, { recursive: true, force: true }); fs.mkdirSync(tmp, { recursive: true });
-const body = fs.readFileSync(src, 'utf8');
+let body = fs.readFileSync(src, 'utf8');
+// Loader und Draco-Decoder aus eigenen Dateien (spiel/vendor/), denn die Artifact-Sicherheitsregeln blockieren Datei-Abrufe von CDNs
+body = body.replace(/window\.VENDOR_JS=\[[^\]]*\];/, 'window.VENDOR_JS=["vendor/"];');
+if (!body.includes('window.VENDOR_JS=["vendor/"]')) { console.error('ABBRUCH: VENDOR_JS nicht gefunden'); process.exit(1); }
+// Pilot-Modelle: GLB werden als Skriptdateien (data-URI) ausgeliefert, weil Artifacts keine .glb-Dateien bereitstellen
+const modDir = path.join(root, 'public/models/pilot'), modOut = path.join(root, 'tools/leitstand/spiel/models/pilot'); fs.mkdirSync(modOut, { recursive: true });
+let modTags = '';
+for (const f of fs.existsSync(modDir) ? fs.readdirSync(modDir).filter(x => x.endsWith('.glb')) : []) {
+  const id = f.replace(/\.glb$/, ''), b64 = fs.readFileSync(path.join(modDir, f)).toString('base64');
+  fs.writeFileSync(path.join(modOut, id + '.js'), `(window.PILOT_SRC=window.PILOT_SRC||{})[${JSON.stringify(id)}]="data:model/gltf-binary;base64,${b64}";\n`);
+  modTags += `<script src="models/pilot/${id}.js"></script>`;
+}
 fs.writeFileSync(path.join(tmp, 'index.html'),
   '<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">' +
-  '<style>:root{color-scheme:dark}body{margin:0;background:#0c1519;font:14px system-ui,sans-serif}[hidden]{display:none!important}</style></head><body>' + body + '</body></html>');
+  '<style>:root{color-scheme:dark}body{margin:0;background:#0c1519;font:14px system-ui,sans-serif}[hidden]{display:none!important}</style>' + modTags + '</head><body>' + body + '</body></html>');
 const note = process.argv[2] || 'Werkstatt';
 execFileSync('node', [path.join(root, 'tools/make-staging.mjs'), tmp, out, '--note', note], { stdio: 'inherit' });
 execFileSync('node', [path.join(root, 'tools/protect.mjs'), out], { stdio: 'inherit' });

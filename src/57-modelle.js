@@ -3,7 +3,8 @@
 // An ⇒ lädt public/models/pilot/<id>.glb (Draco, three r128 GLTFLoader aus 38-models), Darstellung mit 56-toonpro; scheitert das Laden → bisheriges Prozedural.
 // Eingriffe (nur bei Schalter an und geladenem Modell): person3d (nur Spielerfigur 'held'), buildTerra (nur Art 1), gaitTick/figAnim (Pilot-Figur), animModel (Pilot-Terra).
 // API: pilotOn() · pilotLoad(k)→Promise · pilotMake(k,h,opts)→Group|null · pilotExpr(o,name) · pilotTick(o,dt,opt) · PILOT_EXPR
-const PILOT={src:{noa:'models/pilot/noa.glb',funki:'models/pilot/funki.glb'},gltf:{},st:{},wait:{},
+// window.PILOT_SRC (optional, z. B. Werkstatt-Build: data-URIs aus spiel/models/pilot/*.js) ersetzt die Pfade
+const PILOT={src:Object.assign({noa:'models/pilot/noa.glb',funki:'models/pilot/funki.glb'},window.PILOT_SRC||{}),gltf:{},st:{},wait:{},
  // ry: Drehung, damit das Modell wie die bisherigen Objekte schaut · walk/run: Schrittlänge (Modellmaß) je Clip-Durchlauf und Dauer (s)
  fix:{noa:{ry:Math.PI,walk:[.9,1],run:[1.7,.667]},funki:{ry:Math.PI,walk:[.42,.8],run:[.8,.5]}},outline:'duenn',hOld:{}};
 const PILOT_EXPR={neutral:{},laecheln:{Laecheln:1,Mund_A:.3,Augen_froh:.25},freudig:{Laecheln:1,Mund_A:.45,Augen_froh:.35},staunen:{Staunen:1,Mund_O:.85},

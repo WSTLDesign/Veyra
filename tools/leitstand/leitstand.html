@@ -64,6 +64,11 @@ h1 small{display:block;font-size:14px;font-weight:400;color:var(--ink2);letter-s
 #startGame{min-height:48px;padding:0 24px;border-radius:12px;border:0;background:var(--sig);color:#1a0d00;font-weight:700;font-size:16px;cursor:pointer}
 #startGame:hover{filter:brightness(1.08)}
 .frame.on .fb,.frame.on .startOv{display:none}
+.frame.fs{position:fixed;inset:0;z-index:90;width:100%;height:100%;max-width:none;aspect-ratio:auto;border-radius:0;border:0}
+#fsExit{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 8px);min-height:40px;padding:0 14px;border-radius:999px;border:0;background:rgba(12,21,25,.72);color:#fff;font-weight:600;font-size:14px;cursor:pointer}
+.frame:not(.fs) #fsExit{display:none}
+.mods{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2);min-height:36px}
+.mods input{width:18px;height:18px;accent-color:var(--sig)}
 .shots{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
 .shots figure{margin:0;min-width:0;display:grid;gap:6px;align-content:start}
 .shots img{width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--panel2);display:block;cursor:zoom-in}
@@ -268,6 +273,7 @@ form{display:grid;gap:8px}
       <h2><span class="dot laeuft"></span>Werkstatt-Build <span class="mono" id="wbWhen"></span></h2>
       <div class="frame" id="frame">
         <div class="fb" id="liveFb"></div>
+        <button type="button" id="fsExit">Vollbild verlassen</button>
         <div class="startOv" id="startOv">
           <button type="button" id="startGame">Spiel hier starten</button>
           <span>Der aktuelle Staging-Stand läuft direkt in diesem Fenster, mit eigenem Spielstand und Debug-Menü (orange Plakette oben).</span>
@@ -275,8 +281,9 @@ form{display:grid;gap:8px}
       </div>
       <div class="row">
         <button type="button" class="btn" id="stopGame" hidden>Spiel beenden</button>
-        <button type="button" class="btn" id="fullGame" hidden>Vollbild</button>
-        <a class="btn" href="spiel/index.html" target="_blank" rel="noopener">In eigenem Tab öffnen</a>
+        <button type="button" class="btn pri" id="fullGame" hidden>Vollbild</button>
+        <a class="btn" id="tabGame" href="spiel/index.html?modelle3d=1" target="_blank" rel="noopener">In eigenem Tab öffnen</a>
+        <label class="mods"><input type="checkbox" id="mods3d" checked> Neue 3D-Modelle (Pilot)</label>
         <span class="hint" id="wbLabel" style="margin:0"></span>
       </div>
     </section>
@@ -424,10 +431,20 @@ function bindBack() { const b = document.querySelector('#det .back'); if (b) b.o
 const clockT = clock;
 // Spiel im Rahmen starten/beenden (WebGL nur, solange gespielt wird)
 const frame = $('#frame');
-$('#startGame').onclick = () => { if (frame.querySelector('iframe')) return; const f = document.createElement('iframe'); f.src = 'spiel/index.html?' + Date.now(); f.title = 'Veyra Werkstatt-Build'; f.allow = 'fullscreen; autoplay'; f.setAttribute('allowfullscreen', '');
-  frame.appendChild(f); frame.classList.add('on'); $('#stopGame').hidden = false; $('#fullGame').hidden = false; setTimeout(() => { try { f.focus(); } catch (e) {} }, 300); };
-$('#stopGame').onclick = () => { const f = frame.querySelector('iframe'); if (f) { f.src = 'about:blank'; f.remove(); } frame.classList.remove('on'); $('#stopGame').hidden = true; $('#fullGame').hidden = true; };
-$('#fullGame').onclick = () => { try { const r = frame.requestFullscreen && frame.requestFullscreen(); if (r && r.catch) r.catch(() => { $('#wbLabel').textContent = 'Vollbild ist hier nicht möglich – „In eigenem Tab öffnen“ nutzen.'; }); } catch (e) {} };
+const touch = matchMedia('(pointer: coarse)').matches;
+const gameUrl = () => 'spiel/index.html?' + ($('#mods3d').checked ? 'modelle3d=1&' : '') + 't=' + Date.now();
+$('#mods3d').addEventListener('change', () => { $('#tabGame').href = 'spiel/index.html' + ($('#mods3d').checked ? '?modelle3d=1' : ''); const f = frame.querySelector('iframe'); if (f) f.src = gameUrl(); });
+// Seiten-Vollbild: füllt den ganzen Bildschirm, auch wo das Gerät kein echtes Vollbild erlaubt (iPhone, App-Ansicht)
+const pseudoFs = on => { frame.classList.toggle('fs', on); document.documentElement.style.overflow = on ? 'hidden' : ''; };
+const goFull = () => { const req = frame.requestFullscreen || frame.webkitRequestFullscreen; let r = null;
+  try { r = req ? req.call(frame) : null; } catch (e) { r = null; }
+  if (r && r.then) r.then(() => {}, () => pseudoFs(true)); else if (!document.fullscreenElement && !document.webkitFullscreenElement) pseudoFs(true); };
+$('#fsExit').onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} pseudoFs(false); };
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) pseudoFs(false); });
+$('#startGame').onclick = () => { if (frame.querySelector('iframe')) return; const f = document.createElement('iframe'); f.src = gameUrl(); f.title = 'Veyra Werkstatt-Build'; f.allow = 'fullscreen; autoplay'; f.setAttribute('allowfullscreen', '');
+  frame.appendChild(f); frame.classList.add('on'); $('#stopGame').hidden = false; $('#fullGame').hidden = false; if (touch) goFull(); setTimeout(() => { try { f.focus(); } catch (e) {} }, 300); };
+$('#stopGame').onclick = () => { const f = frame.querySelector('iframe'); if (f) { f.src = 'about:blank'; f.remove(); } pseudoFs(false); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} frame.classList.remove('on'); $('#stopGame').hidden = true; $('#fullGame').hidden = true; };
+$('#fullGame').onclick = goFull;
 // Bilder groß
 const lb = $('#lb');
 lb.addEventListener('click', () => { lb.hidden = true; }); addEventListener('keydown', e => { if (e.key === 'Escape') lb.hidden = true; });
@@ -438,7 +455,7 @@ db.collection('live').orderBy('ts', 'desc').limit(4).onSnapshot(sn => { const ro
   if (rows[0]) { $('#wbWhen').textContent = 'Build ' + ago(rows[0].ts); $('#wbLabel').textContent = rows[0].label || ''; } }, () => {});
 // Vorschauen
 let VS = [];
-db.collection('vorschau').orderBy('ts', 'desc').limit(60).onSnapshot(sn => { VS = sn.docs.map(d => ({ id: d.id, ref: d.ref, ...d.data() }));
+db.collection('vorschau').orderBy('ts', 'desc').limit(60).onSnapshot(sn => { VS = sn.docs.map(d => ({ id: d.id, ...d.data() }));
   const open = VS.filter(v => (v.status || 'offen') === 'offen'); $('#vsCount').textContent = open.length ? open.length + ' offen' : '';
   const c = $('#tabWcnt'); c.hidden = !open.length; c.textContent = open.length;
   const el = $('#vsList'); if (!VS.length) { el.innerHTML = '<p class="empty">Keine offenen Vorschauen</p>'; return; }
@@ -447,7 +464,7 @@ db.collection('vorschau').orderBy('ts', 'desc').limit(60).onSnapshot(sn => { VS 
     <figcaption><span>${esc(v.title || '')}</span><span class="mono">${esc(v.agent || '')} · ${clockT(v.ts)}</span><span class="st2 ${esc(st)}">${esc(st)}${v.note ? ' · ' + esc(v.note) : ''}</span></figcaption>
     ${st === 'offen' ? `<textarea placeholder="Anmerkung – bei Ablehnung bitte kurz sagen, was anders soll" aria-label="Anmerkung"></textarea><div class="acts"><button type="button" class="ok">Freigeben</button><button type="button" class="no">Ablehnen</button></div>` : ''}</figure>`; }).join('');
   el.querySelectorAll('.vs').forEach(f => { const v = VS.find(x => x.id === f.dataset.id), ta = f.querySelector('textarea');
-    const dec = async st => { try { await v.ref.update({ status: st, note: (ta && ta.value.trim()) || '', decidedAt: Date.now(), by: user ? await user.id() : null }); } catch (err) { if (ta) { ta.value = ''; ta.placeholder = 'Nicht gespeichert (' + (err && err.code || 'Fehler') + ')'; } } };
+    const dec = async st => { f.querySelectorAll('.acts button').forEach(b => b.disabled = true); try { await db.doc('vorschau/' + v.id).update({ status: st, note: (ta && ta.value.trim()) || '', decidedAt: Date.now(), by: user ? await user.id() : null }); } catch (err) { f.querySelectorAll('.acts button').forEach(b => b.disabled = false); const h = f.querySelector('.st2'); if (h) h.textContent = 'Nicht gespeichert (' + (err && (err.message || err.code) || 'Fehler') + '). Bitte noch einmal tippen.'; } };
     const ok = f.querySelector('.ok'), no = f.querySelector('.no');
     if (ok) ok.onclick = () => dec('freigegeben');
     if (no) no.onclick = () => { if (ta && !ta.value.trim()) { ta.focus(); ta.placeholder = 'Bitte kurz sagen, was anders soll'; return; } dec('abgelehnt'); }; }); }, () => {});

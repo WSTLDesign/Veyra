@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veyra Referenz-Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<!-- Tokens kommen direkt aus dem Spiel (eine Quelle) -->
+<link rel="stylesheet" href="../../src/styles.css">
+<script src="../../src/06-regions.js"></script>
+<style>
+html,body{height:auto}
+body{overflow:auto;user-select:text;-webkit-user-select:text;margin:0;background:var(--surf-0);color:var(--ink-1);font-family:var(--font-ui);font-size:var(--fs-sm)}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+h2.sec{font:var(--fw-display) var(--fs-xl)/1.1 var(--font-display);margin:44px 0 6px;display:flex;align-items:center;gap:12px}
+h2.sec::before{content:'';width:28px;height:6px;border-radius:3px;background:var(--sig-line)}
+p.blead{margin:0 0 16px;color:var(--ink-2);max-width:760px;line-height:1.5}
+.bgrid{display:grid;gap:14px}
+.card{background:var(--surf-1);border-radius:var(--r-3);box-shadow:var(--sh-1);padding:16px}
+.card h3{text-transform:none;letter-spacing:0;color:var(--ink-1);margin:0 0 10px;font:600 var(--fs-md) var(--font-display)}
+small.k{font:600 11px var(--font-ui);color:var(--ink-3);letter-spacing:.02em}
+code{font:12px ui-monospace,Menlo,monospace;color:var(--ink-2)}
+
+/* Kopf */
+.hero{position:relative;overflow:hidden;border-radius:var(--r-4);min-height:300px;padding:30px 34px;color:#fff;
+ background:linear-gradient(180deg,#7fb4e6 0%,#cfe0ea 62%,#e9eef0 100%)}
+.hero .sun{position:absolute;right:120px;top:38px;width:70px;height:70px;border-radius:50%;background:#fff6e0;box-shadow:0 0 40px 18px rgba(255,226,168,.85),0 0 120px 60px rgba(255,226,168,.45)}
+.hero .hills{position:absolute;inset:auto 0 0 0;height:150px}
+.logo{position:relative;font:700 92px/0.9 var(--font-display);letter-spacing:-.02em;color:#fff;margin:0;
+ -webkit-text-stroke:0;text-shadow:0 5px 0 var(--sig-ink),0 10px 26px rgba(120,10,60,.45)}
+.logo span{color:var(--sig)}
+.logo i{position:absolute;left:4px;bottom:-14px;width:150px;height:8px;border-radius:4px;background:var(--sig-line);box-shadow:0 0 16px var(--sig-glow)}
+.hero .sub{position:relative;margin-top:26px;font:700 var(--fs-md) var(--font-display);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-1);opacity:.75}
+.hero .why{position:absolute;right:24px;bottom:22px;max-width:390px;background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));
+ color:var(--ink-1);border-radius:var(--r-3);padding:14px 16px;box-shadow:var(--sh-2),inset 0 0 0 1px var(--glass-edge);line-height:1.45}
+.why b{font-family:var(--font-display);color:var(--sig-ink)}
+
+/* Paletten */
+.pal{grid-template-columns:1fr 1fr}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:10px}
+.s{border-radius:var(--r-2);overflow:hidden;background:var(--surf-2)}
+.s i{display:flex;align-items:flex-end;justify-content:flex-end;height:62px;padding:6px}
+.s i svg{width:26px;height:26px;fill:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.s b{display:block;padding:6px 8px 0;font:600 13px var(--font-display)}
+.s code{display:block;padding:0 8px 7px;font-size:11px}
+.env-scene{margin-top:12px;height:118px;border-radius:var(--r-2);position:relative;overflow:hidden;background:linear-gradient(#bcd3e3,#e6edf0)}
+
+/* Signatur-Anwendungen */
+.sigapps{grid-template-columns:repeat(5,1fr)}
+.sigapps .card{display:flex;flex-direction:column;gap:8px}
+.sigapps .vis{height:150px;border-radius:var(--r-2);display:grid;place-items:center;background:linear-gradient(#cfdce6,#e8edf0);position:relative;overflow:hidden}
+
+/* Licht-Sets */
+.lights{grid-template-columns:repeat(auto-fill,minmax(205px,1fr))}
+.ls{border-radius:var(--r-3);overflow:hidden;background:var(--surf-1);box-shadow:var(--sh-1)}
+.ls .lsc{height:128px;position:relative;overflow:hidden}
+.ls .lsc .sn{position:absolute;width:26px;height:26px;border-radius:50%}
+.ls .lsc .h1,.ls .lsc .h2{position:absolute;left:-10%;right:-10%;border-radius:50% 50% 0 0}
+.ls .lsc .lmon{position:absolute;left:44%;bottom:14px;width:38px;height:34px;border-radius:50% 50% 44% 44%}
+.ls .lsc .lmon::after{content:'';position:absolute;left:-6px;right:-6px;bottom:-6px;height:8px;border-radius:50%;background:rgba(0,0,0,.28);filter:blur(2px);z-index:-1}
+.ls .meta{padding:8px 10px 10px}
+.ls .meta b{font:600 14px var(--font-display)}
+.ls .lch{display:flex;gap:3px;margin-top:6px}
+.ls .lch i{flex:1;height:10px;border-radius:3px}
+
+/* UI-Komponenten */
+.comp{grid-template-columns:1.25fr 1fr}
+.stage{position:relative;border-radius:var(--r-3);overflow:hidden;min-height:430px;background:linear-gradient(180deg,#86b7e3 0%,#d6e3ea 48%,#a9bda1 49%,#93ad8a 100%)}
+.stage .house{position:absolute;bottom:42%;width:90px;height:70px;background:var(--env-stone);border-radius:6px 6px 0 0;box-shadow:inset 0 -10px 0 rgba(0,0,0,.06)}
+.stage .house::before{content:'';position:absolute;left:-10px;right:-10px;top:-34px;height:40px;background:var(--env-roof);clip-path:polygon(12% 100%,50% 0,88% 100%);}
+.stage .house::after{content:'';position:absolute;left:18px;top:20px;width:18px;height:18px;border-radius:3px;background:#dfeef6;box-shadow:36px 0 0 #dfeef6}
+.glass{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));border-radius:var(--r-3);box-shadow:var(--sh-2),inset 0 0 0 1px var(--glass-edge),0 0 0 1px var(--glass-line)}
+.hudL{position:absolute;left:12px;top:12px;padding:8px 14px 8px 12px;display:flex;align-items:center;gap:10px;border-radius:var(--r-pill)}
+.hudL b{font:700 15px var(--font-display)}.hudL small{color:var(--ink-2);font-variant-numeric:var(--num);font-weight:700}
+.hudL::before{content:'';width:5px;height:22px;border-radius:3px;background:var(--sig)}
+.mm{position:absolute;right:12px;top:12px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#c9d8c2 0 60%,#a9bda1 61%);box-shadow:var(--sh-2),inset 0 0 0 3px #fff,0 0 0 2px var(--sig)}
+.mm::after{content:'';position:absolute;left:31px;top:28px;border:6px solid transparent;border-bottom:12px solid var(--sig);transform:translateY(-6px)}
+.banner{position:absolute;left:12px;top:64px;padding:10px 18px 12px;border-radius:var(--r-2)}
+.banner b{display:block;font:700 26px/1 var(--font-display)}
+.banner small{display:block;margin-top:6px;font:800 11px var(--font-ui);letter-spacing:.18em;text-transform:uppercase;color:var(--sig-ink)}
+.banner::after{content:'';position:absolute;left:18px;right:18px;bottom:5px;height:3px;border-radius:2px;background:var(--sig-line)}
+.dlg{position:absolute;left:12px;right:12px;bottom:12px;padding:16px 18px 14px 96px;min-height:74px}
+.dlg .tab{position:absolute;left:96px;top:-14px;background:var(--sig);color:#fff;font:600 14px var(--font-display);padding:4px 14px;border-radius:var(--r-pill);box-shadow:var(--sh-sig)}
+.dlg .por{position:absolute;left:12px;bottom:12px;width:70px;height:70px;border-radius:var(--r-2);background:linear-gradient(160deg,#ffe9f2,#fff);box-shadow:inset 0 0 0 2px var(--sig-soft);overflow:hidden}
+.dlg p{margin:0;font:600 var(--fs-md)/1.4 var(--font-ui)}
+.dlg .chev{position:absolute;right:14px;bottom:8px;width:14px;height:14px;border-right:3px solid var(--sig);border-bottom:3px solid var(--sig);transform:rotate(45deg);animation:bob 1s var(--ease-sheet) infinite}
+@keyframes bob{50%{transform:rotate(45deg) translate(3px,3px)}}
+.hpd{position:absolute;left:58%;top:40%;transform:translateX(-50%);text-align:center}
+.hpd .hnm{display:inline-block;font:700 13px var(--font-display);color:#fff;background:var(--glass-bg-dark);padding:2px 10px;border-radius:var(--r-pill)}
+.hpd .hbar{width:96px;height:8px;border-radius:5px;background:rgba(10,14,24,.45);box-shadow:0 0 0 2px rgba(255,255,255,.85);overflow:hidden;margin-top:3px}
+.hpd .hbar i{display:block;height:100%;width:68%;background:linear-gradient(90deg,#2fbf6a,#7ee08f);border-radius:5px}
+.lock{width:70px;height:22px;margin:4px auto 0;border-radius:50%;border:2px solid var(--sig-hi);box-shadow:0 0 12px var(--sig-glow);animation:spin 3s linear infinite}
+@keyframes spin{50%{transform:scale(1.08)}}
+.cmon{position:absolute;left:52%;top:56%;width:64px}
+
+/* Buttons */
+.btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.bt{min-height:48px;min-width:120px;border:0;border-radius:var(--r-pill);padding:0 22px;font:600 var(--fs-md) var(--font-display);color:#fff;
+ background:linear-gradient(160deg,var(--sig-2),var(--sig));box-shadow:var(--sh-sig);transition:transform var(--t-200) var(--ease-press),box-shadow var(--t-200)}
+.bt.sec{background:var(--surf-1);color:var(--ink-1);box-shadow:var(--sh-1),inset 0 0 0 1.5px var(--line)}
+.bt.focus{box-shadow:var(--sh-sig),0 0 0 3px #fff,0 0 0 6px var(--sig-hi)}
+.bt.press{transform:scale(var(--press-scale));filter:brightness(.95)}
+.bt.dis{opacity:.42;filter:saturate(.2);box-shadow:none}
+.bt.heal{background:linear-gradient(160deg,#ff6a5c,var(--acc-heal));box-shadow:0 8px 20px -8px rgba(240,68,58,.6)}
+.bt.guide{background:var(--acc-guide);color:var(--acc-guide-ink);box-shadow:0 8px 20px -8px rgba(255,194,26,.7)}
+.lab{display:block;font:600 11px var(--font-ui);color:var(--ink-3);text-align:center;margin-top:5px}
+
+/* Befehle + Attacken */
+.cmds{position:relative;height:250px}
+.cmd{position:absolute;right:0;display:flex;align-items:center;gap:12px;height:56px;padding:0 18px 0 14px;border-radius:var(--r-3);background:var(--glass-bg);box-shadow:var(--sh-2),inset 0 0 0 1px var(--glass-edge)}
+.cmd svg{width:24px;height:24px}
+.cmd b{font:700 18px var(--font-display);display:block}.cmd small{color:var(--ink-2);font-weight:700}
+.cmd.act{background:linear-gradient(160deg,var(--sig-2),var(--sig));color:#fff;box-shadow:var(--sh-sig)}.cmd.act small{color:#ffe0ee}
+.moves{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mvc{position:relative;display:flex;gap:10px;align-items:center;min-height:64px;padding:10px 12px;border-radius:var(--r-2);background:linear-gradient(150deg,#fff 40%,var(--soft));box-shadow:var(--sh-1),inset 0 0 0 2px color-mix(in srgb,var(--c) 45%,transparent)}
+.mvc .ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--c);box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+.mvc .ic svg{width:22px;height:22px;fill:#fff}
+.mvc b{font:700 16px var(--font-display);display:block}.mvc small{font-weight:700;color:var(--deep)}
+.mvc em{position:absolute;right:8px;top:8px;font:800 11px var(--font-ui);font-style:normal;font-variant-numeric:var(--num);color:var(--ink-2)}
+.mvc.sel{box-shadow:var(--sh-2),inset 0 0 0 3px var(--sig),0 0 0 4px var(--sig-soft)}
+.mvc .mveff{position:absolute;right:8px;bottom:8px;font:700 11px var(--font-display);color:#fff;background:var(--ok);padding:1px 8px;border-radius:var(--r-pill)}
+
+/* Typo */
+.typo div{display:flex;align-items:baseline;gap:16px;padding:6px 0;border-bottom:1px solid var(--line)}
+.typo code{width:120px;flex:none}
+
+/* Skizzen */
+.sk{grid-template-columns:1fr 1fr 1fr}
+.sk svg{width:100%;height:auto;display:block;border-radius:var(--r-2)}
+.step{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.step span{font:600 12px var(--font-display);background:var(--surf-2);padding:3px 10px;border-radius:var(--r-pill)}
+.step span b{color:var(--sig)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="hero">
+ <div class="sun"></div>
+ <svg class="hills" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 Q200 30 420 80 T820 60 T1200 70 V150 H0z" fill="#b8c9cf"/><path d="M0 115 Q260 70 520 105 T1000 95 T1200 100 V150 H0z" fill="#93ad8a"/></svg>
+ <h1 class="logo">Ve<span>y</span>ra<i></i></h1>
+ <div class="sub">Kreaturenchronik · Referenz-Board</div>
+ <div class="why"><b>Signaturfarbe „Veyra-Fuchsie“ #d81b72.</b> Kein Element trägt Pink/Magenta – die Farbe bleibt eindeutig „Veyra“ und kollidiert nicht mit Glut (Orange), Flora (Grün) oder Schatten (Violett). Sie ist Komplementär zum entsättigten Parkgrün, wirkt fröhlich für Kinder, trägt weiße Schrift (4,9:1) und leuchtet nachts als Neon <code>--sig-hi</code>.</div>
+</section>
+
+<h2 class="sec">Palette: Umgebung vs. Figuren &amp; Kreaturen</h2>
+<p class="blead">Umgebung ruhig und entsättigt (<code>--env-*</code>), damit alles Lebendige gesättigt davor leuchtet (<code>--el-*</code>). Element = Farbe <b>+</b> Symbol, nie Farbe allein.</p>
+<div class="bgrid pal">
+ <div class="card"><h3>Umgebung (entsättigt)</h3><div class="sw" id="envSw"></div>
+  <div class="env-scene" id="envScene"></div></div>
+ <div class="card"><h3>Elemente (gesättigt, mit Symbol)</h3><div class="sw" id="elSw"></div></div>
+ <div class="card"><h3>Signatur &amp; Akzente</h3><div class="sw" id="sigSw"></div><p class="blead" style="margin-top:12px">Rot nur Heilstation/Kapsel-Kern, Gelb nur Leitsystem (Wegpfeile, Missionsziel). Neon A/B nur nachts und im Spezialmoment.</p></div>
+ <div class="card"><h3>Kontrast-Check (WCAG)</h3><div id="contrast" class="typo"></div></div>
+</div>
+
+<h2 class="sec">Signaturfarbe im Einsatz</h2>
+<p class="blead">Eine Farbe, überall dort, wo das Kind hinschauen soll: Wegweiser, Grenzen, Held, aktive Auswahl, Marke.</p>
+<div class="bgrid sigapps">
+ <div class="card"><div class="vis"><svg viewBox="0 0 120 140" width="110"><rect x="18" y="8" width="5" height="130" rx="2" fill="#6b7480"/><rect x="97" y="8" width="5" height="130" rx="2" fill="#6b7480"/><path d="M23 18h74v62l-37 16-37-16z" fill="#d81b72"/><path d="M23 18h74v8H23z" fill="#a3105a"/><path d="M60 38l9 18H51z" fill="#fff"/><path d="M60 60l-14 10h28z" fill="#fff" opacity=".8"/><text x="60" y="88" text-anchor="middle" font-family="Fredoka,Trebuchet MS,sans-serif" font-weight="700" font-size="11" fill="#fff">ROUTE 1</text></svg></div><b>Banner/Wegweiser</b><small class="k">Stoff --sig, Saum --sig-ink</small></div>
+ <div class="card"><div class="vis" style="background:linear-gradient(#bcd3e3,#d9d4cc 55%,#93ad8a 56%)"><svg viewBox="0 0 160 140" width="150"><ellipse cx="80" cy="112" rx="70" ry="14" fill="none" stroke="#ff5ca8" stroke-width="3" stroke-dasharray="8 6"/><ellipse cx="80" cy="112" rx="70" ry="14" fill="#ff5ca8" opacity=".14"/><rect x="74" y="30" width="12" height="82" fill="url(#hg)"/><defs><linearGradient id="hg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff5ca8" stop-opacity=".9"/><stop offset="1" stop-color="#ff5ca8" stop-opacity="0"/></linearGradient></defs><g fill="#fff"><rect x="76" y="50" width="8" height="2"/><rect x="76" y="66" width="8" height="2"/><rect x="76" y="82" width="8" height="2"/></g></svg></div><b>Zonengrenze</b><small class="k">Bodenring + Lichtsäule, additiv</small></div>
+ <div class="card"><div class="vis"><svg viewBox="0 0 100 140" width="92"><ellipse cx="50" cy="134" rx="26" ry="5" fill="rgba(0,0,0,.18)"/><rect x="38" y="92" width="10" height="40" rx="4" fill="#2b3550"/><rect x="52" y="92" width="10" height="40" rx="4" fill="#2b3550"/><path d="M30 58q20-12 40 0l4 40H26z" fill="#f4f1ea"/><path d="M30 58q20-12 40 0l-4 8H34z" fill="#d81b72"/><path d="M49 60h3v38h-3z" fill="#d81b72"/><rect x="69" y="78" width="9" height="7" rx="2" fill="#d81b72"/><rect x="70" y="79" width="7" height="5" rx="1" fill="#ff5ca8"/><circle cx="50" cy="36" r="20" fill="#ffe1cc"/><path d="M29 34q2-22 21-22t21 20q-6-8-18-8-14 0-24 10z" fill="#2c2440"/><path d="M36 22q10-6 24-2" stroke="#fff" stroke-width="2" opacity=".6" fill="none"/><ellipse cx="43" cy="38" rx="3.6" ry="5" fill="#2c2440"/><ellipse cx="57" cy="38" rx="3.6" ry="5" fill="#2c2440"/><circle cx="44.2" cy="36" r="1.4" fill="#fff"/><circle cx="58.2" cy="36" r="1.4" fill="#fff"/><path d="M38 32.5q5-2.5 10 0M52 32.5q5-2.5 10 0" stroke="#2c2440" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M46 47q4 3 8 0" stroke="#c0506a" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div><b>Kleidung + Gerät</b><small class="k">Kragen, Naht, Handgelenk-Gerät</small></div>
+ <div class="card"><div class="vis" style="background:var(--surf-2)"><div style="display:grid;gap:8px;width:80%"><div style="height:40px;border-radius:12px;background:#fff;box-shadow:var(--sh-1);display:flex;align-items:center;padding:0 12px;font:600 14px var(--font-display)">Karte</div><div style="height:40px;border-radius:12px;background:#fff;box-shadow:var(--sh-1),inset 0 0 0 3px var(--sig),0 0 0 4px var(--sig-soft);display:flex;align-items:center;padding:0 12px;font:600 14px var(--font-display);color:var(--sig-ink)">Team ●</div><div style="height:8px;border-radius:4px;background:var(--surf-3);overflow:hidden"><i style="display:block;width:62%;height:100%;background:var(--sig-line)"></i></div></div></div><b>UI-Highlight</b><small class="k">Fokus, Aktiv, Fortschritt – sonst nichts</small></div>
+ <div class="card"><div class="vis" style="background:linear-gradient(160deg,#1a1430,#3a1a40)"><div style="text-align:center"><div style="font:700 44px/1 var(--font-display);color:#fff;text-shadow:0 0 18px var(--sig-glow),0 3px 0 var(--sig)">Ve<span style="color:var(--sig-hi)">y</span>ra</div><div style="width:90px;height:4px;margin:8px auto 0;border-radius:2px;background:var(--sig-line);box-shadow:0 0 10px var(--sig-hi)"></div></div></div><b>Logo-Skizze</b><small class="k">Fredoka 700, „y“ in --sig, Lichtlinie</small></div>
+</div>
+
+<h2 class="sec">Licht-Sets (PALETTE.light)</h2>
+<p class="blead">Himmel oben/unten, Sonne + Glow, Nebel, Rim und Ambient je Set. Agent A blendet mit <code>setLightSet(name)</code> ≥ 600 ms über. Erkundung kühl + warme Sonne, Kampf warm und je Element getönt, Spezialmoment Weiß → Violett/Blau, Nacht fast schwarz mit Neon.</p>
+<div class="bgrid lights" id="lights"></div>
+
+<h2 class="sec">UI-Komponenten</h2>
+<p class="blead">Helle Glas-Panels (<code>--glass-bg</code> + Blur + feine Kante), Display-Schrift für Namen/Titel, Signatur nur für Fokus/Aktiv. Touch ≥ 48 px, Drücken = 95 % mit <code>--ease-press</code>.</p>
+<div class="bgrid comp">
+ <div class="stage" id="stage">
+  <div class="house" style="left:6%"></div><div class="house" style="left:64%;transform:scale(.8)"></div>
+  <div class="hudL glass"><b>Kupferhain</b><small>10:24 · ☀</small></div><div class="mm"></div>
+  <div class="banner glass"><b>Kupferhain</b><small>Kupferhügel</small></div>
+  <div class="hpd"><div class="hnm">Nagler <small style="opacity:.85">Lv 6</small></div><div class="hbar"><i></i></div></div><div class="lock" style="position:absolute;left:calc(52% - 3px);top:calc(56% + 50px);width:70px"></div>
+  <svg class="cmon" viewBox="0 0 80 70" aria-hidden="true"><ellipse cx="40" cy="66" rx="24" ry="4" fill="rgba(0,0,0,.25)"/><path d="M14 46q0-30 26-30t26 30q0 18-26 18T14 46z" fill="#7a46c8" stroke="#1d1a2a" stroke-width="3"/><path d="M40 16q26 0 26 30 0 18-26 18 16-10 10-30-4-14-10-18z" fill="#45207e" opacity=".55"/><path d="M20 22l-4-16 14 10zM60 22l4-16-14 10z" fill="#7a46c8" stroke="#1d1a2a" stroke-width="3" stroke-linejoin="round"/><ellipse cx="31" cy="40" rx="6" ry="7.5" fill="#fff"/><ellipse cx="49" cy="40" rx="6" ry="7.5" fill="#fff"/><ellipse cx="32" cy="41" rx="4" ry="5.5" fill="#ffdd3d"/><ellipse cx="48" cy="41" rx="4" ry="5.5" fill="#ffdd3d"/><circle cx="33.5" cy="38.5" r="1.8" fill="#fff"/><circle cx="49.5" cy="38.5" r="1.8" fill="#fff"/><ellipse cx="26" cy="26" rx="5" ry="2.6" fill="#fff" opacity=".7" transform="rotate(-25 26 26)"/></svg>
+  <div class="dlg glass"><span class="tab">Prof. Lindqvist</span><div class="por"><svg viewBox="0 0 70 70"><circle cx="35" cy="42" r="22" fill="#ffe1cc"/><path d="M12 40q0-26 23-26t23 26q-4-10-23-12-19 2-23 12z" fill="#e8e4ee"/><ellipse cx="27" cy="44" rx="3.2" ry="4.4" fill="#2c2440"/><ellipse cx="43" cy="44" rx="3.2" ry="4.4" fill="#2c2440"/><circle cx="28" cy="42.5" r="1.2" fill="#fff"/><circle cx="44" cy="42.5" r="1.2" fill="#fff"/><path d="M30 54q5 4 10 0" stroke="#c0506a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M14 70q21-14 42 0" fill="#d81b72"/></svg></div><p>Schau mal! Dort hinten wartet eine wilde Kreatur.</p><i class="chev"></i></div>
+ </div>
+ <div class="bgrid">
+  <div class="card"><h3>Button-Zustände</h3>
+   <div class="btns"><div><button class="bt">Los!</button><span class="lab">Standard</span></div><div><button class="bt focus">Los!</button><span class="lab">Fokus</span></div><div><button class="bt press">Los!</button><span class="lab">Gedrückt 95 %</span></div><div><button class="bt dis">Los!</button><span class="lab">Gesperrt</span></div>
+   <div><button class="bt sec">Zurück</button><span class="lab">Sekundär</span></div><div><button class="bt heal">Heilen</button><span class="lab">Heil-Akzent</span></div><div><button class="bt guide">Zum Ziel</button><span class="lab">Leitsystem</span></div></div></div>
+  <div class="card" style="background:linear-gradient(160deg,#d6e3ea,#a9bda1)"><h3>Befehlskarten (Daumenbogen)</h3><div class="cmds" id="cmds"></div></div>
+ </div>
+</div>
+<div class="card" style="margin-top:14px"><h3>Attackenkarten – Element-Farbe + Symbol + klare Wirkung</h3><div class="moves" id="moves"></div></div>
+
+<h2 class="sec">Typografie</h2>
+<div class="bgrid" style="grid-template-columns:1.4fr 1fr">
+ <div class="card typo" id="typo"></div>
+ <div class="card"><h3>Entscheidung</h3><p class="blead"><b>Display: Fredoka 700</b> – fett, runde Enden, offene Formen, gut für Leseanfänger; ist bereits geladen (keine zusätzliche Anfrage, Fallback „Baloo 2“/Trebuchet).<br><b>UI: Nunito Sans 600–800</b> – ruhige Grotesk mit weichen Rundungen, gleiche Familie wie Fredoka im Gefühl, sehr gut lesbar ab 12 px.<br><b>Zahlen:</b> <code>font-variant-numeric: tabular-nums</code> für KP, AP, Uhr, Geld – nichts springt beim Herunterzählen.<br>Mindestgröße 12 px, Versal-Labels nur ≥ 11 px fett mit Kontrast ≥ 4,5:1.</p>
+  <div style="font:700 40px var(--font-display);font-variant-numeric:tabular-nums">KP 33 / 33</div><div style="font:700 40px var(--font-ui);font-variant-numeric:tabular-nums">AP 11 / 15 · 3.000</div></div>
+</div>
+
+<h2 class="sec">Übergangstor, Hologramm-Säule, Kreaturen-Art-Direction</h2>
+<div class="bgrid sk">
+ <div class="card"><h3>Übergangstor</h3>
+ <svg viewBox="0 0 320 240" aria-label="Übergangstor-Skizze"><defs><linearGradient id="col" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff5ca8"/><stop offset=".6" stop-color="#ff5ca8" stop-opacity=".5"/><stop offset="1" stop-color="#ff5ca8" stop-opacity="0"/></linearGradient><linearGradient id="gsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fb4e6"/><stop offset="1" stop-color="#e9eef0"/></linearGradient><radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#ff5ca8" stop-opacity="0"/></radialGradient></defs>
+ <rect width="320" height="240" fill="url(#gsky)"/><path d="M0 150h320v90H0z" fill="#d9d4cc"/><path d="M110 150L40 240h240l-70-90z" fill="#c7c1b8"/>
+ <g stroke="#ff5ca8" stroke-opacity=".55" stroke-width="1.5"><path d="M118 160h84M108 174h104M94 192h132M76 214h168"/><path d="M140 150l-20 90M160 150v90M180 150l20 90"/></g>
+ <ellipse cx="160" cy="118" rx="40" ry="62" fill="url(#glow)" opacity=".55"/>
+ <rect x="106" y="40" width="14" height="118" rx="7" fill="url(#col)"/><rect x="200" y="40" width="14" height="118" rx="7" fill="url(#col)"/><rect x="110" y="40" width="6" height="118" rx="3" fill="#fff" opacity=".7"/><rect x="204" y="40" width="6" height="118" rx="3" fill="#fff" opacity=".7"/>
+ <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M146 102l14-10 14 10" opacity=".45"/><path d="M146 120l14-10 14 10" opacity=".7"/><path d="M146 138l14-10 14 10"/></g>
+ <text x="160" y="30" text-anchor="middle" font-family="Fredoka,Trebuchet MS,sans-serif" font-weight="700" font-size="15" fill="#a3105a">→ Kupferhain</text></svg>
+ <div class="step"><span><b>1</b> Bodengitter</span><span><b>2</b> Lichtsäulen additiv</span><span><b>3</b> Chevrons UV-Scroll</span><span><b>4</b> Weiß-Fade → Zielfarbe</span></div></div>
+ <div class="card"><h3>Hologramm-Zonensäule</h3>
+ <svg viewBox="0 0 320 240" aria-label="Hologramm-Säule"><rect width="320" height="240" fill="#0d1020"/><circle cx="270" cy="40" r="2" fill="#fff"/><circle cx="40" cy="60" r="1.5" fill="#fff"/><path d="M0 190h320v50H0z" fill="#1a1f33"/>
+ <ellipse cx="160" cy="196" rx="62" ry="12" fill="#ff5ca8" opacity=".25"/><ellipse cx="160" cy="196" rx="62" ry="12" fill="none" stroke="#ff5ca8" stroke-width="2"/><ellipse cx="160" cy="196" rx="40" ry="7" fill="none" stroke="#3ff0ff" stroke-width="1.5" opacity=".8"/>
+ <path d="M134 196V54h52v142" fill="url(#col)" opacity=".45"/><path d="M134 196V54M186 196V54" stroke="#ff5ca8" stroke-width="2"/>
+ <g stroke="#fff" stroke-opacity=".35"><path d="M134 80h52M134 110h52M134 140h52M134 170h52"/></g>
+ <rect x="122" y="82" width="76" height="40" rx="8" fill="rgba(255,92,168,.18)" stroke="#ff5ca8"/><text x="160" y="100" text-anchor="middle" font-family="Fredoka,Trebuchet MS,sans-serif" font-weight="700" font-size="13" fill="#fff">ROUTE 2</text><text x="160" y="115" text-anchor="middle" font-family="Fredoka,Trebuchet MS,sans-serif" font-size="10" fill="#3ff0ff">Lv 6–10 · Fels</text>
+ <circle cx="160" cy="62" r="7" fill="#fff"/><circle cx="160" cy="62" r="16" fill="#ff5ca8" opacity=".3"/></svg>
+ <div class="step"><span><b>A</b> Säule --sig-hi additiv</span><span><b>B</b> Info-Plakette</span><span><b>C</b> Bodenring + Neon-A</span></div></div>
+ <div class="card"><h3>Kreaturen: Umriss + 2-Stufen-Cel</h3>
+ <svg viewBox="0 0 320 240" aria-label="Art-Direction-Schema" id="artdir"></svg>
+ <div class="step"><span><b>1</b> Outline 1,6×</span><span><b>2</b> Grundfläche</span><span><b>3</b> harte Schattenstufe</span><span><b>4</b> 1 Glanzfleck</span><span><b>5</b> Augen 2 Glanzpunkte + Lid</span></div></div>
+</div>
+
+<p class="blead" style="margin-top:36px">Quelle der Wahrheit: <code>src/styles.css :root</code> (CSS) und <code>PALETTE</code> in <code>src/06-regions.js</code> (JS). Dieses Board lädt beide direkt.</p>
+</div>
+
+<script>
+const P=PALETTE,$=s=>document.querySelector(s),sym=(k,c)=>`<svg viewBox="0 0 16 16"${c?` style="fill:${c}"`:''}><path d="${P.el[k].sym}"/></svg>`;
+const sw=(name,c,code,ic)=>`<div class="s"><i style="background:${c}">${ic||''}</i><b>${name}</b><code>${code}</code></div>`;
+const env=[['Stein',P.env.stone,'--env-stone'],['Schiefer',P.env.slate,'--env-slate'],['Himmel',P.env.sky,'--env-sky'],['Park',P.env.park,'--env-park'],['Dach',P.env.roof,'--env-roof'],['Holz',P.env.wood,'--env-wood'],['Wasser',P.env.water,'--env-water'],['Stein d.',P.env.stoneD,'--env-stone-d']];
+$('#envSw').innerHTML=env.map(e=>sw(...e)).join('');
+$('#elSw').innerHTML=Object.keys(P.el).map(k=>sw(P.el[k].n,`linear-gradient(160deg,${P.el[k].c} 55%,${P.el[k].deep})`,P.el[k].css,sym(k))).join('');
+$('#sigSw').innerHTML=[['Signatur',P.sig.c,'--sig'],['Signatur 2',P.sig.c2,'--sig-2'],['Neon',P.sig.hi,'--sig-hi'],['Text',P.sig.ink,'--sig-ink'],['Zart',P.sig.soft,'--sig-soft'],['Heilen',P.acc.heal,'--acc-heal'],['Leitsystem',P.acc.guide,'--acc-guide'],['Neon A',P.acc.neonA,'--acc-neon-a'],['Neon B',P.acc.neonB,'--acc-neon-b']].map(e=>sw(...e)).join('');
+// Mini-Szene: entsättigte Stadt, gesättigte Kreaturen davor
+$('#envScene').innerHTML=`<svg viewBox="0 0 520 118" width="100%" height="118" preserveAspectRatio="xMidYMid slice"><rect width="520" height="118" fill="${P.env.sky}"/><rect y="78" width="520" height="40" fill="${P.env.park}"/><rect x="20" y="30" width="80" height="50" fill="${P.env.stone}"/><path d="M12 32l48-26 48 26z" fill="${P.env.roof}"/><rect x="120" y="44" width="60" height="36" fill="${P.env.stone}"/><path d="M114 46l36-20 36 20z" fill="${P.env.roof}"/><rect x="380" y="20" width="110" height="60" fill="${P.env.slate}"/><rect x="200" y="84" width="160" height="10" rx="5" fill="${P.env.stoneD}"/>
+${['glut','flut','flora','volt'].map((k,i)=>`<g transform="translate(${230+i*42},62)"><ellipse cx="0" cy="22" rx="14" ry="3" fill="rgba(0,0,0,.2)"/><circle r="15" cy="6" fill="${P.el[k].c}" stroke="#1d1a2a" stroke-width="2.5"/><circle cx="-5" cy="3" r="3" fill="#fff"/><circle cx="5" cy="3" r="3" fill="#fff"/></g>`).join('')}
+<g transform="translate(150,52)"><rect x="-7" y="10" width="14" height="22" rx="4" fill="#2b3550"/><rect x="-9" y="-6" width="18" height="20" rx="6" fill="#f4f1ea"/><rect x="-9" y="-6" width="18" height="5" rx="2" fill="${P.sig.c}"/><circle cy="-14" r="9" fill="#ffe1cc"/><path d="M-9-15q0-10 9-10t9 10q-4-4-9-4t-9 4z" fill="#2c2440"/></g></svg>`;
+// Kontrast
+const lum=h=>{const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*c[0]+.7152*c[1]+.0722*c[2]};
+const cr=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+$('#contrast').innerHTML=[['Weiß auf --sig','#ffffff',P.sig.c],['--sig-ink auf Weiß',P.sig.ink,'#ffffff'],['--sig auf --surf-0',P.sig.c,P.ui.surf0],['Text auf Glas (≈ Weiß)',P.ui.ink1,'#f4f6f9'],['--ink-2 auf Weiß',P.ui.ink2,'#ffffff'],['Leitsystem-Text auf Gelb',P.acc.guideInk,P.acc.guide],['Weiß auf --acc-heal','#ffffff',P.acc.heal]].map(([n,f,b])=>{const v=cr(f,b);return`<div><code style="width:auto;flex:1">${n}</code><span style="background:${b};color:${f};padding:2px 10px;border-radius:6px;font:700 14px var(--font-display)">Aa</span><b style="width:70px;text-align:right;color:${v>=4.5?'#1d8a4a':v>=3?'#a56a00':'#c0392b'}">${v.toFixed(2)}:1</b></div>`}).join('');
+// Licht-Sets
+const sets=['explore','dusk','night','special',...Object.keys(P.el).map(k=>'battle-'+k)];
+$('#lights').innerHTML=sets.map(n=>{const L=P.light[n],sx=n==='night'?78:60,sy=Math.max(5,34-L.sunEl*.4);
+ const ground=P.mix(P.env.park,L.amb,.35),far=P.mix(P.env.slate,L.fog,.6),mon=L.el?P.el[L.el].c:(n==='night'?'#7a46c8':'#ff6526');
+ return`<div class="ls"><div class="lsc" style="background:linear-gradient(${L.skyTop},${L.skyBot} 70%)">
+ <i class="sn" style="z-index:1;left:${sx}%;top:${Math.max(6,sy)}%;background:${L.sun};box-shadow:0 0 18px 8px ${L.sunGlow}aa,0 0 50px 24px ${L.sunGlow}55"></i>
+ <i class="h1" style="bottom:30px;height:60px;background:${far};opacity:.85"></i><i class="h2" style="bottom:-30px;height:70px;background:${ground}"></i>
+ <i style="position:absolute;inset:auto 0 30px 0;height:40px;background:linear-gradient(transparent,${L.fog}88)"></i>
+ <i class="lmon" style="background:radial-gradient(circle at 35% 30%,${P.mix(mon,'#ffffff',.25)},${mon} 60%);box-shadow:inset -5px -4px 0 ${P.mix(mon,'#000000',.3)},2px -2px 0 1px ${L.rim}${n==='night'?',0 0 14px '+L.rim:''};outline:2px solid #1d1a2a"></i>
+ ${n==='night'?`<i style="position:absolute;left:12%;bottom:30px;width:6px;height:44px;border-radius:3px;background:${P.sig.hi};box-shadow:0 0 14px 4px ${P.sig.hi}"></i><i style="position:absolute;right:14%;bottom:34px;width:22px;height:14px;border-radius:3px;background:${L.windows};box-shadow:0 0 12px ${L.windows}"></i><i style="position:absolute;right:30%;bottom:30px;width:4px;height:30px;background:${P.acc.neonA};box-shadow:0 0 10px 3px ${P.acc.neonA}"></i>`:''}
+ ${n==='special'?`<i style="position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 70%,#ffffff55 0 6deg,transparent 6deg 22deg)"></i><i style="position:absolute;left:20%;right:20%;top:30%;height:30px;border-radius:50%;border:3px solid ${P.acc.neonB};border-color:${P.acc.neonB} transparent #4f8bff transparent;transform:rotate(-12deg)"></i>`:''}
+ </div><div class="meta"><b>${n}${L.el?' '+sym(L.el,P.el[L.el].deep).replace('<svg','<svg width="14" height="14"'):''}</b><div class="lch">${['skyTop','skyBot','sun','sunGlow','fog','rim','amb','ambGround'].map(k=>`<i title="${k} ${L[k]}" style="background:${L[k]}"></i>`).join('')}</div>
+ <small class="k">Sonne ${L.sunI} · Rim ${L.rimI} · Amb ${L.ambI} · Nebel ${L.fogNear}–${L.fogFar}</small></div></div>`}).join('');
+// Befehlskarten im Daumenbogen
+const BI={fight:'M12 2l2.2 6.3L21 9l-5.3 4 1.9 6.6L12 15.8 6.4 19.6 8.3 13 3 9l6.8-.7z',team:'M8 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm8 1a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM1 20c0-4 3-7 7-7s7 3 7 7zm14 0c0-2-1-4-2-5 4-1 9 1 9 5z',bag:'M6 7V6a6 6 0 0 1 12 0v1h3l-1 14H4L3 7zm2 0h8V6a4 4 0 0 0-8 0z',run:'M13 4a2 2 0 1 1 0 .01M9 8l4-1 3 3 3 1-1 2-4-1-2 3 3 3-1 5h-2l1-4-4-3-2 4-4-1 1-2 2 .5 3-6-2 1-1 3H5l1-4z'};
+$('#cmds').innerHTML=[['fight','Kampf','4 Attacken',1],['team','Team','3 bereit'],['bag','Tasche','5 Sorten'],['run','Flucht','Versuch es']].map(([k,t,s,on],i)=>`<div class="cmd${on?' act':''}" style="top:${i*60}px;right:${[0,18,30,36][i]}px;width:${[230,208,196,188][i]}px"><svg viewBox="0 0 24 24" fill="currentColor" style="color:${on?'#fff':P.sig.c}"><path d="${BI[k]}"/></svg><span><b>${t}</b><small>${s}</small></span></div>`).join('');
+$('#moves').innerHTML=[['glut','Funkenregen','AP 25/25','Sehr gut!',1],['flut','Blubberstrahl','AP 15/15',''],['flora','Blattwirbel','AP 20/20','Schwach'],['volt','Zackblitz','AP 10/10','Sehr gut!']].map(([k,n,ap,e,sel])=>{const E=P.el[k];return`<div class="mvc${sel?' sel':''}" style="--c:${E.c};--deep:${E.deep};--soft:${E.soft}"><span class="ic">${sym(k)}</span><span><b>${n}</b><small>${E.n}</small></span><em>${ap}</em>${e?`<span class="mveff" style="${e==='Schwach'?'background:#8a94a8':''}">${e}</span>`:''}</div>`}).join('');
+// Typo-Skala
+$('#typo').innerHTML=[['--fs-hero 56','hero','Veyra',1],['--fs-2xl 34','2xl','Kupferhain',1],['--fs-xl 26','xl','Kampf!',1],['--fs-lg 20','lg','Glimmo · Lv 12',1],['--fs-md 16','md','Was soll Glimmo tun?',0],['--fs-sm 14','sm','Hohes Gras auf Route 1',0],['--fs-xs 12','xs','KP 33 / 33 · 10:24',0]].map(([c,k,t,d])=>`<div><code>${c}</code><span style="font:${d?700:600} ${P.type.size[k]}px/1.1 ${d?'var(--font-display)':'var(--font-ui)'};font-variant-numeric:tabular-nums">${t}</span></div>`).join('');
+// Art-Direction-Schema: dieselbe eigene Kreatur (Kerzen-Igel „Dochtel“, Skizze) in 5 Aufbauschritten
+(()=>{const body='M30 150q-6-50 40-62 10-22 24-16 12-14 22 2 30 6 34 44 6 34-30 40H52q-24-2-22-8z',sh='M96 96q30 6 34 44 6 34-30 40H74q40-14 34-44-2-26-12-40z',
+ o=(x,s,i)=>`<g transform="translate(${x},0) scale(${s})">${i}</g>`;const C=P.el.glut;
+ const flame=`<path d="M93 70q-12-14 0-34 4 12 10 14-2 10-10 20z" fill="#ffcf12" stroke="#1d1a2a" stroke-width="4" stroke-linejoin="round"/>`;
+ const eyes=`<g><ellipse cx="62" cy="128" rx="11" ry="14" fill="#fff" stroke="#1d1a2a" stroke-width="3"/><ellipse cx="94" cy="128" rx="11" ry="14" fill="#fff" stroke="#1d1a2a" stroke-width="3"/><ellipse cx="63" cy="131" rx="7" ry="10" fill="#3a1a10"/><ellipse cx="93" cy="131" rx="7" ry="10" fill="#3a1a10"/><circle cx="66" cy="126" r="3.4" fill="#fff"/><circle cx="96" cy="126" r="3.4" fill="#fff"/><circle cx="60" cy="136" r="1.6" fill="#fff"/><circle cx="90" cy="136" r="1.6" fill="#fff"/><path d="M50 116q12-6 24 0M82 116q12-6 24 0" stroke="#1d1a2a" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M72 152q6 6 12 0" stroke="#1d1a2a" stroke-width="3" fill="none" stroke-linecap="round"/></g>`;
+ const st=[`<path d="${body}" fill="none" stroke="#1d1a2a" stroke-width="7"/>`,
+ `<path d="${body}" fill="${C.c}" stroke="#1d1a2a" stroke-width="7"/>`,
+ `<path d="${body}" fill="${C.c}" stroke="#1d1a2a" stroke-width="7"/><path d="${sh}" fill="${C.deep}" opacity=".75" clip-path="url(#cb)"/>`,
+ `<path d="${body}" fill="${C.c}" stroke="#1d1a2a" stroke-width="7"/><path d="${sh}" fill="${C.deep}" opacity=".75" clip-path="url(#cb)"/><ellipse cx="62" cy="98" rx="12" ry="6" fill="#fff" opacity=".85" transform="rotate(-25 62 98)"/>`];
+ const full=st[3]+flame+eyes;
+ let s=`<defs><clipPath id="cb"><path d="${body}"/></clipPath></defs><rect width="320" height="240" fill="${P.ui.surf2}"/>`;
+ st.forEach((g,i)=>{s+=o(6+i*48,.3,g)+`<text x="${30+i*48}" y="74" font-family="Fredoka,Trebuchet MS,sans-serif" font-weight="700" font-size="13" fill="${P.sig.c}">${i+1}</text>`;});
+ s+=`<text x="${222}" y="74" font-family="Fredoka,Trebuchet MS,sans-serif" font-weight="700" font-size="13" fill="${P.sig.c}">5 →</text>`;
+ s+=`<g transform="translate(70,58) scale(1.05)"><ellipse cx="80" cy="182" rx="56" ry="8" fill="rgba(0,0,0,.18)"/>${full}</g>`;
+ s+=`<text x="250" y="140" font-family="Fredoka,Trebuchet MS,sans-serif" font-size="11" fill="${P.ui.ink2}">2 Farben</text><text x="250" y="154" font-family="Fredoka,Trebuchet MS,sans-serif" font-size="11" fill="${P.ui.ink2}">+ Flamme</text><text x="250" y="168" font-family="Fredoka,Trebuchet MS,sans-serif" font-size="11" fill="${P.ui.ink2}">= Signatur</text>`;
+ $('#artdir').innerHTML=s;})();
+</script>
+</body>
+</html>

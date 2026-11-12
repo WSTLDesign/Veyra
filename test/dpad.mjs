@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const b=await chromium.launch({args:['--use-gl=swiftshader','--enable-unsafe-swiftshader']});const p=await b.newPage({viewport:{width:420,height:860}});
+p.on('pageerror',e=>console.log('PAGEERROR',e.message));
+await p.goto(new URL('../dist/index.html',import.meta.url).href,{waitUntil:'load'});
+await p.click('#iPrompt');await p.waitForTimeout(400);await p.click('#iSkip');await p.waitForTimeout(900);await p.evaluate(()=>beginGame({},true));await p.waitForTimeout(300);
+await p.evaluate(()=>{for(let i=0;i<6&&mode==='dialog';i++){TW&&TW.finish&&TW.finish();advDlg();}document.querySelectorAll('#intro,#title').forEach(e=>e.hidden=true);mode='world';SET.res='720';G.team.push(mk(1,5));VILL.list=[];loadMap('kupferhain',3,5);P.dir='down';});
+const r=await p.evaluate(()=>{const r=document.querySelector('#dpad').getBoundingClientRect();return[r.x,r.y,r.width,r.height]});
+const up=[r[0]+r[2]/2,r[1]+r[3]*.15],right=[r[0]+r[2]*.85,r[1]+r[3]/2];
+const st=()=>p.evaluate(()=>[P.x,P.y,P.dir]);
+await p.mouse.move(...up);await p.mouse.down();await p.waitForTimeout(60);await p.mouse.up();await p.waitForTimeout(500);console.log('Kurz tippen ↑ (nur drehen):',await st());
+await p.mouse.move(...right);await p.mouse.down();await p.waitForTimeout(200);await p.mouse.up();await p.waitForTimeout(600);console.log('Halten → 200ms (ein Feld):',await st());
+await p.mouse.move(...right);await p.mouse.down();await p.waitForTimeout(1500);await p.mouse.up();await p.waitForTimeout(600);console.log('Halten → 1,5s:',await st());
+await b.close();

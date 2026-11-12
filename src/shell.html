@@ -1,0 +1,48 @@
+<title>Veyra Kreaturenchronik</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+
+<div id="app">
+ <header class="hud"><div class="hudP" id="hudP" role="button" tabindex="0" aria-label="Uhrzeit und Wetter – tippen zeigt das aktuelle Ziel"><span id="hudMap">Veyra</span><span id="hudClock"></span><span id="hudBadges"></span></div><div class="hudR"><button id="viewBtn" aria-label="Ansicht wechseln" hidden>Draufsicht</button><button id="mmBtn" type="button" aria-label="Minikarte zeigen (tippen oder halten)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5l5-2 7 2.5 5-2v13l-5 2-7-2.5-5 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 4.5v13M15.5 7v13" stroke="currentColor" stroke-width="1.5" opacity=".55"/><circle cx="12" cy="11" r="2.2" fill="var(--sig)"/></svg></button><button id="fsBtn" aria-label="Vollbild umschalten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></header>
+ <div id="screen"><canvas id="world"></canvas><canvas id="world3d" hidden></canvas><canvas id="ovCv" aria-hidden="true"></canvas><div id="ambB" aria-hidden="true"></div>
+  <div id="dlg" hidden><canvas id="dlgFace" width="112" height="112" aria-hidden="true" hidden></canvas><i id="dlgPor" aria-hidden="true" hidden></i><span id="dlgName" hidden></span><p id="dlgText"></p><div id="dlgOpts"></div><span id="dlgMore">▼</span><span id="dlgHint" aria-hidden="true">Tippen</span></div>
+  <div id="hudOv" hidden><button id="hq" aria-label="Aktuelle Mission" aria-expanded="false" aria-controls="hqCard"></button><div id="hqCard" hidden></div><span id="mmW"><canvas id="mm" width="168" height="168" aria-label="Minikarte"></canvas></span></div><div id="mapCard" aria-live="polite"><i class="acr" aria-hidden="true"></i><b id="mcName"></b><small id="mcRegion"></small></div><div id="toast"></div><div id="fade"></div><div id="vig"></div><div id="fxFlash"></div><div id="alertMark" aria-hidden="true">!</div></div>
+ <div id="pad"><div id="stick" aria-label="Joystick"><span class="ring"></span><span id="knob"></span></div><div id="dpad" aria-label="Steuerkreuz" hidden><b class="u"></b><b class="l"></b><b class="c"></b><b class="r"></b><b class="d"></b></div>
+  <div class="ab"><div class="tg"><button id="runBtn" aria-label="Rennen umschalten" aria-pressed="false">Rennen</button></div><button id="btnB" aria-label="Chronik öffnen">Chronik</button><button id="btnA" aria-label="A-Taste">A</button></div></div>
+</div>
+<section id="battle" class="layer" hidden>
+ <div class="scene"><canvas id="bcv" width="480" height="300"></canvas><div id="lockOn" aria-hidden="true"><i></i><i></i><i></i><i></i></div><span id="wxChip" hidden></span>
+  <div class="ibox" id="bFoeBox"><div class="n"><span id="bFoeName"></span></div><div id="bFoeT"></div><div class="hp"><b class="gh"></b><i id="bFoeHp"></i></div><div class="atb"><i id="bFoeAtb"></i></div><div id="bBalls"></div></div>
+  <div class="ibox" id="bMeBox"><div class="n"><span id="bMeName"></span></div><div id="bMeT"></div><div class="hp"><b class="gh"></b><i id="bMeHp"></i></div><div class="atb"><i id="bMeAtb"></i></div><small id="bMeNum"></small><div class="xpb"><i id="bMeXp"></i></div></div></div>
+ <div id="bDock"><div id="bLog"></div><div id="bMenu"></div></div><div id="bCard" role="dialog" aria-live="polite" hidden></div>
+</section>
+<section id="menu" class="layer chron" hidden aria-label="Chronik">
+ <div class="chCase">
+  <i class="chHinge" aria-hidden="true"></i><i class="chGem" aria-hidden="true"></i>
+  <div class="chPage">
+   <div class="mhead"><h2 id="chTitle">Chronik</h2><span id="money"></span><button class="quit" id="mQuit" type="button" aria-label="Spiel speichern und schließen">Speichern &amp; schließen</button><button class="x" id="mClose" aria-label="Chronik schließen">Zuklappen</button></div>
+   <div id="mBody"></div>
+  </div>
+  <nav id="tabs" aria-label="Chronik-Seiten"><button data-t="map"><i class="ap" aria-hidden="true"></i><span>Karte</span></button><button data-t="team"><i class="ap" aria-hidden="true"></i><span>Team</span></button><button data-t="quest"><i class="ap" aria-hidden="true"></i><span>Missionen</span></button><button data-t="dex"><i class="ap" aria-hidden="true"></i><span>Dex</span></button><button data-t="bag"><i class="ap" aria-hidden="true"></i><span>Tasche</span></button><button data-t="box"><i class="ap" aria-hidden="true"></i><span>Box</span></button><button data-t="medals"><i class="ap" aria-hidden="true"></i><span>Medaillen</span></button><button data-t="game"><i class="ap" aria-hidden="true"></i><span>Optionen</span></button><i id="tabInk" aria-hidden="true"></i></nav>
+  <div class="chCover" aria-hidden="true"><span class="chEmblem"></span><b>CHRONIK</b></div>
+ </div>
+</section>
+<section id="shop" class="layer" hidden>
+ <div class="mhead"><h2>Laden</h2><span id="shopMoney"></span><button class="x" id="shopClose">Schließen</button></div>
+ <div id="shopBody" style="margin-top:12px"></div>
+</section>
+<div id="wipe"></div>
+<section id="title" class="layer">
+ <canvas id="tcv" width="320" height="140"></canvas>
+ <h1>VEYRA</h1><p class="tsub">Die Welt der Terras</p>
+ <div class="tbtn"><button id="tCont" class="pri">Fortsetzen</button><button id="tNew">Neues Spiel</button><button id="tOpt">Einstellungen</button></div>
+ <p class="foot" id="tFoot">Am schönsten im Querformat</p>
+</section>
+<section id="opts" class="layer" hidden><div class="mhead"><h2>Einstellungen</h2><button class="x" id="optClose">Fertig</button></div><div id="optBody"></div></section>
+<section id="seqL" class="layer" hidden aria-live="polite"></section>
+<div id="callOv" role="dialog" aria-label="Eingehender Ruf" hidden></div>
+<section id="intro" class="layer"><canvas id="icv"></canvas><div class="lb t"></div><div class="lb b"></div><div id="iFlash"></div>
+ <button class="iprompt" id="iPrompt"><span class="ilogo">VEYRA</span><span>Tippe, um zu beginnen</span></button>
+ <p id="introText"></p><div id="introLogo"><h1>VEYRA</h1><p class="okc">Kreaturenchronik</p><p class="tsub">Die Welt der Terras</p></div><button id="iSkip" hidden>Überspringen</button></section>
+<div id="rotOv" role="dialog" aria-modal="true" aria-labelledby="rotT" hidden><div class="rotDev" aria-hidden="true"><i class="rotPh"><i></i></i><i class="rotArr"></i></div><b id="rotT">Bitte Gerät drehen</b><p>Veyra spielt sich am schönsten im Querformat.</p><button id="rotAllow" type="button">Hochkant weiterspielen</button></div>
+<div id="fsHint" role="status" hidden></div>

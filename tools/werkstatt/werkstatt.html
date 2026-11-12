@@ -1,0 +1,306 @@
+<title>Veyra Werkstatt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4f1ea;--s1:#fbfaf6;--s2:#ebe7de;--line:rgba(44,39,32,.09);--line2:rgba(44,39,32,.16);
+  --t1:#24211c;--t2:#5f594f;--t3:#8c857a;
+  --acc:#c9531a;--acc-ink:#b4480f;--acc-soft:rgba(201,83,26,.12);
+  --ok:#2f8f5b;--warn:#b7891f;--err:#c4423b;--live:#c9531a;
+  --r-card:14px;--r-ctl:8px;--ease:cubic-bezier(.2,.7,.2,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161513;--s1:#1e1d1a;--s2:#282622;--line:rgba(236,230,218,.08);--line2:rgba(236,230,218,.14);
+  --t1:#ece6da;--t2:#aaa397;--t3:#78726a;
+  --acc:#f08a52;--acc-ink:#f3a070;--acc-soft:rgba(240,138,82,.14);
+  --ok:#5cbf86;--warn:#d6a83a;--err:#e4695f;--live:#f08a52;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161513;--s1:#1e1d1a;--s2:#282622;--line:rgba(236,230,218,.08);--line2:rgba(236,230,218,.14);
+  --t1:#ece6da;--t2:#aaa397;--t3:#78726a;
+  --acc:#f08a52;--acc-ink:#f3a070;--acc-soft:rgba(240,138,82,.14);
+  --ok:#5cbf86;--warn:#d6a83a;--err:#e4695f;--live:#f08a52;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--t1);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--t3)}
+.wrap{max-width:1200px;margin:0 auto;display:grid;gap:24px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 24px;min-height:44px}
+h1{margin:0;font-size:20px;font-weight:600;line-height:1.2;text-wrap:balance}
+h1 span{display:block;font-size:14px;color:var(--t2);font-weight:400;margin-top:4px}
+nav{display:flex;gap:8px;margin-left:auto;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border-radius:var(--r-ctl);border:1px solid var(--line2);background:var(--s1);color:var(--t1);text-decoration:none;font-size:14px;font-weight:500;transition:background-color .15s var(--ease),border-color .15s var(--ease)}
+.btn:hover{background:var(--s2)}
+.btn.pri{background:var(--t1);border-color:var(--t1);color:var(--bg)}
+.btn.pri:hover{background:var(--t2);border-color:var(--t2)}
+.btn.link{border-color:transparent;background:transparent;color:var(--t2)}
+.btn.link:hover{color:var(--t1);background:var(--s2)}
+.btn:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,.agent:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+section{background:var(--s1);border:1px solid var(--line);border-radius:var(--r-card);padding:20px;min-width:0}
+h2{margin:0 0 12px;font-size:14px;font-weight:500;color:var(--t2);display:flex;align-items:center;gap:10px}
+h2 .mono{margin-left:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--t3);flex:none}
+.dot.laeuft{background:var(--live);animation:live 2s var(--ease) infinite}
+.dot.fertig{background:var(--ok)}.dot.wartet{background:var(--warn)}.dot.fehler{background:var(--err)}
+@keyframes live{0%,100%{box-shadow:0 0 0 0 var(--acc-soft)}50%{box-shadow:0 0 0 5px var(--acc-soft)}}
+@media (prefers-reduced-motion: reduce){.dot.laeuft{animation:none}}
+/* Live-Ansicht */
+.live{display:grid;gap:12px}
+.frame{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;border-radius:10px;overflow:hidden;background:#0c1519;border:1px solid var(--line2)}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0c1519}
+.frame .fb{position:absolute;inset:0;display:none;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--s2)}
+.frame .fb img{width:100%;height:100%;object-fit:cover;display:block}
+.frame.nofr iframe{display:none}.frame.nofr .fb{display:grid}
+.frame .fb .msg{position:absolute;left:0;right:0;bottom:0;padding:8px 12px;background:rgba(20,18,15,.78);color:#ece6da;font-size:13px}
+.frame .fb{display:grid}.frame .startOv{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:10px;background:linear-gradient(180deg,rgba(12,21,25,.15),rgba(12,21,25,.75));color:#ece6da;text-align:center;padding:16px}
+.frame .startOv span{font-size:13px;max-width:46ch;color:#c8d2da}
+#startGame{min-height:48px;padding:0 22px;border-radius:12px;border:0;background:var(--acc);color:#fff;font:600 16px "IBM Plex Sans",system-ui,sans-serif;cursor:pointer}
+#startGame:hover{background:var(--acc-ink)}
+.vs{display:grid;gap:8px}
+.vs .acts{display:flex;gap:6px;flex-wrap:wrap}
+.vs .acts button{min-height:36px;padding:0 12px;border-radius:var(--r-ctl);border:1px solid var(--line2);background:var(--s1);color:var(--t1);font:inherit;font-size:13px;cursor:pointer}
+.vs .acts button.ok{border-color:var(--ok);color:var(--ok)}.vs .acts button.no{border-color:var(--err);color:var(--err)}
+.vs .acts button:hover{background:var(--s2)}
+.vs .st{font-size:12px;color:var(--t3)}.vs .st.freigegeben{color:var(--ok)}.vs .st.abgelehnt{color:var(--err)}
+.vs textarea{min-height:56px}
+.live .bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;color:var(--t2);font-size:14px}
+.live .bar button{min-height:32px;padding:0 10px;border-radius:var(--r-ctl);border:1px solid var(--line2);background:var(--s1);color:var(--t1);font:inherit;font-size:13px;cursor:pointer}
+.live .bar button:hover{background:var(--s2)}
+/* Agenten */
+.alist{display:grid;gap:4px}
+.agent{display:grid;grid-template-columns:20px minmax(140px,1.1fr) minmax(0,2fr) 110px 72px;align-items:center;gap:12px;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid transparent;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;width:100%;transition:background-color .15s var(--ease),border-color .15s var(--ease)}
+.agent:hover{background:var(--s2)}
+.agent.orch{background:var(--s2);border-color:var(--line);margin-bottom:8px}
+.agent b{font-weight:500;display:block;line-height:1.3}
+.agent b small{display:block;font-weight:400;color:var(--t3);font-size:12px}
+.agent .note{color:var(--t2);font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.agent .prog{display:grid;gap:4px}
+.agent .prog i{display:block;height:3px;border-radius:2px;background:var(--line2);position:relative;overflow:hidden}
+.agent .prog i::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--t1);transition:width .6s var(--ease)}
+.agent .prog span{font-size:12px;color:var(--t3)}
+.agent .when{text-align:right}
+@media (max-width:720px){.agent{grid-template-columns:20px 1fr 72px;grid-template-rows:auto auto}.agent .note{grid-column:2/4;white-space:normal}.agent .prog{grid-column:2/3}.agent .when{grid-row:1}}
+/* Zweispaltig */
+.two{display:grid;gap:24px;grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.log{display:grid;gap:0;max-height:520px;overflow:auto}
+.log .e{display:grid;grid-template-columns:148px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.log .e:first-child{border-top:0}
+.log .k{font-size:13px;font-weight:500;color:var(--t2);display:flex;flex-direction:column;gap:2px;min-width:0}
+.log .k b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log .k .tag{font-size:12px;font-weight:400;color:var(--t3);white-space:nowrap}
+.log .k.fix .tag{color:var(--ok)}.log .k.bug .tag{color:var(--err)}.log .k.qa .tag{color:var(--acc-ink)}
+.log .t{min-width:0;overflow-wrap:anywhere}
+@media (max-width:520px){.log .e{grid-template-columns:1fr}}
+form{display:grid;gap:8px}
+textarea{width:100%;min-height:96px;resize:vertical;border-radius:var(--r-ctl);border:1px solid var(--line2);background:var(--bg);color:var(--t1);padding:10px 12px;font:inherit}
+textarea::placeholder{color:var(--t3)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+select{min-height:36px;border-radius:var(--r-ctl);border:1px solid var(--line2);background:var(--bg);color:var(--t1);padding:0 10px;font:inherit;font-size:14px}
+button.send{min-height:36px;padding:0 14px;border-radius:var(--r-ctl);border:1px solid var(--acc);background:var(--acc);color:#fff;font:inherit;font-weight:500;cursor:pointer;transition:background-color .15s var(--ease)}
+button.send:hover{background:var(--acc-ink);border-color:var(--acc-ink)}
+button.send:active{transform:scale(.98)}
+button.mic{min-height:36px;padding:0 12px;border-radius:var(--r-ctl);border:1px solid var(--line2);background:var(--s1);color:var(--t1);font:inherit;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background-color .15s var(--ease),border-color .15s var(--ease)}
+button.mic:hover{background:var(--s2)}
+button.mic[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-soft)}
+button.mic[aria-pressed="true"] .dot{background:var(--live);animation:live 1.4s var(--ease) infinite}
+textarea.listening{border-color:var(--acc)}
+.fbl{display:grid;margin-top:8px}
+.fbl .e{padding:10px 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.fbl .head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:13px;color:var(--t2)}
+.fbl .head b{font-weight:500;color:var(--t1)}
+.fbl .st{font-size:12px;color:var(--t3)}.fbl .st.erledigt{color:var(--ok)}.fbl .st.in-arbeit{color:var(--acc-ink)}.fbl .st.offen{color:var(--warn)}.fbl .st.angenommen{color:var(--acc-ink)}
+.fbl .ans,.fbl .bot{color:var(--t2);font-size:14px;padding:6px 0 6px 12px;border-left:2px solid var(--line2);white-space:pre-line}
+.fbl .bot{border-left-color:var(--acc)}
+.fbl .ans span,.fbl .bot span{display:block;font-size:12px;color:var(--t3);margin-bottom:2px}
+.fbl .bot.wait{color:var(--t3)}
+.shots{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.shots figure{margin:0;min-width:0}
+.shots img{width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--s2);display:block}
+.shots figcaption{font-size:13px;color:var(--t2);margin-top:6px;display:grid;gap:2px}
+.empty{color:var(--t3);font-size:14px;margin:0}
+.hint{font-size:13px;color:var(--t3);margin:8px 0 0}
+/* Detail */
+#overview{display:grid;gap:24px}#detail{display:none}
+body.det #overview{display:none!important}body.det #detail{display:grid;gap:24px}
+.dhead{display:grid;gap:8px}
+.dhead .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dhead h2{margin:0;font-size:20px;color:var(--t1);font-weight:600}
+.dhead .meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--t2);font-size:14px}
+.dhead .task{font-size:16px;max-width:65ch}
+.dhead .note{color:var(--t2);max-width:65ch}
+.dprog{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;max-width:420px}
+.dprog i{display:block;height:3px;border-radius:2px;background:var(--line2);position:relative;overflow:hidden}
+.dprog i::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--t1)}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none;font-size:14px;min-height:36px}
+.back:hover{color:var(--t1)}
+.shots img,.frame .fb img{cursor:zoom-in}
+#lb{position:fixed;inset:0;z-index:100;background:rgba(14,12,10,.92);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+#lb img{max-width:100%;max-height:calc(100% - 40px);border-radius:8px;object-fit:contain}
+#lb .cap{color:#ece6da;font-size:14px;margin-top:8px;text-align:center}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Veyra Werkstatt <span>Was die Agenten gerade am Spiel ändern – live, mit deinem Feedback</span></h1>
+  <nav>
+    <a class="btn link" href="https://claude.ai/artifact/8t43pYypRVG7tMPzQKD6Xj" target="_blank" rel="noopener">Projektkontext</a>
+    <a class="btn pri" href="https://claude.ai/artifact/Lrpv1XYiorMys1CKhopBKc" target="_blank" rel="noopener">Geprüftes Spiel öffnen</a>
+  </nav>
+</header>
+
+<div id="overview">
+<section class="live">
+  <h2><span class="dot laeuft"></span>Werkstatt-Build <span class="mono" id="liveWhen"></span></h2>
+  <div class="frame" id="frame"><div class="fb" id="liveFb"></div>
+    <div class="startOv"><button type="button" id="startGame">Spiel starten</button><span>öffnet den Werkstatt-Build in einem eigenen Fenster – „Speichern &amp; schließen“ in der Chronik schließt es wieder</span></div>
+  </div>
+  <div class="bar">
+    <span id="liveLabel">Werkstatt-Build</span>
+    <a class="btn link" id="liveOpen" href="spiel/index.html" target="veyra-werkstatt" rel="noopener">Als Tab öffnen</a>
+    <span class="hint" style="margin:0">Spielstände dieser Fassung sind getrennt vom geprüften Spiel</span>
+  </div>
+</section>
+
+<section id="vorschau">
+  <h2>Vorschauen zur Freigabe <span class="mono" id="vsCount"></span></h2>
+  <p class="hint" style="margin:0 0 10px">Neues kommt erst ins Spiel, wenn du es hier freigibst. „Ablehnen“ mit kurzer Begründung schickt es zurück an den Agenten.</p>
+  <div class="shots" id="vsList"><p class="empty">Keine offenen Vorschauen</p></div>
+</section>
+
+<section>
+  <h2>Agenten <span class="mono" id="meta"></span></h2>
+  <div class="alist" id="agents"><p class="empty">Noch keine Meldungen</p></div>
+  <p class="hint">Klick auf einen Agenten zeigt Auftrag, Stand, Protokoll und Bilder</p>
+</section>
+
+<div class="two">
+  <section>
+    <h2>Änderungsprotokoll</h2>
+    <div class="log" id="log"><p class="empty">Noch leer</p></div>
+  </section>
+  <section>
+    <h2>Dein Feedback</h2>
+    <form id="fbForm">
+      <textarea id="fbText" placeholder="Was passt nicht? Ort, Situation, was du erwartest" required></textarea>
+      <div class="row">
+        <select id="fbAgent" aria-label="Empfänger"><option value="alle">Alle / Orchestrator</option></select>
+        <button class="mic" type="button" data-for="fbText" hidden aria-pressed="false"><span class="dot"></span><span>Sprechen</span></button>
+        <button class="send" type="submit">Absenden</button>
+        <span class="hint" id="fbHint" style="margin:0"></span>
+      </div>
+    </form>
+    <div class="fbl" id="fbList"></div>
+  </section>
+</div>
+
+<section>
+  <h2>Neueste Bilder</h2>
+  <div class="shots" id="shots"><p class="empty">Noch keine Bilder</p></div>
+</section>
+</div>
+
+<div id="detail">
+  <a class="back" href="#">← Alle Agenten</a>
+  <section class="dhead" id="dhead"></section>
+  <div class="two">
+    <section><h2>Protokoll</h2><div class="log" id="dlog"><p class="empty">Noch leer</p></div></section>
+    <section><h2>Feedback an diesen Agenten</h2>
+      <form id="dfbForm"><textarea id="dfbText" placeholder="Was soll anders werden?" required></textarea>
+      <div class="row"><button class="mic" type="button" data-for="dfbText" hidden aria-pressed="false"><span class="dot"></span><span>Sprechen</span></button><button class="send" type="submit">Absenden</button><span class="hint" id="dfbHint" style="margin:0"></span></div></form>
+      <div class="fbl" id="dfb"></div></section>
+  </div>
+  <section><h2>Bilder</h2><div class="shots" id="dshots"><p class="empty">Noch keine Bilder</p></div></section>
+</div>
+</div>
+
+<script>
+(async()=>{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const STATE={laeuft:'läuft',fertig:'fertig',wartet:'wartet',fehler:'Fehler'};
+const KIND={fix:'Änderung',qa:'Prüfung',bug:'Fehler',info:'Hinweis'};
+const ago=t=>{if(!t)return'';const s=Math.max(0,(Date.now()-t)/1000);if(s<60)return'gerade eben';const m=Math.round(s/60);if(m<60)return'vor '+m+' min';const h=Math.round(m/60);if(h<24)return'vor '+h+' h';return new Date(t).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+new Date(t).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});};
+const clock=t=>t?new Date(t).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+// Werkstatt-Build in eigenem Fenster (window.open → das Spiel darf sich selbst schließen; kein zweiter WebGL-Kontext in dieser Seite)
+let gameWin=null;
+document.getElementById('startGame').onclick=()=>{try{if(gameWin&&!gameWin.closed){gameWin.focus();return;}gameWin=window.open('spiel/index.html?'+Date.now(),'veyra-werkstatt','noopener=0');if(!gameWin)document.getElementById('liveOpen').click();}catch(e){}};
+// Daten
+const db=await claude.use('db');
+if(!db){$('#meta').textContent='Live-Daten nur angemeldet';return;}
+const user=await claude.use('user');
+let AG=[],LOG=[],SHOTS=[],FB=[];
+let CUR='';try{CUR=decodeURIComponent((location.hash.match(/^#agent-([\w-]+)/)||[])[1]||'');}catch(e){}
+const cur=()=>CUR;
+const go=id=>{CUR=id||'';try{if(id)location.hash='#agent-'+id;else if(location.hash)history.replaceState(null,'',location.pathname);}catch(e){}route();};
+const route=()=>{const id=cur();document.body.classList.toggle('det',!!id);if(id)renderDetail(id);window.scrollTo({top:0});};
+addEventListener('hashchange',()=>{try{CUR=decodeURIComponent((location.hash.match(/^#agent-([\w-]+)/)||[])[1]||'');}catch(e){}route();});
+document.querySelector('.back').addEventListener('click',e=>{e.preventDefault();go('');});
+// Bilder groß ansehen
+const lb=document.createElement('div');lb.id='lb';lb.innerHTML='<img alt=""><div class="cap"></div>';lb.hidden=true;document.body.appendChild(lb);
+lb.addEventListener('click',()=>{lb.hidden=true;});addEventListener('keydown',e=>{if(e.key==='Escape')lb.hidden=true;});
+document.addEventListener('click',e=>{const img=e.target.closest('.shots img, .frame .fb img');if(!img)return;lb.querySelector('img').src=img.src;lb.querySelector('.cap').textContent=img.alt||'';lb.hidden=false;});
+db.collection('status').onSnapshot(snap=>{
+  AG=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.order??99)-(b.order??99));
+  const el=$('#agents');if(!AG.length){el.innerHTML='<p class="empty">Noch keine Meldungen</p>';return;}
+  el.innerHTML=AG.map(r=>`<button type="button" class="agent${r.id==='orchestrator'?' orch':''}" data-id="${esc(r.id)}">
+    <span class="dot ${esc(r.state||'wartet')}" title="${esc(STATE[r.state]||'')}"></span>
+    <b>${esc(r.name||r.id)}<small>${esc(r.model||'')}</small></b>
+    <span class="note">${esc(r.note||r.task||'')}</span>
+    <span class="prog"><i style="--p:${Math.max(0,Math.min(100,+r.pct||0))}%"></i><span>${esc(STATE[r.state]||'')} · ${Math.max(0,Math.min(100,+r.pct||0))} %</span></span>
+    <span class="mono when">${ago(r.updatedAt)}</span></button>`).join('');
+  el.querySelectorAll('.agent').forEach(b=>b.onclick=()=>go(b.dataset.id));
+  const sel=$('#fbAgent'),v=sel.value;sel.innerHTML='<option value="alle">Alle / Orchestrator</option>'+AG.filter(r=>r.id!=='orchestrator').map(r=>`<option value="${esc(r.id)}">${esc(r.name||r.id)}</option>`).join('');sel.value=v||'alle';
+  $('#meta').textContent='Stand '+ago(Math.max(...AG.map(r=>+r.updatedAt||0)));
+  if(cur())renderDetail(cur());
+});
+const logHtml=rows=>rows.length?rows.map(r=>`<div class="e"><div class="k ${esc(r.kind||'info')}"><b>${esc(r.agent||'')}</b><span class="tag">${esc(KIND[r.kind]||'Hinweis')} · <span class="mono">${clock(r.ts)}</span></span></div><div class="t">${esc(r.text||'')}</div></div>`).join(''):'<p class="empty">Noch leer</p>';
+db.collection('log').orderBy('ts','desc').limit(120).onSnapshot(snap=>{LOG=snap.docs.map(d=>d.data());$('#log').innerHTML=logHtml(LOG.slice(0,60));if(cur())renderDetail(cur());});
+const shotHtml=rows=>rows.length?rows.map(r=>`<figure><img loading="lazy" src="${esc(r.url)}" alt="${esc(r.title||'')}"><figcaption><span>${esc(r.title||'')}</span><span class="mono">${esc(r.agent||'')} · ${clock(r.ts)}</span></figcaption></figure>`).join(''):'<p class="empty">Noch keine Bilder</p>';
+db.collection('shots').orderBy('ts','desc').limit(40).onSnapshot(snap=>{SHOTS=snap.docs.map(d=>d.data());$('#shots').innerHTML=shotHtml(SHOTS.slice(0,12));if(cur())renderDetail(cur());});
+db.collection('live').orderBy('ts','desc').limit(4).onSnapshot(snap=>{const rows=snap.docs.map(d=>d.data());const fb=$('#liveFb');fb.querySelectorAll('img').forEach(i=>i.remove());rows.forEach(r=>{const i=new Image();i.src=r.url;i.alt=r.title||'';fb.prepend(i);});if(rows[0]){$('#liveWhen').textContent='Build '+ago(rows[0].ts);$('#liveLabel').textContent='Werkstatt-Build · '+(rows[0].label||'');}});
+const fbHtml=rows=>rows.map(r=>{const n=AG.find(a=>a.id===r.to);const st=(r.status||'offen');return`<div class="e"><div class="head"><b>${esc(r.to==='alle'?'Alle':n?n.name:r.to)}</b><span class="st ${esc(st.replace(' ','-'))}">${esc(st)}</span><span class="mono">${clock(r.ts)}</span></div><div>${esc(r.text)}</div>${r.bot?`<div class="bot"><span>Sofortantwort</span>${esc(r.bot)}</div>`:(r.status==='offen'&&Date.now()-r.ts<60000?`<div class="bot wait"><span>Sofortantwort</span>…</div>`:'')}${r.answer?`<div class="ans"><span>Team</span>${esc(r.answer)}</div>`:''}</div>`;}).join('');
+db.collection('feedback').orderBy('ts','desc').limit(40).onSnapshot(snap=>{FB=snap.docs.map(d=>d.data());$('#fbList').innerHTML=fbHtml(FB.slice(0,20));if(cur())renderDetail(cur());});
+// Sofortantwort: ein Assistent antwortet direkt in der Seite (kennt Auftrag, Stand und Protokoll des Agenten); die Agenten arbeiten das Feedback danach ab
+const PROJEKT='Veyra ist Christophs eigenes Monster-Sammel-Rollenspiel (Browser/PWA, three.js, Cel-Shading, Deutsch, für ein kleines Kind). Kreaturen heißen Terras. Alles sind eigene Entwürfe, nichts aus fremden Marken. Ein Orchestrator (Fable 5.1) steuert Agenten (Opus = Umbau, Sonnet = QA). Agenten: Kreaturenbilder (Bilder in Dex/Team robust und scharf), Bewegungsdynamik (Gang/Sprint, Reiten entfernt), Innenräume & Höhlen (Innendesign, Kreaturenstation), Terras (3D-Modelle tierhafter, Starter + Welt I zuerst), Charaktere & Entwicklung (realistische Proportionen im Cel-Look, Held bekommt sichtbar Kleidung/Medaillen), Test-Team (Durchspielen, Regression). Ablauf je Loop: Umbau → QA mit Noten → unter 8 Nachbesserung → Auslieferung als Artifact + ZIP für Netlify.';
+let sampleFn=null;claude.use('sample').then(s=>{sampleFn=s;if(!s){const n=document.createElement('p');n.className='hint';n.textContent='Sofortantwort ist in dieser Ansicht nicht verfügbar (der Viewer bietet sie hier nicht an) – der Orchestrator antwortet im Eintrag unter „Team“.';$('#fbForm').after(n);}});
+async function sofort(ref,to,text){if(!sampleFn)return;const a=AG.find(x=>x.id===to);const ctx=a?`Agent: ${a.name} (${a.model}), Status ${STATE[a.state]||a.state}, ${a.pct||0} %. Auftrag: ${a.task||''}. Letzter Stand: ${a.note||''}.`:'Empfänger: alle Agenten / Orchestrator.';
+  const lg=LOG.filter(r=>!a||r.agent===(a.name||a.id)||r.agent==='Orchestrator').slice(0,10).map(r=>`- ${clock(r.ts)} ${r.agent}: ${r.text}`).join('\n');
+  const fb=FB.filter(r=>r.answer).slice(0,5).map(r=>`- Frage: ${r.text} → Antwort: ${r.answer}`).join('\n');
+  const prompt=`Du bist der Werkstatt-Assistent des Projekts. Antworte auf Deutsch, in 2–5 kurzen Sätzen, ohne Floskeln, konkret zum Thema: Was ist vermutlich die Ursache, was passiert als Nächstes damit, und welche Rückfrage (höchstens eine) hilft dem Team. Erfinde keine Fakten; wenn etwas nicht aus dem Kontext hervorgeht, sage das. Sage am Ende in einem Satz, dass der Orchestrator den Eintrag beim nächsten Schritt mit „in Arbeit“ oder „erledigt“ kennzeichnet.\n\nProjekt: ${PROJEKT}\n\n${ctx}\n\nProtokoll (neueste zuerst):\n${lg||'(leer)'}\n\nFrühere Antworten:\n${fb||'(keine)'}\n\nNachricht des Nutzers: ${text}`;
+  try{const r=await sampleFn(prompt,{modelTier:'default',cache:false});if(r&&r.text)await ref.update({bot:r.text.trim(),botTs:Date.now()});}catch(err){try{await ref.update({bot:'(Sofortantwort gerade nicht verfügbar: '+(err&&err.code||'Fehler')+')',botTs:Date.now()});}catch(e2){}}}
+// Vorschauen: collection vorschau {ts, agent, title, url, status: offen|freigegeben|abgelehnt, note, decidedAt}
+let VS=[];
+db.collection('vorschau').orderBy('ts','desc').limit(40).onSnapshot(snap=>{VS=snap.docs.map(d=>({id:d.id,ref:d.ref,...d.data()}));const el=$('#vsList');const open=VS.filter(v=>v.status==='offen');$('#vsCount').textContent=open.length?open.length+' offen':'';
+  if(!VS.length){el.innerHTML='<p class="empty">Keine offenen Vorschauen</p>';return;}
+  el.innerHTML=VS.map(v=>`<figure class="vs" data-id="${esc(v.id)}"><img loading="lazy" src="${esc(v.url)}" alt="${esc(v.title||'')}"><figcaption><span>${esc(v.title||'')}</span><span class="mono">${esc(v.agent||'')} · ${clock(v.ts)}</span><span class="st ${esc(v.status||'offen')}">${esc(v.status||'offen')}${v.note?' · '+esc(v.note):''}</span></figcaption>
+    ${v.status==='offen'?`<textarea placeholder="Anmerkung (bei Ablehnung bitte kurz sagen, was anders soll)"></textarea><div class="acts"><button type="button" class="ok">Freigeben</button><button type="button" class="no">Ablehnen</button></div>`:''}</figure>`).join('');
+  el.querySelectorAll('.vs').forEach(f=>{const v=VS.find(x=>x.id===f.dataset.id);const ta=f.querySelector('textarea');const dec=async st=>{try{await v.ref.update({status:st,note:(ta&&ta.value.trim())||'',decidedAt:Date.now()});}catch(err){alertHint('Nicht gespeichert ('+(err&&err.code||'Fehler')+')');}};
+    const ok=f.querySelector('.ok'),no=f.querySelector('.no');if(ok)ok.onclick=()=>dec('freigegeben');if(no)no.onclick=()=>{if(ta&&!ta.value.trim()){ta.focus();ta.placeholder='Bitte kurz sagen, was anders soll';return;}dec('abgelehnt');};});});
+function alertHint(t){const h=$('#fbHint');h.textContent=t;setTimeout(()=>h.textContent='',8000);}
+async function send(to,textEl,hintEl){const t=textEl.value.trim();if(!t)return;try{const ref=await db.collection('feedback').add({text:t,to,ts:Date.now(),status:'offen',by:user?await user.id():null});textEl.value='';hintEl.textContent=sampleFn?'Angekommen – Sofortantwort kommt gleich unten':'Angekommen – steht unten als „offen“';sofort(ref,to,t);}catch(err){hintEl.textContent='Nicht gespeichert ('+(err&&err.code||'Fehler')+')';}setTimeout(()=>hintEl.textContent='',12000);}
+$('#fbForm').addEventListener('submit',e=>{e.preventDefault();send($('#fbAgent').value,$('#fbText'),$('#fbHint'));});
+// Diktat: Mikrofon-Knopf schreibt Gesprochenes ins Textfeld (nur, wo der Viewer es anbietet)
+claude.use('dictation').then(d=>{if(!d)return;const mics=[...document.querySelectorAll('button.mic')];mics.forEach(b=>b.hidden=false);
+  let act=null,base='';const ta=()=>act&&document.getElementById(act.dataset.for);
+  const setUI=on=>{mics.forEach(b=>{b.setAttribute('aria-pressed',b===act&&on?'true':'false');b.querySelector('span:last-child').textContent=b===act&&on?'Stopp':'Sprechen';});const t=ta();if(t)t.classList.toggle('listening',on);};
+  d.onPartial(({text})=>{const t=ta();if(t)t.value=(base?base+' ':'')+text;});
+  d.onFinal(({text})=>{const t=ta();if(!t)return;base=(base?base+' ':'')+text.trim();t.value=base;});
+  d.onState(({state,reason})=>{const on=state==='listening'||state==='starting';setUI(on);if(state==='idle'){const h=act&&act.dataset.for==='fbText'?$('#fbHint'):$('#dfbHint');if(h&&reason==='not_granted'){h.textContent='Mikrofon nicht freigegeben – du kannst tippen';setTimeout(()=>h.textContent='',6000);}act=null;}});
+  mics.forEach(b=>b.addEventListener('click',()=>{if(act===b){d.stop().catch(()=>{});return;}act=b;const t=ta();base=t.value.trim();const p=d.start({language:'de-DE'});setUI(true);p.catch(err=>{setUI(false);act=null;if(err&&err.code==='not_granted'){mics.forEach(x=>x.hidden=true);}});}));
+});
+$('#dfbForm').addEventListener('submit',e=>{e.preventDefault();send(cur(),$('#dfbText'),$('#dfbHint'));});
+function renderDetail(id){const r=AG.find(a=>a.id===id);const h=$('#dhead');
+  if(!r){h.innerHTML='<p class="empty">Agent nicht gefunden</p>';return;}
+  const pct=Math.max(0,Math.min(100,+r.pct||0));
+  h.innerHTML=`<div class="top"><span class="dot ${esc(r.state||'wartet')}"></span><h2>${esc(r.name||r.id)}</h2></div>
+    <div class="meta"><span>${esc(r.model||'')}</span><span>${esc(STATE[r.state]||'')}</span><span class="mono">zuletzt ${ago(r.updatedAt)} (${clock(r.updatedAt)})</span></div>
+    <div class="task">${esc(r.task||'')}</div><div class="note">${esc(r.note||'')}</div>
+    <div class="dprog"><i style="--p:${pct}%"></i><span class="mono">${pct} %</span></div>`;
+  const name=r.name||r.id;const mine=x=>x.agent===name||x.agent===r.id||(x.agent&&name.startsWith(x.agent));
+  $('#dlog').innerHTML=logHtml(LOG.filter(mine));$('#dshots').innerHTML=shotHtml(SHOTS.filter(mine));
+  const f=FB.filter(x=>x.to===id||(id==='orchestrator'&&x.to==='alle'));$('#dfb').innerHTML=f.length?fbHtml(f):'<p class="empty">Noch kein Feedback</p>';}
+route();
+setInterval(()=>{document.querySelectorAll('.agent').forEach(b=>{const r=AG.find(a=>a.id===b.dataset.id);if(r)b.querySelector('.when').textContent=ago(r.updatedAt);});},30000);
+})();
+</script>

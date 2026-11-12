@@ -1,0 +1,78 @@
+/* ===================== GROSSE KARTE (src/46-bigmap.js, docs/bigmap.md) · Vollbild-Overlay, Zoom-Kette Karte → Region → Veyra =====================
+ Glas wie LOOK L2 (ohne Rahmen, weiche Schatten), Fredoka nur für Titel, Nunito Sans für alles andere, Touch-Ziele ≥ 48 px, Signaturfarbe nur für Aktiv/„Du“. */
+.bm{position:fixed;inset:0;z-index:42;display:grid;padding:max(10px,var(--sa-t,0px)) max(10px,var(--sa-r,0px)) max(10px,var(--sa-b,0px)) max(10px,var(--sa-l,0px));box-sizing:border-box;
+ background:rgba(8,12,24,.62);opacity:0;transition:opacity 220ms var(--l2-ease,ease-out);font-family:var(--font-ui);color:var(--l2-ink,#16202c);touch-action:none;
+ --bm-top:#7f9fcf;--bm-hor:#e4dccf;--bm-u:clamp(12px,calc(1vh + .6vw),15px)}
+.bm.in{opacity:1}
+.bmPanel{position:relative;display:grid;grid-template-rows:auto 1fr auto;min-height:0;border-radius:calc(var(--bm-u) * 1.6);overflow:hidden;box-shadow:0 24px 60px -24px rgba(0,0,0,.6);
+ background:linear-gradient(180deg,var(--bm-top) 0%,color-mix(in srgb,var(--bm-top) 45%,var(--bm-hor)) 55%,var(--bm-hor) 100%);transform:scale(.97);transition:transform 260ms var(--l2-ease,ease-out)}
+.bm.in .bmPanel{transform:none}
+/* Kopf */
+.bmHead{display:flex;align-items:center;gap:10px;padding:8px 8px 8px calc(var(--bm-u) * 1.2);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px) saturate(1.35);backdrop-filter:blur(18px) saturate(1.35);box-shadow:inset 0 -1px 0 rgba(24,34,48,.06);z-index:3}
+.bmTitle{display:grid;min-width:0;flex:1}
+.bmName{font:600 calc(var(--bm-u) * 1.45)/1.1 var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmSub{font:600 max(12px,calc(var(--bm-u) * .86))/1.25 var(--font-ui);color:var(--l2-ink2,#4c5870);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmSeg{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(24,34,48,.07);flex-shrink:0}
+.bmSeg button{min-height:48px;min-width:72px;padding:0 calc(var(--bm-u) * 1.1);border:0;border-radius:999px;background:transparent;font:700 max(12px,calc(var(--bm-u) * .98))/1 var(--font-ui);color:var(--l2-ink2,#4c5870)}
+.bmSeg button.on{background:var(--sig);color:#fff;box-shadow:0 6px 16px -8px var(--sig-glow)}
+.bmX{width:48px;height:48px;flex-shrink:0;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(24,34,48,.08);color:var(--l2-ink,#16202c)}
+.bmX svg{width:22px;height:22px}
+/* Bühne */
+.bmStage{position:relative;overflow:hidden;min-height:0;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.bmStage:active{cursor:grabbing}
+.bm[data-lvl=region] .bmStage{background:radial-gradient(120% 90% at 50% 35%,rgba(255,255,255,.28),transparent 70%)}
+.bm[data-lvl=world] .bmStage{background:radial-gradient(120% 100% at 50% 40%,#2d77b3,#103459)}
+.bm[data-time=nacht] .bmHead,.bm[data-time=nacht] .bmFoot{background:rgba(255,255,255,.86)}
+.bmBase{position:absolute;left:0;top:0;transform-origin:0 0;border-radius:calc(var(--bm-u) * 1.1);box-shadow:0 18px 40px -18px rgba(10,20,40,.55),0 0 0 3px rgba(255,255,255,.85);transition:opacity 300ms var(--l2-ease,ease-out);will-change:transform}
+.bm[data-lvl=region] .bmBase{box-shadow:none;border-radius:0}
+.bmBase.out{opacity:0}
+.bmMk{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+/* Ziel-Karte oben links */
+.bmGoal{position:absolute;z-index:2;top:12px;left:12px;display:flex;align-items:center;gap:10px;max-width:min(360px,46%);min-height:52px;padding:8px 14px 8px 10px;border:0;border-radius:calc(var(--bm-u) * 1.2);text-align:left;
+ background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 26px -14px rgba(16,24,40,.5);color:var(--l2-ink,#16202c)}
+.bmGoal i{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:#ff6a2b;box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(255,106,43,.25);
+ -webkit-mask:none;position:relative}
+.bmGoal i::after{content:'';position:absolute;left:10px;top:7px;width:3px;height:16px;border-radius:2px;background:#fff}
+.bmGoal i::before{content:'';position:absolute;left:12px;top:7px;border-left:11px solid #fff;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.bmGoal span{display:grid;min-width:0;gap:1px}
+.bmGoal small{font:800 12px/1 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:#d0541c}
+.bmGoal b{font:700 max(12px,calc(var(--bm-u) * .98))/1.2 var(--font-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmGoal em{font:600 max(12px,calc(var(--bm-u) * .82))/1.2 var(--font-ui);font-style:normal;color:var(--l2-ink2,#4c5870);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmGoal:disabled{opacity:1;filter:none;cursor:default}
+/* Zoom-Knöpfe rechts */
+.bmZoom{position:absolute;z-index:2;right:12px;top:50%;transform:translateY(-50%);display:grid;gap:8px}
+.bmZoom button,.bmLegBtn{min-width:48px;height:48px;border:0;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+ box-shadow:0 8px 20px -12px rgba(16,24,40,.55);color:var(--l2-ink,#16202c)}
+.bmZoom svg{width:22px;height:22px}
+.bmLegBtn{position:absolute;z-index:2;left:12px;bottom:12px;padding:0 18px;font:700 max(12px,calc(var(--bm-u) * .92))/1 var(--font-ui)}
+.bmLegBtn[aria-expanded=true]{background:var(--l2-ink,#16202c);color:#fff}
+.bmLeg{position:absolute;z-index:3;left:12px;bottom:68px;display:grid;grid-template-columns:repeat(2,minmax(0,auto));gap:4px 14px;max-height:calc(100% - 140px);overflow:auto;padding:12px 16px;border-radius:calc(var(--bm-u) * 1.2);
+ background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 14px 34px -16px rgba(16,24,40,.55);font:600 max(12px,calc(var(--bm-u) * .86))/1.2 var(--font-ui)}
+.bmLeg span{display:flex;align-items:center;gap:8px;min-height:30px;white-space:nowrap}
+.bmCi{width:26px;height:26px;flex-shrink:0}
+/* Infokarte */
+.bmCard{position:absolute;z-index:4;display:grid;gap:3px;max-width:min(320px,78%);padding:12px 16px;border-radius:calc(var(--bm-u) * 1.2);background:rgba(255,255,255,.95);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+ box-shadow:0 16px 36px -14px rgba(16,24,40,.55);font:600 max(12px,calc(var(--bm-u) * .9))/1.3 var(--font-ui);color:var(--l2-ink2,#4c5870);animation:bmPop 200ms var(--l2-ease,ease-out)}
+.bmCard b{font:600 calc(var(--bm-u) * 1.12)/1.2 var(--font-display);color:var(--l2-ink,#16202c)}
+.bmGo{margin-top:8px;min-height:48px;padding:0 18px;border:0;border-radius:999px;background:var(--sig);color:#fff;font:700 max(12px,calc(var(--bm-u) * .95))/1 var(--font-ui);box-shadow:0 8px 20px -10px var(--sig-glow)}
+@keyframes bmPop{from{opacity:0;transform:translateY(6px) scale(.97)}}
+/* Fuß: „Hier kannst du …“ */
+.bmFoot{display:flex;align-items:center;gap:12px;padding:8px 10px 8px calc(var(--bm-u) * 1.2);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px) saturate(1.35);backdrop-filter:blur(18px) saturate(1.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.65);z-index:3;min-width:0}
+.bmCan{flex-shrink:0;font:800 max(12px,calc(var(--bm-u) * .74))/1.15 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--l2-ink2,#4c5870);max-width:9em}
+.bmChips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;min-width:0;padding:2px}
+.bmChips::-webkit-scrollbar{display:none}
+.bmChip{flex-shrink:0;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px 0 8px;border:0;border-radius:999px;background:#fff;box-shadow:0 4px 12px -8px rgba(16,24,40,.5),inset 0 0 0 1px rgba(24,34,48,.06);
+ font:700 max(12px,calc(var(--bm-u) * .95))/1.15 var(--font-ui);color:var(--l2-ink,#16202c);white-space:nowrap}
+.bmChip:disabled{opacity:1;filter:none;color:var(--l2-ink2,#4c5870)}
+.bmChip .bmCi{width:30px;height:30px}
+/* Kleine Höhe (Handy quer) */
+@media (max-height:520px){.bmHead{padding:5px 6px 5px 12px}.bmFoot{padding:5px 8px 5px 12px}.bmName{font-size:calc(var(--bm-u) * 1.22)}.bmSeg button{min-width:60px;padding:0 12px}
+ .bmGoal{top:8px;left:8px;min-height:48px;padding:6px 12px 6px 8px}.bmZoom{right:8px;gap:6px}.bmLegBtn{left:8px;bottom:8px}.bmLeg{left:8px;bottom:62px}.bmCan{max-width:6.5em}}
+@media (max-width:700px){.bmSub{display:none}.bmSeg button{min-width:56px;padding:0 10px}}
+@media (prefers-reduced-motion:reduce){.bm,.bmPanel,.bmBase,.bmCard{transition:none!important;animation:none!important}}
+body.red .bm,body.red .bmPanel,body.red .bmBase,body.red .bmCard{transition:none!important;animation:none!important}
+/* Minikarte: Hinweis „vergrößern“ (Tipp öffnet die große Karte) */
+#mmW{cursor:pointer}
+#mmW::after{content:'';position:absolute;left:-4px;bottom:-4px;width:26px;height:26px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7' fill='none' stroke='%2316202c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/15px no-repeat;
+ box-shadow:0 3px 10px -4px rgba(16,24,40,.6);opacity:0;transition:opacity 240ms}
+#mmW.show::after{opacity:1}

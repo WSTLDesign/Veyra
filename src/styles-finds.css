@@ -1,0 +1,8 @@
+/* ===== Fundstücke (47-finds.js): Rubrik „Rollen“, Lern-Auswahl, Dex-Hinweis ===== */
+.item.fdRoll{border-left:5px solid var(--tc,var(--sig))}
+.fdHint{margin:0 0 10px;font-size:var(--fs-sm)}
+.mon .fdTag{font-family:var(--fd);font-weight:600;font-size:var(--fs-xs);padding:2px 10px;border-radius:var(--r-pill);background:var(--ui3);color:var(--ink-1)}
+.mon.fd-ok .fdTag{background:color-mix(in srgb,var(--ok) 22%,var(--ui));color:#14532d}
+.mon.fd-nein,.mon.fd-kennt{opacity:.6}
+.fdSlots{margin-bottom:12px}
+.fdDex{margin-top:6px;font-weight:600;color:var(--sig-ink)}

@@ -1,0 +1,463 @@
+{
+ "map": "route1",
+ "mods": {},
+ "bag": {
+  "kapsel": 7,
+  "trank": 3
+ },
+ "money": 2400,
+ "flags": {
+  "starter": 1,
+  "rival1": 1,
+  "badge1": 1
+ },
+ "time": 780,
+ "badges": [
+  "a"
+ ],
+ "ret": {
+  "map": "kupferhain",
+  "x": 5,
+  "y": 10
+ },
+ "respawn": {
+  "map": "kupferhain",
+  "x": 5,
+  "y": 10
+ },
+ "px": 8,
+ "py": 12,
+ "name": "Noa",
+ "rival": "Lio",
+ "outfit": {},
+ "visited": {
+  "morgenau": 1,
+  "route1": 1
+ },
+ "known2": {},
+ "ver": 3,
+ "team": [
+  {
+   "s": 1,
+   "l": 12,
+   "xp": 1728,
+   "hp": 56,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ],
+   "nickname": "Funki-Alt",
+   "nature": "kernig",
+   "iv": {
+    "hp": 20,
+    "atk": 20,
+    "def": 20,
+    "spa": 20,
+    "spd": 20,
+    "spe": 20
+   },
+   "shiny": true
+  },
+  {
+   "s": 4,
+   "l": 9,
+   "xp": 729,
+   "hp": 47,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 7,
+   "l": 8,
+   "xp": 512,
+   "hp": 44,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 20,
+   "l": 14,
+   "xp": 2744,
+   "hp": 1,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  }
+ ],
+ "box": [
+  {
+   "s": 10,
+   "l": 10,
+   "xp": 1000,
+   "hp": 50,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 28,
+   "l": 45,
+   "xp": 91125,
+   "hp": 155,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 41,
+   "l": 40,
+   "xp": 64000,
+   "hp": 140,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 14,
+   "l": 16,
+   "xp": 4096,
+   "hp": 68,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 33,
+   "l": 20,
+   "xp": 8000,
+   "hp": 80,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 18,
+   "l": 15,
+   "xp": 3375,
+   "hp": 65,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 39,
+   "l": 22,
+   "xp": 10648,
+   "hp": 86,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 24,
+   "l": 18,
+   "xp": 5832,
+   "hp": 74,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 36,
+   "l": 25,
+   "xp": 15625,
+   "hp": 95,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 12,
+   "l": 7,
+   "xp": 343,
+   "hp": 41,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 2,
+   "l": 30,
+   "xp": 27000,
+   "hp": 110,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  },
+  {
+   "s": 3,
+   "l": 50,
+   "xp": 125000,
+   "hp": 170,
+   "moves": [
+    {
+     "id": "kratzer",
+     "pp": 25
+    },
+    {
+     "id": "knurren",
+     "pp": 30
+    }
+   ],
+   "known": [
+    "kratzer",
+    "knurren"
+   ]
+  }
+ ],
+ "eggs": [
+  {
+   "s": 12,
+   "l": 1,
+   "eggSteps": 200
+  },
+  {
+   "s": 26,
+   "l": 1,
+   "eggSteps": 300
+  }
+ ],
+ "dex": {
+  "seen": {
+   "1": 1,
+   "2": 1,
+   "3": 1,
+   "4": 1,
+   "5": 1,
+   "6": 1,
+   "7": 1,
+   "8": 1,
+   "9": 1,
+   "10": 1,
+   "11": 1,
+   "12": 1,
+   "13": 1,
+   "14": 1,
+   "15": 1,
+   "16": 1,
+   "17": 1,
+   "18": 1,
+   "19": 1,
+   "20": 1,
+   "21": 1,
+   "22": 1,
+   "23": 1,
+   "24": 1,
+   "25": 1,
+   "26": 1,
+   "27": 1,
+   "28": 1,
+   "29": 1,
+   "30": 1,
+   "31": 1,
+   "32": 1,
+   "33": 1,
+   "34": 1,
+   "35": 1,
+   "36": 1,
+   "37": 1,
+   "38": 1,
+   "39": 1,
+   "40": 1,
+   "41": 1
+  },
+  "caught": {
+   "1": 1,
+   "3": 1,
+   "5": 1,
+   "7": 1,
+   "9": 1,
+   "11": 1,
+   "13": 1,
+   "15": 1,
+   "17": 1,
+   "19": 1,
+   "21": 1,
+   "23": 1,
+   "25": 1,
+   "27": 1,
+   "29": 1,
+   "31": 1,
+   "33": 1,
+   "35": 1,
+   "37": 1,
+   "39": 1,
+   "41": 1
+  }
+ },
+ "dexNew": {
+  "1": 1,
+  "10": 1,
+  "41": 1
+ },
+ "shinyChain": {
+  "s": 20,
+  "n": 3
+ }
+}

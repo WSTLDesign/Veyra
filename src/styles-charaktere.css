@@ -1,0 +1,6 @@
+/* Charakterentwicklung (53-charaktere.js): „Dein Aussehen“ in der Chronik */
+.chLook{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:18px;background:var(--ui2,rgba(255,255,255,.7))}
+.chLookCv{width:88px;height:117px;flex:none;border-radius:14px;background:linear-gradient(180deg,#ffffff,#e6edf4)}
+.chLookTx{min-width:0}.chLookTx b{font:700 16px var(--fd,inherit)}.chLookTx p{margin:4px 0}
+.chLookSt{display:flex;gap:6px;margin:6px 0 2px}.chLookSt span{width:18px;height:8px;border-radius:999px;background:rgba(120,130,150,.3)}
+.chLookSt span.got{background:var(--sig,#d81b72)}

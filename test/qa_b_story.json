@@ -1,0 +1,603 @@
+{
+ "chain": [
+  {
+   "f": "starter",
+   "ch": 1,
+   "map": "labor",
+   "x": 5,
+   "y": 4,
+   "l": "Fangkapseln auf dem Tisch",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s1_rivalen",
+   "ch": 1,
+   "map": "labor",
+   "x": 3,
+   "y": 6,
+   "l": "Rayan und Mira",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "firstcatch",
+   "ch": 1,
+   "map": "route1",
+   "x": 9,
+   "y": 6,
+   "l": "Hohes Gras",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s1_kaine",
+   "ch": 1,
+   "map": "route1",
+   "x": 12,
+   "y": 2,
+   "l": "Fremder im Mantel",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s1_elowen",
+   "ch": 1,
+   "map": "haus_nachbar",
+   "x": 4,
+   "y": 3,
+   "l": "Oma Elowen",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s2_elara",
+   "ch": 2,
+   "map": "kupferhain",
+   "x": 16,
+   "y": 12,
+   "l": "Waldhüterin Elara",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge1",
+   "ch": 2,
+   "map": "arena1",
+   "x": 5,
+   "y": 2,
+   "l": "Arenaleiter Lior",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "grunt1",
+   "ch": 2,
+   "map": "nebelgrotte",
+   "x": 8,
+   "y": 8,
+   "l": "Ordensrekrut",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s2_seraphine",
+   "ch": 2,
+   "map": "nebelgrotte",
+   "x": 10,
+   "y": 7,
+   "l": "Seraphine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s2_kristall",
+   "ch": 2,
+   "map": "kupferhain",
+   "x": 16,
+   "y": 12,
+   "l": "Waldhüterin Elara",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s3_mira",
+   "ch": 3,
+   "map": "brisenhafen",
+   "x": 6,
+   "y": 12,
+   "l": "Rivalin Mira",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge2",
+   "ch": 3,
+   "map": "arena2",
+   "x": 5,
+   "y": 2,
+   "l": "Arenaleiterin Neria",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s3_kaine",
+   "ch": 3,
+   "map": "windkueste",
+   "x": 17,
+   "y": 19,
+   "l": "Späher Kaine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s3_leuchtturm",
+   "ch": 3,
+   "map": "haus_moewe3",
+   "x": 5,
+   "y": 4,
+   "l": "Leuchtturmwärter Ruven",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "tr_lio",
+   "ch": 4,
+   "map": "route3",
+   "x": 9,
+   "y": 6,
+   "l": "Rivale Rayan",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s4_seraphine",
+   "ch": 4,
+   "map": "route3",
+   "x": 9,
+   "y": 9,
+   "l": "Seraphine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s4_kristall",
+   "ch": 4,
+   "map": "route3",
+   "x": 14,
+   "y": 3,
+   "l": "Arenaleiterin Sylva",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge3",
+   "ch": 5,
+   "map": "arena3",
+   "x": 5,
+   "y": 2,
+   "l": "Arenaleiterin Eira",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s5_elowen",
+   "ch": 5,
+   "map": "frostheim",
+   "x": 16,
+   "y": 12,
+   "l": "Oma Elowen",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s5_ruinen",
+   "ch": 5,
+   "map": "frostheim",
+   "x": 17,
+   "y": 1,
+   "l": "Eisruinen",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s5_kaine",
+   "ch": 5,
+   "map": "frostheim",
+   "x": 15,
+   "y": 1,
+   "l": "Späher Kaine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s6_rayan",
+   "ch": 6,
+   "map": "glutschlucht",
+   "x": 3,
+   "y": 6,
+   "l": "Rayan",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s6_orden",
+   "ch": 6,
+   "map": "glutschlucht",
+   "x": 4,
+   "y": 8,
+   "l": "Ordensrekruten",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge_glut",
+   "ch": 6,
+   "map": "glutschlucht",
+   "x": 6,
+   "y": 13,
+   "l": "Arenaleiter Kael",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s6_rayan2",
+   "ch": 6,
+   "map": "glutschlucht",
+   "x": 3,
+   "y": 6,
+   "l": "Rayan",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s7_torvik",
+   "ch": 7,
+   "map": "nebelgrotte",
+   "x": 14,
+   "y": 7,
+   "l": "Arenaleiter Torvik",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s7_rekruten",
+   "ch": 7,
+   "map": "nebelgrotte",
+   "x": 4,
+   "y": 10,
+   "l": "Ordensrekruten",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge_fels",
+   "ch": 7,
+   "map": "nebelgrotte",
+   "x": 14,
+   "y": 7,
+   "l": "Arenaleiter Torvik",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s7_tarek",
+   "ch": 7,
+   "map": "nebelgrotte",
+   "x": 16,
+   "y": 9,
+   "l": "Forscher Tarek",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "boss1",
+   "ch": 8,
+   "map": "route4",
+   "x": 8,
+   "y": 6,
+   "l": "Späher Kaine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s8_kaine",
+   "ch": 8,
+   "map": "route4",
+   "x": 8,
+   "y": 5,
+   "l": "Kaine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge4",
+   "ch": 8,
+   "map": "arena4",
+   "x": 5,
+   "y": 2,
+   "l": "Arenaleiterin Nymera",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "s8_hain",
+   "ch": 8,
+   "map": "fluestertal",
+   "x": 17,
+   "y": 5,
+   "l": "Schatten-Kristall",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "badge_lumen",
+   "ch": 9,
+   "map": "siegesstrasse",
+   "x": 4,
+   "y": 12,
+   "l": "Arenaleiter Solan",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "sf_seraphine",
+   "ch": 9,
+   "map": "siegesstrasse",
+   "x": 12,
+   "y": 7,
+   "l": "Seraphine",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "sf_varkon",
+   "ch": 9,
+   "map": "siegesstrasse",
+   "x": 12,
+   "y": 6,
+   "l": "Lord Varkon",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "sf_auralis",
+   "ch": 9,
+   "map": "siegesstrasse",
+   "x": 12,
+   "y": 6,
+   "l": "Lord Varkon",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "top4",
+   "ch": 9,
+   "map": "liga",
+   "x": 5,
+   "y": 13,
+   "l": "Turmrat",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "champion",
+   "ch": 9,
+   "map": "liga",
+   "x": 5,
+   "y": 3,
+   "l": "Kronenhüterin Ardena",
+   "err": [],
+   "reach": true,
+   "ok": true
+  },
+  {
+   "f": "se_fest",
+   "ch": 10,
+   "map": "labor",
+   "x": 5,
+   "y": 2,
+   "l": "Professor Veyran",
+   "err": [],
+   "reach": true,
+   "ok": true
+  }
+ ],
+ "sideQuests": [
+  {
+   "f": "sq_korb",
+   "title": "Mamas Picknickkorb",
+   "giver": "haus_spieler",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"trank:3\",\"honigtau:1\"]"
+  },
+  {
+   "f": "sq_funkel",
+   "title": "Tareks Funkelsteine",
+   "giver": "labor",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"ultra:2\",\"honigtau:1\"]"
+  },
+  {
+   "f": "sq_experiment",
+   "title": "Tareks Experiment",
+   "giver": "labor",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "800 ¤, Items [\"donnerstein:1\",\"blattstein:1\"]"
+  },
+  {
+   "f": "sq_faehrten",
+   "title": "Elaras Fährten",
+   "giver": "kupferhain",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"jubelkapsel:1\",\"ultra:3\",\"federkapsel:2\"]"
+  },
+  {
+   "f": "sq_blumen",
+   "title": "Wilmas durstige Blumen",
+   "giver": "kupferhain",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"honigtau:3\",\"sonnbeere:2\"]"
+  },
+  {
+   "f": "sq_laterne",
+   "title": "Borwins Laterne",
+   "giver": "brisenhafen",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"superk:5\",\"balsamkapsel:2\"]"
+  },
+  {
+   "f": "sq_knoten",
+   "title": "Marlenes Flut-Freunde",
+   "giver": "brisenhafen",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"jubelkapsel:1\",\"netz:5\",\"flutsiegel:1\"]"
+  },
+  {
+   "f": "sq_fieber",
+   "title": "Das frierende Frosti",
+   "giver": "frostheim",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"hypertr:2\",\"sonnbeere:-1\",\"balsamkapsel:3\"]"
+  },
+  {
+   "f": "sq_ofen",
+   "title": "Astas kalter Ofen",
+   "giver": "huette_glut",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"supertr:2\",\"glutkern:1\"]"
+  },
+  {
+   "f": "sq_sterne",
+   "title": "Corvins Sternenfreund",
+   "giver": "schattmoor",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"jubelkapsel:1\",\"daemmer:5\",\"dunkelstein:1\"]"
+  },
+  {
+   "f": "sq_signal",
+   "title": "Kaines Signalkristalle",
+   "giver": "schattmoor",
+   "err": [],
+   "on": true,
+   "done": true,
+   "reward": "0 ¤, Items [\"ultra:3\",\"resokristall:1\"]"
+  }
+ ],
+ "end": {
+  "b": [
+   "Floramedaille",
+   "Flutmedaille",
+   "Böenmedaille",
+   "Frostmedaille",
+   "Glutmedaille",
+   "Felsmedaille",
+   "Schattenmedaille",
+   "Lumenmedaille"
+  ],
+  "f": 44,
+  "step": null,
+  "fest": true,
+  "champ": true,
+  "top4": true,
+  "crystals": [
+   [
+    "flora",
+    true
+   ],
+   [
+    "flut",
+    true
+   ],
+   [
+    "boe",
+    true
+   ],
+   [
+    "frost",
+    true
+   ],
+   [
+    "glut",
+    true
+   ],
+   [
+    "fels",
+    true
+   ],
+   [
+    "schatten",
+    true
+   ],
+   [
+    "lumen",
+    true
+   ]
+  ],
+  "money": 13500,
+  "q": {
+   "map": "moewenbucht",
+   "x": 6,
+   "y": 10,
+   "l": "Mika"
+  }
+ }
+}

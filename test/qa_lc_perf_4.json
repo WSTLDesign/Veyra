@@ -1,0 +1,218 @@
+[
+ {
+  "id": "morgenau",
+  "pos": [
+   9,
+   7
+  ],
+  "n": 4,
+  "ftMean": 1633,
+  "jsMean": 104.5,
+  "jsP95": 323.5,
+  "renderMean": 9,
+  "jsOnly": 95.5,
+  "calls": 49,
+  "tris": 113398,
+  "geos": 63,
+  "tex": 23,
+  "skinned": 10
+ },
+ {
+  "id": "route1",
+  "pos": [
+   10,
+   11
+  ],
+  "n": 4,
+  "ftMean": 1139,
+  "jsMean": 17.4,
+  "jsP95": 39.8,
+  "renderMean": 7.4,
+  "jsOnly": 10.1,
+  "calls": 52,
+  "tris": 133990,
+  "geos": 95,
+  "tex": 29,
+  "skinned": 6
+ },
+ {
+  "id": "kupferhain",
+  "pos": [
+   10,
+   8
+  ],
+  "n": 4,
+  "ftMean": 1017,
+  "jsMean": 18.9,
+  "jsP95": 22.9,
+  "renderMean": 11.4,
+  "jsOnly": 7.5,
+  "calls": 58,
+  "tris": 111962,
+  "geos": 135,
+  "tex": 37,
+  "skinned": 16
+ },
+ {
+  "id": "route2",
+  "pos": [
+   10,
+   6
+  ],
+  "n": 4,
+  "ftMean": 1156,
+  "jsMean": 7.9,
+  "jsP95": 16,
+  "renderMean": 5.1,
+  "jsOnly": 2.8,
+  "calls": 55,
+  "tris": 84818,
+  "geos": 171,
+  "tex": 42,
+  "skinned": 6
+ },
+ {
+  "id": "brisenhafen",
+  "pos": [
+   10,
+   8
+  ],
+  "n": 4,
+  "ftMean": 1161,
+  "jsMean": 27.5,
+  "jsP95": 38.8,
+  "renderMean": 16.9,
+  "jsOnly": 10.6,
+  "calls": 59,
+  "tris": 128752,
+  "geos": 206,
+  "tex": 52,
+  "skinned": 20
+ },
+ {
+  "id": "windkueste",
+  "pos": [
+   8,
+   12
+  ],
+  "n": 3,
+  "ftMean": 1300,
+  "jsMean": 13.3,
+  "jsP95": 16.9,
+  "renderMean": 7.6,
+  "jsOnly": 5.7,
+  "calls": 62,
+  "tris": 177600,
+  "geos": 244,
+  "tex": 61,
+  "skinned": 16
+ },
+ {
+  "id": "moewenbucht",
+  "pos": [
+   10,
+   10
+  ],
+  "n": 4,
+  "ftMean": 1122,
+  "jsMean": 20.2,
+  "jsP95": 21.5,
+  "renderMean": 13.9,
+  "jsOnly": 6.3,
+  "calls": 61,
+  "tris": 141712,
+  "geos": 277,
+  "tex": 66,
+  "skinned": 16
+ },
+ {
+  "id": "route3",
+  "pos": [
+   10,
+   8
+  ],
+  "n": 4,
+  "ftMean": 1361,
+  "jsMean": 9.9,
+  "jsP95": 14.7,
+  "renderMean": 0.5,
+  "jsOnly": 9.4,
+  "calls": 43,
+  "tris": 98372,
+  "geos": 301,
+  "tex": 75,
+  "skinned": 8
+ },
+ {
+  "id": "glutschlucht",
+  "pos": [
+   10,
+   11
+  ],
+  "n": 4,
+  "ftMean": 1117,
+  "jsMean": 21.4,
+  "jsP95": 36.4,
+  "renderMean": 14.9,
+  "jsOnly": 6.5,
+  "calls": 55,
+  "tris": 165454,
+  "geos": 326,
+  "tex": 82,
+  "skinned": 18
+ },
+ {
+  "id": "fluestertal",
+  "pos": [
+   10,
+   13
+  ],
+  "n": 5,
+  "ftMean": 1342,
+  "jsMean": 7.2,
+  "jsP95": 13.6,
+  "renderMean": 0.4,
+  "jsOnly": 6.8,
+  "calls": 60,
+  "tris": 194742,
+  "geos": 357,
+  "tex": 89,
+  "skinned": 16
+ },
+ {
+  "id": "siegesstrasse",
+  "pos": [
+   11,
+   8
+  ],
+  "n": 4,
+  "ftMean": 1083,
+  "jsMean": 16.7,
+  "jsP95": 20.5,
+  "renderMean": 9.6,
+  "jsOnly": 7.1,
+  "calls": 52,
+  "tris": 138286,
+  "geos": 383,
+  "tex": 95,
+  "skinned": 16
+ },
+ {
+  "id": "nebelgrotte",
+  "pos": [
+   10,
+   8
+  ],
+  "n": 5,
+  "ftMean": 829,
+  "jsMean": 14.6,
+  "jsP95": 17.8,
+  "renderMean": 8.8,
+  "jsOnly": 5.8,
+  "calls": 25,
+  "tris": 52704,
+  "geos": 390,
+  "tex": 100,
+  "skinned": 12
+ }
+]

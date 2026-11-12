@@ -1,13 +1,17 @@
 # Veyra – Netlify
-# Live-Site: Branch main → Ordner web/ unverändert.
-# Staging-Site: Branch staging → Staging-Variante (eigene Speicher-Schlüssel, Badge, Debug-Menü).
+# Branch main    → Live-Site:    Build aus src/, Code verschleiert (tools/protect.mjs)
+# Branch staging → Staging-Site: wie Live + getrennter Spielstand, Badge, Debug-Menü (tools/make-staging.mjs), ebenfalls verschleiert
 [build]
-  publish = "web"
-  command = "echo 'Live: web/ wird unverändert veröffentlicht'"
+  publish = "dist"
+  command = "npm run build:live"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
 
 [context.staging]
   publish = "build/staging"
-  command = "node tools/make-staging.mjs web build/staging --note \"$(git log -1 --pretty=%s | cut -c1-60)\""
+  command = "npm run build:staging"
 
 [[headers]]
   for = "/sw.js"

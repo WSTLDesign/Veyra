@@ -1,0 +1,57 @@
+[
+ {
+  "sev": "mittel",
+  "k": "name-nah",
+  "msg": "Art „Krabbi“ ≈ „krabby“ (Levenshtein 1)"
+ },
+ {
+  "sev": "mittel",
+  "k": "name-nah",
+  "msg": "Art „Krabbi“ ≈ „krabby“ (Levenshtein 1)"
+ },
+ {
+  "sev": "niedrig",
+  "k": "jargon",
+  "msg": "Top-Drei ×1 (27-story.js:1) – Abwandlung von „Top Vier“"
+ },
+ {
+  "sev": "niedrig",
+  "k": "jargon",
+  "msg": "Champion ×1 (15-ui.js:1) – Pokémon-Titel (Champ); als Wort generisch → „Hüter der Lichtlande“ o. Ä."
+ },
+ {
+  "sev": "niedrig",
+  "k": "jargon",
+  "msg": "Arenaleiter ×45 (02-world.js:9, 27-story.js:19, 34-figures.js:17) – Pokémon-Begriff (Arenaleiter); generisch genug, Kanon des Nutzers nutzt ihn"
+ },
+ {
+  "sev": "niedrig",
+  "k": "jargon",
+  "msg": "Orden ×31 (02-world.js:4, 15-ui.js:5, 16-expansion.js:4, 27-story.js:15, 34-figures.js:3) – deutscher Pokémon-Begriff für Arena-Abzeichen; Kanon des Nutzers nennt „Medaille“ (Glutmedaille …) → in 02-world/15-ui auf Medaille umstellen"
+ },
+ {
+  "sev": "niedrig",
+  "k": "item-name",
+  "msg": "Kapselvarianten spiegeln Pokéball-Varianten (Netz, Dämmer, Nest, Echo=Wiederball, Zünd=Flottball, Jubel=Jubiläumsball, Balsam=Heilball, Herz=Freundesball, Absolut=Meisterball): Namen sind eigen, Funktionsmuster ist Genre-üblich → ok, nur beobachten"
+ },
+ {
+  "sev": "niedrig",
+  "k": "attacken",
+  "msg": "Einige Attacken tragen exakt deutsche Pokémon-Attackennamen (z. B. Flammenrad, Windstoß, Orkan, Steinwurf, Rankenhieb, Kratzer, Knurren, Rempler, Härten) – gewöhnliche Wörter, einzeln unkritisch; bei Gelegenheit eigene Wortschöpfungen"
+ },
+ {
+  "sev": "info",
+  "k": "bild",
+  "msg": "Ortsbilder (16) sind als oberes Band beschnitten und enthalten keine Fremdfigur (Sichtprüfung B3, Kontaktbogen test/qa_b_ortsbilder.png); map_veyra/region_flutkueste/glutlande/smaragdwald ohne Figuren, nur 800 px."
+ },
+ {
+  "sev": "info",
+  "k": "bild",
+  "msg": "public/art_ref/*_DRAFT.png (aurenstadt_markt_DRAFT.png, region_himmelsweiten_DRAFT.png) bleiben intern; nicht in veyra-app.zip/Release aufnehmen. dist/ ist frei von DRAFT-Dateien (Build bricht sonst ab)."
+ },
+ {
+  "sev": "mittel",
+  "k": "docs-marke",
+  "msg": "docs/qa-mechanik.md:50: - **Touch/Schrift:** alle sichtbaren Bedienelemente ≥ 48×48 px (Chips 169–298 × 48), Fremdbegriffe i"
+ }
+]

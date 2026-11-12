@@ -1,0 +1,32 @@
+// Look L2: prüft die Kampfkamera-Regie im Browser (Treffer → Fokus, Attackenwahl → eigene Kreatur, Kampfende → explore)
+// Aufruf: node build.mjs && node test/look_ui_cam.mjs
+import { chromium } from 'playwright';
+const b = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const p = await b.newPage({ viewport: { width: 860, height: 400 } });
+const errs = []; p.on('pageerror', e => errs.push(e.message));
+await p.route(/fonts\.googleapis|fonts\.gstatic/, r => r.fulfill({ body: '', contentType: 'text/css' }));
+await p.goto(new URL('../dist/index.html', import.meta.url).href, { waitUntil: 'load' });
+await p.click('#iPrompt'); await p.waitForTimeout(600); await p.click('#iSkip'); await p.waitForTimeout(600);
+await p.click('#tNew'); await p.waitForTimeout(300);
+await p.evaluate(() => { for (let i = 0; i < 20 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); } SET.skipBattleIntro = 1; G.team = [mk(13, 14)]; loadMap('route1', 9, 12); mode = 'world'; });
+let ok = 0, bad = 0; const check = (n, c, info) => { if (c) { ok++; console.log('✓', n); } else { bad++; console.log('✗', n, info ?? ''); } };
+check('Start in 3D (Draufsicht versteckt)', await p.evaluate(() => view) === 'third');
+check('Erkundung: CAM.mode explore', await p.evaluate(() => CAM.mode) === 'explore');
+await p.evaluate(() => startBattle({ wild: mk(25, 12) }));
+await p.waitForFunction(() => B && !B.busy && document.querySelector('#bMenu .big'), null, { timeout: 60000 });
+const bt = await p.evaluate(() => [CAM.mode, CAM.focus, !!CAM.eye]);
+check('Kampf: CAM.mode battle, Fokus both, Auge berechnet', bt[0] === 'battle' && bt[1] === 'both' && bt[2], JSON.stringify(bt));
+await p.click('#bMenu .big.k1'); await p.waitForTimeout(300);
+check('Attackenwahl → Kamera zur eigenen Kreatur', await p.evaluate(() => CAM.focus) === 'me');
+await p.click('#bMenu .back'); await p.waitForTimeout(300);
+check('Zurück → beide im Bild', await p.evaluate(() => CAM.focus) === 'both');
+const hit = await p.evaluate(() => new Promise(res => { B.fx = { who: 'foe', t: performance.now(), col: '#fff' }; requestAnimationFrame(() => requestAnimationFrame(() => res(CAM.focus))); }));
+check('Treffer → kurz zum Gegner', hit === 'foe', hit);
+const boxes = await p.evaluate(() => [...document.querySelectorAll('#battle .ibox')].map(e => e.classList.contains('placed') && /translate3d/.test(e.style.transform)));
+check('KP-Leisten über den Köpfen platziert', boxes.length === 2 && boxes.every(Boolean), JSON.stringify(boxes));
+await p.evaluate(() => endBattle('run')); await p.waitForTimeout(300);
+const af = await p.evaluate(() => [CAM.mode, document.body.classList.contains('cam-battle'), $('#battle').classList.contains('dieg')]);
+check('Kampfende → explore, keine Kampf-Klassen', af[0] === 'explore' && !af[1] && !af[2], JSON.stringify(af));
+check('Keine Seitenfehler', !errs.length, errs.join(' | '));
+console.log(`\nLook-L2-Kamera: ${ok} ✓, ${bad} ✗`);
+await b.close(); process.exit(bad ? 1 : 0);

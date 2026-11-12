@@ -1,16 +1,30 @@
 {
-  "name": "veyra",
-  "version": "1.0.0",
-  "description": "",
+  "name": "veyra-kreaturenchronik",
+  "version": "0.9.0",
+  "private": true,
+  "description": "Veyra – eigenes Monster-Sammel-RPG als PWA / Capacitor-App",
+  "type": "module",
   "scripts": {
-    "staging": "node tools/make-staging.mjs web build/staging",
-    "smoke": "node tools/smoke-staging.mjs build/staging"
+    "build": "node build.mjs",
+    "icons": "node tools/icons.mjs",
+    "test": "node test/smoke.mjs",
+    "serve": "npx --yes serve dist -l 4173",
+    "cap:init": "npx cap init Veyra com.veyra.app --web-dir dist",
+    "cap:android": "npx cap add android && npx cap sync android && npx cap open android",
+    "cap:ios": "npx cap add ios && npx cap sync ios && npx cap open ios",
+    "cap:sync": "npm run build && npx cap sync",
+    "build:live": "node build.mjs && node tools/protect.mjs dist",
+    "build:staging": "node build.mjs && node tools/make-staging.mjs dist build/staging && node tools/protect.mjs build/staging",
+    "test:staging": "node tools/smoke-staging.mjs build/staging",
+    "test:live": "node tools/smoke-live.mjs dist"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "playwright-core": "^1.63.0"
-  },
-  "private": true
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/cli": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/ios": "^6.1.0",
+    "playwright": "^1.47.0",
+    "playwright-core": "^1.63.0",
+    "terser": "^5.51.2"
+  }
 }

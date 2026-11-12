@@ -1,0 +1,18 @@
+/* Kreaturenbilder (Agent Kreaturenbilder, 12.11., docs/bilder.md): zentrales Kartenbild .cpic (Canvas in Gerätepixeln) überall gleich gerahmt */
+.cpic>canvas{image-rendering:auto;-webkit-user-drag:none;user-select:none;pointer-events:none}
+/* Dex: Kachelgröße wie bisher die <img>-Variante; Canvas folgt der echten Größe (ResizeObserver) */
+#mBody .dx>.cpic{width:calc(var(--u) * 6.6)!important;height:calc(var(--u) * 6.6)!important;max-width:100%;margin:0 auto}
+.dx .cpic{margin:0 auto}.dx.leg .cpic{border-radius:14px}
+/* Team-Ring, Kampf-Menüs, Belohnungszeilen */
+.ring .cpic{border-radius:50%}.ring .cpic.framed{overflow:hidden}
+.rrow .pm .cpic,#bMenu .tm .pm .cpic{display:block}
+/* Detail-Bühne (Dex/Team): Farbfeld wie Key-Art-Karten, gleicher Schatten aus dem Designsystem */
+.artStage .cpic{display:block}.artStage .cpic.field,.cpic.stage{border-radius:var(--r-4,28px);box-shadow:var(--shadow-s),inset 0 0 0 1px rgba(255,255,255,.55)}
+/* Glanzform: Funkeln wie bei den Illustrationen */
+.cpic.shiny:not(.wait)::after{content:'';position:absolute;inset:4% 8% 10%;z-index:2;pointer-events:none;
+ background:radial-gradient(circle,#fff 0 1.2px,rgba(255,240,170,.75) 2px,rgba(255,240,170,0) 5px) 18% 22%/18px 18px no-repeat,
+  radial-gradient(circle,#fff 0 1px,rgba(255,240,170,.7) 2px,rgba(255,240,170,0) 4px) 82% 34%/14px 14px no-repeat,
+  radial-gradient(circle,#fff 0 1.4px,rgba(255,240,170,.75) 2.4px,rgba(255,240,170,0) 6px) 64% 78%/20px 20px no-repeat;animation:artTwinkle 2.4s ease-in-out infinite}
+/* <img>-Ersatz nach Ladefehler (nie ein kaputtes Bild / „?“) */
+.art.artFb>img{visibility:hidden}.art .artCv{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:block;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.cpic.shiny::after{animation:none}}body.red .cpic.shiny::after{animation:none}

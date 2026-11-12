@@ -1,0 +1,31 @@
+/* === INNEN (51-innen.js, docs/innen.md): Heil-Sequenz der Kreaturenstation – Glaskarte über dem 3D-Raum, scharfe Kreaturenbilder (cardMini) === */
+.healOv.inn{display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 95% at 50% 42%,rgba(214,255,243,.10),rgba(6,34,36,.52));transition:background .3s}
+.healOv.inn .hoCard{position:relative;width:min(560px,92%);padding:44px 18px 16px;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(232,250,245,.84));
+ box-shadow:0 22px 50px -20px rgba(8,52,50,.6),inset 0 0 0 1px rgba(255,255,255,.75);transform:translateY(12px) scale(.96);opacity:0;transition:transform .34s cubic-bezier(.2,1.3,.4,1),opacity .24s ease-out}
+.healOv.inn.on .hoCard{transform:none;opacity:1}
+.healOv.inn .healTx{position:static;margin:0 auto 12px;max-width:max-content;font-size:clamp(12px,1.9vh,15px);color:#1d5a50;background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 1px rgba(111,208,182,.45)}
+.healOv.inn .hoArc{position:absolute;left:50%;top:-30px;width:132px;height:62px;transform:translateX(-50%);border-radius:66px 66px 0 0;border:5px solid #fff;border-bottom:0;
+ background:radial-gradient(70% 90% at 50% 100%,rgba(122,255,208,.5),rgba(122,255,208,0));box-shadow:0 -2px 0 2px rgba(111,208,182,.55),0 -10px 26px -6px rgba(63,217,166,.55)}
+.healOv.inn .hoDrop{position:absolute;left:50%;top:14px;width:24px;height:24px;margin-left:-12px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+ background:radial-gradient(circle at 35% 35%,#d8fff2,#3fd9a6 60%,#26a982);box-shadow:0 0 16px 4px rgba(63,217,166,.55);animation:hoBreath 1.8s ease-in-out infinite alternate}
+.healOv.inn .hoGrid{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:10px}
+.healOv.inn .hoSlot{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px 9px;border-radius:18px;background:rgba(255,255,255,.72);
+ box-shadow:inset 0 0 0 1px rgba(111,208,182,.45);opacity:0;transform:translateY(10px);transition:opacity .25s ease-out var(--d,0s),transform .32s cubic-bezier(.2,1.3,.4,1) var(--d,0s),box-shadow .3s;isolation:isolate}
+.healOv.inn .hoSlot.in{opacity:1;transform:none}
+.healOv.inn .hoRing{position:absolute;inset:-3px;border-radius:21px;z-index:-1;opacity:0;background:radial-gradient(closest-side,color-mix(in srgb,var(--tc) 55%,#fff),rgba(255,255,255,0));transition:opacity .35s}
+.healOv.inn .hoSlot.lit{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--tc) 70%,#fff),0 0 18px -4px var(--tc)}
+.healOv.inn .hoSlot.lit .hoRing{opacity:.75;animation:hoBreath 1.4s ease-in-out infinite alternate}
+.healOv.inn .hoPic{width:68px;height:68px;transition:transform .3s cubic-bezier(.2,1.4,.4,1)}
+.healOv.inn .hoSlot.lit .hoPic{transform:scale(1.06)}
+.healOv.inn .hoName{font:600 12px/1.2 var(--fb,system-ui);color:#1d4a44;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.healOv.inn .hoHp{display:block;width:78%;height:6px;border-radius:6px;background:rgba(29,74,68,.14);overflow:hidden}
+.healOv.inn .hoHp>i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--hp2,#f2c24a),var(--hp1,#3fd9a6));transition:width .5s ease-out}
+.healOv.inn .hoSlot.lit .hoHp>i{background:linear-gradient(90deg,#3fd9a6,#8affd8)}
+.healOv.inn .hoSweep{position:absolute;inset:0;border-radius:26px;pointer-events:none;opacity:0;background:linear-gradient(105deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.8) 50%,rgba(255,255,255,0) 65%);background-size:260% 100%;background-position:120% 0}
+.healOv.inn.shine .hoSweep{opacity:1;animation:hoSweep .9s ease-out forwards}
+.healOv.inn.shine .hoArc{box-shadow:0 -2px 0 2px rgba(111,208,182,.7),0 -12px 36px 0 rgba(63,217,166,.8)}
+.healOv.inn.out{animation:fadeout .22s forwards}
+@keyframes hoSweep{to{background-position:-40% 0}}
+@keyframes hoBreath{from{opacity:.55;filter:brightness(1)}to{opacity:1;filter:brightness(1.12)}}
+@media (max-height:420px){.healOv.inn .hoCard{padding-top:38px}.healOv.inn .hoPic{width:54px;height:54px}}
+body.red .healOv.inn *,.healOv.inn.short *{animation:none!important;transition-duration:.05s!important}

@@ -1,0 +1,471 @@
+{
+ "w": 860,
+ "h": 400,
+ "checks": [
+  {
+   "n": "K1 JS-Hauptthread bis Kampfmenü (kurzer Auftakt) < 1,5 s",
+   "ok": true,
+   "d": "36 ms Skript, 2968 ms Tasks (Wandzeit 2575 ms inkl. Software-GL)"
+  },
+  {
+   "n": "K2 JS-Hauptthread bis Kampfmenü (1. Kampf) < 1,5 s",
+   "ok": true,
+   "d": "410 ms Skript, 4583 ms Tasks (Wandzeit 4228 ms)"
+  },
+  {
+   "n": "C1 Auftakt aus der Totale (Abstand ≥ 11, Höhe/Pitch erhöht)",
+   "ok": true,
+   "d": "[12.34,0.288]"
+  },
+  {
+   "n": "C2 Fahrt auf Kampfdistanz nach ≈ 1,6 s (Abstand ≤ 10) und weiter Richtung Nähe",
+   "ok": true,
+   "d": "bei 1,6 s: 8.15 · bei 5,5 s: 8"
+  },
+  {
+   "n": "C3 monotone Annäherung (keine Rückwärtsfahrt)",
+   "ok": true,
+   "d": "12.34 → 9.52 → 8.53 → 8.15 → 8.01 → 8"
+  },
+  {
+   "n": "C4 Schwenk vorhanden (Gierwinkel-Spanne 0,05–0,3 rad)",
+   "ok": true,
+   "d": "0.098 rad"
+  },
+  {
+   "n": "C5 Attackenwahl: Kamera näher an eigener Kreatur",
+   "ok": true,
+   "d": "[\"me\",5.8]"
+  },
+  {
+   "n": "C6 Treffer: Fokus auf Getroffenen",
+   "ok": true,
+   "d": "foe"
+  },
+  {
+   "n": "C7 Bewegung reduzieren: Kamera springt ohne Fahrt (Abstand nach 1 Frame ≤ 9)",
+   "ok": true,
+   "d": "{\"dist\":8}"
+  },
+  {
+   "n": "H1 KP-Leiste foe: platziert, im Bild",
+   "ok": true,
+   "d": "{\"head\":[493,150],\"box\":[493,146],\"w\":148,\"h\":46,\"off\":false,\"placed\":true,\"inView\":true,\"vis\":\"1\"}"
+  },
+  {
+   "n": "H2 KP-Leiste foe über dem Kopf (Δx ≤ 172 px, darüber oder geklemmt)",
+   "ok": true,
+   "d": "Δx 0, Kopf-y − Unterkante 4"
+  },
+  {
+   "n": "H1 KP-Leiste me: platziert, im Bild",
+   "ok": true,
+   "d": "{\"head\":[293,93],\"box\":[293,114],\"w\":148,\"h\":63,\"off\":false,\"placed\":true,\"inView\":true,\"vis\":\"1\"}"
+  },
+  {
+   "n": "H2 KP-Leiste me über dem Kopf (Δx ≤ 172 px, darüber oder geklemmt)",
+   "ok": true,
+   "d": "Δx 0, Kopf-y − Unterkante -21"
+  },
+  {
+   "n": "H3 KP-Leisten überlappen sich nicht",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "H4 Meldungszeile im Bild, Schrift ≥ 13 px",
+   "ok": true,
+   "d": "{\"rect\":[346,10,167,35],\"fs\":\"14px\",\"txt\":\"Was soll Aschi tun?\"}"
+  },
+  {
+   "n": "A1 Kontrast Kampf-Start (≥ 4,5:1) ohne Fehler",
+   "ok": true,
+   "d": "min 5.59 []"
+  },
+  {
+   "n": "A2 Touch-Ziele Kampf-Start ≥ 48 px",
+   "ok": true,
+   "d": "[]"
+  },
+  {
+   "n": "M1 Attackenkarten: ≥ 2 sichtbar, alle im Bild, ≥ 48 px",
+   "ok": true,
+   "d": "194×61, 194×61, 194×61, 194×61"
+  },
+  {
+   "n": "M2 Kontrast Attackenkarten ohne Fehler",
+   "ok": true,
+   "d": "min 5.24 []"
+  },
+  {
+   "n": "M3 Touch-Ziele Attackenwahl ≥ 48 px",
+   "ok": true,
+   "d": "[]"
+  },
+  {
+   "n": "M4 keine Überlappung der Bedienelemente",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "M5 Attacke per Karte wirkt (Gegner-KP sinken) und Menü kommt zurück",
+   "ok": true,
+   "d": "31 → 23"
+  },
+  {
+   "n": "E1 nach Kampfende CAM explore",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "2D1 setView('2d',true) + Kampf: 2D-Bühne aktiv (b2d), Menü da",
+   "ok": true,
+   "d": "{\"b2d\":true,\"dieg\":false,\"cam\":\"battle\",\"view\":\"2d\",\"vis\":true,\"big\":4}"
+  },
+  {
+   "n": "2D2 2D-Kampf: Attacke läuft durch, Menü kehrt zurück",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "Z Keine Seitenfehler",
+   "ok": true,
+   "d": ""
+  }
+ ],
+ "data": {
+  "start_long": {
+   "label": "1. Kampf (langer Auftakt)",
+   "wallToMenuMs": 4228,
+   "wallToCamMs": 3346,
+   "mainThreadScriptMs": 410,
+   "mainThreadTaskMs": 4583
+  },
+  "start_short": {
+   "label": "ab 3. Kampf (kurzer Auftakt)",
+   "wallToMenuMs": 2575,
+   "wallToCamMs": 882,
+   "mainThreadScriptMs": 36,
+   "mainThreadTaskMs": 2968
+  },
+  "start_scripted": {
+   "lang_ms": 800,
+   "kurz_ms": 220
+  },
+  "cam": {
+   "rows": [
+    {
+     "t": 0,
+     "lab": "start",
+     "focus": "both",
+     "dist": 12.34,
+     "h": 1.29,
+     "pitch": 0.288,
+     "fov": 37.9,
+     "yaw": -0.88,
+     "eye": [
+      -8.49,
+      4.8,
+      6.5
+     ]
+    },
+    {
+     "t": 501,
+     "lab": "start",
+     "focus": "both",
+     "dist": 9.52,
+     "h": 1.13,
+     "pitch": 0.065,
+     "fov": 35.3,
+     "yaw": -0.6,
+     "eye": [
+      -5.07,
+      1.75,
+      7.12
+     ]
+    },
+    {
+     "t": 1002,
+     "lab": "start",
+     "focus": "both",
+     "dist": 8.53,
+     "h": 1.08,
+     "pitch": -0.013,
+     "fov": 34.5,
+     "yaw": -0.503,
+     "eye": [
+      -3.95,
+      0.97,
+      6.86
+     ]
+    },
+    {
+     "t": 1603,
+     "lab": "start",
+     "focus": "both",
+     "dist": 8.15,
+     "h": 1.06,
+     "pitch": -0.043,
+     "fov": 34.1,
+     "yaw": -0.468,
+     "eye": [
+      -3.55,
+      0.71,
+      6.7
+     ]
+    },
+    {
+     "t": 2505,
+     "lab": "start",
+     "focus": "both",
+     "dist": 8.01,
+     "h": 1.05,
+     "pitch": -0.054,
+     "fov": 34,
+     "yaw": -0.458,
+     "eye": [
+      -3.44,
+      0.62,
+      6.62
+     ]
+    },
+    {
+     "t": 5511,
+     "lab": "start",
+     "focus": "both",
+     "dist": 8,
+     "h": 1.05,
+     "pitch": -0.055,
+     "fov": 34,
+     "yaw": -0.47,
+     "eye": [
+      -3.52,
+      0.61,
+      6.57
+     ]
+    },
+    {
+     "t": 2500,
+     "lab": "rmoves",
+     "focus": "me",
+     "dist": 5.8,
+     "h": 0.8,
+     "pitch": 0.15,
+     "fov": 34,
+     "yaw": -0.243,
+     "eye": [
+      -2.48,
+      1.67,
+      6.13
+     ]
+    },
+    {
+     "t": 1000,
+     "lab": "treffer foe",
+     "focus": "foe",
+     "dist": 6.31,
+     "h": 0.97,
+     "pitch": 0.057,
+     "fov": 30.6,
+     "yaw": -0.321,
+     "eye": [
+      -0.83,
+      1.33,
+      4.43
+     ]
+    },
+    {
+     "t": 3300,
+     "lab": "danach",
+     "focus": "both",
+     "dist": 8,
+     "h": 1.05,
+     "pitch": -0.055,
+     "fov": 34,
+     "yaw": -0.335,
+     "eye": [
+      -2.53,
+      0.61,
+      6.99
+     ]
+    }
+   ],
+   "yawRange": 0.098,
+   "red1": {
+    "dist": 8
+   },
+   "red2": {
+    "dist": 8,
+    "yawRange": 0
+   }
+  },
+  "proj": [
+   {
+    "foe": {
+     "head": [
+      494,
+      150
+     ],
+     "box": [
+      493,
+      146
+     ],
+     "w": 148,
+     "h": 46,
+     "off": false,
+     "placed": true,
+     "inView": true,
+     "vis": "1"
+    },
+    "me": {
+     "head": [
+      292,
+      94
+     ],
+     "box": [
+      293,
+      114
+     ],
+     "w": 148,
+     "h": 63,
+     "off": false,
+     "placed": true,
+     "inView": true,
+     "vis": "1"
+    },
+    "log": {
+     "rect": [
+      346,
+      10,
+      167,
+      35
+     ],
+     "fs": "14px",
+     "txt": "Was soll Aschi tun?"
+    },
+    "cam": {
+     "mode": "battle",
+     "focus": "both"
+    }
+   },
+   {
+    "foe": {
+     "head": [
+      493,
+      150
+     ],
+     "box": [
+      493,
+      146
+     ],
+     "w": 148,
+     "h": 46,
+     "off": false,
+     "placed": true,
+     "inView": true,
+     "vis": "1"
+    },
+    "me": {
+     "head": [
+      293,
+      93
+     ],
+     "box": [
+      293,
+      114
+     ],
+     "w": 148,
+     "h": 63,
+     "off": false,
+     "placed": true,
+     "inView": true,
+     "vis": "1"
+    },
+    "log": {
+     "rect": [
+      346,
+      10,
+      167,
+      35
+     ],
+     "fs": "14px",
+     "txt": "Was soll Aschi tun?"
+    },
+    "cam": {
+     "mode": "battle",
+     "focus": "both"
+    }
+   }
+  ],
+  "audit_start": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 10,
+    "fail": [],
+    "min": 5.59
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "moves": [
+   {
+    "w": 194,
+    "h": 61,
+    "x": 452,
+    "y": 205,
+    "txt": "KnurrenKernAP 30/30Status",
+    "inView": true
+   },
+   {
+    "w": 194,
+    "h": 61,
+    "x": 654,
+    "y": 205,
+    "txt": "FunkenGlut · 40AP 25/25?",
+    "inView": true
+   },
+   {
+    "w": 194,
+    "h": 61,
+    "x": 452,
+    "y": 273,
+    "txt": "GlimmstaubGlutAP 15/15Status",
+    "inView": true
+   },
+   {
+    "w": 194,
+    "h": 61,
+    "x": 654,
+    "y": 273,
+    "txt": "SchnellhiebKern · 40AP 30/30?",
+    "inView": true
+   }
+  ],
+  "audit_moves": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 17,
+    "fail": [],
+    "min": 5.24
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "b2d": {
+   "b2d": true,
+   "dieg": false,
+   "cam": "battle",
+   "view": "2d",
+   "vis": true,
+   "big": 4
+  }
+ }
+}

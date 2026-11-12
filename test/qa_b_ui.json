@@ -1,0 +1,245 @@
+[
+ {
+  "vp": "860x400",
+  "checks": [
+   {
+    "n": "Dialog „kael“: Porträt sichtbar (kael|freudig)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „kael“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „kael“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog „veyran_lang“: Porträt sichtbar (veyran|neutral)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „veyran_lang“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „veyran_lang“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog „rayan“: Porträt sichtbar (rayan|ueberrascht)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „rayan“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „rayan“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog „ardena“: Porträt sichtbar (ardena|freudig)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „ardena“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „ardena“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog mit Antworten: Knöpfe ≥ 44 px hoch, im Bild",
+    "ok": true
+   },
+   {
+    "n": "Kapitel-Karte: im Bild, nichts abgeschnitten, eingeblendet",
+    "ok": true
+   },
+   {
+    "n": "Kapitel-Karte: höchstens ein kleines HUD-Element wird teilweise überdeckt (3,8 s sichtbar)",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „anfang“: Menü im Bild, kein seitliches Überlaufen, kein abgeschnittener Text",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „anfang“: 8 Kristalle, 8 Medaillen, Kapitelliste, Nebenmissionen vorhanden",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „mitte“: Menü im Bild, kein seitliches Überlaufen, kein abgeschnittener Text",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „mitte“: 8 Kristalle, 8 Medaillen, Kapitelliste, Nebenmissionen vorhanden",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „ende“: Menü im Bild, kein seitliches Überlaufen, kein abgeschnittener Text",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „ende“: 8 Kristalle, 8 Medaillen, Kapitelliste, Nebenmissionen vorhanden",
+    "ok": true
+   },
+   {
+    "n": "Keine Seitenfehler (Dialog/Karte/Missionen)",
+    "ok": true
+   }
+  ],
+  "stCardOverlap": [
+   "#hq 12,60 250×45"
+  ],
+  "small_anfang": [],
+  "small_mitte": [],
+  "small_ende": []
+ },
+ {
+  "vp": "390x844",
+  "checks": [
+   {
+    "n": "Intro Hochformat: Textkasten und „Überspringen“ im Bild, ohne Überlappung",
+    "ok": true
+   },
+   {
+    "n": "Intro Hochformat: kein Hinweis „Bitte Gerät drehen“ im Weg",
+    "ok": true
+   },
+   {
+    "n": "Intro Hochformat: „Wer bist du?“-Panel, Namensfeld und „Los geht’s!“ im Bild",
+    "ok": true
+   },
+   {
+    "n": "Intro Hochformat: nichts ragt seitlich aus dem Panel (Farbreihen scrollen horizontal)",
+    "ok": true
+   },
+   {
+    "n": "Intro Hochformat: Starterkarten (3) im Bild, ≥ 44 px, Textkasten überlappt nicht",
+    "ok": true
+   },
+   {
+    "n": "Intro Hochformat: keine Seitenfehler",
+    "ok": true
+   },
+   {
+    "n": "Dialog „kael“: Porträt sichtbar (kael|freudig)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „kael“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „kael“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog „veyran_lang“: Porträt sichtbar (veyran|neutral)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „veyran_lang“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „veyran_lang“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog „rayan“: Porträt sichtbar (rayan|ueberrascht)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „rayan“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „rayan“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog „ardena“: Porträt sichtbar (ardena|freudig)",
+    "ok": true
+   },
+   {
+    "n": "Dialog „ardena“: Porträt-Kreis überdeckt keine Textzeile, Name-Tab nicht über dem Porträt",
+    "ok": true
+   },
+   {
+    "n": "Dialog „ardena“: Box und Porträt vollständig im Bild, Text nicht abgeschnitten",
+    "ok": true
+   },
+   {
+    "n": "Dialog mit Antworten: Knöpfe ≥ 44 px hoch, im Bild",
+    "ok": true
+   },
+   {
+    "n": "Kapitel-Karte: im Bild, nichts abgeschnitten, eingeblendet",
+    "ok": true
+   },
+   {
+    "n": "Kapitel-Karte: höchstens ein kleines HUD-Element wird teilweise überdeckt (3,8 s sichtbar)",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „anfang“: Menü im Bild, kein seitliches Überlaufen, kein abgeschnittener Text",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „anfang“: 8 Kristalle, 8 Medaillen, Kapitelliste, Nebenmissionen vorhanden",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „mitte“: Menü im Bild, kein seitliches Überlaufen, kein abgeschnittener Text",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „mitte“: 8 Kristalle, 8 Medaillen, Kapitelliste, Nebenmissionen vorhanden",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „ende“: Menü im Bild, kein seitliches Überlaufen, kein abgeschnittener Text",
+    "ok": true
+   },
+   {
+    "n": "Missionsseite „ende“: 8 Kristalle, 8 Medaillen, Kapitelliste, Nebenmissionen vorhanden",
+    "ok": true
+   },
+   {
+    "n": "Keine Seitenfehler (Dialog/Karte/Missionen)",
+    "ok": true
+   }
+  ],
+  "stCardOverlap": [
+   "#hq 12,60 218×45"
+  ],
+  "small_anfang": [
+   "x 98×34",
+   " 36×48",
+   " 36×48",
+   " 36×48",
+   " 36×48",
+   " 36×48"
+  ],
+  "small_mitte": [
+   "x 98×34",
+   " 36×48",
+   " 36×48",
+   " 36×48",
+   " 36×48",
+   " 36×48"
+  ],
+  "small_ende": [
+   "x 98×34",
+   " 36×48",
+   " 36×48",
+   " 36×48",
+   " 36×48",
+   " 36×48"
+  ]
+ }
+]

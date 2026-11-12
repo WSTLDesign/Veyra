@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const b=await chromium.launch({args:['--use-gl=swiftshader','--enable-unsafe-swiftshader']});const p=await b.newPage({viewport:{width:420,height:860}});
+await p.goto(new URL('../dist/index.html',import.meta.url).href,{waitUntil:'load'});
+await p.click('#iPrompt');await p.waitForTimeout(400);await p.click('#iSkip');await p.waitForTimeout(900);await p.click('#tNew');await p.waitForTimeout(300);
+await p.evaluate(()=>{advDlg();advDlg();G.team.push(mk(1,5));VILL.list=[];loadMap('kupferhain',1,5);});
+const run=async(label,setup,teardown)=>{await p.evaluate(setup);const t0=Date.now(),s=await p.evaluate(()=>[P.px,P.py]);await p.waitForTimeout(2000);const e=await p.evaluate(()=>[P.px,P.py]);await p.evaluate(teardown);const d=Math.hypot(e[0]-s[0],e[1]-s[1]);console.log(label,(d/((Date.now()-t0)/1000)).toFixed(2),'Felder/s');};
+await run('2D gehen', ()=>{held='right';}, ()=>{held=null;});await p.evaluate(()=>loadMap('kupferhain',1,5));
+await run('2D rennen', ()=>{held='right';P.run=true;}, ()=>{held=null;P.run=false;});await p.evaluate(()=>{loadMap('kupferhain',1,5);setView('third',true);P.dir='right';P.ang=YAW.right;});await p.waitForTimeout(500);
+await run('3D gehen', ()=>{STICK.y=-1;}, ()=>{STICK.y=0;});await p.evaluate(()=>{loadMap('kupferhain',1,5);P.ang=YAW.right;});
+await run('3D rennen', ()=>{STICK.y=-1;P.run=true;}, ()=>{STICK.y=0;P.run=false;});
+const a0=await p.evaluate(()=>P.ang);await p.evaluate(()=>{STICK.x=1;});await p.waitForTimeout(1000);const a1=await p.evaluate(()=>{STICK.x=0;return P.ang;});console.log('3D drehen',Math.abs(a1-a0).toFixed(2),'rad/s');
+await b.close();

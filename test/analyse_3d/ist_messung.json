@@ -1,5 +1,5 @@
 {
- "zeit": "2026-11-12T15:58:46.762Z",
+ "zeit": "2026-11-12T18:37:01.524Z",
  "renderer": {
   "pixelRatio": 1,
   "buffer": [
@@ -56,8 +56,8 @@
    "meshes": 2,
    "skinned": 2,
    "bones": 14,
-   "tris": 0,
-   "olTris": 4287,
+   "tris": 3158,
+   "olTris": 1129,
    "mats": {
     "MeshToonMaterial": 1,
     "MeshBasicMaterial": 1
@@ -67,7 +67,7 @@
     "gradientMap:5×1"
    ],
    "morph": 0,
-   "outline": 2,
+   "outline": 1,
    "sprite": false,
    "terra": false,
    "rig": true,
@@ -99,8 +99,8 @@
    "meshes": 2,
    "skinned": 2,
    "bones": 14,
-   "tris": 0,
-   "olTris": 5875,
+   "tris": 4379,
+   "olTris": 1496,
    "mats": {
     "MeshToonMaterial": 1,
     "MeshBasicMaterial": 1
@@ -110,7 +110,7 @@
     "gradientMap:5×1"
    ],
    "morph": 0,
-   "outline": 2,
+   "outline": 1,
    "sprite": false,
    "terra": false,
    "rig": true,
@@ -329,7 +329,7 @@
     "rig": false
    },
    "szeneCalls": 70,
-   "szeneTris": 187964
+   "szeneTris": 192276
   },
   "plippi": {
    "info": {
@@ -354,8 +354,8 @@
     "terra": true,
     "rig": false
    },
-   "szeneCalls": 66,
-   "szeneTris": 194614
+   "szeneCalls": 64,
+   "szeneTris": 180964
   },
   "knospi": {
    "info": {
@@ -380,8 +380,8 @@
     "terra": true,
     "rig": false
    },
-   "szeneCalls": 66,
-   "szeneTris": 194218
+   "szeneCalls": 63,
+   "szeneTris": 177848
   }
  },
  "kampf": {
@@ -500,11 +500,5 @@
    "pr": 1
   }
  },
- "fehler": [
-  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
-  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
-  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
-  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel",
-  "console.error: Bewegung TypeError: Cannot set properties of null (setting 'textContent')\n    at toast (http://127.0.0.1:42629/index.html:2241:67)\n    at toast (http://127.0.0.1:42629/index.html:11295:54)\n    at fiel"
- ]
+ "fehler": []
 }

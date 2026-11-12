@@ -105,7 +105,7 @@ for s in (-1, 1):
     ex, ez = s * .34, .07
     # Oberfläche vor der Höhle ungefähr: y ≈ −.80
     bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=16, radius=.15, location=(ex, -.745, ez), rotation=(math.pi / 2, 0, 0))
-    e = bpy.context.active_object; e.scale = (1, 1, .6); e.rotation_euler = (math.radians(-90), 0, s * math.radians(-12))
+    e = bpy.context.active_object; e.scale = (1, 1, .6); e.rotation_euler = (math.radians(90), 0, s * math.radians(12))
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
     e.data.materials.append(M_EYE); shade_smooth(e); eyes.append(e)
     # Glanzpunkt
@@ -141,7 +141,7 @@ bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=20, ra
 kill = []
 for f in bm.faces:
     c = f.calc_center_median(); fz = -c.y
-    lim = .30 if fz > .5 else (-.05 if abs(c.x) > .5 and fz > -.2 else -.35)
+    lim = .42 if fz > .5 else (-.05 if abs(c.x) > .5 and fz > -.2 else -.35)
     if c.z < lim: kill.append(f)
 bmesh.ops.delete(bm, geom=kill, context='FACES')
 for vt in bm.verts:
@@ -176,7 +176,7 @@ bpy.context.view_layer.objects.active = strands[0]; bpy.ops.object.convert(targe
 for o in strands: o.data.materials.clear(); o.data.materials.append(M_HAIR); shade_smooth(o)
 
 # ---------- Mund (Lippenspalt) ----------
-bpy.ops.mesh.primitive_torus_add(major_radius=.12, minor_radius=.012, major_segments=24, minor_segments=6, location=(0, -.87, -.36), rotation=(math.pi / 2, 0, 0))
+bpy.ops.mesh.primitive_torus_add(major_radius=.12, minor_radius=.016, major_segments=24, minor_segments=6, location=(0, -.885, -.36), rotation=(math.pi / 2, 0, 0))
 mo = bpy.context.active_object; mo.scale = (1, .25, 1)
 bm = bmesh.new(); bm.from_mesh(mo.data); bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.calc_center_median().z > -.0], context='FACES'); bm.to_mesh(mo.data); bm.free()
 bpy.ops.object.transform_apply(location=False, rotation=True, scale=True); mo.data.materials.append(M_MOUTH); shade_smooth(mo)
@@ -200,8 +200,9 @@ li = H.vertex_groups['lid'].index
 for vt in H.data.vertices:
     for g in vt.groups:
         if g.group == li:
-            co = vt.co; cz = .07
-            k2.data[vt.index].co = (co.x, co.y - .01, cz + (co.z - cz) * -0.9)  # Lid nach unten klappen
+            co = vt.co; cy, cz, a = -.745, .07, math.radians(80)  # Lid um die Augen-Querachse nach vorn-unten klappen
+            y, z = co.y - cy, co.z - cz
+            k2.data[vt.index].co = (co.x, cy + y * math.cos(a) - z * math.sin(a), cz + y * math.sin(a) + z * math.cos(a))
 # Skalierung: 1 Einheit ≈ halbe Kopfhöhe → für three.js egal (Test normiert)
 tris = sum(len(p.vertices) - 2 for p in H.data.polygons)
 info = {'blender': bpy.app.version_string, 'verts': len(H.data.vertices), 'faces': len(H.data.polygons), 'tris': tris,

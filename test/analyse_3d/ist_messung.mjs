@@ -69,7 +69,7 @@ console.log(JSON.stringify(res.objekte, null, 1));
 // ---------- 3. Studio-Bilder Figuren (Spiel-Licht, pr 1 wie im Spiel bei 900 Zeilen) ----------
 await figStage(p, { W, H, pr: 1, neutral: true });
 const studio = async (code, view, file, opt = {}) => { const d = await p.evaluate(([code, view, opt]) => { const f = CS.put((0, eval)(code)); const b = new THREE.Box3().setFromObject(f), h = b.max.y - b.min.y;
-    if (opt.wire) f.traverse(q => { if (q.isMesh && !q.userData.outline) { q.material = q.material.clone(); q.material.wireframe = true; } if (q.userData && q.userData.outline === 1) q.visible = false; });
+    if (opt.wire) f.traverse(q => { if (q.isMesh && q.userData.outline !== 1) { q.material = q.material.clone(); q.material.wireframe = true; } if (q.userData && q.userData.outline === 1) q.visible = false; });
     // eigene Kameras für 16:9
     const cam = CS.cam; cam.aspect = CS.W / CS.H; cam.fov = 24; cam.updateProjectionMatrix();
     const a = { vorn: 0, schraeg: -.65, nah: -.3, seite: -Math.PI / 2 }[view] ?? 0, near = view === 'nah', d = near ? (opt.d || .95) : h * 2.2, ty = near ? h * .9 : h * .52;

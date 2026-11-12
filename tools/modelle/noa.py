@@ -335,9 +335,9 @@ def ring_fit(name, center, axis, w, d, regn, push=.002, n=22):
     a = Vector(axis).normalized(); b = a.orthogonal().normalized(); c2 = a.cross(b); pts = []
     for j in range(n):
         t = j / n * 2 * math.pi; dirv = b * math.cos(t) + c2 * math.sin(t)
-        hit = BVB.ray_cast(Vector(center), dirv, .12); pts.append((hit[0] if hit[0] else Vector(center) + dirv * .05) + dirv * push)
+        hit = BVB.ray_cast(Vector(center), dirv, .09 if regn == 'kragen' else .12); pts.append((hit[0] if hit[0] else Vector(center) + dirv * .05) + dirv * push)
     pts.append(pts[0]); o = loft(name, pts, lambda t: w, lambda t: d, ring=4, n=n + 1, cap0=False, flat_up=tuple(a)); set_region(o, regn); extra.append(o); return o
-ring_fit('Kragen', (0, .012, 1.078), (0, .12, 1), .0055, .003, 'kragen', .001)
+ring_fit('Kragen', (0, .012, 1.088), (0, .1, 1), .0055, .003, 'kragen', .001)
 ring_fit('Shirtsaum', (0, 0, .662), (0, 0, 1), .005, .0028, 'shirt_saum', .002, 40)
 ring_fit('Hosenbund', (0, 0, .70), (0, 0, 1), .009, .0025, 'hose', .0005, 40)
 for s in (-1, 1):

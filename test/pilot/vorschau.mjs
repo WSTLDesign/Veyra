@@ -39,7 +39,7 @@ async function sheet(p, cells, file, { cols, cw, ch, title = '', sub = '' }) {
     for (let i = 0; i < cells.length; i++) { const c = cells[i], x = ox + (i % cols) * cw, y = top + Math.floor(i / cols) * ch; const im = new Image(); await new Promise(r => { im.onload = r; im.src = c.img; });
       g.drawImage(im, x, y, cw, ch); if (c.label) { g.font = '600 19px system-ui,sans-serif'; const tw = g.measureText(c.label).width; g.fillStyle = 'rgba(20,28,44,.62)'; g.beginPath(); g.roundRect ? g.roundRect(x + 12, y + 12, tw + 22, 32, 10) : g.rect(x + 12, y + 12, tw + 22, 32); g.fill(); g.fillStyle = '#fff'; g.fillText(c.label, x + 23, y + 34); }
       if (i % cols) { g.fillStyle = 'rgba(255,255,255,.85)'; g.fillRect(x - 1, y, 2, ch); } }
-    if (title) { g.fillStyle = '#1f2a40'; g.font = '700 24px system-ui,sans-serif'; g.fillText(title, 20, 34); if (sub) { g.fillStyle = '#5a6478'; g.font = '15px system-ui,sans-serif'; g.fillText(sub, 20 + g.measureText(title).width * 1.1 + 16, 34); } }
+    if (title) { g.fillStyle = '#1f2a40'; g.font = '700 24px system-ui,sans-serif'; g.fillText(title, 20, 34); const tw0 = g.measureText(title).width; if (sub) { g.fillStyle = '#5a6478'; g.font = '15px system-ui,sans-serif'; g.fillText(sub, 20 + tw0 + 18, 34); } }
     return cv.toDataURL('image/png'); }, [cells, cols, cw, ch, title, sub, W, H]);
   await toWebp(p, d, file);
 }
@@ -82,8 +82,8 @@ if (has('funki')) {
   await sheet(P, [{ img: pf[0], label: 'bisher (prozedural)' }, { img: pf[1], label: 'neu (Blender-GLB + Toon-Pro)' }], 'funki_alt_neu_studio.webp', { cols: 2, cw: 800, ch: 900 });
   // Kampf-Pose (Angriff) neu, mit warmem Kampflicht
   const kp = await P.evaluate(() => { STU.clear(); STU.sun.color.set('#ffd9b0'); const o = pilotMake('funki', .55); STU.add(o, 0, 0, -.5); const U = o.userData; for (const n in U.acts) U.acts[n].setEffectiveWeight(0);
-    const a = U.acts.attack; a.reset(); a.setEffectiveWeight(1); a.play(); a.time = a.getClip().duration * .42; U.mixer.update(0); pilotExpr(o, 'maul'); for (let i = 0; i < 40; i++) pilotFace(U, 1 / 60); o.updateMatrixWorld(true);
-    const img = STU.shot([1.35, .45, 1.2], [0, .3, 0], 26, 800, 900); const b = STU.objs[0]; STU.clear(); const old = STU.off(() => buildTerra(1, .55, {})); STU.add(old, 0, 0, -.5); old.userData.act = { atk: performance.now() - 250 }; try { animMon(old, performance.now(), {}); } catch (e) { } const img0 = STU.shot([1.35, .45, 1.2], [0, .3, 0], 26, 800, 900); STU.sun.color.set('#fff0d8'); return [img0, img]; });
+    const a = U.acts.attack; a.reset(); a.setEffectiveWeight(1); a.play(); a.time = a.getClip().duration * .5; U.mixer.update(0); pilotExpr(o, 'maul'); for (let i = 0; i < 40; i++) pilotFace(U, 1 / 60); o.updateMatrixWorld(true);
+    const img = STU.shot([.9, .42, 1.55], [-.05, .3, 0], 28, 800, 900); const b = STU.objs[0]; STU.clear(); const old = STU.off(() => buildTerra(1, .55, {})); STU.add(old, 0, 0, -.5); old.userData.act = { atk: performance.now() - 180 }; try { animMon(old, performance.now(), {}); } catch (e) { } const img0 = STU.shot([.9, .42, 1.55], [-.05, .3, 0], 28, 800, 900); STU.sun.color.set('#fff0d8'); return [img0, img]; });
   await sheet(P, [{ img: kp[0], label: 'bisher' }, { img: kp[1], label: 'neu – Angriff (Clip „attack“)' }], 'funki_kampfpose.webp', { cols: 2, cw: 800, ch: 900 });
   // (d) Umriss dünn vs. fast keine (Noa + Funki)
   const ol = await P.evaluate(() => { const out = []; for (const v of ['duenn', 'fast_keine']) { STU.clear(); const a = pilotMake('noa', 1.32, { outline: v }), b = pilotMake('funki', .55, { outline: v }); STU.add(a, -.28, 0, .25); STU.add(b, .42, .25, -.35); STU.tick(a, 1); STU.tick(b, 1.2);
@@ -92,7 +92,9 @@ if (has('funki')) {
 }
 await P.evaluate(() => { try { STU.rr.domElement.remove(); STU.rr.dispose(); terrainY = window.__ty; mode = 'world'; } catch (e) { } });
 // Welt: echtes Spielbild mit Schalter aus (bisher) und an (neu) – Held + Begleiter Funki, Route 1
+res.fehlerStudio = P.errs; await P.ctx.close();
 if (has('welt') || has('mess')) {
+  const fps = async (p) => p.evaluate(async () => { let n = 0; const t0 = performance.now(); await new Promise(r => { const f = () => { n++; if (performance.now() - t0 < 4000) requestAnimationFrame(f); else r(); }; requestAnimationFrame(f); }); return +(n / ((performance.now() - t0) / 1000)).toFixed(1); });
   const shotWorld = async (on) => { const p = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: on } }); await newGame(p, { team: [[1, 12]], view: 'third' });
     if (on) await p.evaluate(async () => { await pilotLoad('noa'); await pilotLoad('funki'); R3.ofk = null; });
     await p.evaluate(() => { mode = 'world'; loadMap('route1', 9, 12); setView('third', true); VILL && (VILL.list = []); ROAM && (ROAM.want = 0, ROAM.list = []); P.dir = 'down'; P.ang = Math.PI; G.time = 11 * 60; });
@@ -102,21 +104,18 @@ if (has('welt') || has('mess')) {
     const r = await p.evaluate(() => { const S = R3.scene, pl = R3.player, mm = S.userData.mm, co = mm && COMP && mm.get(COMP); const r = R3.r; r.info.autoReset = false; r.info.reset(); r.render(S, R3.activeCam || R3.cam);
       const info = { calls: r.info.render.calls, tris: r.info.render.triangles, pilotHeld: !!pl.userData.pilot, pilotFunki: !!(co && co.userData.pilot) }; r.info.autoReset = true;
       const a = pl.getWorldPosition(new THREE.Vector3()), b = co ? co.getWorldPosition(new THREE.Vector3()) : a.clone(), c = a.clone().add(b).multiplyScalar(.5), gc = R3.activeCam || R3.cam;
-      const dir = gc.position.clone().sub(c); dir.y = 0; dir.normalize(); const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .05, 300); cam.position.copy(c).addScaledVector(dir, 3.4); cam.position.y = c.y + 1.15; cam.lookAt(c.x, c.y + .45, c.z); cam.updateMatrixWorld();
+      const dir = gc.position.clone().sub(c); dir.y = 0; dir.normalize(); dir.applyAxisAngle(new THREE.Vector3(0, 1, 0), 2.5); const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .05, 300); cam.position.copy(c).addScaledVector(dir, 3.2); cam.position.y = c.y + 1.15; cam.lookAt(c.x, c.y + .45, c.z); cam.updateMatrixWorld();
       if (typeof toonProSync === 'function') toonProSync(r); r.render(S, cam); return { info, img: r.domElement.toDataURL('image/png') }; });
     const shot = 'data:image/png;base64,' + (await p.screenshot()).toString('base64');
     return { p, r, shot }; };
-  const A = await shotWorld(false), B = await shotWorld(true);
+  const A = await shotWorld(false); A.fps = await fps(A.p); res.fehlerAlt = A.p.errs; await A.p.ctx.close();
+  const B = await shotWorld(true); B.fps = await fps(B.p);
+  res.fps = { alt: A.fps, neu: B.fps, hinweis: 'SwiftShader (Software-GL, 2 Kerne) – nur relativ vergleichbar' };
   res.welt = { alt: A.r.info, neu: B.r.info };
   await sheet(B.p, [{ img: A.r.img, label: 'bisher' }, { img: B.r.img, label: 'neu (Schalter modelle3d an)' }], 'funki_noa_welt_alt_neu.webp', { cols: 2, cw: 800, ch: 900 });
   await toWebp(B.p, B.shot, 'welt_spielbild_neu.webp');
-  if (has('mess')) {
-    // Bildrate Testszene (Held + Funki + Welt), 4 s
-    const fps = async (p) => p.evaluate(async () => { let n = 0; const t0 = performance.now(); await new Promise(r => { const f = () => { n++; if (performance.now() - t0 < 4000) requestAnimationFrame(f); else r(); }; requestAnimationFrame(f); }); return +(n / ((performance.now() - t0) / 1000)).toFixed(1); });
-    res.fps = { alt: await fps(A.p), neu: await fps(B.p) };
-  }
-  res.fehler = { alt: A.p.errs, neu: B.p.errs };
+  res.fehlerNeu = B.p.errs;
+  res.ladeMs = await B.p.evaluate(() => ({ noa: PILOT.ms_noa, funki: PILOT.ms_funki }));
 }
-res.fehlerStudio = P.errs;
 writeFileSync(OUT + 'vorschau_' + what + '.json', JSON.stringify(res, null, 1)); console.log(JSON.stringify(res));
 await env.close();

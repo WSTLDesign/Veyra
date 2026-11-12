@@ -316,7 +316,7 @@ def gait(t, L, stance, hipz, bob, lift, lean, armsw, elbow, run=False):
         P.update(leg_ik(s, off, foot, pitch))
     a = arms(armsw * m_.sin(ph), (elbow + .25 * armsw * (m_.sin(ph) + 1), elbow + .25 * armsw * (1 - m_.sin(ph))), dn=.6 if not run else .5)
     # Arm gegengleich zum Bein: linkes Bein vorn (t=0) → rechter Arm vorn
-    a['upperarm.L'] = qmul(rx(armsw * m_.sin(ph)), ry(.6 if not run else .5)); a['upperarm.R'] = qmul(rx(armsw * m_.sin(ph)), ry(-(.6 if not run else .5)))
+    a['upperarm.L'] = qmul(rx(armsw * m_.sin(ph)), ry(.6 if not run else .5)); a['upperarm.R'] = qmul(rx(-armsw * m_.sin(ph)), ry(-(.6 if not run else .5)))
     P.update(a); return P
 def idle(t):
     ph = 2 * m_.pi * t; br = m_.sin(ph * 3)          # 3 Atemzüge je 4 s
@@ -331,7 +331,7 @@ def idle(t):
 CLIPS = {}
 CLIPS['idle'] = make_action(ARMO, 'idle', 120, idle)
 STRIDE_W, STRIDE_R = .9, 1.7
-CLIPS['walk'] = make_action(ARMO, 'walk', 30, lambda t: dict(gait(t, STRIDE_W, .6, .028, .012, .085, .06, .38, .25), hair_vorn=rx(-.05 + .04 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.06 + .04 * m_.sin(4 * m_.pi * t))))
+CLIPS['walk'] = make_action(ARMO, 'walk', 30, lambda t: dict(gait(t, STRIDE_W, .6, .018, .01, .085, .06, .38, .25), hair_vorn=rx(-.05 + .04 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.06 + .04 * m_.sin(4 * m_.pi * t))))
 CLIPS['run'] = make_action(ARMO, 'run', 20, lambda t: dict(gait(t, STRIDE_R, .35, .07, .02, .16, .2, .5, 1.15, run=True), hair_vorn=rx(-.15 + .06 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.18 + .06 * m_.sin(4 * m_.pi * t))))
 rest_pose(ARMO)
 

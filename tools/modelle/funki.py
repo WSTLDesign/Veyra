@@ -113,9 +113,9 @@ for s in (-1, 1):
         parts_head.append(tuft(p0, up_ * .8 + fw * -.6 + side * ((k - 1) * .3), .04, .007, 'ohr_innen', up=tuple(fw)))
 
 # ---------------- Augen + Lider + Mund (wie Noa, kleiner Satz) ----------------
-RE = .029; EYES = {}
-def th_u(ph): k = ss(0, 1, abs(ph) / 48.0); return 30 * (1 - k ** 1.6) + (6 if ph > 0 else -4) * k
-def th_l(ph): k = ss(0, 1, abs(ph) / 48.0); return -24 * (1 - k ** 1.5) + (4 if ph > 0 else -4) * k
+RE = .031; EYES = {}
+def th_u(ph): k = ss(0, 1, abs(ph) / 52.0); return 35 * (1 - k ** 1.6) + (6 if ph > 0 else -4) * k
+def th_l(ph): k = ss(0, 1, abs(ph) / 52.0); return -28 * (1 - k ** 1.5) + (4 if ph > 0 else -4) * k
 eye_parts = []; lid_objs = []
 for s in (-1, 1):
     p, n = hsurf((s * .5, -.86, .1)); fwd = Vector((s * .42, -1, .08)).normalized(); C = p - fwd * (RE - .0035); EYES[s] = (C, fwd)

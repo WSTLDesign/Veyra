@@ -25,13 +25,15 @@ def head_fixed(co, r):
         eb, eu = EARS[s]; t = (co - eb).dot(eu)
         if t > -.005 and (co - eb - eu * t).length < .07 and co.z > HC.z + .03:
             w2 = ss(.04, .1, t); return {'head': 1 - ss(0, .04, t), ('ear1.' + ('L' if s > 0 else 'R')): ss(0, .04, t) * (1 - w2), ('ear2.' + ('L' if s > 0 else 'R')): w2}
-    return {'head': 1}
+    d = co - HC; wn = ss(-.03, -.09, d.z) * ss(-.06, .02, d.y) * .55
+    return {'head': 1 - wn, 'neck2': wn} if wn > .01 else {'head': 1}
 weights_capsule(HEAD, ARMO, lambda co, r: ['head'], fixed=head_fixed, smooth_it=1)
 weights_capsule(EYE, ARMO, lambda co, r: ['eye.L'], fixed=lambda co, r: {'eye.L' if co.x > 0 else 'eye.R': 1})
 def body_allowed(co, r):
     k = 'L' if co.x > 0 else 'R'
     if r == 'flamme': return ['tail4', 'tail5']
     if co.y > .16 and co.z > .2: return ['hips'] + ['tail%d' % i for i in range(1, 6)]
+    if co.z > .29 and co.y < -.1: return ['chest', 'neck1', 'neck2', 'head']
     return ['hips', 'spine1', 'spine2', 'chest', 'neck1', 'neck2', 'scapula.' + k, 'upper_f.' + k, 'lower_f.' + k, 'paw_f.' + k, 'thigh.' + k, 'shin.' + k, 'meta.' + k, 'paw_h.' + k]
 weights_capsule(BODY, ARMO, body_allowed, fall=5, smooth_it=3)
 
@@ -226,7 +228,7 @@ def attack(t):
     """Ducken (0–35 %), Sprung nach vorn mit Schnapp-Kopf (35–60 %), zurück (60–100 %)"""
     c = ss(0, .35, t) * (1 - ss(.35, .45, t)); j = ss(.35, .5, t) * (1 - ss(.62, 1, t)); P = {}
     root = Vector((0, -.09 * j, -.03 * c + .035 * m_.sin(m_.pi * min(1, max(0, (t - .35) / .3))))); P['hips:loc'] = root
-    P['spine1'] = rx(.12 * c - .1 * j); P['chest'] = rx(.1 * c - .12 * j); P['neck1'] = rx(.15 * c - .25 * j); P['head'] = rx(.1 * c - .3 * j * (1 - ss(.5, .6, t)))
+    P['spine1'] = rx(.08 * c - .05 * j); P['chest'] = rx(.08 * c + .04 * j); P['neck1'] = rx(.12 * c + .12 * j); P['head'] = rx(.06 * c + .1 * j * (1 - ss(.55, .7, t)))
     for s in (-1, 1):
         k = 'L' if s > 0 else 'R'; P['ear1.' + k] = rx(.4 * c)
         P.update(leg_f(s, S_(FL[2], s) + Vector((0, -.1 * j, .05 * j * (1 - ss(.5, .62, t)))), root))

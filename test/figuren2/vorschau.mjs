@@ -45,7 +45,7 @@ async function sheet(p, cells, file, { cols, cw, ch, title = '', sub = '' }) {
 }
 const P = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } });
 await newGame(P, { team: [[1, 12]], view: 'third' });
-const ld = await P.evaluate(async (ids) => { const out = {}; for (const k of ids) { const g = await pilotLoad(k); out[k] = g ? PILOT['ms_' + k] : 'FEHLT'; } return out; }, ['noa', 'fig_noa', ...NPCS_]);
+const ld = await P.evaluate(async (ids) => { const out = {}; for (const k of ids) { const g = await pilotLoad(k); out[k] = g ? PILOT['ms_' + k] : 'FEHLT'; } return out; }, ['noa', 'fig_noa', 'fig_heldin', ...NPCS_]);
 console.log('Laden', JSON.stringify(ld)); res.laden = ld;
 await studio(P);
 if (has('dev')) {   // schneller Arbeitsbogen: Noa vorn/schräg/Gesicht + Idle-Pose
@@ -73,7 +73,7 @@ if (has('noa')) {
 }
 if (has('npc')) {
   const line = await P.evaluate((ids) => { STU.clear(); const n = ids.length; const out = []; ids.forEach((id, i) => { const o = STU.fig(id); const x = (i - (n - 1) / 2) * .62; STU.add(o, x, -Math.abs(i - (n - 1) / 2) * .06, -x * .12); STU.tick(o, .7 + i * .37); });
-    STU.sun.shadow.camera.updateProjectionMatrix(); return STU.shot([0, 1.25, 8.2], [0, .82, 0], 28, 1600, 900); }, ['fig_noa', ...NPCS_]);
+    STU.sun.shadow.camera.updateProjectionMatrix(); return STU.shot([0, 1.25, 8.8], [0, .82, 0], 28, 1600, 900); }, ['fig_noa', 'fig_heldin', ...NPCS_]);
   await sheet(P, [{ img: line, label: 'Runde 2: Noa + alle neuen NPCs (Figurenbaukasten, gleiche Kamera)' }], (has('r2') ? 'r3_aufstellung.webp' : 'npc_aufstellung.webp'), { cols: 1, cw: 1600, ch: 900 });
   const labs = await P.evaluate((ids) => ids.map(id => id), ['fig_noa', ...NPCS_]);
   // Nahbögen: je Figur Ganzkörper + Gesicht

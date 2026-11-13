@@ -11,6 +11,13 @@ SPECS = {
                leder='#4d5236', metall='#b08a48', glas='#6fcde4', dunkel='#3a3f4a', akzent='#d81b72', streifen='#8fbf4a', emblem='#e9d27a'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.27, weit=.008), unten=dict(art='cargo', bund=.575, bis=0, weit=.009), schuhe='sneaker'),
    extras=['schutzbrille', 'geraet', 'cargotaschen'], muster=['blatt'], groesse='kind'),
+ # Heldin Noa (Stufe 0): helle Schirmkappe mit grünem Schirm + Blatt, Pferdeschwanz (gelbes Haargummi), grünes T-Shirt mit cremefarbenem Saum,
+ # braune Shorts, lange dunkle Socken, braune Stiefel mit hellem Rand, Umhängetasche mit Sonne, Handgelenk-Gerät
+ 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_muetze', gesicht=dict(mund_laune=.035, lid_o=40),
+   farben=dict(haut='#f6d3b3', haar='#a4532a', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#efe6d2', muetze2='#4c8a3c',
+               blume='#f2c94c', schuh='#7a5434', sohle='#3e2c22', leder='#7a4a2a', akzent='#d81b72', streifen='#efe6d2', emblem='#f2c94c', metall='#b08a48', dunkel='#3a3f4a', knopf='#f2c94c'),
+   kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='schirm'),
+   extras=['geraet', 'tasche', 'kappe_blatt'], muster=['blatt'], groesse='kind'),
  # Rivale Rayan: schwarze Stacheln mit roten Spitzen, dunkle Zip-Jacke (rot abgesetzt) über grauem Shirt, dunkle Cargohose, Stiefel
  'rayan': dict(typ='kind', augen='#c0302a', haar='stachel', gesicht=dict(mund_laune=.0, braue_z=.27, lid_o=27),
    farben=dict(haut='#f1cfae', haar='#1e1a22', haar_hi='#d0303a', braue='#1e1a22', top='#7a7680', jacke='#2a2730', saum='#c0303a', hose='#2c2a32', saum2='#24222a',
@@ -218,7 +225,7 @@ def accessories(spec, bvb):
         o = obj_data('Muetze', CV, CF); smooth(o); set_region(o, 'muetze'); solidify(o, .004 * k, 1); out.append(o)
         rim = [head_dir_point(sdir(hl, ph), .022 * k) for ph in [(-1 + j / 10 * 2) * .95 for j in range(11)]]
         rings = [rim, [p + Vector((0, -.05 * k, -.012 * k)) * (1 - .55 * abs(j / 10 * 2 - 1) ** 2) for j, p in enumerate(rim)]]
-        o = loft_rings('Schirm', rings, 'muetze', closed=False); solidify(o, .004 * k, 1); out.append(o)
+        o = loft_rings('Schirm', rings, 'muetze2' if 'muetze2' in REG else 'muetze', closed=False); solidify(o, .004 * k, 1); out.append(o)
     if K.get('muetze') == 'beanie':
         hl = 1.42; U_, V_ = 7, 26; CV = []; CF = []
         for i in range(U_ + 1):

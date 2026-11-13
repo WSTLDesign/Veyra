@@ -263,3 +263,12 @@ body.red #title .vtBg *,body.red #title .vtLogo,body.red #title .tbtn,body.red #
 .in-root .in-menu small{font-size:10px!important;letter-spacing:0}
 body #title>.vtVer{left:auto!important;right:max(16px,var(--sa-r))!important;width:auto!important}
 @media (max-height:460px){body #title>.vtVer{display:none}}
+
+/* ---------- Startablauf (Runde 2): Startbildschirm + Opening-Endbild mit derselben Wortmarke; Titel ohne altes Film-Standbild ---------- */
+.vSr{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;margin:0!important;padding:0!important}
+#iPrompt .vtP{width:min(460px,56vw);height:auto;margin-bottom:calc(var(--u) * .4);filter:drop-shadow(0 10px 30px rgba(10,8,30,.55));animation:vLogoIn 1s var(--v-ease) both}
+#iPrompt span:last-child{font:800 max(12px,calc(var(--u) * .8))/1 var(--font-ui)!important;letter-spacing:.24em;color:rgba(255,246,232,.9)!important;padding:12px 22px;border-radius:999px;background:rgba(20,22,48,.42);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#introLogo .vtO{width:min(600px,64vw);height:auto;filter:drop-shadow(0 12px 34px rgba(30,16,60,.5))}
+#introLogo .tsub{font:800 max(12px,calc(var(--u) * .8))/1.2 var(--font-ui)!important;letter-spacing:.3em!important}
+body #title.poster::after{display:none}
+@media (max-height:460px){#iPrompt .vtP{width:min(380px,50vw)}#introLogo .vtO{width:min(460px,56vw)}}

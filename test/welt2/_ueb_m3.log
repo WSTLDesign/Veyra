@@ -83,3 +83,10 @@
 ✓ Route 2 → Kupferhain (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":717,"bumps":1}
 ✓ Route 2 → Kupferhain (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"kupferhain","t0":568854,"shown":783,"ms":2980}}
 ✓ Route 2 → Kupferhain (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":16,"y":5,"inZ":false}
+✓ Rückkehrpunkt nach dem Hausbesuch = Feld vor der Tür (morgenau 4,5)  {"map":"morgenau","x":4,"y":5}
+✓ Stick über den Wechsel gehalten: kein Hin-und-her (bleibt auf Route 1, Ankunft eine Kachel innen)  {"id":"route1","y":18,"h":22}
+✓ 2D Morgenau → Haus: löst aus, Ladebildschirm nein  {"id":"haus_spieler","ld":0,"fd":1}
+✓ 2D Haus → Morgenau: löst aus, Ladebildschirm nein  {"id":"morgenau","ld":0,"fd":1}
+✓ 2D Morgenau → Route 1: löst aus, Ladebildschirm ja  {"id":"route1","ld":1,"fd":0}
+✓ 2D Route 2 → Nebelgrotte: löst aus, Ladebildschirm ja  {"id":"nebelgrotte","ld":1,"fd":0}
+✓ Spielstand nach den Wechseln: Karte/Position/Rückkehrpunkt gespeichert und ladbar (keine neuen Pflichtfelder)  {"map":"nebelgrotte","px":10,"py":2,"ret":{"map":"route2","x":10,"y":3},"team":1,"okL":true,"keys":41}

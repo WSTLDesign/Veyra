@@ -58,7 +58,7 @@ def regions(spec):
     R('lidlinie', c.get('lidlinie', '#2a1c1e'), (0, 0, 0, 0)); R('braue', c.get('braue', c['haar']), (0, 0, 0, 0)); R('mundlinie', c.get('mund', '#8a4a40'), (0, 0, 0, 0))
     R('haar', c['haar'], (1, .15, .35, 0)); R('bart', c.get('bart', c['haar']), (1, .1, .3, 0))
     R('auge', '#ffffff', (0, 0, 1, 0)); R('mund_innen', '#5a2028', (0, 0, 0, 0))
-    for k in ('top', 'top2', 'jacke', 'kittel', 'hose', 'rock', 'schuerze', 'muetze', 'rucksack', 'socke'):
+    for k in ('top', 'top2', 'jacke', 'kittel', 'hose', 'rock', 'schuerze', 'muetze', 'muetze2', 'rucksack', 'socke'):
         if k in c: R(k, c[k], (1, .05, 0, 0))
     R('saum', c.get('saum', c.get('top', '#888888')), (1, .05, 0, 0)); R('saum2', c.get('saum2', c.get('saum', '#777777')), (1, .05, 0, 0))
     R('schuh', c.get('schuh', '#e8e2d6'), (1, 0, .15, 0)); R('sohle', c.get('sohle', '#b9b6b0'), (1, 0, .1, 0)); R('leder', c.get('leder', '#6a4a30'), (1, 0, .25, 0))
@@ -351,6 +351,14 @@ def hairline_std(fr=1.0, side=1.6, back=2.05):
 
 def build_hair(style):
     H = D.H; hw = D.hw; out = []; rnd = random.Random(7); k = D.hh / .127   # Maßstab relativ zum Kinderkopf
+    if style == 'pferd_muetze':      # Heldin: Haar unter der Kappe (Pony + Seiten) + Pferdeschwanz als Volumen durch die Kappe hinten
+        out = build_hair('muetze'); b = head_dir_point(sdir(1.3, math.pi), .03 * k)
+        for i in range(5):
+            o_ = (i - 2) * .013 * k
+            P = [b + Vector((o_, 0, 0)), b + Vector((o_ * 1.2, .055, -.04)), b + Vector((o_ * 1.5, .085, -.13)), b + Vector((o_ * 1.2, .07, -.24)), b + Vector((o_ * .5, .045, -.31))]
+            P = [b + (q - b) * k for q in P]; out.append(clump(P, .05 * k, .022 * k, n=9))
+        o = blob('Haargummi', b + Vector((0, .014, -.012)) * k, (.024 * k, .02 * k, .022 * k), 2); set_region(o, 'blume'); out.append(o)
+        return out
     if style == 'wuschel':            # Noa: verwuschelt, Pony schräg, Spitzen nach außen – breite, dicke Büschel (geschlossene Masse)
         hl = hairline_std(1.12, 1.62, 2.1); out.append(hair_cap(hl, .01 * k))
         for i in range(7):

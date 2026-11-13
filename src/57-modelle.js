@@ -1,14 +1,14 @@
 // ===== VEYRA – 3D-Modelle: Pilot (12.11.) + Figuren Runde 2 (Held Noa, NPCs) als gebaute GLB-Modelle – NUR hinter dem Schalter =====
 // Schalter: SET.modelle3d (Standard false/aus; zum Testen auch ?modelle3d=1). Aus ⇒ das Spiel bleibt unverändert (keine Ladevorgänge, keine Hooks aktiv).
 // An ⇒ lädt models/figuren/<id>.glb bzw. models/pilot/<id>.glb (Draco, three r128 GLTFLoader aus 38-models), Darstellung mit 56-toonpro; scheitert das Laden → bisheriges Prozedural.
-// Figuren-Zuordnung (figModelFor): Spielerfigur 'held' → fig_noa · Figuren-NPCs nach FIGURES-Id (veyran, rayan, mama, mirael) · Laden (t:'shop') → fig_haendler ·
-//   übrige Bewohner/Wanderer ohne eigene Figur → fig_buerger_a…d (stabil aus der Farbe). Alle anderen benannten Figuren (und 'heldin') bleiben prozedural.
+// Figuren-Zuordnung (figModelFor): Spielerfigur 'held' → fig_noa, 'heldin' → fig_heldin · Figuren-NPCs nach FIGURES-Id (veyran, rayan, mama, mirael) · Laden (t:'shop') → fig_haendler ·
+//   übrige Bewohner/Wanderer ohne eigene Figur → fig_buerger_a…d (stabil aus der Farbe). Alle anderen benannten Figuren bleiben prozedural.
 // Laufzeit: Gang ohne Gleiten (gemeinsame Phase für walk/jog/run, Schrittlänge je Clip), Blinzeln, Blicksprünge der Augen, NPC schaut zum Spieler,
 //   spricht im Dialog (Mund A/O), Ausdruck aus dem Dialogtext, Einmal-Clips winken/jubeln/werfen, LOD (Körper 50 %) ab 9 Feldern.
 // API: pilotOn() · pilotLoad(k)→Promise · pilotMake(k,h,opts)→Group|null · pilotExpr(o,name) · pilotTick(o,dt,opt) · pilotOnce(o,clip) · figModelFor(col,hat,oe) · PILOT_EXPR · FIG_MODELS
 // window.PILOT_SRC (optional, Werkstatt-Build: data-URIs aus spiel/models/<bereich>/<id>.js) ersetzt die Pfade
 // Figuren: H = Modellhöhe (Scheitel, Blender-m), h = Spielhöhe (Felder, wie CHAR_BUILD), s = Doppelschritt (m) für walk/jog/run
-const FIG_MODELS={fig_noa:{H:1.45,h:1.32,s:[1.05,2.05,3.0],held:1},fig_rayan:{H:1.45,h:1.32,s:[1.05,2.05,3.0]},fig_veyran:{H:1.68,h:1.55,s:[1.32,2.4,3.3]},
+const FIG_MODELS={fig_noa:{H:1.45,h:1.32,s:[1.6,2.05,3.0],held:1},fig_heldin:{H:1.45,h:1.32,s:[1.6,2.05,3.0],held:1},fig_rayan:{H:1.45,h:1.32,s:[1.6,2.05,3.0]},fig_veyran:{H:1.68,h:1.55,s:[1.32,2.4,3.3]},
  fig_mama:{H:1.68,h:1.58,s:[1.32,2.4,3.3]},fig_mirael:{H:1.68,h:1.58,s:[1.32,2.4,3.3]},fig_haendler:{H:1.76,h:1.7,s:[1.32,2.4,3.3]},
  fig_buerger_a:{H:1.68,h:1.58,s:[1.32,2.4,3.3]},fig_buerger_b:{H:1.6,h:1.47,s:[1.32,2.4,3.3]},fig_buerger_c:{H:1.8,h:1.68,s:[1.32,2.4,3.3]},fig_buerger_d:{H:1.6,h:1.52,s:[1.2,2.25,3.2]}};
 const FIG_BY_ID={veyran:'fig_veyran',prof:'fig_veyran',professor:'fig_veyran',rayan:'fig_rayan',mama:'fig_mama',mirael:'fig_mirael'};
@@ -42,7 +42,7 @@ function pilotMake(k,h,opts){opts=opts||{};const g=PILOT.gltf[k];if(!g||!THREE.S
  const bone={};inner.traverse(b=>{if(b.isBone&&/^(eyeL|eyeR|head|neck)$/.test(b.name))bone[b.name]=b;});
  const U={pilot:k,fig:!!F.fig,mixer,acts,faces,sc,h,w:{idle:1,walk:0,jog:0,run:0},spd:0,lp:null,ph:0,blink:{next:performance.now()+1500,t:-1,dbl:false},expr:'neutral',exW:{},body,inner,
   lod:lod1?[lod0,lod1]:null,lodOn:0,bone,eye:{x:0,y:0,tx:0,ty:0,next:0},look:0,once:null,talk:0};
- root.userData=U;if(typeof blobShadow==='function')blobShadow(root,k==='noa'||k==='fig_noa'?.28:k==='funki'?.3:.3);return root;}
+ root.userData=U;if(typeof blobShadow==='function')blobShadow(root,k==='noa'||k==='fig_noa'||k==='fig_heldin'?.28:k==='funki'?.3:.3);return root;}
 // Ausdruck (weich überblendet in pilotFace); Blinzeln läuft immer zusätzlich (2–6 s, 150 ms, manchmal doppelt); im Gespräch Mundbewegung A/O
 function pilotExpr(o,name){if(o&&o.userData.pilot)o.userData.expr=name||'neutral';}
 function pilotFace(U,dt){const now=performance.now(),B=U.blink,tgt=Object.assign({},PILOT_EXPR[U.expr]||{});
@@ -86,7 +86,7 @@ function pilotOnce(o,n){const U=o&&o.userData,a=U&&U.acts&&U.acts[n];if(!a)retur
 // ---------- Zuordnung Figur → Modell ----------
 let _figLookMap=null;function figIdByLook(L){if(!L||typeof FIGURES==='undefined')return null;if(!_figLookMap){_figLookMap=new Map();for(const id in FIGURES){const F=FIGURES[id];if(F&&F.look)_figLookMap.set(F.look,id);}}
  const id=_figLookMap.get(L);if(id)return id;for(const k in FIGURES){const F=FIGURES[k];if(F&&F.look&&F.look.hair===L.hair&&F.look.hairCol===L.hairCol&&F.look.top===L.top&&F.look.build===L.build)return k;}return null;}
-function figModelFor(col,hat,oe){if(oe&&oe.body)return oe.body==='held'?'fig_noa':null;
+function figModelFor(col,hat,oe){if(oe&&oe.body)return oe.body==='held'?'fig_noa':oe.body==='heldin'?'fig_heldin':null;
  if(oe&&oe.look){const id=figIdByLook(oe.look);return id&&FIG_BY_ID[id]||null;}
  if(oe)return null;if(col==='#e8623a'&&hat==='#1f8a7a')return null;// Platzhalter der Spielfigur vor dem Outfit
  if(col==='#6aa0e0')return 'fig_haendler';// Laden (02-world: t:'shop')
@@ -99,7 +99,7 @@ function figSwapScene(){try{if(typeof R3==='undefined'||!R3||!R3.scene||!R3.scen
   const o=figMake(id,a[2]);if(!o)continue;o.position.copy(e.o.position);o.rotation.copy(e.o.rotation);const ud=Object.assign({},e.o.userData);delete ud.rig;delete ud.legs;delete ud.char;delete ud.gait;delete ud.p3;
   Object.assign(o.userData,ud,{npc:e.n});if(e.o.parent)e.o.parent.remove(e.o);S.add(o);e.o=o;}}catch(err){console.warn('Figuren-Tausch',err);}}
 // ---------- Anbindung (nur bei Schalter an) ----------
-setTimeout(()=>{try{if(pilotOn()){pilotLoad('fig_noa').then(g=>{if(g&&typeof R3!=='undefined'&&R3)R3.ofk=null;});pilotLoad('funki');}}catch(e){}},0);
+setTimeout(()=>{try{if(pilotOn()){{const hb=(typeof G!=='undefined'&&G&&G.outfit&&G.outfit.body==='heldin')?'fig_heldin':'fig_noa';pilotLoad(hb).then(g=>{if(g&&typeof R3!=='undefined'&&R3)R3.ofk=null;});}pilotLoad('funki');}}catch(e){}},0);
 if(typeof person3d==='function'){const _person3d57=person3d;person3d=function(col,hat,oe){
  try{if(pilotOn()){const id=figModelFor(col,hat,oe);if(id){if(pilotReady(id)){const o=figMake(id,oe);if(o)return o;}
    else if(PILOT.st[id]!=='err')pilotLoad(id).then(g=>{if(!g)return;if(FIG_MODELS[id].held&&typeof R3!=='undefined'&&R3)R3.ofk=null;else figSwapScene();});}}}catch(e){console.warn('3D-Figur',e);}

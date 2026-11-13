@@ -318,6 +318,12 @@ if 'blatt_wappen' in mus and 'kittel' in FC:
 if 'kreuz_blatt' in SPEC.get('extras', []) and 'kittel' in FC:   # Heil-Zeichen (eigenes Symbol: Kreuz mit Blatt)
     lx, lz = (X + .06 * H) / kk, (Z - (D.SH.z - .085 * H)) / kk
     cr = ((np.abs(lx) < .006) & (np.abs(lz) < .018)) | ((np.abs(lz) < .006) & (np.abs(lx) < .018)); mix(M('kittel') & (Y < 0), FC['saum'], cr.astype(np.float32))
+if 'kappe_blatt' in SPEC.get('extras', []) and 'muetze' in FC:
+    cz = HC.z + .62 * hh; lx, lz = X / kk, (Z - cz) / kk; fr = Y < HC.y - .2 * hd
+    disc = (lx ** 2 + lz ** 2) < .019 ** 2; mix(M('muetze') & fr, FC['muetze2'], disc.astype(np.float32))
+    leaf = ((lx * .8 + lz * .6) / .013) ** 2 + ((-lx * .6 + lz * .8) / .0065) ** 2 < 1; mix(M('muetze') & fr, FC['muetze'], (leaf & disc).astype(np.float32))
+    lx2, lz2 = (X - (-.11 * H / 1.45 * 1.25)) / kk, (Z - (HZ + .01 * H)) / kk; sun = (lx2 ** 2 + lz2 ** 2) < .011 ** 2; ray = ((lx2 ** 2 + lz2 ** 2) < .018 ** 2) & (np.sin(np.arctan2(lz2, lx2) * 8) > .4)
+    mix(M('leder') & (Y < 0), '#ffe08a', (sun | ray).astype(np.float32))
 # Mütze: Strick (Beanie) bzw. Naht (Schirmmütze)
 if 'muetze' in FC:
     mk = M('muetze'); rib = np.sin(np.arctan2(Y - HC.y, X - HC.x) * 40) > 0; mix(mk, shade_of('muetze', .85), .35 * rib); hgt += mk * rib * .5
@@ -495,8 +501,8 @@ def werfen(t):
     P.update(arm_pose(-1, down=lerp(lerp(.6, -.55, wind), .35, thr), fwd=lerp(lerp(.05, -.55, wind), 1.05, thr), elbow=lerp(lerp(.28, 1.5, wind), .25, thr), twist=.4, wrist=lerp(-.3, .4, thr), curl=lerp(.95, .1, thr), thumb=.4, roll=lerp(0, 1.3, wind) * (1 - thr)))
     P.update(arm_pose(1, down=lerp(.6, .1, wind), fwd=lerp(.05, .65, wind) - .5 * thr, elbow=.5, twist=.2, wrist=.1, curl=.4))
     return P
-STRIDE_W, STRIDE_J, STRIDE_R = {'kind': (1.05, 2.05, 3.0), 'teen': (1.2, 2.25, 3.2)}.get(D.spec['typ'], (1.32, 2.4, 3.3))   # Doppelschritt (m) je Clip-Durchlauf
-FR = {'walk': 30, 'jog': 21, 'run': 17}
+STRIDE_W, STRIDE_J, STRIDE_R = {'kind': (1.6, 2.05, 3.0), 'teen': (1.2, 2.25, 3.2)}.get(D.spec['typ'], (1.32, 2.4, 3.3))   # Doppelschritt (m) je Clip-Durchlauf
+FR = {'walk': 23 if D.spec['typ'] == 'kind' else 30, 'jog': 21, 'run': 17}   # Kind: zügiges Gehen 1,9 Felder/s (Spiel-Gehtempo)
 CLIPS = {}
 CLIPS['idle'] = make_action(ARMO, 'idle', 120, idle)
 CLIPS['walk'] = make_action(ARMO, 'walk', FR['walk'], lambda t: dict(gait(t, STRIDE_W, .6, .016 * kk, .009 * kk, .085 * kk, .05, .32, .22), hair_vorn=rx(-.04 + .03 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.05 + .03 * m_.sin(4 * m_.pi * t))))

@@ -5,7 +5,7 @@ from tbau import *
 OUT = [a for a in sys.argv[1:] if a.endswith('.glb')]; OUT = OUT[0] if OUT else '/tmp/t059.glb'
 FORM = '--form' in sys.argv
 start('t059', .5)
-treg('fell', '#fbf6ec', 'haut'); treg('fell_kopf', '#fbf6ec', 'haut'); treg('feder_s', '#fbf6ec', 'haut', (.3, .5, .1, 0)); treg('schwinge', '#ffffff', 'feder'); treg('wirbel', '#bfeee0', 'feder'); treg('schnabel', '#ffb43a', 'horn')
+treg('fell', '#fbf6ec', 'haut'); treg('fell_kopf', '#fbf6ec', 'haut'); treg('feder_s', '#fbf6ec', 'haut', (.3, .5, .1, 0)); treg('schwinge', '#ffffff', 'feder'); treg('wirbel', '#6fd6b8', 'haut'); treg('schnabel', '#ffb43a', 'horn')
 treg('bein', '#f2a830', 'schuppe'); treg('kralle', '#4a3428', 'kralle'); treg('nase', '#ffb43a', 'horn')
 C.FLUEGEL = ('schwinge',); C.SCHWANZ = (); C.BEIN = ('bein', 'kralle')
 C.SPV = [V(0, .02, .13), V(0, -.005, .2), V(0, -.01, .25), V(0, -.015, .28)]
@@ -21,7 +21,7 @@ for row in range(5):   # Brust- und Flankenfedern als Geometrie-Schuppen (überl
     for k in range(n_):
         a = -1.25 + 2.5 * (k + .5 * (row % 2)) / (n_ - 1 + (row % 2)); d = Vector((math.sin(a), -math.cos(a), 0))
         hit = BVK.ray_cast(V(0, 0, z) + d * .5, -d)
-        if hit[0]: parts.append(blatt(hit[0] - d * .004, (d * .45 + V(0, 0, -1)).normalized(), .055, .03, 'feder_s', up=tuple(d), krumm=-.25, dick=.22, n=5))
+        if hit[0]: fb = blob('Feder', hit[0] + d * .004 - V(0, 0, .018), (.03, .011, .036), 2, rot=(-.35, 0, a)); set_region(fb, 'feder_s'); parts.append(fb)
 for s in (-1, 1):
     Wg = [S_(p, s) for p in C.WING]
     parts.append(glied('Arm', Wg, [(.03, .016), (.035, .014), (.03, .012), (.015, .008)], ring=8, n=14, flat=(0, 0, 1), regn='schwinge'))
@@ -67,5 +67,5 @@ def paint(P):
     mix(M('fell_kopf'), '#9fe6cc', ss(.2, .1, np.abs(np.abs(hx) * .9 - (hz - .45) * .8)) * (hz > .35) * (hy < 0))   # V-Stirnmal
     mix(M('fell_kopf'), '#f0e6d8', ss(.55, .3, np.sqrt(((np.abs(hx) - .42) * 1.2) ** 2 + (hz - .1) ** 2)) * (hy < -.2))    # Gesichtsschleier
     mix(M('feder_s'), '#9fe6cc', .85 * ((Z > .1) & (Z < .15)).astype(np.float32)); mix(M('feder_s'), '#ffffff', .3 * ss(.0, .06, -Y - .1))  # Brustband minz
-    mix(M('wirbel'), '#5fbff0', .5 * ss(.3, .5, np.abs(X))); mix(M('wirbel'), '#ffffff', .4 * ss(.4, .45, Z - HC.z + .4))
+    wz = (Z - HC.z) / .25; mix(M('wirbel'), '#4ab0ec', ss(.2, .9, wz)); mix(M('wirbel'), '#2f86d6', .5 * ss(.8, 1.2, wz)); mix(M('wirbel'), '#ffffff', .55 * ss(.75, .95, np.abs(np.sin(np.arctan2(Z - HC.z - .14, np.abs(X) - .1) * 3))))
 standard_ablauf(OUT, body_allowed_vogel, clips_vogel, paint, ('#2f8ae0', '#0c3a8a', '#8fe0ff'), fur_scale=1.0, nstr=.35, ohren=False, IR=.76)

@@ -8,7 +8,7 @@ FORM = '--form' in sys.argv
 
 K = {
  '001': dict(name='t001', bmax=3000, IR=.74, Lb=.17, Lh=.16, Wx=.05, Rb=.084, leg=1.2, HR=(.178, .162, .158), hoff=(-.22, .78), sn=.3, sn_s=.4, RE=.064, eyez=.04, eyex=.42,
-             ear=(.13, .068, .045, (.55, .05, .74)), tail=[(0, 0, 0), (0, .07, .03), (0, .13, .1), (0, .155, .19), (0, .14, .28), (0, .1, .34)], tailR=.105,
+             ear=(.13, .074, .066, (.55, .05, .74)), tail=[(0, 0, 0), (0, .07, .03), (0, .13, .1), (0, .155, .19), (0, .14, .28), (0, .1, .34)], tailR=.105,
              fell='#ee6a22', dunkel='#c9481a', creme='#f9e4c4', ohrspitze='#6a2412', bein=None, flame='ball', kragen=False, basalt=False, H=.62,
              iris=('#e07a1a', '#6a2a0c', '#ffc65a'), gang=dict(wL=.09, rL=.17, wLift=.028, rLift=.045, bob=.006)),
  '002': dict(name='t002', Lb=.31, Lh=.28, Wx=.058, Rb=.085, leg=1.0, HR=(.125, .13, .108), hoff=(-.42, .7), sn=.55, sn_s=.28, RE=.031, eyez=.15, eyex=.48,
@@ -62,14 +62,14 @@ hs = HR[0] / .12
 for s in (-1, 1):
     for k in range(4 if ART == '001' else 3):
         p, n = hsurf((s * .95, -.2 + k * .07, -.28 - k * .13), -.012 * hs)
-        C.parts_head.append(klumpen(p, n * .6 + V(s * .2, .45 + .1 * k, -.8 - .1 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .03 * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
+        C.parts_head.append(klumpen(p, n * .6 + V(s * .2, .45 + .1 * k, -.8 - .1 * k), (.07 - .008 * k) * hs * (1.15 if ART == '001' else 1), (.038 if ART == '001' else .03) * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
 for k in range(3):
     a = (k - 1); p, n = hsurf((a * .3, .25, .97), -.012 * hs); C.parts_head.append(klumpen(p, n * .35 + V(a * .3, .95, .05), .05 * hs, .024 * hs, 'fell_kopf', up=tuple(n), dick=.6, bend=(0, .005, -.012 * hs)))
 # Ohren: volumetrisch (Rand dick, Innenseite hohl), Innenfell-Büschel, dunkle Spitze (Farbe)
 eL, eW, eD, ep = K['ear']
 for s in (-1, 1):
     base, bn = hsurf((s * ep[0], ep[1], ep[2]), -.02 * hs); up_ = Vector((s * (.75 if ART == '001' else .5), .14, 1)).normalized(); fw = Vector((s * (.25 if ART == '001' else 0), -1, .15)).normalized()
-    C.parts_head.append(ohr(s, base, up_, fw, eL * hs / (HR[0] / .12) * (HR[0] / .12), eW * hs / (HR[0] / .12) * (HR[0] / .12), eD, cup=1.25, regs=('fell_kopf', 'ohr_innen')))
+    C.parts_head.append(ohr(s, base, up_, fw, eL * hs / (HR[0] / .12) * (HR[0] / .12), eW * hs / (HR[0] / .12) * (HR[0] / .12), eD, cup=(.85 if ART == '001' else 1.25), rund=0, voll=(.5 if ART == '001' else .85), regs=('fell_kopf', 'ohr_innen')))
     eb, eu, L, fwv, side = C.EARS[s]
     for k in range(3):
         p0 = eb + eu * (.012 * hs) + fwv * (eD * .1) + side * ((k - 1) * .016 * hs)
@@ -77,10 +77,10 @@ for s in (-1, 1):
 augen(K['RE'], xn=K['eyex'], yn=-.86, zn=K['eyez'], spread=.3 if ART == '001' else .42, lid_col=K['fell'])
 maul(w=.3, z=-.52, smile=.12)
 # Stirnflamme (erhabene Flammenzungen, leuchten)
-for cx, h_, w_ in ((0, .17, .022), (-.16, .11, .014), (.16, .11, .014)):
+for cx, h_, w_ in (((0, .3, .04), (-.15, .2, .024), (.15, .2, .024)) if ART == '001' else ((0, .17, .022), (-.16, .11, .014), (.16, .11, .014))):
     d0 = Vector((cx, -.62, .5)).normalized(); pts = [HC + Vector((cx + (cx * .4 + .03 * math.sin(k * 1.7)) * k / 6, -.62 + .35 * h_ * k / 6 * 2, .5 + h_ * k / 6 * 1.4)).normalized() * max(HR) for k in range(7)]
     pts = auf_kopf(pts, .0018 * hs); qn = hsurf(d0)[1]
-    C.parts_head.append(loft('Stirnflamme', pts, lambda t, w_=w_: w_ * hs * (1 - t) ** .8 * (.7 + .3 * math.sin(t * 3)) + .0003, lambda t: .0016 * hs, ring=6, n=10, flat_up=tuple(qn))); set_region(C.parts_head[-1], 'flamme')
+    C.parts_head.append(loft('Stirnflamme', pts, lambda t, w_=w_: w_ * hs * (1 - t) ** .8 * (.7 + .3 * math.sin(t * 3)) + .0003, lambda t: (.004 if ART == '001' else .0016) * hs, ring=6, n=12, flat_up=tuple(qn))); set_region(C.parts_head[-1], 'flamme')
 # ---------------- Rute + Flammen ----------------
 tR = K['tailR'] * (1 if ART == '001' else Lb / .2 * .55)
 if K['flame'] == 'ball':
@@ -90,11 +90,11 @@ else:
 flames = []; tip = TP[-1]; td = (TP[-1] - TP[-5]).normalized(); fs = 1.0 if ART == '001' else .9 * (Lb / .2) ** .6
 FT = tip - td * (.08 if ART == '001' else .05) * fs; C.FT = FT
 if K['flame'] == 'ball':   # Flammenball an der Rutenspitze (wie das Bild): Kern + 9 Zungen
-    core = blob('Flammenkern', FT + td * .02, (.045, .045, .05), 4); set_region(core, 'flamme_kern'); flames.append(core)
+    core = blob('Flammenkern', FT + td * .03, (.065, .065, .075), 4); set_region(core, 'flamme_kern'); flames.append(core)
     for k in range(9):
         a = k / 9 * 2 * math.pi; rd = Vector((math.cos(a), math.sin(a) * .8, 0)); d = (td * 1.2 + rd * .9 + V(0, 0, .5)).normalized()
-        flames.append(flamme(FT + rd * .028 + td * .005, (d + td * .6).normalized(), (.065 + .022 * (k % 3)) * fs, .036 * fs, up=tuple(rd.cross(d).normalized() if rd.cross(d).length > .1 else V(1, 0, 0))))
-    flames.append(flamme(FT + td * .03, (td + V(0, -.15, .4)).normalized(), .11 * fs, .042 * fs, up=(1, 0, 0)))
+        flames.append(flamme(FT + rd * .04 + td * .01, (d + td * .6).normalized(), (.11 + .04 * (k % 3)) * fs, .05 * fs, up=tuple(rd.cross(d).normalized() if rd.cross(d).length > .1 else V(1, 0, 0))))
+    flames.append(flamme(FT + td * .05, (td + V(0, -.15, .4)).normalized(), .2 * fs, .065 * fs, up=(1, 0, 0)))
 else:
     core = blob('Flammenkern', FT + td * .015, (.035 * fs, .035 * fs, .04 * fs), 3); set_region(core, 'flamme_kern'); flames.append(core)
     for k in range(6):
@@ -178,6 +178,12 @@ def paint(P):
         nd = np.sqrt(((P.Pm - np.array(C.NECK[1].lerp(C.NECK[0], .4))) ** 2).sum(-1)); mk = fl & (nd < .2 * Lb / .31)
         mix(mk, '#ffd25a', ss(.12 * Lb / .31, .06 * Lb / .31, nd)); mix(mk, '#e8461a', ss(.11 * Lb / .31, .16 * Lb / .31, nd))
     mix(M('flamme_kern'), '#ffd040', .6)
+    if ART == '001':   # Stirnflamme groß als Fellzeichnung (wie im Bild): drei Zungen, heller Kern
+        fm = np.zeros(X.shape, np.float32); fk = np.zeros(X.shape, np.float32)
+        for cx, z0, z1, w0 in ((0, .15, 1.0, .26), (-.3, .2, .72, .14), (.3, .2, .72, .14)):
+            t = (hz - z0) / (z1 - z0); wv = w0 * np.clip(1 - t, 0, 1) ** .7 * (.75 + .25 * np.sin(t * 6)); xx = np.abs(hx - cx - .06 * np.sin(t * 5))
+            fm = np.maximum(fm, ss(wv + .03, wv - .01, xx) * (t > 0) * (t < 1)); fk = np.maximum(fk, ss(wv * .5, wv * .2, xx) * (t > .05) * (t < .8))
+        front = (hy < .1).astype(np.float32); mix(M('fell_kopf'), '#ffb028', fm * front); mix(M('fell_kopf'), '#fff0a0', fk * front * .9)
     mix(M('pfote'), '#ffffff', .15); mix(M('nase'), '#5a4040', ss(0, 1, (Z - (np_.z)) * 120) * .5)
     if K['basalt']: mix(M('lava'), '#ffd25a', .4)
     mix(M('ohr_innen'), '#fff0e0', .35 * ss(.5, .8, P.fur) if 'fur' in P.__dict__ else 0)

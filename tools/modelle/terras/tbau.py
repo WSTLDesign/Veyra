@@ -80,14 +80,14 @@ def flamme(p, d, L, W, regn='flamme', up=(1, 0, 0), wellen=.25, n=8):
              ring=6, n=n, flat_up=up); set_region(o, regn); return o
 
 # ---------------- Ohren (volumetrisch, Becherform) ----------------
-def ohr(s, base, up_, fw, L, W, D, cup=1.5, regs=('fell_kopf', 'ohr_innen'), rund=0.0, NU=10, NA=14, bend=0.0):
+def ohr(s, base, up_, fw, L, W, D, cup=1.5, regs=('fell_kopf', 'ohr_innen'), rund=0.0, NU=10, NA=14, bend=0.0, voll=.85):
     """Ohr als geschlossener Körper: Querschnitt Sichel (vorn hohl, Rand dick), Länge L, Breite W, Dicke D. rund>0 → runde Bärenohren."""
     up_ = Vector(up_).normalized(); fw = Vector(fw).normalized(); side = up_.cross(fw).normalized(); fw = side.cross(up_).normalized() * (1 if side.cross(up_).dot(fw) > 0 else -1)
     Vt = []; Fc = []; inner = []
     for i in range(NU + 1):
         u = i / NU
         if rund: w = W * (math.sin(min(1, .25 + u * .8) * math.pi) ** .6 * (1 - rund) + rund * math.sqrt(max(0, 1 - (2 * u - 1) ** 2 * .9))) + .001
-        else: w = W * (1 - u) ** .85 + .002
+        else: w = W * (1 - u) ** voll * (1 + .25 * math.sin(math.pi * u) * (.85 - voll) * 2) + .002
         d = D * (1 - .7 * u) + .001; c = d * cup * (1 - u) ** .5
         cen = base + up_ * (L * u) + fw * (bend * L * u * u)
         for j in range(NA):
@@ -132,12 +132,12 @@ def augen(RE, xn=.5, yn=-.86, zn=.1, spread=.42, lid_col=None):
                     t = j / NT; th = (e0 + (80 - e0) * t ** 1.3) if which == 'o' else (e0 + (-75 - e0) * t ** 1.3); Vt.append(sp_(ph, th, RE * (1.045 + .02 * t)))
             for i in range(NPH):
                 for j in range(NT):
-                    a = i * (NT + 1) + j; F_.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1)); R_.append('lidlinie' if j == 0 else 'lid')
+                    a = i * (NT + 1) + j; F_.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1)); R_.append('lid')
             base = len(Vt)
             for i in range(NPH + 1):
-                ph = -84 + 168 * i / NPH; e0 = th_u(ph) if which == 'o' else th_l(ph); Vt.append(sp_(ph, e0 + (-3 if which == 'o' else 2.5), RE * .985))
+                ph = -84 + 168 * i / NPH; e0 = th_u(ph) if which == 'o' else th_l(ph); Vt.append(sp_(ph, e0 + (-1.6 if which == 'o' else 1.5), RE * .99))
             for i in range(NPH):
-                a = i * (NT + 1); b = (i + 1) * (NT + 1); F_.append((base + i, base + i + 1, b, a) if which == 'o' else (a, b, base + i + 1, base + i)); R_.append('lidlinie')
+                a = i * (NT + 1); b = (i + 1) * (NT + 1); F_.append((base + i, base + i + 1, b, a) if which == 'o' else (a, b, base + i + 1, base + i)); R_.append('lidlinie' if which == 'o' and abs(-84 + 168 * (i + .5) / NPH) < 70 else 'lid')
             lo = obj_data('Lid', Vt, F_); lo.data.materials.append(REG['lid']['mat']); lo.data.materials.append(REG['lidlinie']['mat'])
             for pg, rn in zip(lo.data.polygons, R_): pg.material_index = 0 if rn == 'lid' else 1
             orient_out(lo, Cc); smooth(lo); vg = lo.vertex_groups.new(name='lid_%s_%s' % (which, 'L' if s > 0 else 'R')); vg.add(list(range(len(Vt))), 1, 'REPLACE'); C.lids.append(lo)
@@ -364,9 +364,8 @@ def augen_textur(iris=('#d87a1e', '#8a3a10', '#ffc24a'), pupille='rund', sclera=
     put(iris_m, iris[0]); put(iris_m, iris[1], ss(-.1, .55, ey)); put(iris_m, iris[2], .75 * ss(0, -.55, ey) * ss(.18, .5, rr))
     put(iris_m, iris[1], .3 * (.5 + .5 * np.sin(ang * 23)) * ss(.25, .55, rr)); put(iris_m, ring, ss(IR * .84, IR * .98, rr)); put(L_ & (rr >= IR), '#2a1a14', ss(IR + .03, IR, rr))
     if pupille == 'schlitz': put(L_, '#100604', ((np.abs(ex) < .085 * np.sqrt(np.clip(1 - (ey / .5) ** 2, 0, 1)) + .01) & (np.abs(ey) < .5)).astype(np.float32))
-    else: put(L_ & (rr < .29), '#100604')
-    put(L_, '#ffffff', ((ex - .22) ** 2 + (ey - .26) ** 2 < .16 ** 2).astype(np.float32)); put(L_, '#ffffff', .85 * ((ex + .2) ** 2 + (ey + .2) ** 2 < .06 ** 2).astype(np.float32))
-    put(L_, '#ffffff', .5 * ((ex - .02) ** 2 + (ey - .3) ** 2 < .04 ** 2).astype(np.float32))
+    else: put(L_ & (rr < IR * .5), '#120705'); put(L_ & (rr < IR * .58), '#3a1608', .5 * ss(IR * .5, IR * .58, rr))
+    put(L_, '#ffffff', ss(.19, .16, np.sqrt((ex - .2) ** 2 + (ey - .24) ** 2))); put(L_, '#ffffff', .95 * ss(.09, .07, np.sqrt((ex + .22) ** 2 + (ey + .24) ** 2)))
     Rm = (u >= .5) & (v < .5); mxn = (u - .5) / .5; myn = v / .5; inside = (np.abs(2 * mxn - 1) ** 2.2 + np.abs(2 * myn - 1) ** 2) < 1
     put(Rm, '#6a2028'); put(Rm, '#e07a80', (((2 * mxn - 1) / .5) ** 2 + ((myn - .15) / .3) ** 2 < 1).astype(np.float32))
     for cx in (.25, .75): put(Rm, '#fbf6ee', ((np.abs(mxn - cx) < .05 * (myn - .62) / .38) & (myn > .62)).astype(np.float32))
@@ -423,7 +422,7 @@ def male(objs, paint, fur_scale=1.0, nstr=.4, ao_k=.34):
     if bm.any():
         n_ = vnoise(Pm * (40 * f)); col *= (1 + .12 * bm * (n_ - .5))[..., None]
     paint(P)
-    aoN = np.clip(ao, 0, 1); akk = np.where(np.sqrt((P.dh ** 2).sum(-1)) < max(C.HR) * 1.35, ao_k * .45, ao_k); col *= (1 - akk + akk * aoN)[..., None]; np.clip(col, 0, 1, out=col)
+    aoN = np.clip(ao, 0, 1); akk = np.where(np.sqrt((P.dh ** 2).sum(-1)) < max(C.HR) * 1.35, ao_k * .45, ao_k); akk = np.where(M('lid', 'lidlinie', 'auge', 'mund_innen'), 0, akk); col *= (1 - akk + akk * aoN)[..., None]; np.clip(col, 0, 1, out=col)
     alb = dilate(col, COV, 6); alb = np.where(COV[..., None], col, alb); C.IMG_ALB = to_image(alb, C.name + '_Farbe')
     hg = dilate(np.repeat(hgt[..., None], 3, 2), COV, 4)[..., 0]
     nrm = height_to_normal_bake(objs, hg * .5 + .5, S, strength=nstr); C.IMG_NRM = to_image(nrm[..., :3], C.name + '_Normal', 'Non-Color')
@@ -765,7 +764,11 @@ def clips_zweibeiner(gang=None):
         ph = 2 * math.pi * t; br = math.sin(ph * 3); look = ss(.3, .45, t) * (1 - ss(.62, .78, t)) - .6 * ss(.75, .82, t) * (1 - ss(.9, 1, t)); sway = math.sin(ph)
         root = V(.006 * H * sway, 0, -.003 * H + .002 * H * br); P = {'hips:loc': root, 'hips': rz(.04 * sway), 'spine1': rx(.015 * br), 'chest': qmul(rx(.02 * br), rz(-.05 * sway)),
              'head': qmul(rz(.3 * look - .08 * sway), ry(.12 * look), rx(-.04 * math.sin(ph * 2)))}
-        arms(P, .05 * br, -.25, .12 + .03 * br); feet(P, root)
+        if g.get('sitz'):   # sitzt wie im Bild: Becken tief, Beine nach vorn, Sohlen zeigen nach vorn, Pfoten am Bauch
+            dz = C.LEG[0].z * .62; root = V(root.x, .01 * H, -dz + root.z); P['hips:loc'] = root; P['hips'] = rx(-.12); P['chest'] = qmul(P['chest'], rx(.1))
+            for s in (-1, 1): P.update(leg_b(s, S_(C.LEG[2], s) + V(s * .012 * H, -C.LEG[0].z * .72, C.LEG[0].z * .05), root, g.get('sohle', -1.1)))
+            arms(P, -.55 + .04 * br, -.9, .05)
+        else: arms(P, .05 * br, -.25, .12 + .03 * br); feet(P, root)
         tw = env01(t, .12, .14, .17, .2)
         for s in (-1, 1):
             k = 'L' if s > 0 else 'R'

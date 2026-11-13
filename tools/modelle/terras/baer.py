@@ -123,7 +123,7 @@ def paint(P):
     F1, E, Hh = cells(P.Pm * (60 / C.H)); mix(bl, '#c8f070', .35 * ss(.06, 0, E)); mix(bl, '#2f5e1a', .25 * ss(.3, .6, F1))
     mix(M('knospe'), '#ffffff', .35 * ss(.4, .9, (Z - Z[M('knospe')].min() if M('knospe').any() else 0) / (.08 * C.H)))
     mix(M('fell'), '#4a2a14', .45 * (Z < .03 * C.H))
-gang = {'007': dict(wL=.09, rL=.16, lift=.03), '008': dict(wL=.12, rL=.22, lift=.04)}
+gang = {'007': dict(wL=.09, rL=.16, lift=.03, sitz=True), '008': dict(wL=.12, rL=.22, lift=.04, sitz=True)}
 if ART == '009':
     rig_vierbeiner(1, ohren=True); standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(dict(wL=.3, rL=.5, wLift=.06, rLift=.1, bob=.012, plant=True, tail=.1)), paint, K['iris'], fur_scale=.8, nstr=.35, IR=.7)
 else:

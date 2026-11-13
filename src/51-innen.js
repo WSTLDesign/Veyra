@@ -29,9 +29,10 @@ function P_(B,L,g,c,x,y,z,sx,sy,sz,k,rx,ry,rz){B[L].push([g,c,IM(B,x,y,z,sx,sy,s
 const iRBox=(w,h,d)=>{const q=v=>Math.max(.004,Math.round(v*200)/200);w=q(w);h=q(h);d=q(d);return g3('innRB'+w+'_'+h+'_'+d,()=>{const r=Math.min(.03,.3*Math.min(w,h,d)),H=[w/2,h/2,d/2],g=new THREE.BoxGeometry(1,1,1,3,3,3),p=g.attributes.position,n=g.attributes.normal,v=[0,0,0],o=[0,0,0];
  for(let i=0;i<p.count;i++){v[0]=p.getX(i);v[1]=p.getY(i);v[2]=p.getZ(i);let l=0;for(let a=0;a<3;a++){const c=v[a],e=H[a]-r,pv=Math.abs(c)>.4?Math.sign(c)*H[a]:Math.sign(c)*e,inn=Math.max(-e,Math.min(e,pv));o[a]=pv-inn;v[a]=inn;l+=o[a]*o[a];}
   l=Math.sqrt(l)||1;p.setXYZ(i,v[0]+o[0]/l*r,v[1]+o[1]/l*r,v[2]+o[2]/l*r);n.setXYZ(i,o[0]/l,o[1]/l,o[2]/l);}return g;});};
-const bx=(B,x,y,z,w,h,d,c,k,ry,L)=>(L||'F')==='F'?P_(B,'F',iRBox(w,h,d),c,x,y,z,1,1,1,k,0,ry||0,0):P_(B,L,iBox(),c,x,y,z,w,h,d,k,0,ry||0,0);
+const rbOk=(w,h,d)=>Math.min(w,h,d)>=.04&&Math.max(w,h,d)>=.25;// kleine Teile (Bücher, Griffe) bleiben einfache Quader
+const bx=(B,x,y,z,w,h,d,c,k,ry,L)=>(L||'F')==='F'&&rbOk(w,h,d)?P_(B,'F',iRBox(w,h,d),c,x,y,z,1,1,1,k,0,ry||0,0):P_(B,L||'F',iBox(),c,x,y,z,w,h,d,k,0,ry||0,0);
 const cy=(B,x,y,z,r,h,c,k,seg,rt,L)=>P_(B,L||'F',iCyl(seg||10,rt),c,x,y,z,r,h,r,k);
-const bxr=(B,x,y,z,w,h,d,c,k,rx,ry,rz,L)=>(L||'F')==='F'?P_(B,'F',iRBox(w,h,d),c,x,y,z,1,1,1,k,rx,ry,rz):P_(B,L,iBox(),c,x,y,z,w,h,d,k,rx,ry,rz);
+const bxr=(B,x,y,z,w,h,d,c,k,rx,ry,rz,L)=>(L||'F')==='F'&&rbOk(w,h,d)?P_(B,'F',iRBox(w,h,d),c,x,y,z,1,1,1,k,rx,ry,rz):P_(B,L||'F',iBox(),c,x,y,z,w,h,d,k,rx,ry,rz);
 const cyr=(B,x,y,z,r,h,c,k,seg,rx,ry,rz,L)=>P_(B,L||'F',iCyl(seg||10),c,x,y,z,r,h,r,k,rx,ry,rz);
 const sp=(B,x,y,z,rx,ry,rz,c,k,L)=>P_(B,L||'F',iSph(10,7),c,x,y,z,rx,ry,rz,k);
 const gl=(B,g,c,c2,x,y,z,sx,sy,sz,k,rx,ry,rz)=>B.GL.push([g,c,IM(B,x,y,z,sx,sy,sz,rx,ry,rz),c2||c,k||0]);
@@ -121,7 +122,7 @@ const ELC={flora:['#4cb85c','#2f7a3c','#c8f0a8'],flut:['#3d8fe0','#1f5a9a','#bfe
 const REG_ACC={heil_kupfer:'#3fd9a6',heil_brise:'#2cc4d8',heil_frost:'#8fd8f2',heil_schatt:'#b48aff',heil_sieg:'#f2c24a',heil_moewe:'#2cc4d8',
  laden_kupfer:'#7fae5a',laden_brise:'#2cc4d8',laden_frost:'#8fd8f2',laden_schatt:'#a77bff',laden_moewe:'#3d8fe0'};
 function innStyle(m){const I=INTERIORS[m.id]||{},k=I.k,id=m.id;
- const base={k,HC:3.0,floor:'wood',fcol:'#b07a4c',wall:'#efe3cf',wain:'#a8794e',acc:'#d97a8a',light:[1,.95,.35],hemi:['#fff2dc','#5e4432',.78],lamp:'#ffc27a'};
+ const base={k,HC:3.0,floor:'wood',fcol:'#b4875c',wall:'#efe3cf',wain:'#ad8660',acc:'#d97a8a',light:[1,.95,.35],hemi:['#fff2dc','#5e4432',.78],lamp:'#ffc27a'};
  if(k==='house')return Object.assign(base,HSTY[id]||HSTY.haus_kupfer,{floor:(HSTY[id]||{}).stone?'stone':'wood',fcol:(HSTY[id]||HSTY.haus_kupfer).floor});
  if(k==='lab')return Object.assign(base,{HC:3.2,floor:'tile',fcol:'#e6ecee',fcol2:'#d4dee2',wall:'#eef3f2',wain:'#9fc8c4',acc:'#2fa89a',light:[-.4,.95,.5],hemi:['#f2fbff','#4a5a60',.8],lamp:'#e8f6ff',pics:['karte','kristall','berg']});
  if(k==='shop')return Object.assign(base,{floor:'wood',fcol:'#c09062',wall:'#f2e6cf',wain:'#9a6a44',acc:REG_ACC[id]||'#e8913a',light:[.55,.95,.55],pics:['land','meer','karte'],rug:['#3d6a8a','#f2e2c0',REG_ACC[id]||'#e8913a']});
@@ -329,7 +330,7 @@ let INN_OLM=null;function innOlMat(){if(INN_OLM)return INN_OLM;const m=new THREE
  m.customProgramCacheKey=()=>'innOl6';return INN_OLM=m;}
 // Kontaktschatten unter Möbeln (eine Instanz-Ebene, weicher Fleck, warm-dunkel)
 let INN_CM=null;function innContact(S,m,B){const L=(m.furn||[]).filter(it=>it.k!=='teppich');if(!L.length)return;
- const mt=INN_CM||(INN_CM=new THREE.MeshBasicMaterial({map:blobTex(),color:'#2a1a12',transparent:true,opacity:.5,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
+ const mt=INN_CM||(INN_CM=new THREE.MeshBasicMaterial({map:blobTex(),color:'#2a1a12',transparent:true,opacity:.68,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
  const g=g3('innCt',()=>new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2)),im=new THREE.InstancedMesh(g,mt,L.length),d=new THREE.Object3D();
  L.forEach((it,i)=>{d.position.set(it.x+it.w/2,.016,it.y+it.h/2);d.scale.set(it.w*1.35+.2,1,it.h*1.35+.2);d.updateMatrix();im.setMatrixAt(i,d.matrix);});
  im.renderOrder=3;im.frustumCulled=false;im.name='innContact';S.add(im);}

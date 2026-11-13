@@ -79,3 +79,15 @@ setInterval(vTeamTick,600);
 
 // ---------- Team-Karten: Farbton der Kreatur als Kartenkopf ----------
 const _cardV=card;card=function(m,i,inBox){const d=_cardV(m,i,inBox);try{d.style.setProperty('--mc',TYPES[MONS[m.s].t[0]].c);}catch(e){}return d;};
+
+// ---------- Tasche: eigenes Symbol je Gegenstandsart (Kapsel = facettierter Kristall mit Ring, Trank, Stein …) ----------
+const ITEM_ICON={ball:'<path d="M12 3l5 6-5 12-5-12z"/><path d="M7 9h10" opacity=".6"/><ellipse cx="12" cy="12" rx="9" ry="3.2" opacity=".55"/>',
+ heal:'<path d="M9.5 3.5h5M10.5 3.5v4.2L6.2 15a4.5 4.5 0 0 0 3.9 6.5h3.8a4.5 4.5 0 0 0 3.9-6.5l-4.3-7.3V3.5"/><path d="M8 15.5h8" opacity=".6"/>',
+ revive:'<path d="M12 20s-7-4.4-7-9.5A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 2.5C19 15.6 12 20 12 20z"/><path d="M12 11v4M10 13h4"/>',
+ pp:'<path d="M13 3L6 13h5l-1 8 7-10h-5z"/>',cure:'<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M9.5 14.5h5M12 12v5" opacity=".7"/>',
+ stone:'<path d="M7 4h10l4 6-9 11-9-11z"/><path d="M3 10h18M9 4l3 6 3-6M12 10v11" opacity=".55"/>',
+ held:'<circle cx="12" cy="13" r="6"/><path d="M9 3.5l3 3.5 3-3.5"/>',key:'<circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/>',
+ scroll:'<path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7"/><path d="M7 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2M9 9h6M9 13h6" />'};
+const _rBagV=rBag;rBag=function(el){_rBagV(el);try{el.querySelectorAll('.item').forEach(r=>{if(r.querySelector('.vIt'))return;const n=(r.querySelector('b')||{}).textContent;
+ const k=Object.keys(ITEMS).find(x=>ITEMS[x].n===n);if(!k)return;const kind=ITEMS[k].k,ic=ITEM_ICON[kind]||ITEM_ICON.held;
+ r.insertAdjacentHTML('afterbegin',`<i class="vIt" data-k="${kind}" aria-hidden="true"><svg class="v-ico" viewBox="0 0 24 24">${ic}</svg></i>`);r.classList.add('vItem');});}catch(e){}};

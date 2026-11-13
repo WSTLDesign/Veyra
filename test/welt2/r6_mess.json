@@ -1,52 +1,42 @@
 {
  "hoch_haus": {
   "calls": 30,
-  "tris": 55916,
-  "ms": 1468.3,
+  "tris": 92836,
+  "ms": 1572.2,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_labor": {
-  "calls": 39,
-  "tris": 71775,
-  "ms": 1457.9,
+  "calls": 40,
+  "tris": 92383,
+  "ms": 2528.3,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_laden": {
-  "calls": 28,
-  "tris": 52040,
-  "ms": 1606.8,
+  "calls": 29,
+  "tris": 139574,
+  "ms": 2115,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_station": {
-  "calls": 29,
-  "tris": 48043,
-  "ms": 1726,
+  "calls": 30,
+  "tris": 60323,
+  "ms": 2234.6,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_arena": {
   "calls": 33,
-  "tris": 91813,
-  "ms": 2281.6,
+  "tris": 94759,
+  "ms": 2612.6,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
- },
- "err_hoch": [
-  "Innenraum herd TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at her",
-  "Innenraum spuele TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at s",
-  "Innenraum anrichte TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at",
-  "Innenraum regal TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at re",
-  "Innenraum schrank TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at ",
-  "Innenraum kamin TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at ka",
-  "Innenraum sessel TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at s",
-  "Innenraum tisch TypeError: Cannot read properties of undefined (reading 'push')\n    at P_ (http://127.0.0.1:35821/index.html:12123:53)\n    at bx (http://127.0.0.1:35821/index.html:12129:113)\n    at ti"
- ]
+ }
 }

@@ -134,3 +134,12 @@ Zweck: Alles Wichtige aus den Chats an einem Ort, damit bei einer Komprimierung 
 - Maßnahmen 11:15: WALK_SPEED 2,8 → 1,9 (Rennen 5; uebergaenge_qa angepasst); SW-Cache-Name mit Build-Stempel (build.mjs); Aufträge: Figuren → Heldin-Modell + Gang-Clips; UI Runde 2 → App-Icon, Titel/Startablauf; Welt Runde 6 → Innenräume (keine dicken schwarzen Umrisse, Materialien, Licht).
 - Offen an Nutzer: Wer/was lädt auf die Netlify-Site hoch (Produktions-Chat oder Repo-Anbindung)? Hinweis: Das Netlify-Abzeichen „Powered by Netlify“ verdeckt unten rechts den Aktionsknopf.
 - 13.11. 11:25 – Geklärt (aus dem Verlauf des Produktions-Chats + Repo): Live-Site https://veyra-terras-k7q3.netlify.app ist mit dem Repo verbunden, Branch `main`, Build `npm run build:live` → `dist/`. Der Produktions-Chat übernimmt freigegebene Staging-Commits nach `main` (zuletzt 8a47edf = Staging-Stand c000070 von 07:40, „Freigabe Christoph“). Dort ist `modelle3d` AUS → alte Figuren. Einschalten = Standardwert im Code ändern (erst nach Stabilitäts-Fix), dann nächste Freigabe. Kein Passwortschutz auf der Site; Herkunft des Abzeichens „Powered by Netlify“ unklar (Netlify-seitig).
+
+### Nachtrag 13.11., 21:25
+- 20:00 Fortsetzung nach Pause (Nutzer 15:04: „Starte ab 20 Uhr wieder“).
+- Figuren R3 fertig (Commit aa15c35): Heldin-Modell `fig_heldin`, Gang 1,9/5, größere Augen. Offen: Haar blockig, Kappe wirkt wie Stirnband. ~75 %.
+- Stabilität PC fertig (Commit d3c685c): neue Datei `src/61-stabil.js` (GPU-Klassen: Iris Xe → „mittel“, 30 fps; Wachhund; Modell-Warteschlange `VMODEL_QUEUE`; `PILOT_LAZY` im Werkstatt-Build; Beenden per postMessage `{veyra:'stop'}`), Leitstand mit Qualitätswahl und Strg+Q/Esc-Weiterleitung. Tests: stabil_qa 25/25, smoke, uebergaenge 97/97. Gemessen nur mit SwiftShader – PC-Test durch Christoph steht aus.
+- Terras R4 fertig: Funki umproportioniert, größere Augen bei allen 12, Flausch-Federn als Geometrie. Dirigent-Urteil zum Vergleichsbild Funki: noch weit von der gemalten Vorlage (schweres Lid, flache Ohren, kleine Flamme). Nächster Hebel: Augen rund/offen.
+- Leitstand Version 9 veröffentlicht: Werkstatt mit Stabilitäts-Fix, Heldin, Terras R4.
+- 21:17 Nutzer bat um aktuelle Zip → Quellcode-Zip des Staging-Stands (d3c685c) im Chat geschickt.
+- 21:25 gestartet: Welt (R5 abschließen, R6 Innenräume) und UI R2 (App-Icon „V“, Titel am Handy, Chronik/Tasche/Fangkarte).

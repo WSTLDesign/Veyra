@@ -2,7 +2,7 @@
 const CACHE = 'veyra-__VERSION__';
 // Intro-Film: eigener Cache, übersteht Versionswechsel (16 MB nicht bei jedem Update neu laden); NICHT vorab gecacht
 const VCACHE = 'veyra-video-1';
-const SHELL = ['./', './index.html', './three.min.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const SHELL = ['./', './index.html', './three.min.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== VCACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 // Kreaturenbilder nach der Aktivierung im Hintergrund vorab ablegen (Dex offline vollständig); Liste setzt build.mjs
@@ -27,6 +27,12 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
   if (u.origin === location.origin && /\/video\/[^/]+$/.test(u.pathname) && !/\.jpe?g$/i.test(u.pathname)) { e.respondWith(videoFetch(e).catch(() => fetch(e.request))); return; }
+  // Seite selbst (index.html) und Manifest/Icons: zuerst Netz (max. 3,5 s), sonst Cache – so erscheint ein neuer Stand (Titel, Icons) schon beim ERSTEN Start nach einem Update
+  if (u.origin === location.origin && (e.request.mode === 'navigate' || /\/(index\.html|manifest\.webmanifest)$|\/icons\//.test(u.pathname))) {
+    e.respondWith(Promise.race([fetch(e.request, { cache: 'no-cache' }).then(res => { if (res.status === 200) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); } return res; }),
+      new Promise((_, no) => setTimeout(no, 3500))]).catch(() => caches.match(e.request).then(h => h || caches.match('./index.html')).then(h => h || fetch(e.request))));
+    return;
+  }
   e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
     if (res.status === 200 && u.origin === location.origin) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); }
     return res;

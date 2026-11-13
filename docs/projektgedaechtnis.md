@@ -127,3 +127,9 @@ Zweck: Alles Wichtige aus den Chats an einem Ort, damit bei einer Komprimierung 
 - 48 Terra-Arten ohne gemaltes Bild (002, 003, 005, 006, 058, 060, 062, 099–139) – Nutzer soll fehlende erneut senden.
 - Messungen auf echtem Handy/Tablet: Bildrate je Stufe, Ladezeiten, Bloom.
 - Netlify-Staging verbinden; Produktion nur nach Tages-Okay.
+
+## 7. Nachträge
+- 13.11. 10:55 – Dirigent läuft ab jetzt auf Fable 5.2 (vom Nutzer umgestellt). Neue Sitzung + Übergabe geplant nach Stabilitäts-Fix (Übergabe-Datei claude/uebergabe-staging-2.md noch anlegen).
+- 13.11. 11:03 – Handy-Test des Nutzers (iPhone, als App installierter Netlify-Build, Video): „sieht nicht nach Triple-A aus“. Befunde des Dirigenten: (a) Der Netlify-Build enthält neue Welt-Grafik und neues UI, aber der Schalter `modelle3d` ist dort AUS → alte Figuren; (b) der Nutzer spielt die HELDIN (Mädchen, Kappe, Pferdeschwanz) – sie hatte noch kein neues Modell; (c) App-Icon im Repo = angeschnittenes Küken, Nutzer will Marken-Icon (früher schwarzes „V“); (d) Titel wirkte „alt“ – Startablauf/PWA-Cache prüfen; (e) Gehen zu schnell.
+- Maßnahmen 11:15: WALK_SPEED 2,8 → 1,9 (Rennen 5; uebergaenge_qa angepasst); SW-Cache-Name mit Build-Stempel (build.mjs); Aufträge: Figuren → Heldin-Modell + Gang-Clips; UI Runde 2 → App-Icon, Titel/Startablauf; Welt Runde 6 → Innenräume (keine dicken schwarzen Umrisse, Materialien, Licht).
+- Offen an Nutzer: Wer/was lädt auf die Netlify-Site hoch (Produktions-Chat oder Repo-Anbindung)? Hinweis: Das Netlify-Abzeichen „Powered by Netlify“ verdeckt unten rechts den Aktionsknopf.

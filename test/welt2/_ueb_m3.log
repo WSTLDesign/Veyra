@@ -71,3 +71,12 @@
 ✓ Route 2 → Nebelgrotte (erste Höhle) (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":867,"bumps":0}
 ✓ Route 2 → Nebelgrotte (erste Höhle) (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"nebelgrotte","t0":506143,"shown":761,"ms":2538}}
 ✓ Route 2 → Nebelgrotte (erste Höhle) (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":12,"inZ":false}
+✓ Nebelgrotte → Route 2 (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Nebelgrotte → Route 2 (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"nebelgrotte","to":"route2","t0":521400,"shown":455,"ms":2053}}
+✓ Nebelgrotte → Route 2 (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":3,"inZ":false}
+✓ Nebelgrotte → Route 2 (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":867,"bumps":0}
+✓ Nebelgrotte → Route 2 (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"nebelgrotte","to":"route2","t0":534881,"shown":641,"ms":2324}}
+✓ Nebelgrotte → Route 2 (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":3,"inZ":false}
+✓ Route 2 → Kupferhain (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":933,"bumps":1}
+✓ Route 2 → Kupferhain (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"kupferhain","t0":552074,"shown":524,"ms":3119}}
+✓ Route 2 → Kupferhain (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":16,"y":6,"inZ":false}

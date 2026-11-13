@@ -39,7 +39,7 @@ function vTitle(){const t=$('#title');if(!t||t.querySelector('.vtBg'))return;
    <circle r="44" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="2 7"/></g>
   <text x="280" y="148" text-anchor="middle" font-size="124" font-weight="700" letter-spacing="10" fill="none" stroke="#2a2148" stroke-width="16" stroke-linejoin="round" paint-order="stroke">VEYRA</text>
   <text x="280" y="148" text-anchor="middle" font-size="124" font-weight="700" letter-spacing="10" fill="url(#vlG)">VEYRA</text>
-  <path d="M138 172h96M326 172h96" stroke="#2a2148" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+  <path d="M96 172h56M408 172h56" stroke="#2a2148" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
   <text x="280" y="178" text-anchor="middle" font-size="19" font-weight="600" letter-spacing="5" fill="#2a2148" fill-opacity=".8" style="font-family:var(--font-ui)">KREATURENCHRONIK</text>
  </svg>`;
  if(h)h.insertAdjacentHTML('afterend',svg);else t.insertAdjacentHTML('afterbegin',svg);

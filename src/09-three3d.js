@@ -376,9 +376,10 @@ function frondGeo(lod){return g3('frond'+(lod?'l':''),()=>{const N=lod?5:9,P=[],
 // Fenster, Türen, Laternen, Schilder und Sonderteile baut 09 weiter selbst (Türposition/Kollision unverändert). Nicht geladen → Kasten-Häuser.
 const W3HAUS={st:0,g:{}};
 function w3HausOn(){try{return typeof pilotOn==='function'&&pilotOn();}catch(e){return false;}}
-function w3HausFor(t,h,S){if(h<2||!/[hLP]/.test(t)||!w3HausOn())return null;if(W3HAUS.st!==2){S.userData.hausMiss=1;w3HausLoad();return null;}return t==='P'?'station':'haus';}
+function w3HausFor(t,h,S){if(h<2||!/[hLPM]/.test(t)||!w3HausOn())return null;if(W3HAUS.st!==2){S.userData.hausMiss=1;w3HausLoad();return null;}return{P:'station',L:'labor',M:'laden'}[t]||'haus';}
+const W3HAUS_K=['haus','station','labor','laden'],W3HAUS_W={haus:4,station:4,labor:6,laden:4};
 function w3HausLoad(){if(W3HAUS.st)return;W3HAUS.st=1;if(typeof modelLoaders!=='function'){W3HAUS.st=3;return;}
- modelLoaders().then(L=>Promise.all(['haus','station'].map(k=>new Promise((res,rej)=>L.load('models/welt/'+k+'.glb',res,undefined,rej)).then(gl=>{const o={};gl.scene.updateMatrixWorld(true);
+ modelLoaders().then(L=>Promise.all(W3HAUS_K.map(k=>new Promise((res,rej)=>L.load('models/welt/'+k+'.glb',res,undefined,rej)).then(gl=>{const o={};gl.scene.updateMatrixWorld(true);
   gl.scene.traverse(m=>{if(!m.isMesh)return;const g=m.geometry.clone();g.applyMatrix4(m.matrixWorld);const dach=/Dach/i.test(m.name),c=g.attributes.color,n=g.attributes.position.count,am=new Float32Array(n);
    for(let i=0;i<n;i++){if(dach){am[i]=2;continue;}const r=c?c.getX(i):1,gg=c?c.getY(i):1,b=c?c.getZ(i):1;am[i]=Math.min(r,gg,b)>.85?1:r<.6&&r>gg*1.3?3:Math.abs(r-b)<.1&&r<.5?0:4;}
    g.setAttribute('aMat',new THREE.BufferAttribute(am,1));g.computeBoundingSphere();o[dach?'dach':'wand']=g;if(m.material&&m.material.map)o.tex=m.material.map;});W3HAUS.g[k]=o;}))))
@@ -387,8 +388,8 @@ function w3HausLoad(){if(W3HAUS.st)return;W3HAUS.st=1;if(typeof modelLoaders!=='
 try{setTimeout(()=>{if(w3HausOn())w3HausLoad();},0);}catch(e){}// früh vorladen (Schalter an)
 function w3HausMat(tex){const k='haus'+(tex?tex.uuid:'');if(MAT[k])return MAT[k];if(tex){tex.encoding=THREE.LinearEncoding;tex.anisotropy=4;tex.needsUpdate=true;}
  return MAT[k]=addDetail(toonFx(new THREE.MeshToonMaterial({color:'#ffffff',vertexColors:true,map:tex||null,gradientMap:toonGrad()}),{nf:1}),'town',.9);}
-function w3HausBuild(S,list,d){for(const k of['haus','station'])for(const part of['wand','dach']){const L=list.filter(q=>q[0]===k),G=W3HAUS.g[k];if(!L.length||!G||!G[part])continue;
-  const im=new THREE.InstancedMesh(G[part],w3HausMat(G.tex),L.length);L.forEach(([_,x,z,w,h,wc,rc],i)=>{d.position.set(x,0,z);d.rotation.set(0,0,0);d.scale.set(w/4,1,h/3);d.updateMatrix();im.setMatrixAt(i,d.matrix);im.setColorAt(i,new THREE.Color(part==='dach'?rc:wc));});
+function w3HausBuild(S,list,d){for(const k of W3HAUS_K)for(const part of['wand','dach']){const L=list.filter(q=>q[0]===k),G=W3HAUS.g[k];if(!L.length||!G||!G[part])continue;
+  const im=new THREE.InstancedMesh(G[part],w3HausMat(G.tex),L.length);L.forEach(([_,x,z,w,h,wc,rc],i)=>{d.position.set(x,0,z);d.rotation.set(0,0,0);d.scale.set(w/W3HAUS_W[k],1,h/3);d.updateMatrix();im.setMatrixAt(i,d.matrix);im.setColorAt(i,new THREE.Color(part==='dach'?rc:wc));});
   im.castShadow=im.receiveShadow=true;im.frustumCulled=false;im.userData.haus=k;S.add(im);addOutline(im,.009,'#4a4048');}}
 // ---------- Baum-Varianten (verschmolzene Geometrien mit Vertex-Farben) ----------
 function treeGeo(kind,snowy,lod){return g3('tree_'+kind+(snowy?'s':'')+(lod?'_l':''),()=>{const P=[],C=(g,c,m)=>P.push([g,c,m]);const q=lod?.6:1,sg=n=>Math.max(3,Math.round(n*q));
@@ -573,7 +574,8 @@ function build3d(){if(!PAL[cur.theme])PAL[cur.theme]=palOf(cur);const m=cur,p=pa
  const wframe=g3('wframe',()=>w3merge([[new THREE.BoxGeometry(.56,.06,.08),'#ffffff',w3M(0,.24,0)],[new THREE.BoxGeometry(.56,.06,.08),'#ffffff',w3M(0,-.24,0)],[new THREE.BoxGeometry(.06,.5,.08),'#ffffff',w3M(-.25,0,0)],[new THREE.BoxGeometry(.06,.5,.08),'#ffffff',w3M(.25,0,0)],
   [new THREE.BoxGeometry(.03,.44,.04),'#ffffff',w3M(0,0,.01)],[new THREE.BoxGeometry(.44,.03,.04),'#ffffff',w3M(0,0,.01)],[new THREE.BoxGeometry(.66,.05,.16),'#e2d6c4',w3M(0,-.28,.04)]]));
  const glassG=g3('glass',()=>new THREE.PlaneGeometry(.46,.44));
- const winAt=(px,py,pz,ry,rc,box)=>{const mm=M4(px+Math.sin(ry)*.02,py,pz+Math.cos(ry)*.02,1,1,1,0,ry,0);add(wframe,'#ffffff',mm);glow(glassG,WIN_D,WIN_N,M4(px+Math.sin(ry)*.012,py,pz+Math.cos(ry)*.012,1,1,1,0,ry,0),1);
+ const wrev=g3('wrev',()=>w3merge([[new THREE.BoxGeometry(.6,.07,.13),'#e9e2d6',w3M(0,.27,-.02)],[new THREE.BoxGeometry(.07,.54,.13),'#e9e2d6',w3M(-.3,0,-.02)],[new THREE.BoxGeometry(.07,.54,.13),'#e9e2d6',w3M(.3,0,-.02)],[new THREE.BoxGeometry(.56,.48,.01),'#3a4450',w3M(0,0,-.03)]]));// Welt-Grafik 5: Laibung + dunkler Grund
+ const winAt=(px,py,pz,ry,rc,box)=>{const mm=M4(px+Math.sin(ry)*.02,py,pz+Math.cos(ry)*.02,1,1,1,0,ry,0);add(wrev,'#ffffff',mm,4);add(wframe,'#ffffff',mm);glow(glassG,WIN_D,WIN_N,M4(px+Math.sin(ry)*.012,py,pz+Math.cos(ry)*.012,1,1,1,0,ry,0),1);
   add(g3('shutter',()=>w3merge([[new THREE.BoxGeometry(.16,.52,.04),'#ffffff',w3M(-.37,0,0)],[new THREE.BoxGeometry(.16,.52,.04),'#ffffff',w3M(.37,0,0)]])),shade(rc,1.05),mm,3);
   if(box)add(g3('fbox',()=>w3merge([[new THREE.BoxGeometry(.5,.08,.1),'#a86a4a',w3M(0,-.31,.1)],[new THREE.SphereGeometry(.05,5,4),'#ff7aa8',w3M(-.15,-.25,.12)],[new THREE.SphereGeometry(.05,5,4),'#ffd84a',w3M(0,-.25,.12)],[new THREE.SphereGeometry(.05,5,4),'#ff7aa8',w3M(.15,-.25,.12)]])),'#ffffff',mm);};
  const dframe=g3('dframe',()=>{const g=new THREE.ExtrudeGeometry(arch(.78,1.12),{depth:.05,bevelEnabled:true,bevelThickness:.02,bevelSize:.02,bevelSegments:1,curveSegments:8});return w3merge([[g,'#d8cbb6'],[new THREE.BoxGeometry(.9,.06,.3),'#b5a28c',w3M(0,.03,.12)]]);});
@@ -599,7 +601,7 @@ function build3d(){if(!PAL[cur.theme])PAL[cur.theme]=palOf(cur);const m=cur,p=pa
    glow(drop,'#36cf9a','#7affd0',new THREE.Matrix4().multiplyMatrices(T0,M4(0,sy,sz+.1)));
    at(new THREE.BoxGeometry(Math.min(w-.3,1.8),.08,.55),shade(rc,1.1),M4(0,1.32,h/2+.24));[-1,1].forEach(s=>at(new THREE.CylinderGeometry(.035,.035,1.32,6),'#e8f4f0',M4(s*Math.min(w-.3,1.8)/2*.9,.66,h/2+.46)));}
   else if(t==='M'){// Laden: Sägezahndach (amber), gestreifte Markise, Hängeschild mit Juwel-Münze, Schaufenster mit Kisten
-   const n2=Math.max(2,Math.round(w/1.5)),sw=(w+.3)/n2;for(let i=0;i<n2;i++){const sh=new THREE.Shape();sh.moveTo(0,0);sh.lineTo(h+.3,0);sh.lineTo(h+.3,.62);sh.closePath();
+   const n2=Math.max(2,Math.round(w/1.5)),sw=(w+.3)/n2;if(!hg)for(let i=0;i<n2;i++){const sh=new THREE.Shape();sh.moveTo(0,0);sh.lineTo(h+.3,0);sh.lineTo(h+.3,.62);sh.closePath();
     const rg=new THREE.ExtrudeGeometry(sh,{depth:sw-.04,bevelEnabled:false});rg.rotateY(Math.PI/2);at(rg,i%2?rc:shade(rc,1.08),M4(-w/2-.15+i*sw+.02,WH,h/2+.15),2);}
    for(let i=0;i<8;i++){const aw=new THREE.BoxGeometry((w-.1)/8,.04,.6);at(aw,i%2?'#fff4e0':'#e8713a',M4(-w/2+.05+(i+.5)*(w-.1)/8,1.36,h/2+.27,1,1,1,.35,0,0));}
    at(new THREE.CylinderGeometry(.02,.02,.5,5),'#3a2a22',M4(w/2-.25,1.75,h/2+.28,1,1,1,0,0,Math.PI/2));
@@ -615,7 +617,7 @@ function build3d(){if(!PAL[cur.theme])PAL[cur.theme]=palOf(cur);const m=cur,p=pa
    if(t==='h'&&w>1){at(new THREE.CylinderGeometry(.13,.15,.7,10),'#a07a60',M4(w*.25,WH+rh*.55+.25,-h*.15),4);at(new THREE.CylinderGeometry(.16,.16,.08,10),'#7c5c48',M4(w*.25,WH+rh*.55+.62,-h*.15));}}
    if(t==='A'){const lc='#'+lead.getHexString();at(new THREE.BoxGeometry(Math.min(w-.6,2.4),.36,.06),shade(roofC,1.1),M4(0,WH+.02,h/2+.06));at(new THREE.CylinderGeometry(.34,.34,.06,20),lc,M4(0,WH+rh*.45,h/2+.1,1,1,1,Math.PI/2,0,0));
     at(new THREE.CylinderGeometry(.2,.2,.07,5),'#ffffff',M4(0,WH+rh*.45,h/2+.12,1,1,1,Math.PI/2,0,0));[-1,1].forEach(s=>{at(new THREE.CylinderGeometry(.04,.04,1.0,6),'#6a5a4a',M4(s*(w/2-.3),WH-.05,h/2+.1,1,1,1,0,0,Math.PI/2));at(new THREE.BoxGeometry(.36,.95,.03),lc,M4(s*(w/2-.3),WH-.55,h/2+.08));at(new THREE.ConeGeometry(.18,.2,3),lc,M4(s*(w/2-.3),WH-1.1,h/2+.08,1,1,.15,0,0,Math.PI));});}
-   if(t==='L'){at(new THREE.SphereGeometry(.42,14,8,0,Math.PI*2,0,Math.PI/2),'#cfe6ee',M4(-w*.22,WH+rh*.5,0));at(new THREE.CylinderGeometry(.02,.02,.7,5),'#4a5560',M4(w*.3,WH+rh+.35,0));at(new THREE.SphereGeometry(.18,10,6,0,Math.PI*2,0,Math.PI/2),'#dfe6ea',M4(w*.3,WH+rh+.7,0,1,.4,1,.6,0,0));
+   if(t==='L'){if(!hg)at(new THREE.SphereGeometry(.42,14,8,0,Math.PI*2,0,Math.PI/2),'#cfe6ee',M4(-w*.22,WH+rh*.5,0));if(!hg)at(new THREE.CylinderGeometry(.02,.02,.7,5),'#4a5560',M4(w*.3,WH+rh+.35,0));if(!hg)at(new THREE.SphereGeometry(.18,10,6,0,Math.PI*2,0,Math.PI/2),'#dfe6ea',M4(w*.3,WH+rh+.7,0,1,.4,1,.6,0,0));
     at(new THREE.BoxGeometry(Math.min(w-.6,2.2),.32,.06),shade(roofC,1.1),M4(0,WH+.02,h/2+.06));}}
   const fz=y+h;
   for(let i=0;i<w;i++){const tt=m.rows[y+h-1][x+i],px=x+i+.5;

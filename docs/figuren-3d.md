@@ -52,3 +52,14 @@ Test: `node test/figuren2/test_modelle.mjs` (Schalter an; Laden aller Figuren, C
 - Shader-Wünsche an Welt-Grafik (56-toonpro): siehe Bericht – Haar-Glanzband anisotrop statt Punktglanz, Augen-Glanz etwas kleiner, Umriss im Gesicht (Maske r) dünner, Rim auf Haut schwächer.
 - Dateigröße 0,8–0,9 MB je Figur (Ziel 0,4): Morph-Ziele + LOD + 1024er-Normalkarte; nächster Schritt Normalkarte 512, LOD ohne Farbmasken.
 - Weitere benannte Figuren (Mira, Tarek, Arenaleiter …) und 'heldin' per Steckbrief ergänzen (je ≈ 1 h).
+
+## 7. Runde 2 (13.11., 03:00–08:00) – Gesicht, Haar, Haltung, Shader
+- **Augen:** Augapfel 12 % größer, Iris 50–55 % (Farbverlauf dunkel oben → hell unten, Pupille, kleinere Glanzpunkte), obere Lidkante zweireihig dunkel + kräftiger Lidstrich, Wimpernflügel jetzt am **äußeren** Augenwinkel (Rahmen-Achse war gespiegelt → Lidschwung saß innen, wirkte „verrutscht“), Lidschatten gemalt; Blinzeln mit weniger Lid-Überlappung.
+- **Kopf:** breiter (hw/hh 0,8 Kind), vollere Wangen, rundere Kinn-/Kieferpartie, Nase nur noch kleine Form + Schattenandeutung; dünnerer Umriss im Gesicht (Maske r 0,42).
+- **Haar:** breitere Büschel, Haarkappe vorn ohne Zacken, Textur ohne Rauschflecken (weicher Verlauf, schwache AO), **anisotropes Glanzband im Shader**.
+- **Haltung:** Ruhepose mit Gewicht auf einem Bein (Becken gekippt, ein Knie locker), Arme leicht vom Körper und angewinkelt, Finger entspannt.
+- **Kragen:** Stoffdicke läuft am Halsausschnitt weich aus (keine Treppe), Bündchen höher.
+- **Datei:** Normalkarte 512² (gltf-transform resize), WebP 80 → 0,70–0,76 MB je Figur (vorher 0,76–0,83).
+- **LOD:** LOD1 ohne Umriss-Hülle und ohne Schattenwurf; Gesicht/Augen ohne Umriss und Schatten (−1–2 Calls je Figur).
+- **Shader `src/56-toonpro.js` (additiv, API unverändert):** neue Option `toonProMat(map,{fig:1})` → Uniform `uFig` (Standard 0 = unverändert für Terras): Haar-Maske (Glanz 0,25–0,45) bekommt ein weiches anisotropes Glanzband statt Punktglanz, Randlicht auf Haut (Maske g) −65 %.
+- Bilder: `test/figuren2/r2_noa_gesicht_vorher_nachher.webp`, `r2_aufstellung.webp`, `r2_morgenau.webp`, `r2_morgenau_nah.webp`.

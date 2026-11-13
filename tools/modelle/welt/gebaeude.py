@@ -98,6 +98,38 @@ def station():
     for sy in (-1, 1): Pr.add(cyl(.05, W + .3, 8), METAL, T(0, sy * (R + .02), WH + .02, ry=math.pi / 2))
     return Pw.obj(), Pr.obj()
 
+GLASS, LGREY, PANEL, WHITE2 = hexc('#9fcbe8'), hexc('#c9d2d8'), hexc('#2f4a78'), hexc('#f2f4f6')
+def labor():  # Forschungslabor: flaches Dach mit Attika, Lichtband, Sternwarten-Kuppel, Antenne, Solarfelder (Nennmaß 6×3)
+    Pw, Pr = Part('Wand'), Part('Dach'); walls_common(Pw, timber=False)
+    w, d = W - .02, D - .02
+    Pw.add(box(w + .12, d + .12, .14), LGREY, T(0, 0, WH - .02), bevel=.03)                               # Metallgesims
+    for sx in (-1, 0, 1):
+        for sy in (-1, 1): Pw.add(box(.16, .12, WH - .32), LGREY, T(sx * (w / 2 - .06) if sx else -w / 6, sy * (d / 2 + .02), .3 + (WH - .32) / 2), bevel=.02)  # Lisenen
+    Pr.add(box(W + .3, D + .3, .12), TILE, T(0, 0, WH + .1), bevel=.03)                                      # Dachplatte
+    for sy in (-1, 1): Pr.add(box(W + .3, .1, .22), TILE, T(0, sy * (D / 2 + .1), WH + .25), bevel=.02)       # Attika
+    for sx in (-1, 1): Pr.add(box(.1, D + .3, .22), TILE, T(sx * (W / 2 + .1), 0, WH + .25), bevel=.02)
+    Pw.add(prism([(-.4, 0), (.4, 0), (.25, .36), (-.25, .36)], W * .38), GLASS, T(W * .08, 0, WH + .16))      # Lichtband (Glasdach)
+    Pw.add(prism([(-.43, -.01), (.43, -.01), (.28, .38), (-.28, .38)], W * .38 + .06), LGREY, T(W * .08, 0, WH + .14) @ Matrix.Diagonal((1, 1, .25, 1)))
+    cx = -W * .26; Pw.add(cyl(.55, .4, 20), LGREY, T(cx, 0, WH + .36), bevel=.02)                             # Kuppel-Trommel
+    Pw.add(lambda b: bmesh.ops.create_uvsphere(b, u_segments=20, v_segments=10, radius=.53), WHITE2, T(cx, 0, WH + .56))
+    Pw.add(box(.12, 1.1, .5), hexc('#3a4652'), T(cx, -.05, WH + .8, rx=-.5))                                # Spalt
+    Pw.add(cyl(.025, 1.0, 6), METAL, T(W * .33, .5, WH + .7)); Pw.add(cyl(.22, .06, 14, .02), WHITE2, T(W * .33, .5, WH + 1.2, rx=.7))   # Antenne + Schüssel
+    for i in range(3): Pw.add(box(.55, .4, .04), PANEL, T(W * (.0 + .14 * i) - .2, .9, WH + .32, rx=.45), bevel=.01)  # Solarfelder
+    return Pw.obj(), Pr.obj()
+def laden():  # Laden: flaches Dach mit drei Sheds (Oberlicht nach hinten), Gesims, Attika (Nennmaß 4×3)
+    Pw, Pr = Part('Wand'), Part('Dach'); walls_common(Pw, timber=False)
+    w, d = W - .02, D - .02
+    Pw.add(box(w + .12, d + .12, .14), WOOD2, T(0, 0, WH - .02), bevel=.03)
+    for sx in (-1, 1):
+        for sy in (-1, 1): Pw.add(box(.14, .14, WH - .3), WOOD, T(sx * (w / 2 - .03), sy * (d / 2 - .03), .3 + (WH - .3) / 2), bevel=.02)
+    Pr.add(box(W + .26, D + .26, .1), TILE, T(0, 0, WH + .08), bevel=.03)
+    n = 3; sw = (W + .2) / n
+    for i in range(n):
+        x = -W / 2 - .1 + (i + .5) * sw
+        Pr.add(prism([(-D / 2 - .1, 0), (D / 2 + .1, 0), (D / 2 + .1, .55)], sw - .06), TILE, T(x, 0, WH + .12))    # Shed-Schräge
+        Pw.add(box(sw - .14, .04, .45), GLASS, T(x, D / 2 + .1, WH + .38))                                         # Oberlicht hinten
+    return Pw.obj(), Pr.obj()
+
 def finish(name, objs, form):
     tri = sum(len(p.vertices) - 2 for o in objs for p in o.data.polygons); log(name, 'Dreiecke', tri)
     for o in objs:
@@ -136,11 +168,13 @@ def finish(name, objs, form):
 
 def build(kind, form):
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    objs = list(gable_house() if kind == 'haus' else station())
+    global W
+    W = 6.0 if kind == 'labor' else 4.0
+    objs = list({'haus': gable_house, 'station': station, 'labor': labor, 'laden': laden}[kind]())
     for o in objs: o.data.color_attributes.active_color = o.data.color_attributes['Col']
     return finish(kind, objs, form)
 
 if __name__ == '__main__':
     args = [a for a in sys.argv[1:] if not a.startswith('--')]; form = '--form' in sys.argv
-    kinds = ['haus', 'station'] if not args or args[0] == 'alle' else [args[0]]
+    kinds = ['haus', 'station', 'labor', 'laden'] if not args or args[0] == 'alle' else [args[0]]
     for k in kinds: build(k, form)

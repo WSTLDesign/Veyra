@@ -34,7 +34,7 @@ async function boot(W, H, title) {
   if (title) return p;
   await p.click('#tNew'); await p.waitForTimeout(300);
   await p.evaluate(async () => { for (let i = 0; i < 30 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); } try { await preloadArt(); } catch (e) { } G.flags.starter = 1; G.time = 10 * 60; SET.skipBattleIntro = 1;
-    G.team = [mk(1, 14), mk(25, 11), mk(7, 9), mk(4, 8)]; G.team[1].hp = Math.round(G.team[1].mhp * .45); G.team[3].hp = Math.round(G.team[3].mhp * .18); G.bag.kapsel = 5; G.bag.trank = 3;
+    G.team = [mk(1, 14), mk(25, 11), mk(7, 9), mk(4, 8)]; G.team[1].hp = Math.round(stat(G.team[1], 'hp') * .45); G.team[3].hp = Math.round(stat(G.team[3], 'hp') * .18); G.bag.kapsel = 5; G.bag.trank = 3;
     for (const i of [1, 4, 7, 13, 16, 19, 22, 25, 28, 31, 59, 61, 112, 140]) { G.dex.seen[i] = 1; if (i < 30) G.dex.caught[i] = 1; } });
   await close(p);
   return p;
@@ -45,7 +45,7 @@ for (const s of want) {
   const p = await boot(W, H);
   await p.evaluate(() => { loadMap('morgenau', 9, 12); P.dir = 'up'; P.ang = 0; mode = 'world'; if (view === '2d') setView('third', true); });
   await close(p); await p.waitForTimeout(2600); await frames(p, 8);
-  if (on('hud')) { await p.evaluate(() => { cur && typeof mapCard === 'function' && mapCard(cur); }); await p.waitForTimeout(1300); await frames(p, 4); await shot(p, 'schild', s); await p.waitForTimeout(3600); await frames(p, 6); await shot(p, 'hud', s); }
+  if (on('hud')) { await p.evaluate(() => { $('#mcName').textContent = cur.name; $('#mcRegion').textContent = regionOf(cur.id)[0]; const c = $('#mapCard'); c.classList.remove('on'); void c.offsetWidth; c.classList.add('on'); }); await p.waitForTimeout(800); await frames(p, 4); await shot(p, 'schild', s); await p.waitForTimeout(3600); await frames(p, 6); await shot(p, 'hud', s); }
   if (on('dialog')) {
     await p.evaluate(() => { mode = 'world'; DLG.pend = { fig: 'kael', t: 'trainer' }; say([figSay('kael', 'gruss', 2)]); });
     await p.waitForTimeout(1500); await p.evaluate(() => { TW && TW.finish && TW.finish(); }); await p.waitForTimeout(500); await shot(p, 'dialog', s); await close(p); await p.waitForTimeout(300);

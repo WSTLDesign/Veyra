@@ -112,7 +112,7 @@ def build_body():
             off = (f - 1.45) * fw * .42; L = hl * (.55 if f in (1, 2) else .5 if f == 0 else .42) * .5
             b0 = W + A * hl * .55 + side * off; ids = [node(tuple(b0), fw * .26)]; p = b0.copy(); d = A.copy()
             for k in range(3):
-                d = (d + Vector((-s * .12 * (k + 1), 0, 0))).normalized(); p = p + d * L * (1 - .18 * k); ids.append(node(tuple(p), fw * (.235 - .03 * k)))
+                d = (d + Vector((-s * .06 * (k + 1), 0, 0))).normalized(); p = p + d * L * (1 - .18 * k); ids.append(node(tuple(p), fw * (.235 - .03 * k)))
             E.append((pa, ids[0])); chain(ids); tips.append(p)
         tb0 = W + A * hl * .28 + side * fw * .62 + Vector((-s * .01 * H / 1.45, 0, 0)); tb1 = tb0 + (A * .45 + side * .75 + Vector((-s * .25, 0, 0))).normalized() * hl * .24
         tb2 = tb1 + (A * .8 + side * .3 + Vector((-s * .35, 0, 0))).normalized() * hl * .2
@@ -275,10 +275,10 @@ def build_head():
             orient_out(lo, C); smooth(lo)
             vg = lo.vertex_groups.new(name='lid_%s_%s' % (which, 'L' if s > 0 else 'R')); vg.add(list(range(len(V))), 1, 'REPLACE'); parts['lids'].append(lo)
         # Lidlinie verdickt + Wimpernflügel außen (zwei kleine Spitzen)
-        W0 = [sp_(62 - k * 15, th_u(62 - k * 15) + 2.5, RE * 1.07) for k in range(10)]
-        wo = loft('Lidstrich', W0, lambda t: RE * (.13 + .12 * ss(.3, 1, t)) * (.55 + .45 * ss(0, .3, t)), lambda t: RE * .05, ring=4, n=12, flat_up=tuple(u)); set_region(wo, 'lidlinie')
+        W0 = [sp_(64 - k * 14.5, th_u(64 - k * 14.5) + 3.5, RE * 1.1) for k in range(10)]
+        wo = loft('Lidstrich', W0, lambda t: RE * (.17 + .08 * (1 - ss(0, .5, t))) * (.6 + .4 * ss(0, .25, t)) * (.5 + .5 * ss(0, .1, 1 - t)), lambda t: RE * .06, ring=4, n=12, flat_up=tuple(u)); set_region(wo, 'lidlinie')
         vg = wo.vertex_groups.new(name='lid_o_%s' % ('L' if s > 0 else 'R')); vg.add(list(range(len(wo.data.vertices))), 1, 'REPLACE'); parts['lids'].append(wo)
-        for k, (a0, l) in enumerate(((58, 1.0), (40, .7))):
+        for k, (a0, l) in enumerate(((60, .8),)):
             P0 = [sp_(a0 + j * 6, th_u(a0) + 2 + j * 4.5, RE * (1.07 + j * .05)) for j in range(4)]
             wk = loft('Wimper', P0, lambda t, l=l: RE * .07 * (1 - t) * l + RE * .01, lambda t: RE * .025, ring=4, n=5, flat_up=tuple(u)); set_region(wk, 'lidlinie')
             vg = wk.vertex_groups.new(name='lid_o_%s' % ('L' if s > 0 else 'R')); vg.add(list(range(len(wk.data.vertices))), 1, 'REPLACE'); parts['lids'].append(wk)

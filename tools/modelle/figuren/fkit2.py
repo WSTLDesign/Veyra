@@ -343,7 +343,7 @@ mix(M('schirm'), '#e8ffff', .5 * ss(.3, .9, vnoise(Pn, 900)))
 mix(M('leder'), shade_of('leder', 1.2), .25 * ss(.5, .9, n2)); hgt += M('leder') * (n3 - .5) * .4
 # AO einrechnen (weich), Gesicht schwächer
 aoN = np.clip(ao, 0, 1); faceM = M('haut_kopf', 'lid', 'nase') & frontM
-col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), .5 + .5 * aoN, .6 + .4 * aoN))[..., None]
+col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), .74 + .26 * aoN, .6 + .4 * aoN))[..., None]
 col = np.clip(col, 0, 1); alb = dilate(col, COV, 6); alb = np.where(COV[..., None], col, alb); log('Malen fertig')
 IMG_ALB = to_image(alb, FID + '_Farbe'); IMG_ALB.colorspace_settings.name = 'sRGB'
 hg = dilate(np.repeat(hgt[..., None], 3, 2), COV, 4)[..., 0]
@@ -461,7 +461,7 @@ def idle(t):
     elif st == 'huefte':
         for s in (-1, 1): P.update(arm_pose(s, down=.2, fwd=-.12, elbow=1.55, twist=.4, wrist=-.35, curl=.95, thumb=.4, sh=.0))
     else:
-        for s in (-1, 1): P.update(arm_pose(s, down=.5 + .012 * br + .04 * (s > 0), fwd=.08 + .03 * (s > 0), elbow=.42 + .1 * (s < 0) + .02 * br, twist=-.3, wrist=.12, curl=.2, thumb=.12, sh=.03 * br))
+        for s in (-1, 1): P.update(arm_pose(s, down=.5 + .012 * br + .04 * (s > 0), fwd=.08 + .03 * (s > 0), elbow=.42 + .1 * (s < 0) + .02 * br, twist=.15, wrist=.1, curl=.14, thumb=.1, sh=.03 * br))
     P['hair_vorn'] = rx(.03 * m_.sin(ph * 2)); P['hair_hinten'] = rx(.02 * m_.sin(ph * 2 + 1))
     return P
 def env_(t, a, b, c, d): return ss(a, b, t) * (1 - ss(c, d, t))

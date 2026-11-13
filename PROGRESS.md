@@ -519,3 +519,9 @@ Grundlage `docs/qa-mechanik.md` (Status je Mangel dort im Abschnitt „Nachbesse
 - **Modelle** `public/models/figuren/fig_*.glb`: Noa (Runde 2), Rayan, Prof. Veyran, Mama, Mirael (Stationen), Ladenbesitzer, 4 Bewohner-Varianten – je 13,5 k Dreiecke, 0,76–0,83 MB.
 - **src/57-modelle.js** (nur `SET.modelle3d`): Zuordnung per Typ (`figModelFor`), Gang ohne Gleiten (gemeinsame Phase, 2,8 → Laufen, 5 → Rennen), Blinzeln, Augen-Sakkaden, NPC schaut zum Spieler, Mund im Dialog, Winken beim Ansprechen, LOD; Rückfall prozedural. `tools/werkstatt-build.mjs` sammelt alle Ordner unter public/models/.
 - Vorschauen `test/figuren2/*.webp`, Test `node test/figuren2/test_modelle.mjs`, Doku docs/figuren-3d.md. **Status: Vorschau.**
+
+## UI-Design 2 „Morgenglas“ (Agent UI-Design, Opus 5.5 · hoch) – 13.11.
+- **Designsystem** `src/styles-ui2.css` (lädt zuletzt): warmes Milchglas mit Lichtkante, Tinte statt Grau, Fredoka (Display) + Nunito (UI) **lokal eingebettet** in `src/styles-schrift.css` (OFL, kein Google-Fonts-Abruf mehr; Link aus `shell.html` entfernt), Radien/Schatten/Bewegung als `--v-*`-Tokens, reduced motion.
+- **Neu `src/60-uidesign.js`:** eigene SVG-Symbole (`UI_ICON`, ersetzt Inhalte von `BICON`/`APPICON`), Titelbild aus Himmel + Horizont der Lichtlande mit Lichtpunkten und eigener Wortmarke „VEYRA – Kreaturenchronik“, Uhr mit Sonne/Mond-Symbol, Team-Kurzanzeige `#vTeam` (Bild + KP-Ring, Tipp → Team), Minikarte dauerhaft. Nur Umhüllungen (`updClock`, `mmShow`, `card`), API unverändert.
+- Komponenten: HUD-Ortsschild, Gebietsschild, Dialog mit Sprecher-Schild und rundem Weiter-Knopf, Kampf-Statuskarten (Level-Pille, KP-Verlauf mit Nachlauf), Befehlskarten (Team/Tasche/Rückzug + breite „Kampf“-Karte), Attacken mit Typ-Streifen, Chronik/Team/Dex/Tasche/Optionen einheitlich.
+- Vorschauen `test/ui2/<vorher|n1|n2…>_<szene>_<g|k>.webp` (`node test/ui2/shots.mjs <tag>`), Doku docs/ui-design.md.

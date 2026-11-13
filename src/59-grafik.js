@@ -103,3 +103,17 @@ if(typeof skyFrame==='function'&&!skyFrame._gfx){const _sf=skyFrame;skyFrame=fun
   '  float vgL = exp( - max( vFogY + .2, 0.0 ) * .6 ) * smoothstep( fogNear * .3, fogFar * .9, fogDepth ) * .28;\n'+
   '  fogFactor = 1.0 - ( 1.0 - fogFactor ) * ( 1.0 - vgH ) * ( 1.0 - vgL );\n #endif\n'+
   ' vec3 vgC = mix( fogColor, fogColor * vec3( .88, .96, 1.1 ) + vec3( 0.0, .01, .035 ), vgF * .8 );\n gl_FragColor.rgb = mix( gl_FragColor.rgb, vgC, fogFactor );\n#endif\n';})();
+// ---------- Runde 5: Entfernungs-Budget für Figuren-/Terra-Modelle (57/58, nur Schalter an) ----------
+// Je Bild vor dem Zeichnen (und danach zurückgesetzt, damit 57/58/09 ihre eigenen Zustände behalten):
+//  ab sh Feldern kein Schattenwurf · ab ol Feldern kein Umriss · ab hide Feldern ausgeblendet (Spielfigur nie). Die LOD-Stufen von 57/58 bleiben aktiv.
+GFX.mlod={high:{sh:8,ol:11,hide:26},mid:{sh:6,ol:8,hide:20},low:{sh:0,ol:6,hide:15}};
+const _gM={roots:[],t:0,undo:[],v:new THREE.Vector3()};
+function gfxModelRoots(S){const out=[];for(const o of S.children){const U=o.userData||{};if(U.pilot||U.lod0||U.lod1){out.push(o);continue;}for(const c of o.children){const V=c.userData||{};if(V.pilot||V.lod0||V.lod1)out.push(c);}}return out;}
+function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);}if(!_gM.roots.length||!c)return;
+ const L=GFX.mlod[perfTier().name]||GFX.mlod.high,cp=c.getWorldPosition(_gM.v),u=_gM.undo;
+ for(const r of _gM.roots){if(!r.visible||r===R3.player)continue;let p=r.userData._gp||(r.userData._gp=new THREE.Vector3());r.getWorldPosition(p);const d=p.distanceTo(cp);
+  if(d>L.hide&&!r.userData.held){r.visible=false;u.push([r,'visible',true]);continue;}
+  if(d>L.sh||d>L.ol){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
+   for(const m of ms){if(d>L.sh&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
+function gfxModelPost(){const u=_gM.undo;for(let i=u.length-1;i>=0;i--){const[o,k,v]=u[i];o[k]=v;}u.length=0;}
+if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=function(){_gs();const r=R3.r,rr=r.render;r.render=function(s,c){const w=s===R3.scene&&r.getRenderTarget()===null;if(w)try{gfxModelPre(s,c);}catch(e){}try{rr.call(r,s,c);}finally{if(w)gfxModelPost();}};};gfxSetup._m=1;}

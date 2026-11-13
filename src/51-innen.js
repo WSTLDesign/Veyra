@@ -25,9 +25,13 @@ const iRock=v=>g3('innRock2_'+v,()=>{const g=new THREE.IcosahedronGeometry(1,1),
 // ---------- Baukasten: Teile in Raum-Listen (lokaler Rahmen je Möbel: Rückseite −z an der Wand, Vorderseite +z) ----------
 function IM(B,x,y,z,sx,sy,sz,rx,ry,rz){return new THREE.Matrix4().multiplyMatrices(B.M,w3M(x,y,z,sx,sy,sz,rx||0,ry||0,rz||0));}
 function P_(B,L,g,c,x,y,z,sx,sy,sz,k,rx,ry,rz){B[L].push([g,c,IM(B,x,y,z,sx,sy,sz,rx,ry,rz),null,k||0]);}
-const bx=(B,x,y,z,w,h,d,c,k,ry,L)=>P_(B,L||'F',iBox(),c,x,y,z,w,h,d,k,0,ry||0,0);
+// Welt-Grafik 6: Möbel (Ebene F) als Quader mit gerundeten Kanten in echter Größe (Radius ≤ 3 cm, weiche Kanten-Normalen) statt skalierter Kasten
+const iRBox=(w,h,d)=>{const q=v=>Math.max(.004,Math.round(v*200)/200);w=q(w);h=q(h);d=q(d);return g3('innRB'+w+'_'+h+'_'+d,()=>{const r=Math.min(.03,.3*Math.min(w,h,d)),H=[w/2,h/2,d/2],g=new THREE.BoxGeometry(1,1,1,3,3,3),p=g.attributes.position,n=g.attributes.normal,v=[0,0,0],o=[0,0,0];
+ for(let i=0;i<p.count;i++){v[0]=p.getX(i);v[1]=p.getY(i);v[2]=p.getZ(i);let l=0;for(let a=0;a<3;a++){const c=v[a],e=H[a]-r,pv=Math.abs(c)>.4?Math.sign(c)*H[a]:Math.sign(c)*e,inn=Math.max(-e,Math.min(e,pv));o[a]=pv-inn;v[a]=inn;l+=o[a]*o[a];}
+  l=Math.sqrt(l)||1;p.setXYZ(i,v[0]+o[0]/l*r,v[1]+o[1]/l*r,v[2]+o[2]/l*r);n.setXYZ(i,o[0]/l,o[1]/l,o[2]/l);}return g;});};
+const bx=(B,x,y,z,w,h,d,c,k,ry,L)=>(L||'F')==='F'?P_(B,'F',iRBox(w,h,d),c,x,y,z,1,1,1,k,0,ry||0,0):P_(B,L,iBox(),c,x,y,z,w,h,d,k,0,ry||0,0);
 const cy=(B,x,y,z,r,h,c,k,seg,rt,L)=>P_(B,L||'F',iCyl(seg||10,rt),c,x,y,z,r,h,r,k);
-const bxr=(B,x,y,z,w,h,d,c,k,rx,ry,rz,L)=>P_(B,L||'F',iBox(),c,x,y,z,w,h,d,k,rx,ry,rz);
+const bxr=(B,x,y,z,w,h,d,c,k,rx,ry,rz,L)=>(L||'F')==='F'?P_(B,'F',iRBox(w,h,d),c,x,y,z,1,1,1,k,rx,ry,rz):P_(B,L,iBox(),c,x,y,z,w,h,d,k,rx,ry,rz);
 const cyr=(B,x,y,z,r,h,c,k,seg,rx,ry,rz,L)=>P_(B,L||'F',iCyl(seg||10),c,x,y,z,r,h,r,k,rx,ry,rz);
 const sp=(B,x,y,z,rx,ry,rz,c,k,L)=>P_(B,L||'F',iSph(10,7),c,x,y,z,rx,ry,rz,k);
 const gl=(B,g,c,c2,x,y,z,sx,sy,sz,k,rx,ry,rz)=>B.GL.push([g,c,IM(B,x,y,z,sx,sy,sz,rx,ry,rz),c2||c,k||0]);
@@ -45,7 +49,7 @@ function books(B,x0,x1,y,z,d,seed,pal){const r=prng(seed);let x=x0;pal=pal||['#b
   bxr(B,x+w/2+(lean?.03:0),y+h/2-(lean?.01:0),z,w,h,d*(.75+r()*.2),pal[Math.floor(r()*pal.length)],0,0,0,lean?-.25:0);x+=w+.004;}}
 function plantPot(B,x,z,s,seed,kind){const r=prng(seed),pc=['#c46a4a','#d98a5a','#e8e0d0','#6a8aa8'][Math.floor(r()*4)];
  cy(B,x,.2*s,z,.21*s,.4*s,pc,0,12,1.25);cy(B,x,.4*s,z,.2*s,.03*s,'#5a3a26',0,12);
- if(kind==='baum'){cy(B,x,.75*s,z,.03*s,.75*s,'#6b4a2e',3,6);[[0,1.2,0,.32],[.18,1.02,.08,.24],[-.16,1.06,-.06,.25],[.04,1.38,-.05,.22]].forEach(([a,b,c2,rr],i)=>sp(B,x+a*s,b*s,z+c2*s,rr*s,rr*s*.85,rr*s,i%2?'#4f9a52':'#3f8a48',0));}
+ if(kind==='baum'){cy(B,x,.75*s,z,.03*s,.75*s,'#6b4a2e',3,6);P_(B,'F',crownGeo('b'+(seed&1)),'#6cb466',x,.82*s,z,1.15*s,1.25*s,1.15*s,0,0,r()*6,0);}// Welt-Grafik 6: Büschel-Krone wie draußen
  else{const n=7;for(let i=0;i<n;i++){const a=i/n*Math.PI*2+r(),h=.55+r()*.5,l=.22+r()*.12;P_(B,'F',iSph(10,7),i%2?'#4cab5c':'#3a9150',x+Math.cos(a)*l*s*.8,h*s,z+Math.sin(a)*l*s*.8,.2*s,.05*s,.11*s,0,0,-a,.5);}
   sp(B,x,.62*s,z,.14*s,.18*s,.14*s,'#46a052',0);if(kind==='bluete')for(let i=0;i<4;i++)sp(B,x+Math.cos(i*1.6)*.14*s,(.82+r()*.2)*s,z+Math.sin(i*1.6)*.14*s,.05*s,.05*s,.05*s,['#ff8aa8','#ffd84a','#ffffff','#c79bff'][i],0);}}
 
@@ -319,6 +323,16 @@ function innUVMesh(B,list,mat){if(!list.length)return null;const pos=[],nor=[],u
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
  const m=new THREE.Mesh(g,mat);m.frustumCulled=false;m.receiveShadow=true;B.own.push(g);return m;}
 // Abdunkeln nach oben (weicher Deckenübergang) direkt in den Vertexfarben
+// Welt-Grafik 6: Möbel-Umriss sehr dünn (6 mm) in abgedunkelter Eigenfarbe statt Schwarz
+let INN_OLM=null;function innOlMat(){if(INN_OLM)return INN_OLM;const m=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide});
+ m.onBeforeCompile=sh=>{sh.vertexShader=sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\ntransformed+=normalize(normal)*.006;');sh.fragmentShader=sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=.4;');};
+ m.customProgramCacheKey=()=>'innOl6';return INN_OLM=m;}
+// Kontaktschatten unter Möbeln (eine Instanz-Ebene, weicher Fleck, warm-dunkel)
+let INN_CM=null;function innContact(S,m,B){const L=(m.furn||[]).filter(it=>it.k!=='teppich');if(!L.length)return;
+ const mt=INN_CM||(INN_CM=new THREE.MeshBasicMaterial({map:blobTex(),color:'#2a1a12',transparent:true,opacity:.5,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));
+ const g=g3('innCt',()=>new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2)),im=new THREE.InstancedMesh(g,mt,L.length),d=new THREE.Object3D();
+ L.forEach((it,i)=>{d.position.set(it.x+it.w/2,.016,it.y+it.h/2);d.scale.set(it.w*1.35+.2,1,it.h*1.35+.2);d.updateMatrix();im.setMatrixAt(i,d.matrix);});
+ im.renderOrder=3;im.frustumCulled=false;im.name='innContact';S.add(im);}
 function innDarkTop(g,y0,y1,k){const p=g.attributes.position,cs=[g.attributes.color,g.attributes.aNight].filter(Boolean);for(let i=0;i<p.count;i++){const t=Math.max(0,Math.min(1,(p.getY(i)-y0)/(y1-y0))),f=1-k*t*t*(3-2*t);for(const c of cs){c.setXYZ(i,c.getX(i)*f,c.getY(i)*f,c.getZ(i)*f);}}}
 
 // ---------- Lichtbalken (Fenster → Boden), Staub, Heilgerät ----------
@@ -397,7 +411,7 @@ function innBuildRoom(S,m){const sty=innStyle(m),L=new THREE.Vector3(...sty.ligh
  // Meshes
  const own=B.own,add=(o,sh)=>{if(!o)return;o.castShadow=!!sh;o.receiveShadow=true;o.frustumCulled=false;S.add(o);return o;};
  const gH=w3merge(B.H);innDarkTop(gH,1.6,sty.HC+.1,.42);own.push(gH);add(new THREE.Mesh(gH,townMat()),false).name='innShell';
- if(B.F.length){const gF=w3merge(B.F);innDarkTop(gF,1.8,sty.HC+.1,.22);own.push(gF);const fm=add(new THREE.Mesh(gF,townMat()),true);fm.name='innFurn';const ol=addOutline(fm,.011,'#3a3038');}
+ if(B.F.length){const gF=w3merge(B.F);innDarkTop(gF,1.8,sty.HC+.1,.22);own.push(gF);const fm=add(new THREE.Mesh(gF,townMat()),true);fm.name='innFurn';const ol=new THREE.Mesh(gF,innOlMat());ol.userData.outline=1;ol.frustumCulled=false;fm.add(ol);innContact(S,m,B);}
  const lit=new THREE.MeshToonMaterial({map:tex,gradientMap:toonGrad(),alphaTest:.4,side:THREE.DoubleSide});const unl=new THREE.MeshBasicMaterial({map:tex,toneMapped:false});own.push(lit,unl);
  add(innUVMesh(B,B.AL,lit),false);add(innUVMesh(B,B.AU,unl),false);
  if(B.GL.length){const gm=glowMesh(B.GL);gm.name='innGlow';own.push(gm.geometry,gm.material);S.add(gm);if(!S.userData.glow)S.userData.glow=gm;else{S.userData.innGlow=gm;}}
@@ -492,8 +506,8 @@ function innFrame(S,c){const U=S.userData.inn;if(!U||!R3||S!==R3.scene)return;co
  const dt=Math.min(.1,Math.max(.001,(now-(U.lt||now-16))/1000));U.lt=now;U.frame++;const pl=R3.player;
  if(U.kind==='room'){const sty=U.sty;
   // Licht: Fensterlicht am Tag (Sonnenrichtung durchs Fenster), abends warme Lampen, nachts Mondblau
-  R3.hemi.color.set(sty.hemi[0]).lerp(_ic.set('#9aa8d8'),night*.35);R3.hemi.groundColor.set(sty.hemi[1]);R3.hemi.intensity=sty.hemi[2]*(.55+.45*day);
-  R3.sun.color.set('#fff0d6').lerp(_ic.set('#8fa6ff'),night*.85);R3.sun.intensity=.18+.62*day;const tg=R3.sun.target.position;R3.sun.position.set(tg.x+U.sun.x*14,U.sun.y*14,tg.z+U.sun.z*14);R3.sun.updateMatrixWorld();
+  R3.hemi.color.set(sty.hemi[0]).lerp(_ic.set('#9aa8d8'),night*.35);R3.hemi.groundColor.set(sty.hemi[1]);R3.hemi.intensity=sty.hemi[2]*(.72+.45*day);// Welt-Grafik 6: mehr Raumlicht, weichere Sonne
+  R3.sun.color.set('#fff0d6').lerp(_ic.set('#8fa6ff'),night*.85);R3.sun.intensity=.14+.46*day;const tg=R3.sun.target.position;R3.sun.position.set(tg.x+U.sun.x*14,U.sun.y*14,tg.z+U.sun.z*14);R3.sun.updateMatrixWorld();
   const px=pl.position.x,pz=pl.position.z;let b0=null,b1=null,d0=1e9,d1=1e9;for(const q of U.lamps){const dd=(q[0]-px)**2+(q[2]-pz)**2;if(dd<d0){b1=b0;d1=d0;b0=q;d0=dd;}else if(dd<d1){b1=q;d1=dd;}}
   R3.pl.forEach((l,i)=>{const q=i?b1:b0;if(!q||!SET.light){l.intensity=0;return;}l.color.set(q[3]);l.position.set(q[0],q[1],q[2]);l.distance=q[4]===1?6:6.5;
    l.intensity=(q[4]===1?1.15+Math.sin(t*11)*.12+Math.sin(t*7.3)*.08:q[4]===2?.7+.25*(INN.heal.boost||0):.42+.95*night);});

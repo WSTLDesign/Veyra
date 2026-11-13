@@ -1,0 +1,42 @@
+{
+ "hoch_haus": {
+  "calls": 29,
+  "tris": 68668,
+  "ms": 986.9,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_labor": {
+  "calls": 39,
+  "tris": 78881,
+  "ms": 1266.4,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_laden": {
+  "calls": 28,
+  "tris": 130966,
+  "ms": 1102.2,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_station": {
+  "calls": 29,
+  "tris": 54307,
+  "ms": 1133.8,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_arena": {
+  "calls": 32,
+  "tris": 87345,
+  "ms": 1160.3,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ }
+}

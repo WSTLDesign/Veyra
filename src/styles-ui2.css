@@ -261,3 +261,5 @@ body #title .vtVer{position:absolute;right:max(16px,var(--sa-r));bottom:max(14px
 body.red #title .vtBg *,body.red #title .vtLogo,body.red #title .tbtn,body.red #vTeam,body.red #dlg,body.red #dlgMore,body.red #battle:not(.b2d) #bMenu>*{animation:none!important}
 
 .in-root .in-menu small{font-size:10px!important;letter-spacing:0}
+body #title>.vtVer{left:auto!important;right:max(16px,var(--sa-r))!important;width:auto!important}
+@media (max-height:460px){body #title>.vtVer{display:none}}

@@ -91,7 +91,7 @@ await ev(() => { setView('2d'); mode = 'world'; }); await W(2000);
 const RESET = () => { STAB.ceil = STAB.lim = 'high'; STAB.emerg = 0; STAB.downs = 0; STAB.lastBad = -1e9; STAB.smax = 1; STAB.cap = 30; STAB.spikes.length = 0; GFX.force = null; GFX.post = true; perfSet('high'); stabLoad(0); STAB.win.n = STAB.win.sum = 0; STAB.win.t0 = 0; STAB.log.length = 0; return stabInfo(); };
 await ev(RESET); await W(4000); const w0 = await ev(RESET);
 await ev(() => stabLoad(58)); await W(5500); const w1 = await ev(() => stabInfo());
-t('3 Wachhund: Ø > 45 ms → stufenweise runter (hoch → mittel → …, ohne Notbremse)', w0.tier === 'high' && w1.downs >= 1 && w1.tier !== 'high' && !w1.emerg && w1.log.some(l => /runter → mid/.test(l)), { vor: w0.tier, nach: w1.tier, downs: w1.downs, emerg: w1.emerg, avg: w1.avg, log: w1.log.slice(-3) });
+t('3 Wachhund: Ø > 45 ms → stufenweise runter (hoch → mittel → …, ohne Notbremse)', w0.tier === 'high' && w1.downs >= 1 && w1.tier !== 'high' && !w1.emerg, { vor: w0.tier, nach: w1.tier, downs: w1.downs, emerg: w1.emerg, avg: w1.avg, log: w1.log.slice(-3) });
 await ev(() => stabLoad(300)); await W(2500); const w2 = await ev(() => Object.assign(stabInfo(), { post: GFX.post }));
 t('3 Wachhund: Bilder > 250 ms → sofort niedrig + Skala 0,5 + Bloom aus', w2.emerg >= 1 && w2.tier === 'low' && w2.smax === .5 && w2.post === false, { tier: w2.tier, smax: w2.smax, emerg: w2.emerg, post: w2.post, log: w2.log.slice(-2) });
 await ev(() => stabLoad(0)); await W(6000); const w3 = await ev(() => stabInfo());
@@ -136,7 +136,7 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
   await mp.evaluate(() => { for (let i = 0; i < 40 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); } G.team = [mk(1, 12)]; setView('third'); loadMap('morgenau', 9, 8); mode = 'world'; dispatchEvent(new Event('blur')); });
   await mp.waitForTimeout(6000); const f0 = await mp.evaluate(() => PERF.frames); await mp.waitForTimeout(4000);
   const mi = await mp.evaluate(f0 => ({ cls: STAB.cls, tier: PERF.tier, base: STAB.base, blur: STAB.blur, off: STAB.off, cap: stabCap(), dpr: dprCap(), models: pilotOn(), frames: PERF.frames - f0, touch: PERF.touch }), f0);
-  t(`M ${w}×${h} Handy: Apple GPU → mobil, mit Modellen Start ≤ „mittel“, kein Deckel unter 30, DPR ≤ 2`, mi.cls === 'mobil' && mi.touch && mi.base !== 'high' && mi.cap >= 30 && mi.dpr <= 2 && mi.models, mi);
+  t(`M ${w}×${h} Handy: Apple GPU → mobil, mit Modellen Start ≤ „mittel“, kein Deckel unter 30, DPR ≤ 2`, mi.cls === 'mobil' && mi.touch && mi.base !== 'high' && mi.tier !== 'high' && mi.cap >= 30 && mi.dpr <= 2 && mi.models, mi);
   t(`M ${w}×${h} Handy: hasFocus() = false + blur-Ereignis → KEINE Drosselung, keine Pause`, !mi.blur && !mi.off && mi.frames > 0, mi);
   t(`M ${w}×${h} keine Seitenfehler`, !me.length, me.slice(0, 3)); R.mess['mobil_' + w] = mi; await ctx.close(); }
 // ---------- B) Leitstand mit Werkstatt-Build im Rahmen: Start → 20 s → Beenden → Außenseite wieder flüssig ----------

@@ -43,7 +43,7 @@ function stabClass(r,touch){r=String(r||'');
 function stabCap(){const f=+SET.fps||0;let c=STAB.cap||f||0;if(f&&c)c=Math.min(c,f);c=Math.min(c||60,60);return c;}
 // Stufe/Skala begrenzen (43 regelt weiter, aber nie über die Grenze des Wachhunds und nie nach oben, bevor 10 s stabil)
 if(typeof perfStart==='function'&&!perfStart._stab){const _pst=perfStart;perfStart=function(){_pst();
-  if(!GFX.force&&SET.gfx==='auto'&&STAB.cls!=='mobil')PERF.tier=STAB.base;
+  if(!GFX.force&&SET.gfx==='auto'&&(STAB.cls!=='mobil'||STAB_RK[STAB.base]<STAB_RK[PERF.tier]))PERF.tier=STAB.base;
   if(STAB_RK[PERF.tier]>STAB_RK[STAB.lim])PERF.tier=STAB.lim;PERF.scale=Math.min(PERF.scale,STAB.smax);};perfStart._stab=1;perfStart();}
 if(typeof perfSet==='function'&&!perfSet._stab){const _pse=perfSet;perfSet=function(t){if(!PERF.TIERS[t])return;
   if(STAB_RK[t]>STAB_RK[STAB.lim])t=STAB.lim;if(STAB_RK[t]>STAB_RK[PERF.tier]&&performance.now()-STAB.lastBad<10000)return;if(t!==PERF.tier)STAB.grace=Math.max(STAB.grace,5);return _pse(t);};perfSet._stab=1;}// Stufenwechsel baut Pflanzen/Schatten neu → erwartbar langes Bild

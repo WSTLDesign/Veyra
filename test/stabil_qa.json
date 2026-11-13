@@ -17,10 +17,10 @@
     "scale": 1,
     "smax": 1,
     "dpr": 1.25,
-    "cap": 30,
-    "fps": 0,
-    "frames": 2,
-    "work": 29.8,
+    "cap": 60,
+    "fps": 3,
+    "frames": 5,
+    "work": 147.4,
     "emerg": 0,
     "downs": 0,
     "ups": 0,
@@ -31,40 +31,36 @@
     "ws": false,
     "gls": 0,
     "q": {
-     "wait": 4,
+     "wait": 0,
      "done": 0,
      "fail": 0,
-     "max": 4,
+     "max": 1,
      "busy": true
     },
     "log": [
-     "241 GPU igpu · Start mid · Deckel mid · 30 fps"
+     "526 GPU igpu · Start mid · Deckel mid · ∞ fps"
     ]
    }
   },
   "morgenau": {
-   "loadS": "21.4",
-   "queue": {
-    "w": 0,
-    "b": false,
-    "d": 9
-   },
+   "loadS": "51.3",
+   "queue": "timeout",
    "laden": {
-    "ltMax": 4288,
-    "ltN": 4,
-    "ltSum": 11023
+    "ltMax": 3376,
+    "ltN": 21,
+    "ltSum": 22415
    },
    "danach": {
     "ms": 15000,
-    "rafN": 574,
-    "rafAvg": 27.2,
-    "rafMax": 2200,
-    "slow": 0.01,
-    "ltMax": 2210,
-    "ltN": 4,
-    "ltSum": 6030,
-    "lag": 2216,
-    "frames": 4,
+    "rafN": 484,
+    "rafAvg": 33.1,
+    "rafMax": 1183,
+    "slow": 0.02,
+    "ltMax": 1194,
+    "ltN": 8,
+    "ltSum": 8168,
+    "lag": 1193,
+    "frames": 8,
     "tier": "low",
     "scale": 0.5,
     "stab": {
@@ -72,41 +68,37 @@
      "lim": "low",
      "smax": 0.5,
      "fps": 0,
-     "emerg": 2,
-     "downs": 1,
+     "emerg": 13,
+     "downs": 0,
      "q": {
-      "wait": 0,
-      "done": 9,
+      "wait": 4,
+      "done": 5,
       "fail": 0,
-      "max": 4,
+      "max": 5,
       "busy": false
      }
     },
-    "occ": 0.4
+    "occ": 0.54
    }
   },
   "route1": {
-   "loadS": "6.0",
-   "queue": {
-    "w": 0,
-    "b": false,
-    "d": 9
-   },
+   "loadS": "52.7",
+   "queue": "timeout",
    "laden": {
-    "ltMax": 1720,
-    "ltN": 1,
-    "ltSum": 1720
+    "ltMax": 1964,
+    "ltN": 18,
+    "ltSum": 25580
    },
    "danach": {
     "ms": 15000,
-    "rafN": 568,
-    "rafAvg": 26.4,
-    "rafMax": 1017,
+    "rafN": 510,
+    "rafAvg": 31.7,
+    "rafMax": 1467,
     "slow": 0.01,
-    "ltMax": 1032,
+    "ltMax": 1493,
     "ltN": 6,
-    "ltSum": 5607,
-    "lag": 1015,
+    "ltSum": 7759,
+    "lag": 1470,
     "frames": 6,
     "tier": "low",
     "scale": 0.5,
@@ -115,24 +107,24 @@
      "lim": "low",
      "smax": 0.5,
      "fps": 0,
-     "emerg": 4,
-     "downs": 1,
+     "emerg": 23,
+     "downs": 0,
      "q": {
-      "wait": 0,
-      "done": 12,
+      "wait": 2,
+      "done": 10,
       "fail": 0,
-      "max": 4,
+      "max": 6,
       "busy": false
      }
     },
-    "occ": 0.37
+    "occ": 0.52
    }
   },
   "models": {
    "fig": [
+    "fig_noa",
     "fig_buerger_a",
-    "fig_mama",
-    "fig_noa"
+    "fig_mama"
    ],
    "terra": [
     "t001",
@@ -141,55 +133,47 @@
     "t112",
     "t061"
    ],
-   "haus": 2,
+   "haus": 1,
    "q": [
     [
-     "haus",
-     573
-    ],
-    [
-     "station",
-     94
-    ],
-    [
-     "labor",
-     2139
-    ],
-    [
-     "laden",
-     214
+     "fig_noa",
+     871
     ],
     [
      "fig_buerger_a",
-     403
+     1456
     ],
     [
      "fig_mama",
-     256
+     380
     ],
     [
      "t001",
-     212
+     235
     ],
     [
      "t004",
-     216
+     310
     ],
     [
-     "fig_noa",
-     2553
+     "haus",
+     118
+    ],
+    [
+     "station",
+     169
     ],
     [
      "t059",
-     206
+     1335
     ],
     [
      "t112",
-     315
+     438
     ],
     [
      "t061",
-     102
+     168
     ]
    ]
   },
@@ -202,7 +186,7 @@
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 0,
+   "lag": 3,
    "frames": 0,
    "tier": "low",
    "scale": 0.5,
@@ -211,17 +195,41 @@
     "lim": "low",
     "smax": 0.5,
     "fps": 0,
-    "emerg": 2,
+    "emerg": 3,
     "downs": 4,
     "q": {
-     "wait": 0,
-     "done": 12,
+     "wait": 2,
+     "done": 10,
      "fail": 0,
-     "max": 4,
+     "max": 6,
      "busy": false
     }
    }
   }
+ },
+ "mobil_844": {
+  "cls": "mobil",
+  "tier": "high",
+  "base": "mid",
+  "blur": false,
+  "off": false,
+  "cap": 30,
+  "dpr": 2,
+  "models": true,
+  "frames": 2,
+  "touch": true
+ },
+ "mobil_932": {
+  "cls": "mobil",
+  "tier": "high",
+  "base": "mid",
+  "blur": false,
+  "off": false,
+  "cap": 30,
+  "dpr": 2,
+  "models": true,
+  "frames": 2,
+  "touch": true
  },
  "ls_n": {
   "vorStart": {
@@ -242,33 +250,29 @@
   "laden": {
    "ms": 3000,
    "rafN": 2,
-   "rafAvg": 1799.9,
-   "rafMax": 1800,
+   "rafAvg": 3233.2,
+   "rafMax": 3233,
    "slow": 1,
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 3982,
+   "lag": 5169,
    "frames": 0,
    "tier": "?",
    "scale": "?",
    "stab": null
   },
-  "queue": {
-   "w": 0,
-   "b": false,
-   "d": 9
-  },
+  "queue": "timeout",
   "lauf": {
    "ms": 20000,
-   "rafN": 735,
-   "rafAvg": 27.3,
-   "rafMax": 700,
+   "rafN": 619,
+   "rafAvg": 32.4,
+   "rafMax": 833,
    "slow": 0.02,
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 664,
+   "lag": 800,
    "frames": 0,
    "tier": "?",
    "scale": "?",
@@ -276,7 +280,7 @@
   },
   "innen": {
    "tier": "low",
-   "frames": 31,
+   "frames": 67,
    "stab": {
     "cls": "igpu",
     "gpu": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics (0x00009A49) Direct3D11 vs_5_0 ps_5_0, D3D11)",
@@ -289,10 +293,10 @@
     "dpr": 1.25,
     "cap": 30,
     "fps": 1,
-    "avg": 347.2,
-    "frames": 31,
-    "work": 638.6,
-    "emerg": 7,
+    "avg": 637.5,
+    "frames": 67,
+    "work": 662.1,
+    "emerg": 21,
     "downs": 0,
     "ups": 0,
     "off": false,
@@ -302,19 +306,20 @@
     "ws": true,
     "gls": 1,
     "q": {
-     "wait": 0,
-     "done": 9,
+     "wait": 4,
+     "done": 5,
      "fail": 0,
      "max": 8,
      "busy": false
     },
     "log": [
-     "503 GPU igpu · Start mid · Deckel mid · 30 fps",
-     "14937 NOTBREMSE 1 (Ø 347 ms)"
+     "901 GPU igpu · Start mid · Deckel mid · ∞ fps",
+     "33219 NOTBREMSE 1 (Ø 637 ms)",
+     "111699 NOTBREMSE 20 (2 Bilder > 250 ms)"
     ]
    }
   },
-  "beendenMs": 881,
+  "beendenMs": 859,
   "nach": {
    "ms": 3000,
    "rafN": 180,

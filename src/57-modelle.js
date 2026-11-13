@@ -31,9 +31,9 @@ function pilotReady(k){return PILOT.st[k]==='ok'&&!!PILOT.gltf[k];}
 const PILOT_ONCE=['attack','hit','joy','winken','jubeln','werfen'];
 function pilotMake(k,h,opts){opts=opts||{};const g=PILOT.gltf[k];if(!g||!THREE.SkeletonUtils)return null;const F=PILOT.fix[k]||{};
  const root=new THREE.Group(),body=new THREE.Group(),inner=THREE.SkeletonUtils.clone(g.scene);root.add(body);body.add(inner);inner.rotation.y=F.ry||0;
- toonProApply(inner,{outline:opts.outline||PILOT.outline,mat:opts.mat});
+ toonProApply(inner,{outline:opts.outline||PILOT.outline,mat:Object.assign(F.fig?{fig:1}:{},opts.mat||{})});
  // Gesichtsteile (Lider/Brauen/Mund) brauchen keinen Umriss und werfen keinen Schatten → −1–2 Draw-Calls je Figur (auch im Schattenpass)
- if(F.fig){const rm=[];inner.traverse(m=>{if(m.isMesh&&/Gesicht|Augen/.test(m.name)){m.castShadow=false;for(const c of m.children)if(c.userData&&c.userData.outline)rm.push(c);}});rm.forEach(c=>c.parent.remove(c));}
+ if(F.fig){const rm=[];inner.traverse(m=>{if(m.isMesh&&/Gesicht|Augen|LOD1/.test(m.name)){m.castShadow=false;for(const c of m.children)if(c.userData&&c.userData.outline)rm.push(c);}});rm.forEach(c=>c.parent.remove(c));}
  inner.updateMatrixWorld(true);const box=new THREE.Box3();let lod1=null,lod0=null;inner.traverse(m=>{if(m.isMesh&&!m.userData.outline){if(/LOD1/.test(m.name)){lod1=m;return;}if(/^Koerper/.test(m.name))lod0=m;m.geometry.boundingBox||m.geometry.computeBoundingBox();box.union(m.geometry.boundingBox.clone().applyMatrix4(m.matrixWorld));}});
  const sz=box.getSize(new THREE.Vector3()),sc=h/Math.max(.001,F.H||sz.y);body.scale.setScalar(sc);inner.position.y=-box.min.y;if(lod1)lod1.visible=false;
  const mixer=new THREE.AnimationMixer(inner),acts={};for(const c of g.animations){const a=mixer.clipAction(c);a.enabled=true;a.setEffectiveWeight(0);a.play();acts[c.name]=a;}
@@ -53,8 +53,8 @@ function pilotFace(U,dt){const now=performance.now(),B=U.blink,tgt=Object.assign
 // Augen: kleine Blicksprünge (Sakkaden) alle 1–3,5 s; Kopf: NPC schaut zum Spieler, wenn er nah ist
 const _pq=window.THREE?new THREE.Quaternion():null,_pe=window.THREE?new THREE.Euler():null;
 function pilotLookTick(o,U,dt){const now=performance.now(),E=U.eye,b=U.bone;if(!b.eyeL)return;
- if(now>E.next){E.tx=(Math.random()-.5)*.28;E.ty=(Math.random()-.5)*.12;if(Math.random()<.35){E.tx=0;E.ty=0;}E.next=now+1000+Math.random()*2500;}
- const k=1-Math.exp(-dt*28);E.x+=(E.tx-E.x)*k;E.y+=(E.ty-E.y)*k;_pe.set(E.y,0,E.x);_pq.setFromEuler(_pe);for(const n of['eyeL','eyeR'])if(b[n]){const q0=b[n].userData.q0||(b[n].userData.q0=b[n].quaternion.clone());b[n].quaternion.copy(q0).multiply(_pq);}
+ if(now>E.next){E.tx=(Math.random()-.5)*.16;E.ty=(Math.random()-.5)*.08;if(Math.random()<.35){E.tx=0;E.ty=0;}E.next=now+1000+Math.random()*2500;}
+ const k=1-Math.exp(-dt*28);E.x+=(E.tx-E.x)*k;E.y+=(E.ty-E.y)*k;_pe.set(E.y,0,E.x);_pq.setFromEuler(_pe);for(const n of['eyeL','eyeR'])if(b[n]){const q0=b[n].userData.q0||(b[n].userData.q0=b[n].quaternion.clone());_pe.set(E.y,0,n==='eyeR'?-E.x:E.x);_pq.setFromEuler(_pe);b[n].quaternion.copy(q0).multiply(_pq);}
  if(U.npc&&b.head&&typeof P!=='undefined'&&P&&typeof R3!=='undefined'&&R3&&R3.player&&R3.player!==o){const wp=o.getWorldPosition(new THREE.Vector3()),pp=R3.player.position,dx=pp.x-wp.x,dz=pp.z-wp.z,dd=Math.hypot(dx,dz);
   let want=0;if(dd<3.2&&dd>.2){const fy=o.rotation.y;let a=Math.atan2(dx,dz)-fy;while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;if(Math.abs(a)<1.9)want=Math.max(-.75,Math.min(.75,a));}
   U.look+=(want-U.look)*(1-Math.exp(-dt*4));if(Math.abs(U.look)>.002){_pe.set(0,U.look*.6*PILOT.lookSign,0);_pq.setFromEuler(_pe);b.head.quaternion.multiply(_pq);if(b.neck){_pe.set(0,U.look*.35*PILOT.lookSign,0);_pq.setFromEuler(_pe);b.neck.quaternion.multiply(_pq);}}}}

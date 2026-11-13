@@ -24,7 +24,7 @@ bash tools/modelle/terras/bauen.sh [001 002 … | alle]     # nimmt die Blender-
   - Effekt-Knochen ohne Gewichte (`C.FX`, z. B. `fx_flamme`, `fx_kragen`, `fx_krone`) als Ankerpunkte für Leuchten im Spiel.
   - **LOD 50 %** (Kopf + Körper als `*_LOD1`-Netze im selben GLB, mehrstufiges Decimate), Kopf/Körper-Budget per `head_max`/`body_max`.
   - Ablauf `standard_ablauf()`: Normalen → Gewichte → Shape Keys → Masken → UV-Atlas → Backen (Region, Position, AO) → Malen → Normal-Bake → Materialien → LOD → Clips → GLB + `build/<id>.json`.
-- Arten: `canide.py` (001–003), `robbe.py` (004–006), `baer.py` (007–009). `--form` = schnelles Kontrollbild ohne Backen.
+- Arten: `canide.py` (001–003), `robbe.py` (004–006), `baer.py` (007–009), `vogel.py` (059), `schwebe.py` (061), `nager.py` (112). `--form` = schnelles Kontrollbild ohne Backen.
 - Ausgabe: `public/models/terras/t<NNN>.glb` (Draco, WebP-Texturen 1024² Farbe + 1024² Normal, Augen 512×256).
 
 ## 2. Gebaute Arten (13.11.)
@@ -39,6 +39,9 @@ bash tools/modelle/terras/bauen.sh [001 002 … | alle]     # nimmt die Blender-
 | t007 | Knospi | Zweibeiner (Bild: aufrecht/sitzend) | 8,4 k (3,6 k) | 0,88 MB |
 | t008 | Rankel | Zweibeiner, Laubfell | 8,4 k (3,6 k) | 0,88 MB |
 | t009 | Blühro | Vierbeiner Sohlengänger, Lilie, Blättermähne, Ranken | 9,4 k (4,1 k) | 0,93 MB |
+| t059 | Flausch (Route 1) | **Vogel** (hüpft, Clip „fly“), Wirbel-Federkränze | 8,2 k (3,5 k) | 0,75 MB |
+| t061 | Blinki (Route 1) | **Schwebend** (gleitet, Flügelchen flattern), Leuchtlaterne + Leuchtfühler | 7,8 k (3,3 k) | 0,75 MB |
+| t112 | Knabbi (Route 1) | Vierbeiner klein (Biber), Kellenschwanz, Nagezähne | 7,8 k (3,3 k) | 0,96 MB |
 Budget-Ziel 4–8 k (Endstufen bis 10 k): Grundstufen liegen knapp darüber (Gesichtsnetz 1,3 k) – nächste Runde: Lider 12→9 Segmente.
 
 **Funki Runde 2 – behobene Schwächen:** Ohren volumetrisch (Rand ≈ 4× so dick, hohl, Innenfell); Flammenrute als Flammenball mit Kern, 10 Zungen,
@@ -76,7 +79,18 @@ Ergebnis 13.11. 02:05: terras2_test 20/20 (9 Modelle Welt + Kampf) bzw. 11/11 in
 4. Wasser/Kristall: halbtransparenter Zweig (Fresnel-Alpha) für Wasserkrone/Blasen.
 5. `uFlash`/`uGlow` je Material sind schon nutzbar – bitte als stabile API behalten.
 
+## 6b. Runde 2 (13.11., 02:20–03:30, nach Kritik des Dirigenten)
+- **Funki im Kampf:** eigener Umriss `TOONPRO.variants.terra` (0,7 px, dunkler Fellton statt Knallrot; nur als Variante ergänzt, 56-toonpro.js unverändert);
+  Flammenball kleiner und tiefer in die Rutenspitze gesetzt, Glow weicher (Shader 1,25, Leuchten 0,55).
+- **Kampfarena (nur mit Schalter, Hook auf `battle3d` in 58):** Kegel-Halme → 1 400 weiche Gras-Büschel derselben Halmform wie die Welt (`W3GEO.blade5b`, Wind-Shader über `toonFx`),
+  Plattformen und Pfad frei; Ikosaeder-„Kristall“-Blumen → weiche flache Blüten; Felsen → runde Kiesel; Kampfkreis + Pfad als weicher Bodenaufkleber.
+  Thema-Farben (`themeBattle`) wirken weiter. 10-mon3d.js/14-battle.js unverändert.
+- Weichere Brust-/Wangenbüschel (runder Querschnitt), Lider bei „freudig“ ohne Überschneidung, breitere Flammel-Mähne.
+- **Neue Vorlagen** `rig_vogel/clips_vogel`, `rig_schwebend/clips_schwebend` und die drei häufigsten Route-1-Wildarten (vogel.py, schwebe.py, nager.py).
+- Bilder: `test/terras2/r2_*.webp`.
+
 ## 7. Offen
-- Vogel- und Schwebend-Vorlage (Route 1: Flausch 059, Blinki 061) noch nicht gebaut; Knabbi 112 (Vierbeiner klein) fehlt ebenfalls.
+- Flausch: Wirbel-Federkränze lesen sich noch eher als Ohren; Federmuster nah zu gleichmäßig.
+- Arena-Verbesserung hängt am Schalter `modelle3d` (Schalter aus = alte Arena) – Freigabe für alle durch den Dirigenten.
 - Ladezeit im SwiftShader-Test mit parallel laufenden Agenten 9–15 s je Modell (Draco-Dekodierung auf ausgelasteter CPU); früher allein 0,35 s – auf dem Handy messen.
 - Dreiecke der Grundstufen leicht über 8 k; Fang-Clip zeigt Zusammenzucken/Zappeln, eine eigene Kapsel-Zitter-Pose fehlt.

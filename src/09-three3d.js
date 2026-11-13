@@ -384,6 +384,7 @@ function w3HausLoad(){if(W3HAUS.st)return;W3HAUS.st=1;if(typeof modelLoaders!=='
    g.setAttribute('aMat',new THREE.BufferAttribute(am,1));g.computeBoundingSphere();o[dach?'dach':'wand']=g;if(m.material&&m.material.map)o.tex=m.material.map;});W3HAUS.g[k]=o;}))))
  .then(()=>{W3HAUS.st=2;for(const id in scenes)if(scenes[id].userData.hausMiss){delete scenes[id];if(R3&&R3.mapId===id)R3.mapId=null;}})
  .catch(e=>{console.warn('Hausmodelle nicht geladen – Kasten-Häuser bleiben:',e&&e.message||e);W3HAUS.st=3;});}
+try{setTimeout(()=>{if(w3HausOn())w3HausLoad();},0);}catch(e){}// früh vorladen (Schalter an)
 function w3HausMat(tex){const k='haus'+(tex?tex.uuid:'');if(MAT[k])return MAT[k];if(tex){tex.encoding=THREE.LinearEncoding;tex.anisotropy=4;tex.needsUpdate=true;}
  return MAT[k]=addDetail(toonFx(new THREE.MeshToonMaterial({color:'#ffffff',vertexColors:true,map:tex||null,gradientMap:toonGrad()}),{nf:1}),'town',.9);}
 function w3HausBuild(S,list,d){for(const k of['haus','station'])for(const part of['wand','dach']){const L=list.filter(q=>q[0]===k),G=W3HAUS.g[k];if(!L.length||!G||!G[part])continue;

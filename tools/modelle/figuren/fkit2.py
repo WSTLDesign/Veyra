@@ -84,7 +84,7 @@ def gw(o, name):
 LIDS = {(w, s): gw(FACE, 'lid_%s_%s' % (w, 'L' if s > 0 else 'R')) for w in 'ou' for s in (-1, 1)}
 ROW = gw(FACE, 'mund_reihe'); COL = gw(FACE, 'mund_spalte')
 def eye_frame(s):
-    C, f = D.EYES[s]; r = Vector((0, 0, 1)).cross(f).normalized() * (-s); u = f.cross(r).normalized() * (-s)
+    C, f = D.EYES[s]; r = Vector((0, 0, 1)).cross(f).normalized() * s; u = f.cross(r).normalized()
     if u.z < 0: u = -u
     return C, f, r, u
 def lid_move(co, s, which, amt_o=0, amt_u=0, wide=0):
@@ -130,7 +130,7 @@ def sk_combo(*fns):
             if r is not None: return r
         return None
     return fn
-shape_key(FACE, 'Blinzeln_L', sk_lids({1}, 1, .3)); shape_key(FACE, 'Blinzeln_R', sk_lids({-1}, 1, .3))
+shape_key(FACE, 'Blinzeln_L', sk_lids({1}, .96, .12)); shape_key(FACE, 'Blinzeln_R', sk_lids({-1}, .96, .12))
 shape_key(FACE, 'Augen_froh', sk_lids({1, -1}, .5, 1.0))
 shape_key(FACE, 'Laecheln', sk_combo(sk_mouth(0, 1.08, 1), lambda i, co, reg: brow_mv(.0015)(co) if reg == 'braue' else None))
 shape_key(FACE, 'Mund_A', sk_mouth(.13, 1.0, .3)); shape_key(FACE, 'Mund_O', sk_mouth(.09, .78, 0, 1))
@@ -227,7 +227,7 @@ mix(skin_b, '#c78672', .4 * gauss(X ** 2 * .6 + ((Z - (HC.z - .41 * hh)) * 2.2) 
 mix(skin_b, '#d98a80', .38 * gauss((X / 1.6) ** 2 + ((Z - (HC.z + (D.MZ - .085) * hh)) * 2.4) ** 2, .07 * hw) * frontM)          # Unterlippe
 mix(skin_b, '#e2a08a', .25 * gauss((X / 1.2) ** 2 + ((Z - (HC.z + (D.MZ + .07) * hh)) * 3) ** 2, .06 * hw) * frontM)            # Oberlippe
 mix(skin_b, '#d4a089', .3 * ss(D.CHIN + .02 * H, D.CHIN - .01 * H, Z) * ss(D.NECK0.z - .02 * H, D.NECK0.z + .01 * H, Z) * (Y < .02 * H))  # Halsschatten unterm Kinn
-mix(M('lid'), FC.get('lidschatten', '#e8ad98'), .6)
+mix(M('lid'), FC.get('lidschatten', '#d9a08e'), .7)
 if SPEC.get('gesicht', {}).get('sommersprossen'):
     fr = (vnoise(Pn, 2600) > .78) & frontM & (np.abs(Z - (HC.z - .2 * hh)) < .16 * hh) & (np.abs(X) > .12 * hw) & (np.abs(X) < .7 * hw)
     mix(skin_b, '#c07a52', .5 * fr)
@@ -238,10 +238,10 @@ if D.T['stoop']:   # ältere Haut: leichte Falten unter den Augen / Lachfalten (
 mix(skin_b & isArm, '#e9b89c', .2 * ss(L_ - .03 * H, L_ + .06 * H, armT))   # Hände wärmer
 # --- Haare: dunkler zum Ansatz, Strähnen, Glanzband, Spitzen (haar_hi) ---
 hair = M('haar'); dist = np.sqrt((X - HC.x) ** 2 + (Y - HC.y) ** 2 + (Z - HC.z) ** 2)
-hc = hexrgb(FC['haar']); dark = '#%02x%02x%02x' % tuple(int(c * 255 * .6) for c in hc); lite = '#%02x%02x%02x' % tuple(min(255, int(c * 255 * 1.25 + 18)) for c in hc)
+hc = hexrgb(FC['haar']); dark = '#%02x%02x%02x' % tuple(int(c * 255 * .72) for c in hc); lite = '#%02x%02x%02x' % tuple(min(255, int(c * 255 * 1.25 + 18)) for c in hc)
 mix(hair, dark, (.35 if hc.mean() < .6 else .08) * ss(hh * 1.18, hh * .98, dist))
-streak = vnoise(Pn * np.array([1, 1, .3]), 520); mix(hair, lite, .18 * ss(.62, .86, streak)); mix(hair, dark, .28 * ss(.38, .14, streak))
-hgt += hair * (streak - .5) * .35
+streak = vnoise(Pn * np.array([1, 1, .15]), 260); mix(hair, lite, .22 * ss(hh * .9, hh * 1.4, Z - HC.z + hh * .5) * (Y < HC.y)); mix(hair, lite, .1 * ss(.6, .85, streak)); mix(hair, dark, .12 * ss(.35, .15, streak))
+hgt += hair * (streak - .5) * .15
 if FC.get('haar_hi'): mix(hair, FC['haar_hi'], ss(hh * 1.32, hh * 1.55, dist) * .95)
 beard = M('bart')
 if beard.any():
@@ -361,11 +361,11 @@ Le = u < .5; ic = hexrgb(SPEC['augen'])
 hx = lambda c, f: '#%02x%02x%02x' % tuple(int(min(255, max(0, x * 255 * f))) for x in c)
 put(Le, '#fbfaf6'); put(Le, '#c6cede', .55 * ss(.1, .6, ey))
 IR = D.IRIS; iris = Le & (rr < IR); ang = np.arctan2(ey, ex); streaks = .5 + .5 * np.sin(ang * 23) * np.sin(ang * 7 + 1)
-put(iris, hx(ic, 1.0)); put(iris, hx(ic, .55), ss(-.1, .45, ey)); put(iris, hx(ic, 1.5), .6 * ss(-.05, -.4, ey) * ss(.1, .34, rr))
+put(iris, hx(ic, 1.0)); put(iris, hx(ic, .45), ss(-.05, .5, ey)); put(iris, hx(ic, 1.7), .5 * ss(-.1, -.5, ey)); put(iris, hx(ic, 1.5), .6 * ss(-.05, -.4, ey) * ss(.1, .34, rr))
 put(iris, hx(ic, .75), .3 * streaks * ss(.12, .36, rr)); put(iris, hx(ic, .3), ss(IR - .08, IR - .01, rr))
 put(Le & (rr < .17), '#0d1210'); put(Le & (rr < .19) & (rr >= .17), '#0d1210', .6)
-put(Le, '#ffffff', ((ex - .14) ** 2 + (ey - .16) ** 2 < .085 ** 2).astype(np.float32))
-put(Le, '#ffffff', .85 * ((ex + .13) ** 2 + (ey + .15) ** 2 < .04 ** 2))
+put(Le, '#ffffff', ((ex - .16) ** 2 + (ey - .2) ** 2 < .06 ** 2).astype(np.float32))
+put(Le, '#ffffff', .7 * ((ex + .14) ** 2 + (ey + .17) ** 2 < .028 ** 2))
 Rm = (u >= .5) & (v < .5); mxn = (u - .5) / .5; myn = v / .5
 inside = (np.abs(2 * mxn - 1) ** 2.4 + np.abs(2 * myn - 1) ** 2) < 1
 put(Rm, '#5a2028'); put(Rm, '#7c2f36', ss(.2, .7, 1 - np.abs(2 * mxn - 1)) * .5)
@@ -416,7 +416,7 @@ def arm_pose(s, down=.56, fwd=.08, elbow=.35, twist=.15, wrist=.12, curl=.42, th
     """Natürliche Armhaltung: A-Pose (42°) → hängend (down), vor/zurück (fwd > 0 = nach vorn), Ellbogen, Handgelenk, Finger"""
     k = 'L' if s > 0 else 'R'; A = Lr(D.ARM, s); ax = Vector((A.z, 0, -A.x)).normalized()
     return {'upperarm.' + k: qmul(rx(-fwd), ry(s * down), Quaternion(A, -s * roll)), 'forearm.' + k: qmul(Quaternion(ax, elbow), Quaternion(A, -s * twist)),
-            'hand.' + k: Quaternion(ax, wrist), 'finger1.' + k: ry(s * curl), 'finger2.' + k: ry(s * curl * 1.25), 'thumb.' + k: ry(s * thumb), 'shoulder.' + k: ry(-s * sh)}
+            'hand.' + k: Quaternion(ax, wrist), 'finger1.' + k: ry(s * curl), 'finger2.' + k: ry(s * curl * .8), 'thumb.' + k: ry(s * thumb), 'shoulder.' + k: ry(-s * sh)}
 ANK_H = D.ANK.z
 STIL = SPEC.get('stil', {})
 def gait(t, L, stance, hipz, bob, lift, lean, armsw, elbow, run=False):
@@ -446,14 +446,14 @@ def gait(t, L, stance, hipz, bob, lift, lean, armsw, elbow, run=False):
     return P
 def idle(t):
     ph = 2 * m_.pi * t; br = m_.sin(ph * 3)          # 3 Atemzüge je 4 s
-    P = {}; sway = .01 * kk * m_.sin(ph) + .008 * kk; P['hips:loc'] = Vector((sway, 0, -.006 * kk + .0012 * kk * br))
-    P['hips'] = qmul(ry(.035 + .015 * m_.sin(ph)), rz(.04 * m_.sin(ph * .5)))          # Gewicht auf einem Bein (Kontrapost)
-    P['spine'] = qmul(rx(.03 - .008 * br), ry(-.03)); P['chest'] = qmul(rx(.02 - .02 * br), ry(-.015 * m_.sin(ph)))
+    P = {}; sway = .006 * kk * m_.sin(ph) + .02 * kk; P['hips:loc'] = Vector((sway, 0, -.01 * kk + .0012 * kk * br))
+    P['hips'] = qmul(ry(.07 + .012 * m_.sin(ph)), rz(.06 + .03 * m_.sin(ph * .5)))          # Gewicht auf einem Bein (Kontrapost)
+    P['spine'] = qmul(rx(.03 - .008 * br), ry(-.06)); P['chest'] = qmul(rx(.02 - .02 * br), ry(-.03 - .015 * m_.sin(ph)), rz(-.05))
     look = .14 * ss(.25, .45, (t % 1)) * (1 - ss(.6, .8, (t % 1))) - .08 * ss(.82, .95, t % 1) * (1 - ss(.97, 1, t % 1))
     P['neck'] = qmul(rz(look * .5), rx(-.03)); P['head'] = qmul(rz(look * .6), rx(.0 + .015 * m_.sin(ph * 2)), ry(-.05))
     for s in (-1, 1):
         lean = Vector((sway, 0, -.006 * kk))
-        foot = Vector((Lr(D.ANK, s).x + s * .012 * kk, Lr(D.ANK, s).y + (-.03 * kk if s < 0 else .015 * kk), ANK_H))
+        foot = Vector((Lr(D.ANK, s).x + s * (.022 if s < 0 else .01) * kk, Lr(D.ANK, s).y + (-.05 * kk if s < 0 else .02 * kk), ANK_H))
         P.update(leg_ik(s, lean + Vector((0, 0, (.004 * kk if s > 0 else -.002 * kk))), foot, .0))
     st = STIL.get('idle', 'locker')
     if st == 'haende_hinten':
@@ -461,7 +461,7 @@ def idle(t):
     elif st == 'huefte':
         for s in (-1, 1): P.update(arm_pose(s, down=.2, fwd=-.12, elbow=1.55, twist=.4, wrist=-.35, curl=.95, thumb=.4, sh=.0))
     else:
-        for s in (-1, 1): P.update(arm_pose(s, down=.62 + .012 * br, fwd=.06 + .02 * (s > 0), elbow=.3 + .05 * (s < 0) + .02 * br, twist=-.35, wrist=.08, curl=.3, thumb=.15, sh=.03 * br))
+        for s in (-1, 1): P.update(arm_pose(s, down=.5 + .012 * br + .04 * (s > 0), fwd=.08 + .03 * (s > 0), elbow=.42 + .1 * (s < 0) + .02 * br, twist=-.3, wrist=.12, curl=.2, thumb=.12, sh=.03 * br))
     P['hair_vorn'] = rx(.03 * m_.sin(ph * 2)); P['hair_hinten'] = rx(.02 * m_.sin(ph * 2 + 1))
     return P
 def env_(t, a, b, c, d): return ss(a, b, t) * (1 - ss(c, d, t))

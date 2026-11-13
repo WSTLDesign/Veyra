@@ -394,14 +394,14 @@ def male(objs, paint, fur_scale=1.0, nstr=.4, ao_k=.34):
         fur = st * .55 + fine * .2 + cl * .5
         col *= (1 + (fur[..., None] - .62) * .2 * furm[..., None]); hgt += furm * ((st - .5) * .9 + (cl - .5) * 1.3 + (fine - .5) * .4)
         P.fur = fur
-    for kname, freq, amp, elong in (('schuppe', 70, 1.0, 1.0), ('feder', 34, .9, 2.2), ('horn', 30, .4, 1.0), ('kristall', 18, .5, 1.0)):
+    for kname, freq, amp, elong in (('schuppe', 70, 1.0, 1.0), ('feder', 24, .5, 2.2), ('horn', 30, .4, 1.0), ('kristall', 18, .5, 1.0)):
         m = M(*kinds.get(kname, []))
         if not m.any(): continue
         Q = Pm * (freq * f)
         if elong != 1.0 and 'Dm' in P.__dict__: along = np.sum(Pm * P.Dm, -1, keepdims=True); Q = (Pm - P.Dm * along) * (freq * f) + P.Dm * along * (freq * f / elong)
         F1, E, Hh = cells(Q)
         if kname == 'feder':
-            sc = ss(.0, .35, E); col *= (1 - .12 * m * (1 - sc))[..., None]; hgt += m * (sc - .5) * amp
+            sc = ss(.0, .35, E); col *= (1 - .05 * m * (1 - sc))[..., None]; hgt += m * (sc - .5) * amp
         elif kname == 'kristall':
             fac = (Hh - .5); col *= (1 + .25 * m * fac)[..., None]; hgt += m * (ss(0, .12, E) - .5) * amp
         else:
@@ -810,7 +810,7 @@ def clips_vogel(gang=None):
     H = C.H; g = dict(wL=.12 * H, rL=.22 * H, wF=18, rF=12); g.update(gang or {})
     def wings(P, fold, flap=0.0, tw=0.0):
         for s in (-1, 1):
-            k = 'L' if s > 0 else 'R'; P['wing1.' + k] = qmul(ry(s * (-fold * .9 + flap)), rz(s * tw)); P['wing2.' + k] = ry(s * (-fold * .7 + flap * .4)); P['wing3.' + k] = ry(s * (-fold * .5 + flap * .3))
+            k = 'L' if s > 0 else 'R'; P['wing1.' + k] = qmul(ry(s * (fold * .9 - flap)), rz(s * tw)); P['wing2.' + k] = ry(s * (fold * .7 - flap * .4)); P['wing3.' + k] = ry(s * (fold * .5 - flap * .3))
         return P
     def hop(t, hh, L, flap=0.0):
         ph = 2 * math.pi * t; up = max(0, math.sin(ph)); P = {'hips:loc': V(0, 0, hh * up - .01 * H * (1 - up))}

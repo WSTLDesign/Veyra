@@ -54,6 +54,13 @@ if (has('dev')) {   // schneller Arbeitsbogen: Noa vorn/schräg/Gesicht + Idle-P
     out.push({ img: STU.shot([h * 3.1, h * .6, 0], [0, h * .52, 0], 26, 400, 900), label: 'seite' }); out.push({ img: STU.shot([.1 * h, h * .93, h * .5], [0, h * .9, 0], 26, 400, 900), label: 'Gesicht' }); return out; }, process.argv[3] || 'fig_noa');
   await sheet(P, d, 'dev.webp', { cols: 4, cw: 400, ch: 900 });
 }
+if (has('r2')) {   // Runde 2: Noa Gesicht vorher (r1) / nachher, frontal + Dreiviertel
+  await P.evaluate(async () => { FIG_MODELS.fig_noa_r1 = Object.assign({}, FIG_MODELS.fig_noa); PILOT.fix.fig_noa_r1 = Object.assign({}, PILOT.fix.fig_noa); PILOT.src.fig_noa_r1 = 'models/figuren/fig_noa_r1.glb'; await pilotLoad('fig_noa_r1'); });
+  const r = await P.evaluate(() => { const out = []; for (const id of ['fig_noa_r1', 'fig_noa']) { STU.clear(); const o = STU.fig(id); STU.add(o, 0, 0, 0); STU.tick(o, 1.3); o.userData.blink.next = 1e12; const U = o.userData; U.eye.next = 1e12; U.eye.tx = U.eye.ty = 0; pilotExpr(o, 'laecheln'); STU.tick(o, .6);
+      out.push({ img: STU.shot([0, 1.17, .62], [0, 1.15, 0], 26, 400, 450), label: id === 'fig_noa' ? 'nachher' : 'vorher' }); out.push({ img: STU.shot([.42, 1.19, .52], [0, 1.15, 0], 26, 400, 450), label: '' });
+      out.push({ img: STU.shot([0, .78, 4.0], [0, .68, 0], 26, 400, 450), label: '' }); out.push({ img: STU.shot([1.8, .9, 3.2], [0, .68, 0], 26, 400, 450), label: '' }); } return out; });
+  await sheet(P, r, 'r2_noa_gesicht_vorher_nachher.webp', { cols: 4, cw: 400, ch: 450 });
+}
 if (has('noa')) {
   const pair = async (view) => P.evaluate(([view, FIGC]) => { const imgs = []; for (const k of ['pilot', 'neu']) { STU.clear(); const o = k === 'pilot' ? pilotMake('noa', 1.32) : STU.fig('fig_noa'); STU.add(o, 0, 0, 0); STU.tick(o, 1.3);
     const V = { vorn: [[0, .8, 4.3], [0, .68, 0], 26], schraeg: [[2.5, 1.0, 3.5], [0, .68, 0], 26], gesicht: [[.16, 1.2, .78], [0, 1.16, 0], 26] }[view]; imgs.push(STU.shot(V[0], V[1], V[2], 800, 900)); } return imgs; }, [view, FIG_CODE('held')]);
@@ -74,7 +81,7 @@ if (has('noa')) {
 if (has('npc')) {
   const line = await P.evaluate((ids) => { STU.clear(); const n = ids.length; const out = []; ids.forEach((id, i) => { const o = STU.fig(id); const x = (i - (n - 1) / 2) * .62; STU.add(o, x, -Math.abs(i - (n - 1) / 2) * .06, -x * .12); STU.tick(o, .7 + i * .37); });
     STU.sun.shadow.camera.updateProjectionMatrix(); return STU.shot([0, 1.25, 8.2], [0, .82, 0], 28, 1600, 900); }, ['fig_noa', ...NPCS_]);
-  await sheet(P, [{ img: line, label: 'Runde 2: Noa + alle neuen NPCs (Figurenbaukasten, gleiche Kamera)' }], 'npc_aufstellung.webp', { cols: 1, cw: 1600, ch: 900 });
+  await sheet(P, [{ img: line, label: 'Runde 2: Noa + alle neuen NPCs (Figurenbaukasten, gleiche Kamera)' }], (has('r2') ? 'r2_aufstellung.webp' : 'npc_aufstellung.webp'), { cols: 1, cw: 1600, ch: 900 });
   const labs = await P.evaluate((ids) => ids.map(id => id), ['fig_noa', ...NPCS_]);
   // Nahbögen: je Figur Ganzkörper + Gesicht
   const close = await P.evaluate((ids) => { const out = []; for (const id of ids) { STU.clear(); const o = STU.fig(id); STU.add(o, 0, 0, -.3); STU.tick(o, 1.1); const h = o.userData.char.H;
@@ -102,12 +109,12 @@ if (has('welt')) {
     { x: x - 2, y: y - 4, c: '#c9a77c', t: 'talk', fig: 'mama', d: 'down', txt: ['Hallo!'] }, { x: x + 2, y: y - 4, c: '#7a9a5a', t: 'talk', d: 'down', txt: ['Hallo!'] }, { x: x, y: y - 5, c: '#6aa0e0', t: 'talk', d: 'down', txt: ['Hallo!'] });
     VILL.list = []; G.time = 10.5 * 60; mode = 'world'; R3.mapId = null; loadMap('morgenau', x, y); P.dir = 'up'; P.ang = 0; setView('third', true); }, pos);
   p.setDefaultTimeout(180000); await p.waitForTimeout(6000); await p.evaluate(() => { document.querySelectorAll('.toast,#toast').forEach(e => e.remove()); });
-  const b = await p.screenshot({ timeout: 180000 }); await toWebp(p, 'data:image/png;base64,' + b.toString('base64'), 'welt_morgenau.webp');
+  const b = await p.screenshot({ timeout: 180000 }); await toWebp(p, 'data:image/png;base64,' + b.toString('base64'), (has('r2') ? 'r2_morgenau.webp' : 'welt_morgenau.webp'));
   const r = await p.evaluate(() => { const S = R3.scene, r = R3.r; r.info.autoReset = false; r.info.reset(); r.render(S, R3.activeCam || R3.cam); const info = { calls: r.info.render.calls, tris: r.info.render.triangles }; r.info.autoReset = true;
     let fig = 0; S.traverse(o => { if (o.userData && o.userData.pilot) fig++; }); info.modelle = fig; info.held = !!R3.player.userData.pilot;
     const a = R3.player.getWorldPosition(new THREE.Vector3()); const cam = new THREE.PerspectiveCamera(32, innerWidth / innerHeight, .05, 300); cam.position.set(a.x + 1.4, a.y + 1.5, a.z + 1.2); cam.lookAt(a.x, a.y + .8, a.z - 2.4); cam.updateMatrixWorld();
     if (typeof toonProSync === 'function') toonProSync(r); r.render(S, cam); return { info, img: r.domElement.toDataURL('image/png') }; });
-  await toWebp(p, r.img, 'welt_morgenau_nah.webp'); res.welt = r.info; res.fehlerWelt = p.errs; console.log('Welt', JSON.stringify(r.info));
+  await toWebp(p, r.img, (has('r2') ? 'r2_morgenau_nah.webp' : 'welt_morgenau_nah.webp')); res.welt = r.info; res.fehlerWelt = p.errs; console.log('Welt', JSON.stringify(r.info));
   await p.ctx.close();
 }
 writeFileSync(OUT + 'vorschau_' + what.replace(/,/g, '_') + '.json', JSON.stringify(res, null, 1)); console.log(JSON.stringify(res));

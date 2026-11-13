@@ -12,7 +12,8 @@ for id in $L; do
   until mkdir "$LOCK" 2>/dev/null; do sleep 5; done
   echo "== $id =="; "$VENV/bin/python" tools/modelle/figuren/figuren.py $id tools/modelle/build/figuren/$id.glb 2>&1 | grep -E "^\[|Error|Traceback|line [0-9]" || true
   rmdir "$LOCK"
-  "$GTD/node_modules/.bin/gltf-transform" webp tools/modelle/build/figuren/$id.glb tools/modelle/build/figuren/${id}_w.glb --quality 80 >/dev/null
+  "$GTD/node_modules/.bin/gltf-transform" resize tools/modelle/build/figuren/$id.glb tools/modelle/build/figuren/${id}_r.glb --width 512 --height 512 --pattern "*Normal*" >/dev/null
+  "$GTD/node_modules/.bin/gltf-transform" webp tools/modelle/build/figuren/${id}_r.glb tools/modelle/build/figuren/${id}_w.glb --quality 80 >/dev/null
   "$GTD/node_modules/.bin/gltf-transform" draco tools/modelle/build/figuren/${id}_w.glb public/models/figuren/fig_$id.glb --method edgebreaker >/dev/null
   ls -l public/models/figuren/fig_$id.glb | awk '{print $5, $9}'
 done

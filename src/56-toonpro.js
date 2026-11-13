@@ -28,7 +28,7 @@ void main(){
 const TP_FS=`
 uniform sampler2D map;uniform sampler2D normalMap;uniform float uNrm;uniform float uEye;uniform float uAlphaTest;uniform float uSrgb;uniform float uVtm;
 uniform vec3 uTint;uniform vec3 uShade;uniform float uShadowLv;uniform float uBright;uniform float uWrap;uniform float uT1;uniform float uT2;uniform float uSoft;
-uniform vec3 uSSS;uniform vec3 uRim;uniform float uRimStr;uniform float uGlow;uniform float uFlash;uniform float uRef;
+uniform vec3 uSSS;uniform vec3 uRim;uniform float uRimStr;uniform float uGlow;uniform float uFlash;uniform float uRef;uniform float uFig;
 varying vec2 vUv;varying vec3 vN;varying vec3 vV;varying vec4 vMask;
 #include <common>
 #include <fog_pars_fragment>
@@ -59,8 +59,11 @@ void main(){
  vec3 shadowC=alb*mix(vec3(1.),alb/max(max(alb.r,max(alb.g,alb.b)),1e-3),.35)*shTint*uShadowLv;
  vec3 col=mix(shadowC,alb*tint,ramp)*lvl;
  col+=uSSS*alb*sss*vMask.g*.55*lvl;
- float fr=pow(1.-max(dot(N,V),0.),3.2);col+=uRim*fr*uRimStr*(.35+.65*smoothstep(-.3,.5,dot(N,L0)))*lvl*(1.-uEye);
- col+=tint*spec*vMask.b*.32*lvl;
+ float fr=pow(1.-max(dot(N,V),0.),3.2);col+=uRim*fr*uRimStr*(.35+.65*smoothstep(-.3,.5,dot(N,L0)))*lvl*(1.-uEye)*(1.-uFig*.65*vMask.g);
+ // Figuren (uFig=1): Haar (Glanz-Maske 0,25–0,45) mit weichem anisotropem Glanzband statt Punktglanz
+ float hairM=uFig*step(.25,vMask.b)*step(vMask.b,.45)*(1.-uEye);
+ col+=tint*spec*vMask.b*.32*lvl*(1.-hairM);
+ if(hairM>.5){float hb=N.y*.78+V.y*.12+.04*sin(vUv.x*900.+vUv.y*700.);float band=smoothstep(.36,.44,hb)*(1.-smoothstep(.6,.7,hb));col+=alb*tint*band*.55*lvl*(.45+.55*ramp);}
  if(uEye>.5){col=alb*mix(.8,1.,ramp)*tint*lvl*1.05;vec3 R=reflect(-V,N);
   float g1=pow(max(dot(R,normalize(vec3(-.35,.55,.76))),0.),90.),g2=pow(max(dot(R,normalize(vec3(.4,-.3,.87))),0.),260.);col+=vec3(1.)*(smoothstep(.45,.6,g1)*.9+smoothstep(.4,.55,g2)*.5)*vMask.b;}
  col+=alb*vMask.a*uGlow+vec3(uFlash);
@@ -105,7 +108,7 @@ function toonProMat(map,o){o=o||{};const U=THREE.UniformsUtils.merge([THREE.Unif
   map:{value:null},normalMap:{value:null},uNrm:{value:0},uEye:{value:o.eye?1:0},uAlphaTest:{value:o.alphaTest||0},uSrgb:{value:1},uVtm:{value:0},uHasMask:{value:1},
   uTint:{value:new THREE.Color(1,1,1)},uShade:{value:new THREE.Color(o.shade||'#b9a6d6')},uShadowLv:{value:o.shadowLv??.62},uBright:{value:o.bright??1.08},
   uWrap:{value:.4},uT1:{value:.4},uT2:{value:.72},uSoft:{value:o.soft??.1},uSSS:{value:new THREE.Color(o.sss||'#ff6a48')},uRim:{value:new THREE.Color(o.rim||'#cfe6ff')},
-  uRimStr:{value:o.rimStr??.32},uGlow:{value:o.glow??1.2},uFlash:{value:0},uRef:{value:o.ref??1.5}}]);
+  uRimStr:{value:o.rimStr??.32},uGlow:{value:o.glow??1.2},uFlash:{value:0},uRef:{value:o.ref??1.5},uFig:{value:o.fig?1:0}}]);
  U.map.value=map;if(o.normalMap){U.normalMap.value=o.normalMap;U.uNrm.value=o.nrm??1;}
  const m=new THREE.ShaderMaterial({uniforms:U,vertexShader:TP_VS,fragmentShader:TP_FS,lights:true,fog:true,skinning:!!o.skinning,morphTargets:!!o.morph});
  m.extensions.derivatives=true;if(o.decal){m.polygonOffset=true;m.polygonOffsetFactor=-2;m.polygonOffsetUnits=-2;}m.userData.toonPro=1;TOONPRO.mats.add(m);return m;}

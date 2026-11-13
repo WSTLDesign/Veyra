@@ -11,7 +11,7 @@
 // API: STAB · stabInfo() · stabStop(why) · stabLoad(t) (Test: künstliche Last ms je Bild) · VMODEL_QUEUE
 const STAB={cls:'?',gpu:'',base:'mid',ceil:'high',lim:'high',smax:1,dpr:9,cap:60,ws:false,
  win:{n:0,sum:0,t0:0},prev:0,lr:0,lt:-1,grace:8,spikes:[],lastBad:-1e9,lastUp:0,stableT:0,emerg:0,downs:0,ups:0,
- off:false,blur:false,parked:false,stopped:0,frames:0,fps:0,fpsN:0,fpsT:0,gls:[],load:0,log:[]};
+ off:false,blur:false,parked:false,work:0,stopped:0,frames:0,fps:0,fpsN:0,fpsT:0,gls:[],load:0,log:[]};
 const STAB_RK={low:0,mid:1,high:2},STAB_TN=['low','mid','high'];
 function stabLog(s){STAB.log.push(Math.round(performance.now())+' '+s);if(STAB.log.length>40)STAB.log.shift();}
 // ---------- 1) GPU-Klasse ----------
@@ -58,7 +58,7 @@ function stabDown(why){const now=performance.now();STAB.lastBad=now;STAB.downs++
  STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}
 function stabEmergency(why){const now=performance.now();STAB.lastBad=now;STAB.emerg++;STAB.lim='low';perfSet('low');STAB.smax=.5;stabScale(.5);
  try{GFX.post=false;}catch(e){}try{if(R3&&R3.sun)R3.sun.castShadow=false;}catch(e){}
- if(!PERF.touch)STAB.cap=30;stabLog('NOTBREMSE ('+why+')');
+ if(!PERF.touch)STAB.cap=30;if(STAB.emerg===1||STAB.emerg%20===0)stabLog('NOTBREMSE '+STAB.emerg+' ('+why+')');
  if(STAB.emerg===1)try{toast('Grafik auf „niedrig“ gestellt, damit es flüssig bleibt');}catch(e){}
  STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;STAB.spikes.length=0;}
 function stabUp(){const now=performance.now();STAB.lastUp=now;STAB.ups++;
@@ -90,10 +90,11 @@ function stabHold(){return STAB.off;}
 if(typeof loop==='function'&&!loop._stab){const _lS=loop;loop=function(t){if(STAB.stopped||window.__quit)return;
   if(t===STAB.lt)return;STAB.lt=t;// zweite Kette im selben Bild verwerfen
   if(stabHold()){STAB.parked=true;STAB.prev=0;return;}
-  const c=stabCap(),iv=STAB.blur?200:c?1000/c:0;
+  // Hauptthread-Budget: kostet ein Bild > 30 ms Rechenzeit, höchstens die Hälfte der Zeit zeichnen (Leitstand/Eingaben behalten Luft)
+  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>30?Math.min(2*STAB.work,2000):0);
   if(iv&&STAB.lr&&t-STAB.lr<iv-3){requestAnimationFrame(loop);return;}
-  const lf=lastFrame;_lS(t);
-  if(lastFrame!==lf){STAB.lr=t;if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}stabMeasure(t);}};loop._stab=1;}
+  const lf=lastFrame,a=performance.now();_lS(t);
+  if(lastFrame!==lf){STAB.lr=t;const w=performance.now()-a;if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}STAB.work+=(w-STAB.work)*(w>STAB.work?.5:.2);stabMeasure(t);}};loop._stab=1;}
 function stabResume(){if(STAB.stopped||window.__quit)return;STAB.prev=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;
  if(STAB.parked&&!stabHold()){STAB.parked=false;try{LOOP.paused=false;}catch(e){}lastT=0;requestAnimationFrame(loop);}}
 // Sichtbarkeit: außerhalb des Bildes (Iframe weggescrollt/ausgeblendet) → Pause; ohne Fokus → 5 Bilder/s
@@ -161,5 +162,5 @@ setInterval(()=>{if(STAB.stopped)return;const b=document.getElementById('stgBadg
  if(!s){s=document.createElement('span');s.className='stab';s.style.cssText='font-weight:600;opacity:.85;margin-left:4px';const f=b.querySelector('.f');if(f){f.style.display='none';f.after(s);}else b.appendChild(s);}
  const fp=STAB.parked||STAB.off?'Pause':(STAB.fps||0)+' fps';s.textContent='– '+fp+' · '+(STAB_TL[PERF.tier]||PERF.tier)+(STAB.emerg?' (Notbremse)':'');},1000);
 function stabInfo(){return{cls:STAB.cls,gpu:STAB.gpu,base:STAB.base,ceil:STAB.ceil,lim:STAB.lim,tier:PERF.tier,scale:PERF.scale,smax:STAB.smax,dpr:dprCap(),cap:stabCap(),fps:STAB.fps,avg:STAB.avg,
- frames:STAB.frames,emerg:STAB.emerg,downs:STAB.downs,ups:STAB.ups,off:STAB.off,blur:STAB.blur,parked:STAB.parked,stopped:STAB.stopped,ws:STAB.ws,gls:STAB.gls.length,
+ frames:STAB.frames,work:+STAB.work.toFixed(1),emerg:STAB.emerg,downs:STAB.downs,ups:STAB.ups,off:STAB.off,blur:STAB.blur,parked:STAB.parked,stopped:STAB.stopped,ws:STAB.ws,gls:STAB.gls.length,
  q:{wait:VMODEL_QUEUE.q.length,done:VMODEL_QUEUE.done,fail:VMODEL_QUEUE.fail,max:VMODEL_QUEUE.max,busy:VMODEL_QUEUE.busy},log:STAB.log.slice(-12)};}

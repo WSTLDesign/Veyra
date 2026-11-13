@@ -41,7 +41,7 @@ body #mmW{top:var(--gy-t);right:var(--gx-r);width:var(--mm);height:var(--mm);opa
  box-shadow:0 0 0 3px rgba(255,255,255,.88),0 0 0 4px rgba(27,35,51,.12),var(--v-sh-2);transition:opacity 500ms var(--v-ease)}
 body #mmW::after{content:'N';position:absolute;left:50%;top:-2px;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--v-ink);color:#fff;font:700 9px/16px var(--font-ui);text-align:center;box-shadow:0 0 0 2px #fff}
 body.hud-idle #mmW{opacity:.8}
-:root{--mm:calc(var(--u) * 6.6)}
+:root{--mm:calc(var(--u) * 6.6);--u:clamp(12px,calc(1vh + .6vw),17px)}
 /* Team-Kurzanzeige */
 #vTeam{position:absolute;z-index:6;left:var(--gx-l);top:calc(var(--gy-t) + var(--u) * 3.4 + 8px);display:flex;gap:6px;padding:5px 8px;border-radius:999px;background:var(--v-glass-lo);
  -webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-1),var(--v-hl);pointer-events:auto;cursor:pointer;transition:opacity 500ms var(--v-ease);animation:vIn 300ms var(--v-ease)}
@@ -68,7 +68,7 @@ body #mapCard{top:calc(var(--gy-t) + var(--u) * 1.4);padding:calc(var(--u) * .7)
 body #mapCard::before{display:none}
 body #mapCard b{order:2;font:600 calc(var(--u) * 2)/1.1 var(--font-display);color:var(--v-ink);letter-spacing:.01em;text-shadow:none}
 body #mapCard small{order:1;display:flex;align-items:center;gap:10px;margin:0 0 3px;font:800 calc(var(--u) * .64)/1.2 var(--font-ui);letter-spacing:.26em;text-transform:uppercase;color:var(--ab,var(--lead));filter:brightness(.72) saturate(1.2)}
-body #mapCard small::before,body #mapCard small::after{content:'';width:calc(var(--u) * 2);height:1.5px;border-radius:2px;background:currentColor;opacity:.55}
+body #mapCard small::before,body #mapCard small::after{content:'';display:inline-block!important;width:calc(var(--u) * 2)!important;height:1.5px!important;margin:0!important;border-radius:2px;background:currentColor!important;opacity:.55;transition:none!important}
 body #mapCard::after{left:50%;right:auto;width:9px;height:9px;bottom:-5px;margin-left:-4.5px;border-radius:2px;transform:rotate(45deg);background:var(--ab,var(--lead));box-shadow:0 0 0 3px #fff}
 
 /* ---------- Dialog: breites Glasband, Sprecher-Schild, ruhiger Weiter-Hinweis ---------- */
@@ -231,7 +231,8 @@ body #title{background:#1b2440;overflow:hidden;justify-content:center;gap:0}
 @keyframes vSky{to{transform:scale(1.06) translateX(-1.5%)}}
 @keyframes vHz{to{background-position:-2048px 100%}}
 @keyframes vMote{0%{opacity:0;transform:translateY(0)}25%,70%{opacity:.85}100%{opacity:0;transform:translateY(-60px) translateX(14px)}}
-body #title>*:not(.vtBg){position:relative;z-index:1}
+body #title>*:not(.vtBg):not(.foot):not(.vtVer){position:relative;z-index:1}
+body #title>.foot,body #title>.vtVer{position:absolute;z-index:1;margin:0}
 body #title h1{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;animation:none}
 body #title .tsub{display:none}
 body #title::before{display:none}
@@ -244,7 +245,7 @@ body #title .tbtn button{position:relative;display:flex;align-items:center;justi
 body #title .tbtn button.pri,body #title .tbtn button:first-child:not([hidden]){background:var(--v-ink);color:#fff;box-shadow:0 14px 34px -14px rgba(20,24,48,.8),inset 0 1px 0 rgba(255,255,255,.18)}
 body #title .tbtn button.pri::after,body #title .tbtn button:first-child:not([hidden])::after{content:'';width:8px;height:8px;border-right:2.4px solid currentColor;border-top:2.4px solid currentColor;transform:rotate(45deg);margin-left:4px;opacity:.8}
 body #title .tbtn button:active{transform:scale(.96)}
-body #title .foot{position:absolute;bottom:max(14px,var(--sa-b));left:0;right:0;text-align:center;font:700 12px/1.4 var(--font-ui);letter-spacing:.08em;color:rgba(60,44,60,.62)}
+body #title .foot{bottom:max(14px,var(--sa-b));left:0;right:0;text-align:center;font:700 12px/1.4 var(--font-ui);letter-spacing:.08em;color:rgba(60,44,60,.62)}
 body #title .vtVer{position:absolute;right:max(16px,var(--sa-r));bottom:max(14px,var(--sa-b));font:700 11px/1 var(--font-ui);color:rgba(60,44,60,.5);letter-spacing:.06em}
 @media (orientation:landscape) and (max-height:620px){
  #title .vtLogo{width:min(400px,50vw)}
@@ -258,3 +259,5 @@ body #title .vtVer{position:absolute;right:max(16px,var(--sa-r));bottom:max(14px
  body #battle .ibox .hp i,body #battle .ibox .hp .gh{transition-duration:.01s!important}
 }
 body.red #title .vtBg *,body.red #title .vtLogo,body.red #title .tbtn,body.red #vTeam,body.red #dlg,body.red #dlgMore,body.red #battle:not(.b2d) #bMenu>*{animation:none!important}
+
+.in-root .in-menu small{font-size:10px!important;letter-spacing:0}

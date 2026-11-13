@@ -240,8 +240,8 @@ mix(skin_b & isArm, '#e9b89c', .2 * ss(L_ - .03 * H, L_ + .06 * H, armT))   # H�
 hair = M('haar'); dist = np.sqrt((X - HC.x) ** 2 + (Y - HC.y) ** 2 + (Z - HC.z) ** 2)
 hc = hexrgb(FC['haar']); dark = '#%02x%02x%02x' % tuple(int(c * 255 * .72) for c in hc); lite = '#%02x%02x%02x' % tuple(min(255, int(c * 255 * 1.25 + 18)) for c in hc)
 mix(hair, dark, (.35 if hc.mean() < .6 else .08) * ss(hh * 1.18, hh * .98, dist))
-streak = vnoise(Pn * np.array([1, 1, .15]), 260); mix(hair, lite, .22 * ss(hh * .9, hh * 1.4, Z - HC.z + hh * .5) * (Y < HC.y)); mix(hair, lite, .1 * ss(.6, .85, streak)); mix(hair, dark, .12 * ss(.35, .15, streak))
-hgt += hair * (streak - .5) * .15
+streak = vnoise(Pn * np.array([1, 1, .15]), 260); mix(hair, lite, .3 * ss(HC.z - .2 * hh, HC.z + 1.0 * hh, Z)); mix(hair, dark, .3 * ss(HC.z - .1 * hh, HC.z - .9 * hh, Z))
+hgt += hair * (streak - .5) * .03
 if FC.get('haar_hi'): mix(hair, FC['haar_hi'], ss(hh * 1.32, hh * 1.55, dist) * .95)
 beard = M('bart')
 if beard.any():
@@ -343,7 +343,7 @@ mix(M('schirm'), '#e8ffff', .5 * ss(.3, .9, vnoise(Pn, 900)))
 mix(M('leder'), shade_of('leder', 1.2), .25 * ss(.5, .9, n2)); hgt += M('leder') * (n3 - .5) * .4
 # AO einrechnen (weich), Gesicht schwächer
 aoN = np.clip(ao, 0, 1); faceM = M('haut_kopf', 'lid', 'nase') & frontM
-col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), .74 + .26 * aoN, .6 + .4 * aoN))[..., None]
+col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), .88 + .12 * aoN, .6 + .4 * aoN))[..., None]
 col = np.clip(col, 0, 1); alb = dilate(col, COV, 6); alb = np.where(COV[..., None], col, alb); log('Malen fertig')
 IMG_ALB = to_image(alb, FID + '_Farbe'); IMG_ALB.colorspace_settings.name = 'sRGB'
 hg = dilate(np.repeat(hgt[..., None], 3, 2), COV, 4)[..., 0]
@@ -362,10 +362,10 @@ hx = lambda c, f: '#%02x%02x%02x' % tuple(int(min(255, max(0, x * 255 * f))) for
 put(Le, '#fbfaf6'); put(Le, '#c6cede', .55 * ss(.1, .6, ey))
 IR = D.IRIS; iris = Le & (rr < IR); ang = np.arctan2(ey, ex); streaks = .5 + .5 * np.sin(ang * 23) * np.sin(ang * 7 + 1)
 put(iris, hx(ic, 1.0)); put(iris, hx(ic, .45), ss(-.05, .5, ey)); put(iris, hx(ic, 1.7), .5 * ss(-.1, -.5, ey)); put(iris, hx(ic, 1.5), .6 * ss(-.05, -.4, ey) * ss(.1, .34, rr))
-put(iris, hx(ic, .75), .3 * streaks * ss(.12, .36, rr)); put(iris, hx(ic, .3), ss(IR - .08, IR - .01, rr))
+put(iris, hx(ic, .75), .2 * streaks * ss(.12, .36, rr)); put(iris, hx(ic, 2.0), .65 * ss(.0, -.35, ey) * ss(IR * .55, IR * .85, rr)); put(iris, hx(ic, .3), ss(IR - .08, IR - .01, rr))
 put(Le & (rr < .17), '#0d1210'); put(Le & (rr < .19) & (rr >= .17), '#0d1210', .6)
-put(Le, '#ffffff', ((ex - .16) ** 2 + (ey - .2) ** 2 < .06 ** 2).astype(np.float32))
-put(Le, '#ffffff', .7 * ((ex + .14) ** 2 + (ey + .17) ** 2 < .028 ** 2))
+put(Le, '#ffffff', ((ex - .17) ** 2 + (ey - .2) ** 2 < .1 ** 2).astype(np.float32))
+put(Le, '#ffffff', .85 * ((ex + .16) ** 2 + (ey + .2) ** 2 < .04 ** 2))
 Rm = (u >= .5) & (v < .5); mxn = (u - .5) / .5; myn = v / .5
 inside = (np.abs(2 * mxn - 1) ** 2.4 + np.abs(2 * myn - 1) ** 2) < 1
 put(Rm, '#5a2028'); put(Rm, '#7c2f36', ss(.2, .7, 1 - np.abs(2 * mxn - 1)) * .5)
@@ -416,7 +416,7 @@ def arm_pose(s, down=.56, fwd=.08, elbow=.35, twist=.15, wrist=.12, curl=.42, th
     """Natürliche Armhaltung: A-Pose (42°) → hängend (down), vor/zurück (fwd > 0 = nach vorn), Ellbogen, Handgelenk, Finger"""
     k = 'L' if s > 0 else 'R'; A = Lr(D.ARM, s); ax = Vector((A.z, 0, -A.x)).normalized()
     return {'upperarm.' + k: qmul(rx(-fwd), ry(s * down), Quaternion(A, -s * roll)), 'forearm.' + k: qmul(Quaternion(ax, elbow), Quaternion(A, -s * twist)),
-            'hand.' + k: Quaternion(ax, wrist), 'finger1.' + k: ry(s * curl), 'finger2.' + k: ry(s * curl * .8), 'thumb.' + k: ry(s * thumb), 'shoulder.' + k: ry(-s * sh)}
+            'hand.' + k: Quaternion(ax, wrist), 'finger1.' + k: ry(s * curl), 'finger2.' + k: ry(s * curl * .75), 'thumb.' + k: ry(s * thumb), 'shoulder.' + k: ry(-s * sh)}
 ANK_H = D.ANK.z
 STIL = SPEC.get('stil', {})
 def gait(t, L, stance, hipz, bob, lift, lean, armsw, elbow, run=False):
@@ -461,7 +461,7 @@ def idle(t):
     elif st == 'huefte':
         for s in (-1, 1): P.update(arm_pose(s, down=.2, fwd=-.12, elbow=1.55, twist=.4, wrist=-.35, curl=.95, thumb=.4, sh=.0))
     else:
-        for s in (-1, 1): P.update(arm_pose(s, down=.5 + .012 * br + .04 * (s > 0), fwd=.08 + .03 * (s > 0), elbow=.42 + .1 * (s < 0) + .02 * br, twist=.15, wrist=.1, curl=.14, thumb=.1, sh=.03 * br))
+        for s in (-1, 1): P.update(arm_pose(s, down=.5 + .012 * br + .04 * (s > 0), fwd=.08 + .03 * (s > 0), elbow=.42 + .1 * (s < 0) + .02 * br, twist=.15, wrist=.1, curl=.3, thumb=.35, sh=.03 * br))
     P['hair_vorn'] = rx(.03 * m_.sin(ph * 2)); P['hair_hinten'] = rx(.02 * m_.sin(ph * 2 + 1))
     return P
 def env_(t, a, b, c, d): return ss(a, b, t) * (1 - ss(c, d, t))

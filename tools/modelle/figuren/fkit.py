@@ -109,7 +109,7 @@ def build_body():
         pa0 = node(tuple(W + A * hl * .2), (T['wr'] * H * 1.05, T['wr'] * H * .62)); pa = node(tuple(W + A * hl * .42), (fw * 1.0, T['wr'] * H * .6)); E += [(wr, pa0), (pa0, pa)]
         tips = []
         for f in range(4):
-            off = (f - 1.45) * fw * .42; L = hl * (.55 if f in (1, 2) else .5 if f == 0 else .42) * .5
+            off = (f - 1.45) * fw * .36; L = .92 * hl * (.55 if f in (1, 2) else .5 if f == 0 else .42) * .5
             b0 = W + A * hl * .55 + side * off; ids = [node(tuple(b0), fw * .26)]; p = b0.copy(); d = A.copy()
             for k in range(3):
                 d = (d + Vector((-s * .06 * (k + 1), 0, 0))).normalized(); p = p + d * L * (1 - .18 * k); ids.append(node(tuple(p), fw * (.235 - .03 * k)))
@@ -174,7 +174,7 @@ def head_shape(u):
     """Einheitskugel → Kopf mit Profil: Schädel oben/hinten voll, Wangenknochen, Kieferwinkel, Kinn, flache Gesichtsebene, Nase, Lippen, Augenmulden"""
     x, y, z = u.x, u.y, u.z; kid = D.kid; fem = D.fem; hw, hh, hd = D.hw, D.hh, D.hd
     rho = math.sqrt(max(1e-9, 1 - z * z)); cx, cy = x / rho, y / rho
-    jw = .86 if kid else .8 if fem else .85; ch = .62 if kid else .52 if fem else .58
+    jw = .8 if kid else .76 if fem else .83; ch = .48 if kid else .44 if fem else .54
     fw = _pw(z, [(-.95, ch), (-.62, jw), (-.28, .97), (0, 1.0), (.5, 1.0), (.8, .96)])
     ff = _pw(z, [(-.95, 1.0), (-.72, 1.06 if not kid else 1.02), (-.4, 1.0), (-.12, .93), (.22, .98), (.6, .93)])
     fb = _pw(z, [(-.9, .45), (-.6, .7), (-.3, .98), (.1, 1.12), (.45, 1.06), (.8, .98)])
@@ -222,8 +222,8 @@ def th_l(ph):
 
 def build_head():
     sp = D.spec; F = sp.get('gesicht', {})
-    D.EYE_X = F.get('augen_x', .44 if D.kid else .43); D.EYE_Z = F.get('augen_z', -.08 if D.kid else -.03); D.MZ = F.get('mund_z', -.6 if D.kid else -.63)
-    D.RE = D.hw * F.get('auge_r', .335 if D.kid else .29) * (1.0 if 'auge_r' not in F else 1.12); D.LID_U = F.get('lid_o', 38 if D.kid else 33); D.LID_L = F.get('lid_u', 28 if D.kid else 24)
+    D.EYE_X = F.get('augen_x', .47 if D.kid else .45); D.EYE_Z = F.get('augen_z', -.14 if D.kid else -.08); D.MZ = F.get('mund_z', -.6 if D.kid else -.63)
+    D.RE = D.hw * F.get('auge_r', .335 if D.kid else .29) * (1.0 if 'auge_r' not in F else 1.12) * 1.2; D.LID_U = F.get('lid_o', 38 if D.kid else 33); D.LID_L = F.get('lid_u', 28 if D.kid else 24)
     D.IRIS = F.get('iris', .55 if D.kid else .5)
     head = quad_sphere('Kopf', 8); subsurf(head, 1); deform(head, lambda v: head_shape(v.normalized())); smooth(head); set_region(head, 'haut_kopf')
     _BVH['head'] = BVHTree.FromObject(head, bpy.context.evaluated_depsgraph_get())
@@ -275,15 +275,15 @@ def build_head():
             orient_out(lo, C); smooth(lo)
             vg = lo.vertex_groups.new(name='lid_%s_%s' % (which, 'L' if s > 0 else 'R')); vg.add(list(range(len(V))), 1, 'REPLACE'); parts['lids'].append(lo)
         # Lidlinie verdickt + Wimpernflügel außen (zwei kleine Spitzen)
-        W0 = [sp_(64 - k * 14.5, th_u(64 - k * 14.5) + 3.5, RE * 1.1) for k in range(10)]
-        wo = loft('Lidstrich', W0, lambda t: RE * (.17 + .08 * (1 - ss(0, .5, t))) * (.6 + .4 * ss(0, .25, t)) * (.5 + .5 * ss(0, .1, 1 - t)), lambda t: RE * .06, ring=4, n=12, flat_up=tuple(u)); set_region(wo, 'lidlinie')
+        W0 = [sp_(84 - k * 16, th_u(min(84 - k * 16, 70)) + 3.5 + 6 * ss(60, 84, 84 - k * 16), RE * 1.1) for k in range(10)]
+        wo = loft('Lidstrich', W0, lambda t: RE * .26 * ss(0, .3, t) ** .7 * (1 - .55 * ss(.75, 1, t)) + RE * .02, lambda t: RE * .07, ring=4, n=12, flat_up=tuple(u)); set_region(wo, 'lidlinie')
         vg = wo.vertex_groups.new(name='lid_o_%s' % ('L' if s > 0 else 'R')); vg.add(list(range(len(wo.data.vertices))), 1, 'REPLACE'); parts['lids'].append(wo)
-        for k, (a0, l) in enumerate(((60, .8),)):
+        for k, (a0, l) in enumerate(()):
             P0 = [sp_(a0 + j * 6, th_u(a0) + 2 + j * 4.5, RE * (1.07 + j * .05)) for j in range(4)]
             wk = loft('Wimper', P0, lambda t, l=l: RE * .07 * (1 - t) * l + RE * .01, lambda t: RE * .025, ring=4, n=5, flat_up=tuple(u)); set_region(wk, 'lidlinie')
             vg = wk.vertex_groups.new(name='lid_o_%s' % ('L' if s > 0 else 'R')); vg.add(list(range(len(wk.data.vertices))), 1, 'REPLACE'); parts['lids'].append(wk)
     # Brauen
-    bz = D.EYE_Z + F.get('braue_z', .3 if D.kid else .28); bw = F.get('braue_w', .9)
+    bz = D.EYE_Z + F.get('braue_z', .3 if D.kid else .28) - .02; bw = F.get('braue_w', .9) * .72
     for s in (-1, 1):
         pts = []
         for k in range(6):
@@ -329,10 +329,10 @@ def hair_cap(hairline, extra=.008, U_=8, V_=28, wav=.003):
         for j in range(V_):
             j1 = (j + 1) % V_; CF.append((i * V_ + j, i * V_ + j1, (i + 1) * V_ + j1, (i + 1) * V_ + j))
     cap = obj_data('Haarkappe', CV, CF); smooth(cap); set_region(cap, 'haar'); return cap
-def clump(P, w, d, region='haar', ring=5, n=8, up=None, tipw=.0005, shape=1.6):
+def clump(P, w, d, region='haar', ring=6, n=8, up=None, tipw=.0005, shape=2.6):
     """Haarbüschel entlang P: linsenförmiger Querschnitt, breit am Ansatz, spitz zulaufend"""
     up = up or tuple((Vector(P[0]) - D.HC).normalized())
-    w = w * 1.18; o = loft('Bueschel', P, lambda t: w * (1 - t ** shape) * (.6 + .4 * ss(0, .22, t)) + tipw, lambda t: d * (1 - t ** 1.3) + tipw * .6, ring=ring, n=n, flat_up=up)
+    w = w * 1.18; d = d * 1.9; tipw = max(tipw, w * .12); o = loft('Bueschel', P, lambda t: w * (1 - t ** shape) * (.6 + .4 * ss(0, .22, t)) + tipw, lambda t: d * (1 - t ** 1.3) + tipw * .6, ring=ring, n=n, flat_up=up)
     set_region(o, region); return o
 def flow(ph0, th0, th1, swirl, w, d, lift=.012, base=.01, flick=.01, n=8, curl=0., region='haar'):
     P = []
@@ -352,10 +352,10 @@ def hairline_std(fr=1.0, side=1.6, back=2.05):
 def build_hair(style):
     H = D.H; hw = D.hw; out = []; rnd = random.Random(7); k = D.hh / .127   # Maßstab relativ zum Kinderkopf
     if style == 'wuschel':            # Noa: verwuschelt, Pony schräg, Spitzen nach außen – breite, dicke Büschel (geschlossene Masse)
-        hl = hairline_std(1.0, 1.62, 2.1); out.append(hair_cap(hl, .01 * k))
+        hl = hairline_std(1.12, 1.62, 2.1); out.append(hair_cap(hl, .01 * k))
         for i in range(7):
             a = (i - 3) / 3; ph = a * .78 + rnd.uniform(-.04, .04)
-            out.append(flow(ph * .55 - .06, .15, 1.17 - .08 * abs(a) ** 2 + rnd.uniform(-.03, .03), ph * .12 - .12 + rnd.uniform(-.05, .05), .075 * k, .02 * k, lift=.014 * k, base=.012 * k, flick=.008 * k))
+            out.append(flow(ph * .55 - .06, .15, 1.33 - .1 * abs(a) ** 2 + rnd.uniform(-.02, .02), ph * .12 - .12 + rnd.uniform(-.04, .04), .08 * k, .02 * k, lift=.014 * k, base=.012 * k, flick=.003 * k))
         for i in range(10):
             ph = 1.3 + i / 9 * (2 * math.pi - 2.6)
             out.append(flow(ph + rnd.uniform(-.05, .05), .35, hl(ph) + .1 + rnd.uniform(-.03, .06), rnd.uniform(-.2, .2), .085 * k, .022 * k, lift=.018 * k, base=.013 * k, flick=.016 * k + .006 * k * (i % 2)))

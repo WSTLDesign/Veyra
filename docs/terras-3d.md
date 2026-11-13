@@ -89,6 +89,14 @@ Ergebnis 13.11. 02:05: terras2_test 20/20 (9 Modelle Welt + Kampf) bzw. 11/11 in
 - **Neue Vorlagen** `rig_vogel/clips_vogel`, `rig_schwebend/clips_schwebend` und die drei häufigsten Route-1-Wildarten (vogel.py, schwebe.py, nager.py).
 - Bilder: `test/terras2/r2_*.webp`.
 
+## 6c. Runde 3 (13.11. morgens)
+- **Fell mit Volumen:** neue Funktion `klumpen()` in tbau.py (runder Grundkörper + 2–3 auslaufende Strähnen) statt flacher Karten – Wangen, Scheitel, Brustlatz, Ellbogen/Hüfte (Glut-Linie), Brustfell Blühro, Flanken/Bauch Flausch.
+- **Fell-Randlicht** über die vorhandenen Uniforms in 58 (warmes Rim 0,42 für alle Terra-Modelle) – 56-toonpro.js unverändert.
+- **Flammel:** schlankere Läufe (Beinstärke skaliert schwächer mit der Höhe), feinere, unregelmäßige Basaltplatten.
+- **Flausch:** Körper birnenförmig, Bauch-/Flankenklumpen, Federmuster ruhiger (größere, flachere Zellen), Wirbel-Federkränze größer, Idle mit Gewichtsverlagerung und Kopfneigen.
+- **Blühro:** größerer Kopf, Brustfell-Klumpen, dickere Blätter der Mähne.
+- Bilder: `test/terras2/r3_*.webp`.
+
 ## 7. Offen
 - Flausch: Wirbel-Federkränze lesen sich noch eher als Ohren; Federmuster nah zu gleichmäßig.
 - Arena-Verbesserung hängt am Schalter `modelle3d` (Schalter aus = alte Arena) – Freigabe für alle durch den Dirigenten.

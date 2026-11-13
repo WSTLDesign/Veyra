@@ -43,7 +43,7 @@ for (const t of tiers) {
   await page.addStyleTag({ content: 'body *{visibility:hidden!important}#world3d{visibility:visible!important}#perfHud{display:none!important}' });
   for (const [k, [m, x, y, d, tm]] of Object.entries(SC)) {
     if (only && !only.includes(k)) continue;
-    await page.evaluate(([m, x, y, d, tm]) => { mode = 'world'; G.time = tm; if (view === '2d') setView('third', 1); loadMap(m, x, y); P.dir = d; P.ang = YAW[d]; if (R3) { R3.yaw = P.ang; R3.snap = 1; } if (window.INP && INP.camReset) INP.camReset(); ROAM.list.forEach(r => r.t = 1); }, [m, x, y, d, tm]);
+    await page.evaluate(([m, x, y, d, tm]) => { mode = 'world'; G.time = tm; if (!G.ret || G.ret.map === m) G.ret = { map: 'morgenau', x: 7, y: 11 }; if (view === '2d') setView('third', 1); loadMap(m, x, y); P.dir = d; P.ang = YAW[d]; if (R3) { R3.yaw = P.ang; R3.snap = 1; } if (window.INP && INP.camReset) INP.camReset(); ROAM.list.forEach(r => r.t = 1); }, [m, x, y, d, tm]);
     await page.waitForTimeout(7000);
     // Messung: Draw-Calls, Dreiecke, Bildzeit (gerenderte Bilder über 4 s)
     const me = await page.evaluate(async () => { const r = R3.r, i = r.info.render; const f0 = PERF.frames, t0 = performance.now(); await new Promise(res => setTimeout(res, 4000)); const fr = PERF.frames - f0, ms = (performance.now() - t0) / Math.max(1, fr);

@@ -88,6 +88,6 @@ const ITEM_ICON={ball:'<path d="M12 3l5 6-5 12-5-12z"/><path d="M7 9h10" opacity
  stone:'<path d="M7 4h10l4 6-9 11-9-11z"/><path d="M3 10h18M9 4l3 6 3-6M12 10v11" opacity=".55"/>',
  held:'<circle cx="12" cy="13" r="6"/><path d="M9 3.5l3 3.5 3-3.5"/>',key:'<circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/>',
  scroll:'<path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7"/><path d="M7 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2M9 9h6M9 13h6" />'};
-const _rBagV=rBag;rBag=function(el){_rBagV(el);try{el.querySelectorAll('.item').forEach(r=>{if(r.querySelector('.vIt'))return;const n=(r.querySelector('b')||{}).textContent;
+const _rBagV=rBag;rBag=function(el){_rBagV(el);try{el.querySelectorAll('.item').forEach(r=>{if(r.querySelector('.vIt,img,canvas,svg'))return;const n=(r.querySelector('b')||{}).textContent;
  const k=Object.keys(ITEMS).find(x=>ITEMS[x].n===n);if(!k)return;const kind=ITEMS[k].k,ic=ITEM_ICON[kind]||ITEM_ICON.held;
  r.insertAdjacentHTML('afterbegin',`<i class="vIt" data-k="${kind}" aria-hidden="true"><svg class="v-ico" viewBox="0 0 24 24">${ic}</svg></i>`);r.classList.add('vItem');});}catch(e){}};

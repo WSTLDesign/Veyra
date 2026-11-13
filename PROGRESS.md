@@ -532,3 +532,8 @@ Grundlage `docs/qa-mechanik.md` (Status je Mangel dort im Abschnitt „Nachbesse
 - **Neu `src/61-stabil.js`:** GPU-Klasse → Startstufe (Iris Xe mittel, UHD/HD niedrig, nur dediziert hoch), PC 60 fps / integriert 30, DPR 1,25; Wachhund (Bildkosten, Ø > 45 ms Stufe runter → Skala bis 0,5; Notbremse; hoch erst nach 10 s stabil; Halbzeit-Budget auf „niedrig“); Modell-Warteschlange `window.VMODEL_QUEUE` (eins nach dem anderen, Werkstatt lädt Modell-Skripte erst bei Bedarf über `window.PILOT_LAZY`); `postMessage {veyra:'stop'|'key'|'ping'}`; Pause unsichtbar/außerhalb, 5 fps ohne Fokus; Badge „fps · Stufe“; `window.VSTAB.info()`.
 - Fremde Dateien (minimal): `src/10-mon3d.js` (Drehansicht-Schleife endet ohne Ansicht), `tools/leitstand/leitstand.html` (Beenden per Nachricht ≤ 300 ms, Strg+Q/Esc-Weiterleitung, Qualitätswahl, `#lb[hidden]`-Fix), `tools/werkstatt-build.mjs` (PILOT_LAZY statt Skript-Tags).
 - Messung (SwiftShader, relativ): Morgenau rAF Ø 6000 → 23–44 ms; Leitstand-Außenseite 3717 → 40 ms; „Spiel beenden“ 342 s → 1,5 s. Doku docs/stabilitaet.md, Test `node test/stabil_qa.mjs`.
+
+## UI-Design Runde 2 – App-Icon, Startablauf, Tasche, Fangkarte (Opus 5.5 · hoch) – 13.11.
+- Eigenes App-Icon „V mit Kristall-Funke“ (public/icons/*, Quelle icon.svg, Erzeuger tools/icon/icon_svg.py), Manifest-Farben #141a30.
+- Alter Titel auf dem iPhone: Service Worker lieferte index.html cache-first unter festem Cache-Namen → jetzt Seite/Manifest/Icons zuerst aus dem Netz (public/sw.js); Startbildschirm und Opening-Endbild tragen die neue Wortmarke; Film-Standbild nicht mehr hinter dem Titel.
+- Taschen-Symbole, Chronik ≥ 1100 px größer, Fang-/Siegkarte im neuen Look. Bilder test/ui2/r2_*.webp (Kopie test/ui/), Doku docs/ui-design.md › Runde 2.

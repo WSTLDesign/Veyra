@@ -63,3 +63,9 @@ Test: `node test/figuren2/test_modelle.mjs` (Schalter an; Laden aller Figuren, C
 - **LOD:** LOD1 ohne Umriss-Hülle und ohne Schattenwurf; Gesicht/Augen ohne Umriss und Schatten (−1–2 Calls je Figur).
 - **Shader `src/56-toonpro.js` (additiv, API unverändert):** neue Option `toonProMat(map,{fig:1})` → Uniform `uFig` (Standard 0 = unverändert für Terras): Haar-Maske (Glanz 0,25–0,45) bekommt ein weiches anisotropes Glanzband statt Punktglanz, Randlicht auf Haut (Maske g) −65 %.
 - Bilder: `test/figuren2/r2_noa_gesicht_vorher_nachher.webp`, `r2_aufstellung.webp`, `r2_morgenau.webp`, `r2_morgenau_nah.webp`.
+
+## 8. Runde 3 (13.11.) – Heldin, Gehtempo 1,9, Gesichtsproportionen
+- **Heldin** `fig_heldin` (Spielerfigur 'heldin', wie FIGURES.heldin): helle Schirmkappe mit grünem Schirm + Blatt, Pferdeschwanz als Volumen mit gelbem Haargummi, grünes T-Shirt, braune Shorts, lange dunkle Socken, Stiefel, Umhängetasche mit Sonne, Handgelenk-Gerät; alle Clips; `figModelFor` 'heldin' → fig_heldin, Vorladen je nach `G.outfit.body`.
+- **Gehen 1,9 Felder/s** (17-move WALK_SPEED): Kind-Clip `walk` = zügiges Gehen, Doppelschritt 1,6 m in 0,77 s → 1,9 Felder/s bei Abspieltempo 1 (gemeinsame Gangphase, kein Rutschen); 5 → `run`.
+- Gesicht: Augen ≈ 1,5× Fläche, tiefer und weiter auseinander, kürzere Stirn (Pony tiefer), kleineres Kinn, schmaleres Untergesicht; obere Lidlinie als eine dicke Form, außen auslaufend, keine Einzelwimpern; Iris mit hellem unterem Bogen, ein großer + ein kleiner Glanzpunkt; Brauen schmaler und näher. Haar als dickere, runde Volumen-Büschel, Textur glatt hell→dunkel. Hände: Finger enger, kürzer, leicht gekrümmt, Daumen anliegend.
+- Bilder: `test/figuren2/r3_heldin.webp`, `r3_noa_gesicht_r2_r3.webp`, `r3_aufstellung.webp`, `welt_morgenau.webp` (Heldin im Spiel).

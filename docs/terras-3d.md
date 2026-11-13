@@ -97,6 +97,16 @@ Ergebnis 13.11. 02:05: terras2_test 20/20 (9 Modelle Welt + Kampf) bzw. 11/11 in
 - **Blühro:** größerer Kopf, Brustfell-Klumpen, dickere Blätter der Mähne.
 - Bilder: `test/terras2/r3_*.webp`.
 
+## 6d. Runde 4 (13.11. abends) – Proportionen nach den gemalten Bildern
+- **Funki** nach public/art/001_funki.webp umproportioniert: Kopf ≈ 45 % der Körperhöhe (HR 0,178/0,162/0,158 statt 0,142/0,12/0,114), kurze Schnauze, kleinerer, runder Körper,
+  Ohren größer und nach außen geneigt, Wangenfell nach unten, Rute dicker.
+- **Augen (alle Arten):** größer (Funki 0,064, Plippi 0,06, Knospi 0,052, Flausch 0,064), Iris 72–76 % des Auges mit Verlauf, helle Lederhaut mit weichem Randschatten,
+  zwei große Glanzpunkte, Lider weiter geöffnet (Oberlid 58°, Unterlid −50°), dunkle Oberlidkante.
+- **Flausch:** Brust-/Flankenfedern als Geometrie-Schuppen (5 Reihen, überlappend), Körper glatt statt Zellmuster, Wirbel-Federkränze als echte Spiralen (1,5 Windungen) seitlich über dem Kopf.
+- **Fehler behoben:** Nach dem Decimate konnten Flächen umgedreht sein → Umriss-Hülle erschien als schwarze Fläche (Knospi/Rankel neben den Armen). Jetzt Normalen nach jeder Reduktion neu ausgerichtet.
+  Blätter/Federn haben einen dünneren Umriss (Maske r 0,22/0,4).
+- Vergleichsbilder „gemaltes Bild vs. Modell“: `test/terras2/r4_bild_vs_modell_<id>.webp` (001, 004, 007, 008, 009, 059, 061).
+
 ## 7. Offen
 - Flausch: Wirbel-Federkränze lesen sich noch eher als Ohren; Federmuster nah zu gleichmäßig.
 - Arena-Verbesserung hängt am Schalter `modelle3d` (Schalter aus = alte Arena) – Freigabe für alle durch den Dirigenten.

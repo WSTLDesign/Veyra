@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs>
+ <radialGradient id="bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#3a3170"/><stop offset=".55" stop-color="#1f2347"/><stop offset="1" stop-color="#121628"/></radialGradient>
+ <linearGradient id="v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset=".5" stop-color="#ffe2b6"/><stop offset="1" stop-color="#f2ab62"/></linearGradient>
+ <linearGradient id="k" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#ffd3ea"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient>
+ <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd9a8" stop-opacity=".55"/><stop offset="1" stop-color="#ffd9a8" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<g transform="translate(256 262) scale(1.0) translate(-256 -262)">
+ <circle cx="256" cy="250" r="190" fill="url(#glow)"/>
+ <circle cx="256" cy="262" r="170" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="3" stroke-dasharray="3 14" stroke-linecap="round"/>
+ <!-- V: gerundete Balken -->
+ <path d="M128 168 L256 404 L384 168" fill="none" stroke="#120f26" stroke-width="112" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M128 168 L256 404 L384 168" fill="none" stroke="url(#v)" stroke-width="78" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M118 150 L142 196" stroke="#fff" stroke-opacity=".55" stroke-width="10" stroke-linecap="round"/>
+ <!-- Kristall-Funke über dem V -->
+ <g transform="translate(256 132)">
+  <path d="M0 -76 L24 -14 L0 58 L-24 -14 Z" fill="url(#k)" stroke="#120f26" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M0 -76 L24 -14 H-24 Z" fill="#fff" opacity=".6"/>
+ </g>
+ <path d="M372 92 l7 18 18 7 -18 7 -7 18 -7 -18 -18 -7 18 -7z" fill="#fff4dc" opacity=".9"/>
+ <path d="M140 300 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#fff4dc" opacity=".6"/>
+</g>
+</svg>

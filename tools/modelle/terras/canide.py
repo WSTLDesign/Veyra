@@ -7,10 +7,10 @@ OUT = [a for a in sys.argv[1:] if a.endswith('.glb')]; OUT = OUT[0] if OUT else 
 FORM = '--form' in sys.argv
 
 K = {
- '001': dict(name='t001', bmax=3000, Lb=.2, Lh=.2, Wx=.05, Rb=.077, leg=1.08, HR=(.142, .12, .114), hoff=(-.3, .85), sn=.58, sn_s=.33, RE=.044, eyez=.1, eyex=.48,
-             ear=(.17, .07, .042, (.55, .05, .8)), tail=[(0, 0, 0), (0, .075, .03), (0, .14, .095), (0, .17, .185), (0, .16, .27), (0, .125, .33)], tailR=.085,
+ '001': dict(name='t001', bmax=3000, IR=.74, Lb=.17, Lh=.16, Wx=.05, Rb=.084, leg=1.2, HR=(.178, .162, .158), hoff=(-.22, .78), sn=.3, sn_s=.4, RE=.064, eyez=.04, eyex=.42,
+             ear=(.13, .068, .045, (.55, .05, .74)), tail=[(0, 0, 0), (0, .07, .03), (0, .13, .1), (0, .155, .19), (0, .14, .28), (0, .1, .34)], tailR=.105,
              fell='#ee6a22', dunkel='#c9481a', creme='#f9e4c4', ohrspitze='#6a2412', bein=None, flame='ball', kragen=False, basalt=False, H=.62,
-             iris=('#d06c1a', '#6a2a0c', '#ffbf52'), gang=dict(wL=.11, rL=.2, wLift=.03, rLift=.05, bob=.006)),
+             iris=('#e07a1a', '#6a2a0c', '#ffc65a'), gang=dict(wL=.09, rL=.17, wLift=.028, rLift=.045, bob=.006)),
  '002': dict(name='t002', Lb=.31, Lh=.28, Wx=.058, Rb=.085, leg=1.0, HR=(.125, .13, .108), hoff=(-.42, .7), sn=.55, sn_s=.28, RE=.031, eyez=.15, eyex=.48,
              ear=(.155, .064, .038, (.52, .1, .8)), tail=[(0, 0, 0), (0, .1, .015), (0, .2, .05), (0, .28, .11), (0, .34, .19), (0, .37, .27)], tailR=.095,
              fell='#ea5a18', dunkel='#b8401a', creme='#f8e0bc', ohrspitze='#3a1a12', bein='#4a1e12', flame='tip', kragen=True, basalt=False, H=.8,
@@ -62,19 +62,19 @@ hs = HR[0] / .12
 for s in (-1, 1):
     for k in range(4 if ART == '001' else 3):
         p, n = hsurf((s * .95, -.2 + k * .07, -.28 - k * .13), -.012 * hs)
-        C.parts_head.append(klumpen(p, n * .8 + V(s * .3, .75 + .1 * k, -.35 - .15 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .03 * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
+        C.parts_head.append(klumpen(p, n * .6 + V(s * .2, .45 + .1 * k, -.8 - .1 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .03 * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
 for k in range(3):
     a = (k - 1); p, n = hsurf((a * .3, .25, .97), -.012 * hs); C.parts_head.append(klumpen(p, n * .35 + V(a * .3, .95, .05), .05 * hs, .024 * hs, 'fell_kopf', up=tuple(n), dick=.6, bend=(0, .005, -.012 * hs)))
 # Ohren: volumetrisch (Rand dick, Innenseite hohl), Innenfell-Büschel, dunkle Spitze (Farbe)
 eL, eW, eD, ep = K['ear']
 for s in (-1, 1):
-    base, bn = hsurf((s * ep[0], ep[1], ep[2]), -.02 * hs); up_ = Vector((s * .5, .14, 1)).normalized(); fw = Vector((0, -1, .15)).normalized()
+    base, bn = hsurf((s * ep[0], ep[1], ep[2]), -.02 * hs); up_ = Vector((s * (.75 if ART == '001' else .5), .14, 1)).normalized(); fw = Vector((s * (.25 if ART == '001' else 0), -1, .15)).normalized()
     C.parts_head.append(ohr(s, base, up_, fw, eL * hs / (HR[0] / .12) * (HR[0] / .12), eW * hs / (HR[0] / .12) * (HR[0] / .12), eD, cup=1.25, regs=('fell_kopf', 'ohr_innen')))
     eb, eu, L, fwv, side = C.EARS[s]
     for k in range(3):
         p0 = eb + eu * (.012 * hs) + fwv * (eD * .1) + side * ((k - 1) * .016 * hs)
         C.parts_head.append(bueschel(p0, eu * .95 + fwv * .35 + side * ((k - 1) * .22), (.05 - .01 * abs(k - 1)) * hs, .022 * hs, 'ohr_innen', up=tuple(fwv), dick=.5))
-augen(K['RE'], xn=K['eyex'], yn=-.86, zn=K['eyez'], spread=.42, lid_col=K['fell'])
+augen(K['RE'], xn=K['eyex'], yn=-.86, zn=K['eyez'], spread=.3 if ART == '001' else .42, lid_col=K['fell'])
 maul(w=.3, z=-.52, smile=.12)
 # Stirnflamme (erhabene Flammenzungen, leuchten)
 for cx, h_, w_ in ((0, .17, .022), (-.16, .11, .014), (.16, .11, .014)):
@@ -181,4 +181,4 @@ def paint(P):
     mix(M('pfote'), '#ffffff', .15); mix(M('nase'), '#5a4040', ss(0, 1, (Z - (np_.z)) * 120) * .5)
     if K['basalt']: mix(M('lava'), '#ffd25a', .4)
     mix(M('ohr_innen'), '#fff0e0', .35 * ss(.5, .8, P.fur) if 'fur' in P.__dict__ else 0)
-standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(K['gang']), paint, K['iris'], fur_scale=1.0 if ART == '001' else .8, nstr=.45)
+standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(K['gang']), paint, K['iris'], fur_scale=1.0 if ART == '001' else .8, nstr=.45, IR=K.get('IR', .72))

@@ -17,7 +17,7 @@ R.t('Pilot-Funki nicht doppelt geladen', ld.pilotFunki === 'serie', ld.pilotFunk
 for (const id of IDS) {
   // Welt: als wilde Kreatur im Gras
   const w = await P.evaluate(async (id) => { mode = 'world'; loadMap('route1', 9, 12); VILL && (VILL.list = []); ROAM.list = []; ROAM.want = 0; const r = ({s:id,l:5,x:9,y:10,px:9,py:10,fx:9,fy:10,t:1,dir:'down',next:performance.now()+800,st:'idle',stT:0,nat:monNature(id),owl:nightOwl(id),shiny:false,o:{shiny:false},g:null}); ROAM.list.push(r);
-    await new Promise(res => setTimeout(res, 1200)); const mm = R3.scene.userData.mm, o = mm && mm.get(r); await new Promise(res => setTimeout(res, 2500));
+    let o = null; for (let i = 0; i < 20 && !(o && o.userData.tm); i++) { await new Promise(res => setTimeout(res, 250)); const mm = R3.scene.userData.mm; o = mm && mm.get(r); } await new Promise(res => setTimeout(res, 2500));
     const U = o && o.userData; return { tm: !!(U && U.tm), clips: U && U.acts ? Object.keys(U.acts).length : 0, h: U && +U.h.toFixed(2) }; }, id);
   R.t(`Welt ${id}: Modell`, w.tm && w.clips >= 8, w);
   // Kampf: eigenes Modell gegen wildes Modell (statt flachem Bild)

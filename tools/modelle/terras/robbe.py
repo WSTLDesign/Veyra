@@ -5,8 +5,8 @@ from tbau import *
 ART = [a for a in sys.argv[1:] if a.isdigit()]; ART = ART[0] if ART else '004'
 OUT = [a for a in sys.argv[1:] if a.endswith('.glb')]; OUT = OUT[0] if OUT else '/tmp/t%s.glb' % ART
 FORM = '--form' in sys.argv
-K = {'004': dict(name='t004', L=.85, R=1.0, HR=(.14, .13, .135), haut='#5cb4f4', bauch='#f4fbff', tupf='#2f86d6', zacken=5, kopf=1.0, RE=.05, rueck=False, leucht=False, H=.5, iris=('#2f8ae0', '#0c3a8a', '#8fe0ff'), bmax=2800),
-     '005': dict(name='t005', L=1.25, R=1.12, HR=(.13, .13, .118), haut='#3f9ae8', bauch='#eef8ff', tupf='#1f6cc0', zacken=7, kopf=.95, RE=.036, rueck=True, leucht=False, H=.62, iris=('#2a7ad8', '#0a3070', '#7fd4ff'), bmax=3200),
+K = {'004': dict(name='t004', L=.85, R=1.0, HR=(.14, .13, .135), haut='#5cb4f4', bauch='#f4fbff', tupf='#2f86d6', zacken=5, kopf=1.05, RE=.06, rueck=False, leucht=False, H=.5, iris=('#2f8ae0', '#0c3a8a', '#8fe0ff'), bmax=2800),
+     '005': dict(name='t005', L=1.25, R=1.12, HR=(.13, .13, .118), haut='#3f9ae8', bauch='#eef8ff', tupf='#1f6cc0', zacken=7, kopf=1.0, RE=.044, rueck=True, leucht=False, H=.62, iris=('#2a7ad8', '#0a3070', '#7fd4ff'), bmax=3200),
      '006': dict(name='t006', L=1.55, R=1.3, HR=(.14, .15, .122), haut='#1f4e9a', bauch='#e6f4ff', tupf='#5ff0ff', zacken=7, kopf=1.0, RE=.032, rueck=True, leucht=True, H=.8, iris=('#21c8f0', '#0a3a6a', '#b0ffff'), bmax=3800)}[ART]
 start(K['name'], K['H'])
 treg('haut', K['haut'], 'haut'); treg('fell_kopf', K['haut'], 'haut'); treg('bauch', K['bauch'], 'haut'); treg('flosse', K['haut'], 'haut'); treg('nase', '#1e2a40', 'nase')
@@ -75,4 +75,4 @@ def paint(P):
     mix(sk, K['tupf'], dots * .9)
     mix(M('flosse'), K['tupf'], .3)
     mix(M('wasser'), '#ffffff', .3 * ss(.0, 1, (Z - kc.z) / (.08 * R))); mix(M('blase'), '#ffffff', .3)
-standard_ablauf(OUT, body_allowed_wasser, clips_wasser, paint, K['iris'], nstr=.25, ohren=False, sclera=None)
+standard_ablauf(OUT, body_allowed_wasser, clips_wasser, paint, K['iris'], nstr=.25, ohren=False, sclera=None, IR=.74)

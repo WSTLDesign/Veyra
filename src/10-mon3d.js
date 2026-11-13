@@ -593,10 +593,11 @@ function viewer3d(id,size,opts){if(!window.THREE)return null;try{if(!VR){const r
   el.addEventListener('pointerup',e=>{const q=VR.tp;if(q&&Math.abs(e.clientX-q[0])<7&&performance.now()-q[1]<400&&VR.m){setExpression(VR.m,'freudig',1800);VR.m.userData.act.hop=performance.now();if(typeof playCry==='function')playCry(VR.id);}VR.tp=null;});
   el.addEventListener('pointermove',e=>{if(VR.drag!=null)VR.yaw=VR.y0+(e.clientX-VR.drag)*.012;});
   ['pointerup','pointercancel'].forEach(t=>el.addEventListener(t,()=>{VR.drag=null;VR.idle=performance.now();}));
-  const loop=()=>{requestAnimationFrame(loop);if(!el.isConnected||!VR.m)return;const n=performance.now();if(VR.drag==null&&n-VR.idle>1400)VR.yaw+=.006;VR.m.rotation.y=VR.yaw;
-   MRIMK.value=.15;animMon(VR.m,n,{pose:'hero',lookAt:{x:VR.cam.position.x,z:VR.cam.position.z}});VR.r.render(VR.s,VR.cam);};loop();}
+  const loop=()=>{if(!VR.m||!el.isConnected&&++VR.wait>30){VR.run=0;return;}requestAnimationFrame(loop);if(!el.isConnected)return;VR.wait=0;const n=performance.now();if(VR.drag==null&&n-VR.idle>1400)VR.yaw+=.006;VR.m.rotation.y=VR.yaw;
+   MRIMK.value=.15;animMon(VR.m,n,{pose:'hero',lookAt:{x:VR.cam.position.x,z:VR.cam.position.z}});VR.r.render(VR.s,VR.cam);};VR.loop=loop;}
  if(VR.m)VR.s.remove(VR.m);VR.yaw=2.6;VR.idle=performance.now();VR.m=buildMon3D(id,1,Object.assign({pose:'hero'},opts||{}));VR.id=id;VR.s.add(VR.m);const box=new THREE.Box3().setFromObject(VR.m),sz=box.getSize(new THREE.Vector3()),fit=Math.max(sz.y,sz.x,sz.z)*1.2;
  VR.cam.position.set(0,sz.y*.38+fit*.06,fit/(2*Math.tan(14*Math.PI/180)));VR.cam.lookAt(0,sz.y*.5,0);VR.r.setPixelRatio(Math.min(2,devicePixelRatio||1));VR.r.setSize(size,size);
+ if(!VR.run){VR.run=1;VR.wait=0;requestAnimationFrame(VR.loop);}// Stabilität PC: Ansicht-Schleife endet, sobald die Ansicht entfernt ist
  return VR.r.domElement;}catch(e){return null;}}
 // ---------- 3D-Kampfszene ----------
 let BT=null,HS=0;

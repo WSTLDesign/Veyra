@@ -213,7 +213,7 @@ if (!VORHER) { await place('route1', 11, 19, 0); await stickDown(0, -64); await 
 log('Messwerte: ' + JSON.stringify(R.bewegung));
 if (!VORHER) {
   const B = R.bewegung;
-  t('Gehen ≈ 2,8 Felder/s, Rennen ≈ 5 Felder/s (gut unterscheidbar)', Math.abs(B.gehen.tempo - 2.8) < .35 && Math.abs(B.rennen.tempo - 5) < .45, [B.gehen.tempo, B.rennen.tempo]);
+  t('Gehen ≈ 1,9 Felder/s, Rennen ≈ 5 Felder/s (gut unterscheidbar)', Math.abs(B.gehen.tempo - 1.9) < .35 && Math.abs(B.rennen.tempo - 5) < .45, [B.gehen.tempo, B.rennen.tempo]);
   t('Sanftes Anfahren (Start-Beschleunigung ≤ 10 F/s²) und kontrollierbarer Bremsweg (Rennen ≤ 1,1 Feld)', B.gehen.amaxStart <= 10.5 && B.rennen.amaxStart <= 10.5 && B.rennen.bremsweg <= 1.1, { gehen: B.gehen, rennen: B.rennen });
   t('Wand schräg: gleitet entlang (≥ 1 Feld), kein Zittern (≤ 2 Richtungswechsel)', B.wand45.gleitweg >= 1 && B.wand45.zitternWechsel <= 2, B.wand45);
   t('Baumkante mit 0,38 Versatz: Figur rutscht vorbei statt hängenzubleiben', B.ecke.vorbei, B.ecke);

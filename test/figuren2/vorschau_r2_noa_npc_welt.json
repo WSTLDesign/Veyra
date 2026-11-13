@@ -1,21 +1,21 @@
 {
  "laden": {
-  "noa": 24497,
-  "fig_noa": 1167,
-  "fig_veyran": 13403,
-  "fig_rayan": 11263,
-  "fig_mama": 23117,
-  "fig_mirael": 14294,
-  "fig_haendler": 11238,
-  "fig_buerger_a": 23165,
-  "fig_buerger_b": 25593,
-  "fig_buerger_c": 13986,
-  "fig_buerger_d": 12668
+  "noa": 10897,
+  "fig_noa": 783,
+  "fig_veyran": 9911,
+  "fig_rayan": 10220,
+  "fig_mama": 16966,
+  "fig_mirael": 7807,
+  "fig_haendler": 6554,
+  "fig_buerger_a": 16978,
+  "fig_buerger_b": 7688,
+  "fig_buerger_c": 9685,
+  "fig_buerger_d": 8245
  },
  "fehlerStudio": [],
  "welt": {
-  "calls": 92,
-  "tris": 253416,
+  "calls": 90,
+  "tris": 223831,
   "modelle": 2,
   "held": true
  },

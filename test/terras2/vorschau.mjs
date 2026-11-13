@@ -64,6 +64,18 @@ if (has('funki') || has('gesicht')) {
     for (const [n, e] of [['neutral', 'neutral'], ['freudig', 'freudig'], ['wütend', 'wuetend'], ['staunen', 'staunen']]) { STU.clip(o, 'idle', .02); STU.expr(o, e); out.push({ img: STU.shot([.42, .42, .78], [0, .36, 0], 24, 800, 424), label: n }); } return out; });
   await sheet(P, ex, 'funki_mimik.webp', { cols: 2, cw: 800, ch: 424, title: 'Funki Runde 2 – Mimik (Shape Keys)', sub: 'neutral · freudig · wütend · staunen' });
 }
+if (has('bild')) {
+  const H1 = { 1: .6, 4: .55, 7: .68, 8: .92, 9: 1.15, 59: .55, 61: .6 }, EX = { 1: 'freudig', 4: 'freudig', 7: 'neutral', 8: 'neutral', 9: 'neutral', 59: 'freudig', 61: 'freudig' };
+  for (const id of [1, 4, 7, 8, 9, 59, 61].filter(i => ARTEN.includes(i))) {
+    const pair = await P.evaluate(async ([id, h, ex]) => {
+      const im = new Image(); await new Promise(r => { im.onload = r; im.onerror = r; im.src = ART_SRC[id]; });
+      const c = document.createElement('canvas'); c.width = 800; c.height = 900; const g = c.getContext('2d'); g.fillStyle = '#eef1f4'; g.fillRect(0, 0, 800, 900);
+      const k = Math.min(720 / im.width, 760 / im.height); g.drawImage(im, 400 - im.width * k / 2, 470 - im.height * k / 2, im.width * k, im.height * k);
+      STU.clear(); const o = STU.terra(id, h); STU.add(o, 0, 0, .45); STU.tick(o, .4); STU.clip(o, 'idle', .02); STU.expr(o, ex);
+      const shot = STU.shot([h * .9, h * .75, h * 2.6], [0, h * .5, 0], 30, 800, 900); return [c.toDataURL('image/png'), shot]; }, [id, H1[id], EX[id]]);
+    await sheet(P, [{ img: pair[0], label: 'gemaltes Bild (Vorlage)' }, { img: pair[1], label: 'Modell Runde 4' }], 'bild_vs_modell_' + String(id).padStart(3, '0') + '.webp', { cols: 2, cw: 800, ch: 900 });
+  }
+}
 if (has('linie')) {
   const H0 = { 1: .6, 2: .85, 3: 1.15, 4: .55, 5: .75, 6: 1.0, 7: .68, 8: .92, 9: 1.15 };
   for (const [nm, ids] of Object.entries(LINIEN)) {

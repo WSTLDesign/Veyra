@@ -52,7 +52,7 @@ ${body('three.min.js', false)}<script>if('serviceWorker' in navigator&&location.
 `;
 writeFileSync(new URL('./dist/index.html', import.meta.url), app);
 for (const f of ['three.min.js', 'manifest.webmanifest']) copyFileSync(new URL('./public/' + f, import.meta.url), new URL('./dist/' + f, import.meta.url));
-writeFileSync(new URL('./dist/sw.js', import.meta.url), read('./public/sw.js').replace('__VERSION__', version).replace('__ART__', JSON.stringify(artFiles.filter(f => /^\d/.test(f)).map(f => './art/' + f))));
+writeFileSync(new URL('./dist/sw.js', import.meta.url), read('./public/sw.js').replace('__VERSION__', version + '-' + Date.now().toString(36)) /* Build-Stempel: installierte App lädt jeden neuen Stand sicher neu */.replace('__ART__', JSON.stringify(artFiles.filter(f => /^\d/.test(f)).map(f => './art/' + f))));
 mkdirSync(new URL('./dist/art', import.meta.url), { recursive: true });
 for (const f of artFiles) copyFileSync(new URL(f, artDir), new URL('./dist/art/' + f, import.meta.url));
 for (const d of ['models', 'vendor', 'video']) { const src = new URL('./public/' + d, import.meta.url), dst = new URL('./dist/' + d, import.meta.url); rmSync(dst, { recursive: true, force: true }); if (existsSync(src)) cpSync(src, dst, { recursive: true }); }

@@ -11,6 +11,13 @@ SPECS = {
                leder='#4d5236', metall='#b08a48', glas='#6fcde4', dunkel='#3a3f4a', akzent='#d81b72', streifen='#8fbf4a', emblem='#e9d27a'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.27, weit=.008), unten=dict(art='cargo', bund=.575, bis=0, weit=.009), schuhe='sneaker'),
    extras=['schutzbrille', 'geraet', 'cargotaschen'], muster=['blatt'], groesse='kind'),
+ # Heldin Noa (Stufe 0): helle Schirmkappe mit grünem Schirm + Blatt, Pferdeschwanz (gelbes Haargummi), grünes T-Shirt mit cremefarbenem Saum,
+ # braune Shorts, lange dunkle Socken, braune Stiefel mit hellem Rand, Umhängetasche mit Sonne, Handgelenk-Gerät
+ 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_muetze', gesicht=dict(mund_laune=.035, lid_o=40),
+   farben=dict(haut='#f6d3b3', haar='#a4532a', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#efe6d2', muetze2='#4c8a3c',
+               blume='#f2c94c', schuh='#7a5434', sohle='#3e2c22', leder='#7a4a2a', akzent='#d81b72', streifen='#efe6d2', emblem='#f2c94c', metall='#b08a48', dunkel='#3a3f4a', knopf='#f2c94c'),
+   kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='schirm'),
+   extras=['geraet', 'tasche', 'kappe_blatt'], muster=['blatt'], groesse='kind'),
  # Rivale Rayan: schwarze Stacheln mit roten Spitzen, dunkle Zip-Jacke (rot abgesetzt) über grauem Shirt, dunkle Cargohose, Stiefel
  'rayan': dict(typ='kind', augen='#c0302a', haar='stachel', gesicht=dict(mund_laune=.0, braue_z=.27, lid_o=27),
    farben=dict(haut='#f1cfae', haar='#1e1a22', haar_hi='#d0303a', braue='#1e1a22', top='#7a7680', jacke='#2a2730', saum='#c0303a', hose='#2c2a32', saum2='#24222a',
@@ -131,16 +138,16 @@ def accessories(spec, bvb):
     if 'schutzbrille' in ex:
         rp = []
         for j in range(29):
-            ph = j / 28 * 2 * math.pi; th = .74 + .1 * ss(-.2, -1, math.cos(ph)); rp.append(head_dir_point(sdir(th, ph), .024 * k))
+            ph = j / 28 * 2 * math.pi; th = .74 + .1 * ss(-.2, -1, math.cos(ph)); rp.append(head_dir_point(sdir(th, ph), .04 * k))
         o = loft('Band', rp, lambda t: .0045 * k, lambda t: .0018 * k, ring=4, n=34, flat_up=(0, 0, 1), cap0=False); set_region(o, 'leder'); out.append(o)
         for s in (-1, 1):
-            d = Vector((s * .3, -math.cos(.58), math.sin(.85))).normalized(); c = head_dir_point(d, .032 * k)
+            d = Vector((s * .3, -math.cos(.58), math.sin(.85))).normalized(); c = head_dir_point(d, .048 * k)
             nrm = ((c - D.HC).normalized() + Vector((0, 0, .45))).normalized(); q = nrm.to_track_quat('Z', 'Y')
             bm = bmesh.new(); bmesh.ops.create_cone(bm, cap_ends=True, segments=14, radius1=.025 * k, radius2=.022 * k, depth=.017 * k)
             o = obj_bm('Brillenrahmen', bm); M = q.to_matrix().to_4x4(); M.translation = c; o.data.transform(M); mod(o, 'BEVEL', width=.002 * k, segments=1); apply_mods(o); smooth(o); set_region(o, 'metall'); out.append(o)
             bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=12, v_segments=6, radius=.02 * k)
             o = obj_bm('Glas', bm); o.data.transform(Matrix.Diagonal((1, 1, .38, 1))); M = q.to_matrix().to_4x4(); M.translation = c + nrm * .0085 * k; o.data.transform(M); smooth(o); set_region(o, 'glas'); out.append(o)
-        pL = head_dir_point(Vector((.12, -math.cos(.58), math.sin(.85))).normalized(), .032 * k); pR = mx(pL)
+        pL = head_dir_point(Vector((.12, -math.cos(.58), math.sin(.85))).normalized(), .048 * k); pR = mx(pL)
         o = loft('Steg', [pR, (pR + pL) / 2 + Vector((0, -.004, .002)), pL], lambda t: .0035 * k, lambda t: .0025 * k, ring=5, n=6); set_region(o, 'metall'); out.append(o)
     if 'brille_rund' in ex:
         for s in (-1, 1):
@@ -218,7 +225,7 @@ def accessories(spec, bvb):
         o = obj_data('Muetze', CV, CF); smooth(o); set_region(o, 'muetze'); solidify(o, .004 * k, 1); out.append(o)
         rim = [head_dir_point(sdir(hl, ph), .022 * k) for ph in [(-1 + j / 10 * 2) * .95 for j in range(11)]]
         rings = [rim, [p + Vector((0, -.05 * k, -.012 * k)) * (1 - .55 * abs(j / 10 * 2 - 1) ** 2) for j, p in enumerate(rim)]]
-        o = loft_rings('Schirm', rings, 'muetze', closed=False); solidify(o, .004 * k, 1); out.append(o)
+        o = loft_rings('Schirm', rings, 'muetze2' if 'muetze2' in REG else 'muetze', closed=False); solidify(o, .004 * k, 1); out.append(o)
     if K.get('muetze') == 'beanie':
         hl = 1.42; U_, V_ = 7, 26; CV = []; CF = []
         for i in range(U_ + 1):

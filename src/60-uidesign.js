@@ -24,6 +24,17 @@ try{for(const k of ['map','team','quest','dex','bag','box','medals','game'])APPI
 // ---------- Titelbildschirm: Himmel + Horizont der Lichtlande (eigene Spielwelt-Bilder), Lichtpunkte, Wortmarke ----------
 const VUI={teamSig:'',teamT:0};
 function vArt(k){const A=window.ART_SRC||{};return A[k]||A[k+'_lo']||null;}
+// Wortmarke „VEYRA“ (eigene Gestaltung): gerundete Display-Schrift, warmer Verlauf, Kristall-Funke über dem Y, Untertitel in Kapitälchen; u = eindeutiges Kürzel für Verlaufs-IDs
+function vLogo(u,cls){return `<svg class="vtLogo ${cls||''}" viewBox="0 0 560 210" role="img" aria-label="Veyra – Kreaturenchronik">
+  <defs><linearGradient id="vlG${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset=".55" stop-color="#ffe7c2"/><stop offset="1" stop-color="#f3b977"/></linearGradient>
+  <linearGradient id="vlK${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#ffd6ec"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient></defs>
+  <g transform="translate(280 36)"><path d="M0-30L9-6 0 22-9-6z" fill="url(#vlK${u})" stroke="#2a2148" stroke-width="3" stroke-linejoin="round"/><path d="M0-30L9-6H-9z" fill="#fff" opacity=".55"/>
+   <circle r="44" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="2 7"/></g>
+  <text x="280" y="148" text-anchor="middle" font-size="124" font-weight="700" letter-spacing="10" fill="none" stroke="#2a2148" stroke-width="16" stroke-linejoin="round" paint-order="stroke">VEYRA</text>
+  <text x="280" y="148" text-anchor="middle" font-size="124" font-weight="700" letter-spacing="10" fill="url(#vlG${u})">VEYRA</text>
+  <path d="M66 172h62M432 172h62" stroke="#2a2148" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+  <text x="280" y="178" text-anchor="middle" font-size="19" font-weight="600" letter-spacing="5" fill="#2a2148" fill-opacity=".8" style="font-family:var(--font-ui)">KREATURENCHRONIK</text>
+ </svg>`;}
 function vTitle(){const t=$('#title');if(!t||t.querySelector('.vtBg'))return;
  const bg=document.createElement('div');bg.className='vtBg';bg.setAttribute('aria-hidden','true');
  const sky=vArt('sky_lichtlande_abend')||vArt('sky_lichtlande_tag'),hz=vArt('horizon_lichtlande'),hz2=vArt('horizon_smaragdwald');
@@ -32,22 +43,17 @@ function vTitle(){const t=$('#title');if(!t||t.querySelector('.vtBg'))return;
  if(!sky)bg.querySelector('.sky').style.background='linear-gradient(180deg,#5a6fb0,#e8b9b0 70%,#f6dccb)';
  t.prepend(bg);
  // Wortmarke „VEYRA“ (eigene Gestaltung): gerundete Display-Schrift, warmer Verlauf, Kristall-Funke über dem Y, Untertitel in Kapitälchen
- const h=t.querySelector('h1');const svg=`<svg class="vtLogo" viewBox="0 0 560 210" role="img" aria-label="Veyra – Kreaturenchronik">
-  <defs><linearGradient id="vlG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset=".55" stop-color="#ffe7c2"/><stop offset="1" stop-color="#f3b977"/></linearGradient>
-  <linearGradient id="vlK" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#ffd6ec"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient></defs>
-  <g transform="translate(280 36)"><path d="M0-30L9-6 0 22-9-6z" fill="url(#vlK)" stroke="#2a2148" stroke-width="3" stroke-linejoin="round"/><path d="M0-30L9-6H-9z" fill="#fff" opacity=".55"/>
-   <circle r="44" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="2 7"/></g>
-  <text x="280" y="148" text-anchor="middle" font-size="124" font-weight="700" letter-spacing="10" fill="none" stroke="#2a2148" stroke-width="16" stroke-linejoin="round" paint-order="stroke">VEYRA</text>
-  <text x="280" y="148" text-anchor="middle" font-size="124" font-weight="700" letter-spacing="10" fill="url(#vlG)">VEYRA</text>
-  <path d="M66 172h62M432 172h62" stroke="#2a2148" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
-  <text x="280" y="178" text-anchor="middle" font-size="19" font-weight="600" letter-spacing="5" fill="#2a2148" fill-opacity=".8" style="font-family:var(--font-ui)">KREATURENCHRONIK</text>
- </svg>`;
+ const h=t.querySelector('h1');const svg=vLogo('t');
  if(h)h.insertAdjacentHTML('afterend',svg);else t.insertAdjacentHTML('afterbegin',svg);
  const sub=t.querySelector('.tsub');if(sub)sub.setAttribute('aria-hidden','true');
  try{const v=document.querySelector('meta[name="veyra-version"]');if(v&&!t.querySelector('.vtVer'))t.insertAdjacentHTML('beforeend',`<span class="vtVer">Version ${v.content}</span>`);}catch(e){}
  vTitleBtns();}
 function vTitleBtns(){const c=$('#tCont'),n=$('#tNew');if(!c||!n)return;n.classList.toggle('pri',!!c.hidden);c.classList.add('pri');}
 vTitle();
+// Startbildschirm (#iPrompt „Tippe, um zu beginnen“) und Opening-Endbild (#introLogo) mit derselben Wortmarke – vorher alte Schrift-Logos
+function vIntroLogos(){const ip=$('#iPrompt');if(ip&&!ip.querySelector('.vtLogo')){const o=ip.querySelector('.ilogo');ip.insertAdjacentHTML('afterbegin',vLogo('p','vtP'));if(o)o.classList.add('vSr');}
+ const il=$('#introLogo');if(il&&!il.querySelector('.vtLogo')){il.insertAdjacentHTML('afterbegin',vLogo('o','vtO'));il.querySelectorAll('h1,.okc').forEach(e=>e.classList.add('vSr'));}}
+vIntroLogos();
 try{new MutationObserver(vTitleBtns).observe($('#tCont'),{attributes:true,attributeFilter:['hidden']});}catch(e){}
 
 // ---------- HUD: Uhr mit Sonne/Mond-Symbol ----------
@@ -73,3 +79,15 @@ setInterval(vTeamTick,600);
 
 // ---------- Team-Karten: Farbton der Kreatur als Kartenkopf ----------
 const _cardV=card;card=function(m,i,inBox){const d=_cardV(m,i,inBox);try{d.style.setProperty('--mc',TYPES[MONS[m.s].t[0]].c);}catch(e){}return d;};
+
+// ---------- Tasche: eigenes Symbol je Gegenstandsart (Kapsel = facettierter Kristall mit Ring, Trank, Stein …) ----------
+const ITEM_ICON={ball:'<path d="M12 3l5 6-5 12-5-12z"/><path d="M7 9h10" opacity=".6"/><ellipse cx="12" cy="12" rx="9" ry="3.2" opacity=".55"/>',
+ heal:'<path d="M9.5 3.5h5M10.5 3.5v4.2L6.2 15a4.5 4.5 0 0 0 3.9 6.5h3.8a4.5 4.5 0 0 0 3.9-6.5l-4.3-7.3V3.5"/><path d="M8 15.5h8" opacity=".6"/>',
+ revive:'<path d="M12 20s-7-4.4-7-9.5A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 2.5C19 15.6 12 20 12 20z"/><path d="M12 11v4M10 13h4"/>',
+ pp:'<path d="M13 3L6 13h5l-1 8 7-10h-5z"/>',cure:'<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M9.5 14.5h5M12 12v5" opacity=".7"/>',
+ stone:'<path d="M7 4h10l4 6-9 11-9-11z"/><path d="M3 10h18M9 4l3 6 3-6M12 10v11" opacity=".55"/>',
+ held:'<circle cx="12" cy="13" r="6"/><path d="M9 3.5l3 3.5 3-3.5"/>',key:'<circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/>',
+ scroll:'<path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7"/><path d="M7 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2M9 9h6M9 13h6" />'};
+const _rBagV=rBag;rBag=function(el){_rBagV(el);try{el.querySelectorAll('.item').forEach(r=>{if(r.querySelector('.vIt,img,canvas,svg'))return;const n=(r.querySelector('b')||{}).textContent;
+ const k=Object.keys(ITEMS).find(x=>ITEMS[x].n===n);if(!k)return;const kind=ITEMS[k].k,ic=ITEM_ICON[kind]||ITEM_ICON.held;
+ r.insertAdjacentHTML('afterbegin',`<i class="vIt" data-k="${kind}" aria-hidden="true"><svg class="v-ico" viewBox="0 0 24 24">${ic}</svg></i>`);r.classList.add('vItem');});}catch(e){}};

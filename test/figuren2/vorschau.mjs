@@ -45,7 +45,7 @@ async function sheet(p, cells, file, { cols, cw, ch, title = '', sub = '' }) {
 }
 const P = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } });
 await newGame(P, { team: [[1, 12]], view: 'third' });
-const ld = await P.evaluate(async (ids) => { const out = {}; for (const k of ids) { const g = await pilotLoad(k); out[k] = g ? PILOT['ms_' + k] : 'FEHLT'; } return out; }, ['noa', 'fig_noa', ...NPCS_]);
+const ld = await P.evaluate(async (ids) => { const out = {}; for (const k of ids) { const g = await pilotLoad(k); out[k] = g ? PILOT['ms_' + k] : 'FEHLT'; } return out; }, ['noa', 'fig_noa', 'fig_heldin', ...NPCS_]);
 console.log('Laden', JSON.stringify(ld)); res.laden = ld;
 await studio(P);
 if (has('dev')) {   // schneller Arbeitsbogen: Noa vorn/schräg/Gesicht + Idle-Pose
@@ -53,6 +53,12 @@ if (has('dev')) {   // schneller Arbeitsbogen: Noa vorn/schräg/Gesicht + Idle-P
     out.push({ img: STU.shot([0, h * .6, h * 3.1], [0, h * .52, 0], 26, 400, 900), label: 'vorn' }); out.push({ img: STU.shot([h * 2.0, h * .7, h * 2.4], [0, h * .52, 0], 26, 400, 900), label: 'schräg' });
     out.push({ img: STU.shot([h * 3.1, h * .6, 0], [0, h * .52, 0], 26, 400, 900), label: 'seite' }); out.push({ img: STU.shot([.1 * h, h * .93, h * .5], [0, h * .9, 0], 26, 400, 900), label: 'Gesicht' }); return out; }, process.argv[3] || 'fig_noa');
   await sheet(P, d, 'dev.webp', { cols: 4, cw: 400, ch: 900 });
+}
+if (has('heldin')) {   // Heldin (Spielerfigur des Nutzers): ganz, schräg, Gesicht + Noa zum Vergleich
+  const r = await P.evaluate(() => { const out = []; for (const id of ['fig_heldin', 'fig_noa']) { STU.clear(); const o = STU.fig(id); STU.add(o, 0, 0, 0); STU.tick(o, 1.3); const U = o.userData; U.blink.next = 1e12; U.eye.next = 1e12; U.eye.tx = U.eye.ty = 0; pilotExpr(o, 'laecheln'); STU.tick(o, .6);
+      out.push({ img: STU.shot([0, .8, 4.2], [0, .68, 0], 26, 400, 450), label: id === 'fig_heldin' ? 'Heldin' : 'Noa (Held)' }); out.push({ img: STU.shot([2.2, .95, 3.3], [0, .68, 0], 26, 400, 450), label: '' });
+      out.push({ img: STU.shot([0, 1.17, .62], [0, 1.15, 0], 26, 400, 450), label: '' }); out.push({ img: STU.shot([.42, 1.19, .52], [0, 1.15, 0], 26, 400, 450), label: '' }); } return out; });
+  await sheet(P, r, 'r3_heldin.webp', { cols: 4, cw: 400, ch: 450 });
 }
 if (has('noa')) {
   const pair = async (view) => P.evaluate(([view, FIGC]) => { const imgs = []; for (const k of ['pilot', 'neu']) { STU.clear(); const o = k === 'pilot' ? pilotMake('noa', 1.32) : STU.fig('fig_noa'); STU.add(o, 0, 0, 0); STU.tick(o, 1.3);
@@ -73,7 +79,7 @@ if (has('noa')) {
 }
 if (has('npc')) {
   const line = await P.evaluate((ids) => { STU.clear(); const n = ids.length; const out = []; ids.forEach((id, i) => { const o = STU.fig(id); const x = (i - (n - 1) / 2) * .62; STU.add(o, x, -Math.abs(i - (n - 1) / 2) * .06, -x * .12); STU.tick(o, .7 + i * .37); });
-    STU.sun.shadow.camera.updateProjectionMatrix(); return STU.shot([0, 1.25, 8.2], [0, .82, 0], 28, 1600, 900); }, ['fig_noa', ...NPCS_]);
+    STU.sun.shadow.camera.updateProjectionMatrix(); return STU.shot([0, 1.25, 8.8], [0, .82, 0], 28, 1600, 900); }, ['fig_noa', 'fig_heldin', ...NPCS_]);
   await sheet(P, [{ img: line, label: 'Runde 2: Noa + alle neuen NPCs (Figurenbaukasten, gleiche Kamera)' }], (has('r2') ? 'r3_aufstellung.webp' : 'npc_aufstellung.webp'), { cols: 1, cw: 1600, ch: 900 });
   const labs = await P.evaluate((ids) => ids.map(id => id), ['fig_noa', ...NPCS_]);
   // Nahbögen: je Figur Ganzkörper + Gesicht
@@ -95,12 +101,12 @@ await P.evaluate(() => { try { STU.rr.domElement.remove(); STU.rr.dispose(); ter
 res.fehlerStudio = P.errs; await P.ctx.close();
 if (has('welt')) {
   const p = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } }); await newGame(p, { team: [[1, 12]], view: 'third' });
-  await p.evaluate(async (ids) => { for (const k of ids) await pilotLoad(k); R3.ofk = null; }, ['fig_noa', ...NPCS_]);
+  await p.evaluate(async (ids) => { G.outfit = Object.assign(G.outfit || {}, { body: 'heldin' }); for (const k of ids) await pilotLoad(k); R3.ofk = null; }, ['fig_heldin', 'fig_noa', ...NPCS_]);
   const pos = await p.evaluate(() => { mode = 'world'; loadMap('morgenau', 5, 5); const M = cur; const ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); let best = null, bs = -1;
     for (let y = 7; y < M.h - 3; y++)for (let x = 4; x < M.w - 4; x++) { let n = 0; for (let dy = -6; dy <= 1; dy++)for (let dx = -3; dx <= 3; dx++)if (ok(x + dx, y + dy)) n++; if (n > bs) { bs = n; best = [x, y]; } } return best; });
   await p.evaluate(([x, y]) => { const id = cur.id || 'morgenau'; NPCS[id] = NPCS[id] || []; NPCS[id].push({ x: x - 1, y: y - 3, c: '#e8e8e8', t: 'talk', fig: 'veyran', d: 'down', txt: ['Hallo!'] }, { x: x + 1, y: y - 3, c: '#c8463a', t: 'talk', fig: 'rayan', d: 'down', txt: ['Na?'] },
     { x: x - 2, y: y - 4, c: '#c9a77c', t: 'talk', fig: 'mama', d: 'down', txt: ['Hallo!'] }, { x: x + 2, y: y - 4, c: '#7a9a5a', t: 'talk', d: 'down', txt: ['Hallo!'] }, { x: x, y: y - 5, c: '#6aa0e0', t: 'talk', d: 'down', txt: ['Hallo!'] });
-    VILL.list = []; G.time = 10.5 * 60; mode = 'world'; R3.mapId = null; loadMap(id, x, y); P.dir = 'up'; P.ang = 0; setView('third', true); }, pos);
+    VILL.list = []; G.time = 10.5 * 60; mode = 'world'; loadMap('route1', 9, 12); R3.mapId = null; loadMap(id, x, y); P.dir = 'up'; P.ang = 0; setView('third', true); }, pos);
   p.setDefaultTimeout(180000); await p.waitForTimeout(6000); await p.evaluate(() => { document.querySelectorAll('.toast,#toast').forEach(e => e.remove()); });
   const b = await p.screenshot({ timeout: 180000 }); await toWebp(p, 'data:image/png;base64,' + b.toString('base64'), (has('r2') ? 'r3_morgenau.webp' : 'welt_morgenau.webp'));
   const r = await p.evaluate(() => { const S = R3.scene, r = R3.r; r.info.autoReset = false; r.info.reset(); r.render(S, R3.activeCam || R3.cam); const info = { calls: r.info.render.calls, tris: r.info.render.triangles }; r.info.autoReset = true;

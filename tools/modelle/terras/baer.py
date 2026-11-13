@@ -5,8 +5,8 @@ from tbau import *
 ART = [a for a in sys.argv[1:] if a.isdigit()]; ART = ART[0] if ART else '007'
 OUT = [a for a in sys.argv[1:] if a.endswith('.glb')]; OUT = OUT[0] if OUT else '/tmp/t%s.glb' % ART
 FORM = '--form' in sys.argv
-K = {'007': dict(name='t007', H=.55, k=1.0, fell='#a8703e', creme='#f3dfb4', blatt='#8cc63a', blatt2='#5f9e2a', bluete='#ff9fc0', coat=0, iris=('#7a4a20', '#3a1a08', '#c89050'), RE=.04),
-     '008': dict(name='t008', H=.78, k=1.35, fell='#86b04a', creme='#f0dcae', blatt='#82c23e', blatt2='#4f8e2a', bluete='#ff9fc0', coat=1, iris=('#8a5a24', '#3a1a08', '#d0a060'), RE=.036),
+K = {'007': dict(name='t007', H=.55, k=1.0, fell='#a8703e', creme='#f3dfb4', blatt='#8cc63a', blatt2='#5f9e2a', bluete='#ff9fc0', coat=0, iris=('#9a6228', '#3a1a08', '#e0a860'), RE=.052),
+     '008': dict(name='t008', H=.78, k=1.35, fell='#86b04a', creme='#f0dcae', blatt='#82c23e', blatt2='#4f8e2a', bluete='#ff9fc0', coat=1, iris=('#9a6228', '#3a1a08', '#e0a860'), RE=.044),
      '009': dict(name='t009', H=1.1, k=1.0, fell='#7aa848', creme='#efdcae', blatt='#7fc23e', blatt2='#3f7e22', bluete='#ff86b8', coat=2, iris=('#8a5a24', '#3a1a08', '#d8a860'), RE=.03)}[ART]
 start(K['name'], K['H'])
 treg('fell', K['fell']); treg('fell_kopf', K['fell']); treg('creme', K['creme']); treg('ohr_innen', '#f3dfb4'); treg('nase', '#3a2420', 'nase'); treg('ballen', '#ff9fb0', 'haut')
@@ -28,7 +28,7 @@ if ART in ('007', '008'):
     C.ARM = [V(.095 * s_, -.005, .325 * s_), V(.125 * s_, -.02, .25 * s_), V(.12 * s_, -.06, .19 * s_), V(.115 * s_, -.085, .165 * s_)]
     C.LEG = [V(.06 * s_, 0, .16 * s_), V(.065 * s_, -.025, .09 * s_), V(.065 * s_, .0, .03 * s_), V(.065 * s_, -.06, .012 * s_)]
     C.TAIL = [V(0, .1 * s_, .14 * s_), V(0, .13 * s_, .15 * s_)]
-    HR = (.15 * s_ ** .8, .14 * s_ ** .8, .135 * s_ ** .8); HC = C.SPB[4] + V(0, -.015 * s_, HR[2] * .72)
+    HR = (.17 * s_ ** .8, .155 * s_ ** .8, .15 * s_ ** .8); HC = C.SPB[4] + V(0, -.015 * s_, HR[2] * .72)
     body = glied('Rumpf', [V(0, .005, .08 * s_)] + C.SPB + [HC + V(0, 0, -.03)], [(.07 * s_, .06 * s_), (.11 * s_, .1 * s_), (.125 * s_, .115 * s_), (.115 * s_, .1 * s_), (.09 * s_, .08 * s_), (.07 * s_, .065 * s_), (.06 * s_, .06 * s_)], ring=20, n=36, flat=(0, -1, 0))
     def bauch(p):
         p = p.copy(); p.y -= .018 * s_ * gauss((p.z - .2 * s_) ** 2 / s_ ** 2, .06) * ss(0, -.05, p.y); return p
@@ -51,7 +51,7 @@ if ART in ('007', '008'):
         for k in range(14):
             z = C.SPB[0].z + (C.SPB[3].z - C.SPB[0].z) * ((k * 5) % 14) / 14; a = k * 2.4
             d = Vector((math.cos(a), math.sin(a) * .9, 0)); hit = BVB.ray_cast(V(0, 0, z) + d * .5, -d)
-            if hit[0] and abs(hit[0].y) < .2: leaves.append(blatt(hit[0] - d * .004, (d + V(0, 0, -1.2)).normalized(), .065 * s_, .03 * s_, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.3))
+            if hit[0] and abs(hit[0].y) < .2 and hit[0].z > C.SPB[2].z - .02 * s_: leaves.append(blatt(hit[0] - d * .004, (d + V(0, 0, -1.2)).normalized(), .065 * s_, .03 * s_, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.3))
     parts = [body]
 else:  # 009 Blühro: Vierbeiner (Sohlengänger), Schulterbuckel
     Lb, Lh = .46, .34; Wx = .11
@@ -125,6 +125,6 @@ def paint(P):
     mix(M('fell'), '#4a2a14', .45 * (Z < .03 * C.H))
 gang = {'007': dict(wL=.09, rL=.16, lift=.03), '008': dict(wL=.12, rL=.22, lift=.04)}
 if ART == '009':
-    rig_vierbeiner(1, ohren=True); standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(dict(wL=.3, rL=.5, wLift=.06, rLift=.1, bob=.012, plant=True, tail=.1)), paint, K['iris'], fur_scale=.8, nstr=.35)
+    rig_vierbeiner(1, ohren=True); standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(dict(wL=.3, rL=.5, wLift=.06, rLift=.1, bob=.012, plant=True, tail=.1)), paint, K['iris'], fur_scale=.8, nstr=.35, IR=.7)
 else:
-    rig_zweibeiner(True); standard_ablauf(OUT, body_allowed_zb, lambda: clips_zweibeiner(gang[ART]), paint, K['iris'], fur_scale=1.0, nstr=.4)
+    rig_zweibeiner(True); standard_ablauf(OUT, body_allowed_zb, lambda: clips_zweibeiner(gang[ART]), paint, K['iris'], fur_scale=1.0, nstr=.4, IR=.72)

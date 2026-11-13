@@ -5,11 +5,12 @@
 // speed = Felder/s im 3D-Freilauf · ms = 2D-Schritttakt · camH/camD = Kamera-Höhe/-Abstand (3. Person)
 // Bewegungsdynamik 12.11.: Gehen-Taste/voller Stick 2,8 (= 2D-Takt 360 ms, lockerer Trab), Rennen 5 (vorher 3,75/7,5 – bei 0,37 Beinlänge nur mit 9 Schritten/s möglich = „Zappeln“)
 // Übergänge & Bewegung 12.11.: Tempo als Konstanten (leicht änderbar). Rennen 5 (Nutzerentscheidung offen „5 statt 7,5“ → 5 = Standard, s. docs/uebergaenge.md)
-const WALK_SPEED=2.8,RUN_SPEED=5;
+// Nutzer 13.11. 11:03: Gehen war fast so schnell wie Rennen → Gehen deutlich ruhiger (1,9), Rennen bleibt 5
+const WALK_SPEED=1.9,RUN_SPEED=5;
 // Anfahren/Bremsen begrenzt (Felder/s²): sanfter Start statt Ruck, Bremsweg Rennen ≈ 0,8 Feld
 const MOVE_ACC={up:8,upRun:9,down:20,iceUp:2,iceDown:3};
 const MOVE_PARAMS={
- walk:{speed:WALK_SPEED,accel:6,turn:1.7,camH:2.3,camD:3.6,anim:'walk',ms:360},
+ walk:{speed:WALK_SPEED,accel:6,turn:1.7,camH:2.3,camD:3.6,anim:'walk',ms:480},
  run:{speed:RUN_SPEED,accel:4.5,turn:1.55,camH:2.4,camD:3.9,anim:'run',ms:230},
  swim:{speed:2.5,accel:2.6,turn:1.25,camH:1.75,camD:3.3,anim:'swim',ms:420},
  glide:{speed:4,accel:2,turn:1.15,camH:2.7,camD:4.8,anim:'glide',ms:230,sink:.55,lift:2.4},

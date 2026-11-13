@@ -526,3 +526,14 @@ Grundlage `docs/qa-mechanik.md` (Status je Mangel dort im Abschnitt „Nachbesse
 - Komponenten: HUD-Ortsschild, Gebietsschild, Dialog mit Sprecher-Schild und rundem Weiter-Knopf, Kampf-Statuskarten (Level-Pille, KP-Verlauf mit Nachlauf), Befehlskarten (Team/Tasche/Rückzug + breite „Kampf“-Karte), Attacken mit Typ-Streifen, Chronik/Team/Dex/Tasche/Optionen einheitlich.
 - Vorschauen `test/ui2/<vorher|n1|n2|n3>_<szene>_<g|k>.webp` (n3 = Endstand) (`node test/ui2/shots.mjs <tag>`), Doku docs/ui-design.md.
 - Tests (13.11. 07:32): smoke „Keine Fehler.“, uebergaenge_qa 97 ✓ / 0 ✗ (28/28 Anläufe), ui2-Vorschauen ohne Seitenfehler.
+
+## Stabilität PC (Agent „Stabilität PC“, Opus 5.5 · hoch) – 13.11.
+- Anlass: Werkstatt im Leitstand fror auf Christophs Laptop (Intel Iris Xe) ein. Ursachen bestätigt: 59 zählte Iris/Arc/Radeon als „stark“ → Stufe hoch; 43 verwirft Bilder > 250 ms → Automatik/Wächter blind; alle Modelle gleichzeitig (Werkstatt: 28 Skript-Tags ≈ 26 MB im Kopf); Spiel-Iframe teilt den Hauptthread mit dem Leitstand; Beenden/Strg+Q erreichten das Spiel nicht.
+- **Neu `src/61-stabil.js`:** GPU-Klasse → Startstufe (Iris Xe mittel, UHD/HD niedrig, nur dediziert hoch), PC 60 fps / integriert 30, DPR 1,25; Wachhund (Bildkosten, Ø > 45 ms Stufe runter → Skala bis 0,5; Notbremse; hoch erst nach 10 s stabil; Halbzeit-Budget auf „niedrig“); Modell-Warteschlange `window.VMODEL_QUEUE` (eins nach dem anderen, Werkstatt lädt Modell-Skripte erst bei Bedarf über `window.PILOT_LAZY`); `postMessage {veyra:'stop'|'key'|'ping'}`; Pause unsichtbar/außerhalb, 5 fps ohne Fokus; Badge „fps · Stufe“; `window.VSTAB.info()`.
+- Fremde Dateien (minimal): `src/10-mon3d.js` (Drehansicht-Schleife endet ohne Ansicht), `tools/leitstand/leitstand.html` (Beenden per Nachricht ≤ 300 ms, Strg+Q/Esc-Weiterleitung, Qualitätswahl, `#lb[hidden]`-Fix), `tools/werkstatt-build.mjs` (PILOT_LAZY statt Skript-Tags).
+- Messung (SwiftShader, relativ): Morgenau rAF Ø 6000 → 23–44 ms; Leitstand-Außenseite 3717 → 40 ms; „Spiel beenden“ 342 s → 1,5 s. Doku docs/stabilitaet.md, Test `node test/stabil_qa.mjs`.
+
+## UI-Design Runde 2 – App-Icon, Startablauf, Tasche, Fangkarte (Opus 5.5 · hoch) – 13.11.
+- Eigenes App-Icon „V mit Kristall-Funke“ (public/icons/*, Quelle icon.svg, Erzeuger tools/icon/icon_svg.py), Manifest-Farben #141a30.
+- Alter Titel auf dem iPhone: Service Worker lieferte index.html cache-first unter festem Cache-Namen → jetzt Seite/Manifest/Icons zuerst aus dem Netz (public/sw.js); Startbildschirm und Opening-Endbild tragen die neue Wortmarke; Film-Standbild nicht mehr hinter dem Titel.
+- Taschen-Symbole, Chronik ≥ 1100 px größer, Fang-/Siegkarte im neuen Look. Bilder test/ui2/r2_*.webp (Kopie test/ui/), Doku docs/ui-design.md › Runde 2.

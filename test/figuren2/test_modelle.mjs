@@ -19,10 +19,10 @@ for (const c of chk) {
 }
 const map = await p.evaluate(() => ({ held: figModelFor('#000', '#000', { body: 'held' }), heldin: figModelFor('#000', '#000', { body: 'heldin' }), veyran: figModelFor('#fff', '#fff', { look: FIGURES.veyran.look }),
   mirael: figModelFor('#fff', '#fff', { look: FIGURES.mirael.look }), shop: figModelFor('#6aa0e0', '#333'), buerger: figModelFor('#7a9a5a', '#333'), tarek: figModelFor('#fff', '#fff', { look: FIGURES.tarek.look }) }));
-R.t('Zuordnung Typ → Modell', map.held === 'fig_noa' && map.heldin === null && map.veyran === 'fig_veyran' && map.mirael === 'fig_mirael' && map.shop === 'fig_haendler' && /fig_buerger_/.test(map.buerger) && map.tarek === null, map);
+R.t('Zuordnung Typ → Modell', map.held === 'fig_noa' && map.heldin === 'fig_heldin' && map.veyran === 'fig_veyran' && map.mirael === 'fig_mirael' && map.shop === 'fig_haendler' && /fig_buerger_/.test(map.buerger) && map.tarek === null, map);
 // Gang: Tempo 2,8 und 5 Felder/s → Gewichte jog bzw. run, Phase läuft
-const gait = await p.evaluate(() => { const o = figMake('fig_noa', null), U = o.userData, out = {}; for (const v of [0, 1, 2.8, 5]) { for (let i = 0; i < 90; i++) { o.position.x += v / 60; pilotTick(o, 1 / 60, {}); } out[v] = Object.fromEntries(Object.entries(U.w).map(([k, x]) => [k, +x.toFixed(2)])); } return out; });
-R.t('Gang: 2,8 → Laufen (jog), 5 → Rennen (run)', gait['2.8'].jog > .7 && gait['5'].run > .7 && gait['0'].idle > .9, gait);
+const gait = await p.evaluate(() => { const o = figMake('fig_noa', null), U = o.userData, out = {}; for (const v of [0, 1.9, 2.8, 5]) { for (let i = 0; i < 90; i++) { o.position.x += v / 60; pilotTick(o, 1 / 60, {}); } out[v] = Object.fromEntries(Object.entries(U.w).map(([k, x]) => [k, +x.toFixed(2)])); } return out; });
+R.t('Gang: 1,9 → Gehen (walk), 5 → Rennen (run)', gait['1.9'].walk > .8 && gait['5'].run > .7 && gait['0'].idle > .9, gait);
 // Morgenau mit Figuren-NPCs (person3d-Haken)
 await p.evaluate(() => { NPCS.morgenau.push({ x: 9, y: 9, c: '#e8e8e8', t: 'talk', fig: 'veyran', txt: ['Hallo!'] }, { x: 10, y: 9, c: '#6aa0e0', t: 'talk', txt: ['Hallo!'] }); R3.ofk = null; mode = 'world'; loadMap('morgenau', 8, 10); });
 await p.waitForTimeout(3000);

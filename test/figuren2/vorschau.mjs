@@ -54,6 +54,12 @@ if (has('dev')) {   // schneller Arbeitsbogen: Noa vorn/schräg/Gesicht + Idle-P
     out.push({ img: STU.shot([h * 3.1, h * .6, 0], [0, h * .52, 0], 26, 400, 900), label: 'seite' }); out.push({ img: STU.shot([.1 * h, h * .93, h * .5], [0, h * .9, 0], 26, 400, 900), label: 'Gesicht' }); return out; }, process.argv[3] || 'fig_noa');
   await sheet(P, d, 'dev.webp', { cols: 4, cw: 400, ch: 900 });
 }
+if (has('heldin')) {   // Heldin (Spielerfigur des Nutzers): ganz, schräg, Gesicht + Noa zum Vergleich
+  const r = await P.evaluate(() => { const out = []; for (const id of ['fig_heldin', 'fig_noa']) { STU.clear(); const o = STU.fig(id); STU.add(o, 0, 0, 0); STU.tick(o, 1.3); const U = o.userData; U.blink.next = 1e12; U.eye.next = 1e12; U.eye.tx = U.eye.ty = 0; pilotExpr(o, 'laecheln'); STU.tick(o, .6);
+      out.push({ img: STU.shot([0, .8, 4.2], [0, .68, 0], 26, 400, 450), label: id === 'fig_heldin' ? 'Heldin' : 'Noa (Held)' }); out.push({ img: STU.shot([2.2, .95, 3.3], [0, .68, 0], 26, 400, 450), label: '' });
+      out.push({ img: STU.shot([0, 1.17, .62], [0, 1.15, 0], 26, 400, 450), label: '' }); out.push({ img: STU.shot([.42, 1.19, .52], [0, 1.15, 0], 26, 400, 450), label: '' }); } return out; });
+  await sheet(P, r, 'r3_heldin.webp', { cols: 4, cw: 400, ch: 450 });
+}
 if (has('noa')) {
   const pair = async (view) => P.evaluate(([view, FIGC]) => { const imgs = []; for (const k of ['pilot', 'neu']) { STU.clear(); const o = k === 'pilot' ? pilotMake('noa', 1.32) : STU.fig('fig_noa'); STU.add(o, 0, 0, 0); STU.tick(o, 1.3);
     const V = { vorn: [[0, .8, 4.3], [0, .68, 0], 26], schraeg: [[2.5, 1.0, 3.5], [0, .68, 0], 26], gesicht: [[.16, 1.2, .78], [0, 1.16, 0], 26] }[view]; imgs.push(STU.shot(V[0], V[1], V[2], 800, 900)); } return imgs; }, [view, FIG_CODE('held')]);
@@ -95,7 +101,7 @@ await P.evaluate(() => { try { STU.rr.domElement.remove(); STU.rr.dispose(); ter
 res.fehlerStudio = P.errs; await P.ctx.close();
 if (has('welt')) {
   const p = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } }); await newGame(p, { team: [[1, 12]], view: 'third' });
-  await p.evaluate(async (ids) => { for (const k of ids) await pilotLoad(k); R3.ofk = null; }, ['fig_noa', ...NPCS_]);
+  await p.evaluate(async (ids) => { G.outfit = Object.assign(G.outfit || {}, { body: 'heldin' }); for (const k of ids) await pilotLoad(k); R3.ofk = null; }, ['fig_heldin', 'fig_noa', ...NPCS_]);
   const pos = await p.evaluate(() => { mode = 'world'; loadMap('morgenau', 5, 5); const M = cur; const ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); let best = null, bs = -1;
     for (let y = 7; y < M.h - 3; y++)for (let x = 4; x < M.w - 4; x++) { let n = 0; for (let dy = -6; dy <= 1; dy++)for (let dx = -3; dx <= 3; dx++)if (ok(x + dx, y + dy)) n++; if (n > bs) { bs = n; best = [x, y]; } } return best; });
   await p.evaluate(([x, y]) => { const id = cur.id || 'morgenau'; NPCS[id] = NPCS[id] || []; NPCS[id].push({ x: x - 1, y: y - 3, c: '#e8e8e8', t: 'talk', fig: 'veyran', d: 'down', txt: ['Hallo!'] }, { x: x + 1, y: y - 3, c: '#c8463a', t: 'talk', fig: 'rayan', d: 'down', txt: ['Na?'] },

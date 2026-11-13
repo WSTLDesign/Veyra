@@ -62,7 +62,7 @@ async function partA(tag, root) {
   note(`[${tag}] Modelle: ${JSON.stringify(M.models).slice(0, 600)}`);
   return p;
 }
-if (VOR && ONLY !== 'n') { const pv = await partA('v', 'v'); await pv.screenshot({ path: here('stabil_vorher_route1.png') }); await pv.context().close(); }
+if (VOR && ONLY !== 'n') { const pv = await partA('v', 'v'); await pv.screenshot({ path: here('stabil_vorher_route1.png') }).catch(e => note('Bildschirmfoto Zeitüberschreitung: ' + e.message.slice(0, 60))); await pv.context().close(); }
 const p = await partA('n', 'n'); const ev = (f, a) => p.evaluate(f, a); const W = ms => p.waitForTimeout(ms); const N = R.mess.n;
 t('1 Iris Xe → Stufe „mittel“, 30 fps, DPR ≤ 1,25', N.start.stab && N.start.stab.cls === 'igpu' && N.start.tier === 'mid' && N.start.stab.cap === 30 && N.start.dpr <= 1.25, { cls: N.start.stab && N.start.stab.cls, tier: N.start.tier, cap: N.start.stab && N.start.stab.cap, dpr: N.start.dpr });
 t('1 GFX.strong für integrierte Grafik aus', N.start.strong === false, N.start.strong);
@@ -106,7 +106,7 @@ await W(1500);
   t('4a stop → innerhalb 500 ms keine Bilder mehr', a2 === a1, { a1, a2, dt: st.r && Math.round(st.r.dt) });
   t('4a stop → alle WebGL-Kontexte freigegeben, gespeichert, Ton aus', st.r && st.gl > 0 && st.lost === st.gl && st.saved && st.ac !== 'running', st);
   const idle = await ev(MEAS, 2500); R.mess.n.nachStop = idle; t('4a nach stop ist die Seite ruhig (rAF Ø < 25 ms, keine Long Tasks)', idle.rafAvg < 25 && idle.ltMax < 100, { rafAvg: idle.rafAvg, ltMax: idle.ltMax }); }
-await p.screenshot({ path: here('stabil_nach_stop.png') });
+await p.screenshot({ path: here('stabil_nach_stop.png') }).catch(e => note('Bildschirmfoto Zeitüberschreitung: ' + e.message.slice(0, 60)));
 t('0 keine Seitenfehler (Spiel)', !p.errs.length, p.errs.slice(0, 5)); await p.context().close();
 // ---------- B) Leitstand mit Werkstatt-Build im Rahmen: Start → 20 s → Beenden → Außenseite wieder flüssig ----------
 async function partB(tag, root) {
@@ -128,7 +128,7 @@ async function partB(tag, root) {
     await lp.click('h2'); await lp.waitForTimeout(900); const d0 = await fr.evaluate(() => PERF.frames); await lp.waitForTimeout(3000); const d1 = await fr.evaluate(() => PERF.frames);
     t('5 Leitstand: Fokus außen → Spiel ≤ 5 Bilder/s', (d1 - d0) / 3 <= 5.5, { fps: +((d1 - d0) / 3).toFixed(1) });
     t('5 Werkstatt startet auf „mittel“ oder niedriger, Badge zeigt fps + Stufe', M.innen.stab && M.innen.stab.ws && M.innen.stab.base === 'mid' && /fps|Pause/.test(await fr.evaluate(() => (document.querySelector('#stgBadge .stab') || {}).textContent || '')), { ws: M.innen.stab && M.innen.stab.ws, base: M.innen.stab && M.innen.stab.base, badge: await fr.evaluate(() => (document.querySelector('#stgBadge .stab') || {}).textContent || '') });
-    await lp.screenshot({ path: here('stabil_leitstand.png') });
+    await lp.screenshot({ path: here('stabil_leitstand.png') }).catch(e => note('Bildschirmfoto Zeitüberschreitung: ' + e.message.slice(0, 60)));
   }
   const s0 = Date.now(); await lp.click('#stopGame', { timeout: 15000 }).catch(e => note('Klick Beenden: ' + e.message.slice(0, 100)));
   for (let i = 0; i < 100 && await lp.evaluate(() => !!document.querySelector('#frame iframe')); i++) await lp.waitForTimeout(50);

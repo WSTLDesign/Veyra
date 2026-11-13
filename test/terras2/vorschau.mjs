@@ -80,8 +80,8 @@ if (has('anim')) {
   await sheet(P, cells, 'anim_funki_idle_attack_joy.webp', { cols: 3, cw: 533, ch: 282, title: 'Funki – idle · attack · joy (je 3 Bilder)', sub: 'Clips aus dem Baukasten, Mimik per Shape Keys' });
 }
 if (has('nah')) {
-  const n = await P.evaluate(() => { STU.clear(); const out = []; const o = STU.terra(1, .55); STU.add(o, 0, 0, -.5); STU.tick(o, .5); out.push(STU.shot([.45, .36, .62], [0, .3, 0], 26, 800, 900));
-    STU.clear(); const ids = [4, 6, 3].filter(i => tmReady(i)); const q = STU.terra(6, .8); STU.add(q, 0, 0, -.7); STU.tick(q, .5); out.push(STU.shot([.75, .62, .9], [0, .45, 0], 28, 800, 900)); return out; });
+  const n = await P.evaluate(() => { STU.clear(); const out = []; const o = STU.terra(1, .55); STU.add(o, 0, 0, -.35); STU.tick(o, .3); STU.clip(o, 'idle', .02); out.push(STU.shot([.5, .36, .62], [0, .3, -.05], 30, 800, 900));
+    STU.clear(); const ids = [4, 6, 3].filter(i => tmReady(i)); const q = STU.terra(6, .8); STU.add(q, 0, 0, -.35); STU.tick(q, .3); STU.clip(q, 'idle', .02); out.push(STU.shot([.55, .62, 1.05], [0, .5, -.1], 30, 800, 900)); return out; });
   await sheet(P, [{ img: n[0], label: 'Fell (Funki): Striche, Büschel, Normalkarte' }, { img: n[1], label: 'Haut + Kristallkrone (Aquilo) nah' }], 'nah_fell_schuppen.webp', { cols: 2, cw: 800, ch: 900 });
 }
 await P.evaluate(() => { try { STU.rr.domElement.remove(); STU.rr.dispose(); terrainY = window.__ty; mode = 'world'; } catch (e) { } });

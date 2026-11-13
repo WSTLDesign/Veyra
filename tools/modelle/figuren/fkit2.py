@@ -436,7 +436,8 @@ def gait(t, L, stance, hipz, bob, lift, lean, armsw, elbow, run=False):
             w = (u - stance) / (1 - stance); e = .5 - .5 * m_.cos(m_.pi * w)
             fy = L * (-.5 + e) * stance; fz = lift * m_.sin(m_.pi * w) ** (1.2 if not run else .8) + .02 * kk * (1 - w)
             pitch = .5 * (1 - ss(0, .5, w)) - .22 * ss(.6, 1, w)
-            if run: fz += .05 * kk * m_.sin(m_.pi * w); fy -= L * .06 * m_.sin(m_.pi * w)
+            if run:   # Fersenschwung nach hinten-oben, dann Knie vor
+                fz += .05 * kk * m_.sin(m_.pi * w) + .13 * kk * m_.sin(m_.pi * min(1, w / .65)) * (1 - ss(.55, .9, w)); fy -= L * .14 * m_.sin(m_.pi * min(1, w / .5)) * (w < .5)
         foot = Vector((Lr(D.ANK, s).x, Lr(D.ANK, s).y - fy, ANK_H + fz))
         P.update(leg_ik(s, off, foot, pitch))
     for s in (1, -1):
@@ -499,8 +500,8 @@ FR = {'walk': 30, 'jog': 21, 'run': 17}
 CLIPS = {}
 CLIPS['idle'] = make_action(ARMO, 'idle', 120, idle)
 CLIPS['walk'] = make_action(ARMO, 'walk', FR['walk'], lambda t: dict(gait(t, STRIDE_W, .6, .016 * kk, .009 * kk, .085 * kk, .05, .32, .22), hair_vorn=rx(-.04 + .03 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.05 + .03 * m_.sin(4 * m_.pi * t))))
-CLIPS['jog'] = make_action(ARMO, 'jog', FR['jog'], lambda t: dict(gait(t, STRIDE_J, .42, .045 * kk, .016 * kk, .13 * kk, .12, .45, .95, run=True), hair_vorn=rx(-.1 + .05 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.12 + .05 * m_.sin(4 * m_.pi * t))))
-CLIPS['run'] = make_action(ARMO, 'run', FR['run'], lambda t: dict(gait(t, STRIDE_R, .34, .07 * kk, .022 * kk, .17 * kk, .22, .62, 1.25, run=True), hair_vorn=rx(-.16 + .06 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.2 + .06 * m_.sin(4 * m_.pi * t))))
+CLIPS['jog'] = make_action(ARMO, 'jog', FR['jog'], lambda t: dict(gait(t, STRIDE_J, .4, .04 * kk, .018 * kk, .12 * kk, .2, .5, 1.25, run=True), hair_vorn=rx(-.1 + .05 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.12 + .05 * m_.sin(4 * m_.pi * t))))
+CLIPS['run'] = make_action(ARMO, 'run', FR['run'], lambda t: dict(gait(t, STRIDE_R, .32, .06 * kk, .025 * kk, .16 * kk, .34, .7, 1.45, run=True), hair_vorn=rx(-.16 + .06 * m_.sin(4 * m_.pi * t)), hair_hinten=rx(.2 + .06 * m_.sin(4 * m_.pi * t))))
 CLIPS['winken'] = make_action(ARMO, 'winken', 54, winken, loop=False)
 CLIPS['jubeln'] = make_action(ARMO, 'jubeln', 42, jubeln, loop=False)
 CLIPS['werfen'] = make_action(ARMO, 'werfen', 36, werfen, loop=False)

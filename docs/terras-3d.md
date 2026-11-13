@@ -30,15 +30,15 @@ bash tools/modelle/terras/bauen.sh [001 002 … | alle]     # nimmt die Blender-
 ## 2. Gebaute Arten (13.11.)
 | Modell | Art | Vorlage | Dreiecke (LOD1) | Datei |
 |---|---|---|---|---|
-| t001 | Funki (Runde 2) | Vierbeiner klein | 8,3 k (3,5 k) | 1,05 MB |
-| t002 | Loddo | Vierbeiner mittel, Flammenkragen | 8,2 k | 1,0 MB |
-| t003 | Flammel | Vierbeiner, Flammenmähne, Basaltplatten mit Glutfuge | 8,2 k | 0,98 MB |
-| t004 | Plippi | Wassertier | 8,8 k | 0,63 MB |
-| t005 | Wabbel | Wassertier + Rückenflosse | 8,8 k | 0,62 MB |
-| t006 | Aquilo | Wassertier, Leucht-Tupfen | 8,8 k | 0,61 MB |
-| t007 | Knospi | Zweibeiner (Bild: aufrecht/sitzend) | 8,4 k | 0,88 MB |
-| t008 | Rankel | Zweibeiner, Laubfell | 8,4 k | 0,88 MB |
-| t009 | Blühro | Vierbeiner Sohlengänger, Lilie, Blättermähne, Ranken | 9,4 k | 0,94 MB |
+| t001 | Funki (Runde 2) | Vierbeiner klein | 8,1 k (3,4 k) | 1,05 MB |
+| t002 | Loddo | Vierbeiner mittel, Flammenkragen | 8,1 k (3,4 k) | 1,02 MB |
+| t003 | Flammel | Vierbeiner, Flammenmähne, Basaltplatten mit Glutfuge | 8,1 k (3,4 k) | 0,99 MB |
+| t004 | Plippi | Wassertier | 8,3 k (3,5 k) | 0,61 MB |
+| t005 | Wabbel | Wassertier + Rückenflosse | 8,7 k (3,7 k) | 0,63 MB |
+| t006 | Aquilo | Wassertier, Leucht-Tupfen | 8,8 k (3,8 k) | 0,62 MB |
+| t007 | Knospi | Zweibeiner (Bild: aufrecht/sitzend) | 8,4 k (3,6 k) | 0,88 MB |
+| t008 | Rankel | Zweibeiner, Laubfell | 8,4 k (3,6 k) | 0,88 MB |
+| t009 | Blühro | Vierbeiner Sohlengänger, Lilie, Blättermähne, Ranken | 9,4 k (4,1 k) | 0,93 MB |
 Budget-Ziel 4–8 k (Endstufen bis 10 k): Grundstufen liegen knapp darüber (Gesichtsnetz 1,3 k) – nächste Runde: Lider 12→9 Segmente.
 
 **Funki Runde 2 – behobene Schwächen:** Ohren volumetrisch (Rand ≈ 4× so dick, hohl, Innenfell); Flammenrute als Flammenball mit Kern, 10 Zungen,
@@ -63,6 +63,9 @@ größerer Kopf/Augen nach dem gemalten Bild; Fell-Silhouette aus weichen Klumpe
 → `spiel/models/terras/t<NNN>.js` mit `window.PILOT_SRC['t<NNN>']`. Von mir keine weitere Änderung nötig.
 
 ## 5. Vorschauen und Tests
+Bilder (test/terras2/, 1600×900): funki_pilot_vs_runde2 · funki_mimik · linie_glut|flut|flora · welt_glut|flut|flora (wild im Gras, Route 1) ·
+kampf_glut|flut|flora (echter 3D-Kampf, beide Seiten Modell) · anim_funki_idle_attack_joy · nah_fell_schuppen.
+Ergebnis 13.11. 02:05: terras2_test 20/20 (9 Modelle Welt + Kampf) bzw. 11/11 inkl. Schalter-aus/Konsole; Smoke „Keine Fehler.“
 - `node test/terras2/vorschau.mjs [funki|gesicht|linie|anim|nah|welt|kampf|alle]` (Chromium-Sperre!) → `test/terras2/*.webp` (1600×900).
 - `node test/terras2/terras2_test.mjs` → Welt + Kampf je Modell, Pilot nicht doppelt geladen, Schalter aus = nichts geladen, keine Konsolenfehler.
 

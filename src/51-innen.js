@@ -414,7 +414,7 @@ const CAVE_ST={
  frost:{rock:'#6c8299',rock2:'#b2cce2',lid:'#2a3444',crys:'#bfefff',crys2:'#8ab8ff',mist:'#e6f6ff',mistA:.3,pud:2,pudC:'#7ab4d8',pudG:'#ffffff',fog:'#1a2232',hemi:['#bcd8ff','#2e3a4a',1.05]},
  schatten:{rock:'#3f3549',rock2:'#5e4c70',lid:'#1a1420',crys:'#c79bff',crys2:'#ff8ad8',mist:'#9a7ad8',mistA:.28,pud:3,pudC:'#24143a',pudG:'#c79bff',fog:'#130d1a',hemi:['#9a88cc','#2a2030',.9]}};
 function caveStyle(m){const s=(MAPS[m.id]&&MAPS[m.id].caveStyle)||m.caveStyle;if(s&&CAVE_ST[s])return s;const id=m.id||'';return/glut|lava|magma|vulkan/.test(id)?'glut':/frost|eis|gletscher/.test(id)?'frost':/schatt|moor|nacht|daemmer/.test(id)?'schatten':'nebel';}
-let CAVE_RMAT=null;function caveRockMat(){return CAVE_RMAT||(CAVE_RMAT=addDetail(toonFx(new THREE.MeshToonMaterial({color:'#ffffff',vertexColors:true,gradientMap:toonGrad()}),{nf:0}),'rock',.75));}
+let CAVE_RMAT=null;function caveRockMat(){return CAVE_RMAT||(CAVE_RMAT=addRim(addDetail(toonFx(new THREE.MeshToonMaterial({color:'#ffffff',vertexColors:true,gradientMap:toonGrad()}),{nf:0}),'rock',.75),'#bfdcff',.2));}// Welt-Grafik 3: Feuchtglanz an den Kanten
 const MIST_VS='attribute float aL;varying vec3 vW;varying float vL;varying float vD;void main(){vL=aL;vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;vec4 mv=viewMatrix*w;vD=-mv.z;gl_Position=projectionMatrix*mv;}';
 const MIST_FS='uniform sampler2D uC;uniform float uT;uniform vec3 uCol;uniform float uA;varying vec3 vW;varying float vL;varying float vD;void main(){vec2 p=vW.xz*(.07+vL*.03)+vL*.37;'+
  'float n=texture2D(uC,p+vec2(uT*.007,uT*.004)).r*.62+texture2D(uC,p*2.2-vec2(uT*.011,uT*.003)).g*.38;float a=smoothstep(.36,.82,n)*uA*(1.-vL*.45);a*=smoothstep(.6,2.6,vD)*(1.-smoothstep(16.,26.,vD));gl_FragColor=vec4(uCol,a);}';
@@ -436,7 +436,8 @@ function caveBuild(S,m){const st=caveStyle(m),C=CAVE_ST[st],W=m.w,H=m.h,LID=4.8,
  const col=i=>'#'+cA.clone().lerp(cB,hs(i,17)*.8).getHexString();
  for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!isX(x,y))continue;const d=D[y*W+x],i=y*W+x,j1=hs(x*3,y*5),j2=hs(y*7,x*3);
   const h=d<=1?1.9+j1*.9:d===2?3.0+j1*.9:LID+.3;tall.push([x,y,x+1,y+1,d<=1?h*.8:h]);
-  rk(x+.5+(j1-.5)*.25,h*.48-.1,y+.5+(j2-.5)*.25,.74+j2*.14,h*.52,.74+j1*.14,col(i),i,j1*6);
+  {const nL=Math.max(2,Math.round(h/.95)),lh=h/nL;for(let k=0;k<nL;k++){const jk=hs(i+k*7,k*13),jz=hs(k*5,i+3);// Welt-Grafik 3: Felswand in Schichten (gerundete Bänke, leicht versetzt)
+   rk(x+.5+(j1-.5)*.25+(jk-.5)*.16,(k+.5)*lh-.05,y+.5+(j2-.5)*.25+(jz-.5)*.16,(.8+j2*.14)*(1-k*.05),lh*.66,(.8+j1*.14)*(1-k*.05),col(i+k*3),i+k,j1*6+k*1.3);}}
   if(d<=1){rk(x+.5+(j2-.5)*.3,h*.95,y+.5+(j1-.5)*.3,.42,.38+j2*.2,.42,col(i+3),i+5,j2*6);
    for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){if(isX(x+a,y+b)||hs(x*11+a,y*13+b)>.45)continue;const px=x+.5+a*.46,pz=y+.5+b*.46;
     R.push([iCone(6),col(i+7),w3M(px,.28,pz,.16+j1*.08,.6+j2*.5,.16+j2*.08,0,j1*3,0),null,0]);

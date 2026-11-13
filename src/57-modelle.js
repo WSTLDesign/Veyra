@@ -32,6 +32,8 @@ const PILOT_ONCE=['attack','hit','joy','winken','jubeln','werfen'];
 function pilotMake(k,h,opts){opts=opts||{};const g=PILOT.gltf[k];if(!g||!THREE.SkeletonUtils)return null;const F=PILOT.fix[k]||{};
  const root=new THREE.Group(),body=new THREE.Group(),inner=THREE.SkeletonUtils.clone(g.scene);root.add(body);body.add(inner);inner.rotation.y=F.ry||0;
  toonProApply(inner,{outline:opts.outline||PILOT.outline,mat:opts.mat});
+ // Gesichtsteile (Lider/Brauen/Mund) brauchen keinen Umriss und werfen keinen Schatten → −1–2 Draw-Calls je Figur (auch im Schattenpass)
+ if(F.fig){const rm=[];inner.traverse(m=>{if(m.isMesh&&/Gesicht|Augen/.test(m.name)){m.castShadow=false;for(const c of m.children)if(c.userData&&c.userData.outline)rm.push(c);}});rm.forEach(c=>c.parent.remove(c));}
  inner.updateMatrixWorld(true);const box=new THREE.Box3();let lod1=null,lod0=null;inner.traverse(m=>{if(m.isMesh&&!m.userData.outline){if(/LOD1/.test(m.name)){lod1=m;return;}if(/^Koerper/.test(m.name))lod0=m;m.geometry.boundingBox||m.geometry.computeBoundingBox();box.union(m.geometry.boundingBox.clone().applyMatrix4(m.matrixWorld));}});
  const sz=box.getSize(new THREE.Vector3()),sc=h/Math.max(.001,F.H||sz.y);body.scale.setScalar(sc);inner.position.y=-box.min.y;if(lod1)lod1.visible=false;
  const mixer=new THREE.AnimationMixer(inner),acts={};for(const c of g.animations){const a=mixer.clipAction(c);a.enabled=true;a.setEffectiveWeight(0);a.play();acts[c.name]=a;}

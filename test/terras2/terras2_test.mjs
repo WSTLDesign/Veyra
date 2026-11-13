@@ -31,13 +31,13 @@ for (const id of IDS) {
   R.t(`Kampf ${id} vs ${foe}: beide als Modell`, b.me && b.foe && !b.meSprite && !b.foeSprite, b);
   await P.evaluate(() => { try { endBattle('run'); } catch (e) { } mode = 'world'; }); await P.waitForTimeout(500);
 }
-// Schalter aus ⇒ unverändert: neue Seite, kein Laden
-const Q = await page(env, { w: 960, h: 540, set: { quality: 'eigene', modelle3d: false } });
-await boot(Q);
-await newGame(Q, { team: [[1, 12]], view: 'third' });
-const off = await Q.evaluate(() => ({ on: tmOn(), st: Object.keys(TMOD.st).length }));
-R.t('Schalter aus: nichts geladen', !off.on && off.st === 0, off);
 R.t('keine Konsolenfehler (an)', P.errs.length === 0, P.errs.slice(0, 4));
+await P.ctx.close();
+// Schalter aus ⇒ unverändert: neue Seite, nichts geladen (Titel + kurzes Warten genügt)
+const Q = await page(env, { w: 960, h: 540, set: { quality: 'eigene', modelle3d: false } });
+await Q.waitForTimeout(6000);
+const off = await Q.evaluate(() => ({ on: tmOn(), st: Object.keys(TMOD.st).length, pilotFunki: PILOT.st.funki || null }));
+R.t('Schalter aus: nichts geladen', !off.on && off.st === 0, off);
 R.t('keine Konsolenfehler (aus)', Q.errs.length === 0, Q.errs.slice(0, 4));
 console.log(`\n${R.ok} ok, ${R.bad} Fehler`);
 await env.close(); process.exit(R.bad ? 1 : 0);

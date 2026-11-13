@@ -1,9 +1,12 @@
 # Terra-Serie: Welt + Kampf mit Schalter modelle3d an
-✓ alle Modelle geladen → {"1":{"ok":true,"ms":9099},"4":{"ok":true,"ms":8657},"7":{"ok":true,"ms":10698},"gesamt":10698,"pilotFunki":"serie"}
+✓ alle Modelle geladen → {"1":{"ok":true,"ms":6710},"4":{"ok":true,"ms":5022},"7":{"ok":true,"ms":5975},"gesamt":5975,"pilotFunki":"serie"}
 ✓ Pilot-Funki nicht doppelt geladen → serie
-✓ Welt 1: Modell → {"tm":true,"clips":8,"h":0.69}
+✓ Welt 1: Modell → {"tm":true,"clips":8,"h":0.66}
 ✓ Kampf 1 vs 1: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
 ✓ Welt 4: Modell → {"tm":true,"clips":9,"h":0.64}
 ✓ Kampf 4 vs 4: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
 ✓ Welt 7: Modell → {"tm":true,"clips":8,"h":0.63}
 ✓ Kampf 7 vs 7: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ keine Konsolenfehler (an) → []
+✓ Schalter aus: nichts geladen → {"on":false,"st":0,"pilotFunki":"serie"}
+✓ keine Konsolenfehler (aus) → []

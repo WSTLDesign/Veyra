@@ -1,24 +1,24 @@
 {
  "hoch_morgenau": {
-  "calls": 86,
-  "tris": 229440,
-  "ms": 2462.8,
+  "calls": 85,
+  "tris": 197118,
+  "ms": 2253.8,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_route1": {
-  "calls": 105,
-  "tris": 299398,
-  "ms": 2366,
+  "calls": 95,
+  "tris": 236646,
+  "ms": 2335.5,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
- "hoch_ufer": {
-  "calls": 101,
-  "tris": 212019,
-  "ms": 2879.2,
+ "hoch_hoehle": {
+  "calls": 50,
+  "tris": 85528,
+  "ms": 1711.2,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048

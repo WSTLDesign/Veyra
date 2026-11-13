@@ -68,3 +68,9 @@ Siehe `test/welt2/n1_mess.json` (Draw-Calls, Dreiecke inkl. Schatten- und Bloom-
 - **Palmen:** gebogene, gezackte Wedel mit Mittelrippe und Farbverlauf (`frondGeo`) statt flacher Kugeln.
 - **Budget Hoch ≤ 250 k:** Krone 7 Büschel, Schatten-Stellvertreter 2, ferne Bäume 2 Büschel, Pflanzendichte Hoch 90 % → Route 1 ≈ 243 k (vorher 262 k).
 - Vorschauen: `test/welt2/r2_<szene>_<stufe>.webp`, Vergleiche `r2_vergleich_<szene>.webp`, `r2_stufen_route1.webp`; Messwerte `test/welt2/r2_mess.json`.
+
+## Runde 3 (13.11., bis 04:45)
+- **Gebäude/Wahrzeichen:** Detailtextur auf der GPU gebacken (1024²/512²: Putz mit Kellenstrichen, gerundete Schindeln mit Schattenkante, Bretter mit Maserung, Quader mit Fase), Kontakt-AO an Gebäudefüßen (Wände/Sockel unten dunkler), Umriss dünner und weicher (0,011 statt 0,018, Farbe #4a4048).
+- **Höhlenwände (51-innen):** Felswände in 2–5 gerundeten, versetzten Schichtbänken statt eines gestreckten Blocks; Feuchtglanz als kühles Randlicht.
+- **Höhennebel:** Bodendunst in der Ferne aus Runde 2 (Welthöhe im Nebel-Shader); kein zusätzlicher Pass.
+- Bilder `test/welt2/r3_*.webp`, Vergleiche `r3_vergleich_*.webp`.

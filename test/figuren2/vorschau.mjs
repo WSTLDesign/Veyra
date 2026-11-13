@@ -96,7 +96,7 @@ res.fehlerStudio = P.errs; await P.ctx.close();
 if (has('welt')) {
   const p = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } }); await newGame(p, { team: [[1, 12]], view: 'third' });
   await p.evaluate(async (ids) => { for (const k of ids) await pilotLoad(k); R3.ofk = null; }, ['fig_noa', ...NPCS_]);
-  const pos = await p.evaluate(() => { const M = MAPS.morgenau; const ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); let best = null, bs = -1;
+  const pos = await p.evaluate(() => { mode = 'world'; loadMap('morgenau', 5, 5); const M = MAPS.morgenau; const ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); let best = null, bs = -1;
     for (let y = 7; y < M.h - 3; y++)for (let x = 4; x < M.w - 4; x++) { let n = 0; for (let dy = -6; dy <= 1; dy++)for (let dx = -3; dx <= 3; dx++)if (ok(x + dx, y + dy)) n++; if (n > bs) { bs = n; best = [x, y]; } } return best; });
   await p.evaluate(([x, y]) => { NPCS.morgenau.push({ x: x - 1, y: y - 3, c: '#e8e8e8', t: 'talk', fig: 'veyran', d: 'down', txt: ['Hallo!'] }, { x: x + 1, y: y - 3, c: '#c8463a', t: 'talk', fig: 'rayan', d: 'down', txt: ['Na?'] },
     { x: x - 2, y: y - 4, c: '#c9a77c', t: 'talk', fig: 'mama', d: 'down', txt: ['Hallo!'] }, { x: x + 2, y: y - 4, c: '#7a9a5a', t: 'talk', d: 'down', txt: ['Hallo!'] }, { x: x, y: y - 5, c: '#6aa0e0', t: 'talk', d: 'down', txt: ['Hallo!'] });

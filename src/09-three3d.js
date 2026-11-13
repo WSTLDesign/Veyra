@@ -194,7 +194,15 @@ function w3texGround2(){if(W3T.ground2)return W3T.ground2;const N=256,rk=w3fbm(N
   const R=N/8,row=Math.floor(y/R),fy=y%R,off=Math.floor(hs(row,7)*N),fx=(x+off)%(N/2);
   o[2]=(.6+.26*pl(x,y*4)+.08*pg(x,y)+.08*(hs(row,3)-.5))*sst(0,1.5,fy)*sst(R,R-1.5,fy)*sst(0,1.5,fx)*sst(N/2,N/2-1.5,fx)+.05;
   o[3]=mc(x,y);});}
-function w3texBuild(){if(W3T.build)return W3T.build;const N=256,pa=w3fbm(N,16,3,91),pa2=w3noise(N,64,92),wo=w3fbm(N,4,3,101),wg=w3noise(N,64,102),st=w3fbm(N,8,2,111);
+// Welt-Grafik 3: Gebäude-Detailtextur auf der GPU (Putz mit Kellenstrichen, gerundete Schindeln mit Schattenkante, Bretter mit Maserung, Quader mit Fase)
+const W3BAKE_BUILD='float vnp(vec2 p,vec2 per,float s){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);float a=hh(mod(i,per)+s),b=hh(mod(i+vec2(1.,0.),per)+s),c=hh(mod(i+vec2(0.,1.),per)+s),d=hh(mod(i+1.,per)+s);return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}'+
+ 'void main(){vec2 uv=vUv;float pl=.68+.32*(fbm(uv,8.,1.)-.5)+.1*(fbm2(uv,48.,2.)-.5)+.1*strk(uv,20.,3.,.06);'+
+ 'float row=floor(uv.y*8.),fy=fract(uv.y*8.),sx=uv.x*8.+mod(row,2.)*.5,cx=floor(sx),fx=fract(sx),jt=hh(vec2(mod(cx,8.),row)+.5);'+
+ 'float rnd=length(vec2((fx-.5)*1.6,max(0.,.35-fy)*2.2));float shg=(.52+.36*fy+.14*(jt-.5)+.06*(fbm2(uv,32.,4.)-.5))*smoothstep(1.,.86,rnd)*smoothstep(0.,.06,fx)*smoothstep(1.,.94,fx)*(1.-.32*smoothstep(.88,1.,fy))+.06;'+
+ 'float bx=fract(uv.x*6.),bj=hh(vec2(floor(uv.x*6.),3.));float brd=(.62+.24*vnp(vec2(uv.x*96.,uv.y*6.),vec2(96.,6.),5.)+.1*(bj-.5)+.06*sin(uv.x*600.+vnp(vec2(uv.x*24.,uv.y*3.),vec2(24.,3.),6.)*8.))*smoothstep(0.,.05,bx)*smoothstep(1.,.95,bx)+.05;'+
+ 'float qr=floor(uv.y*4.),qx=fract(uv.x*2.+mod(qr,2.)*.5),qy=fract(uv.y*4.),qj=hh(vec2(mod(floor(uv.x*2.+mod(qr,2.)*.5),2.),qr)+9.);float e=min(min(qx,1.-qx)*.5,min(qy,1.-qy)*.25);'+
+ 'float stn=(.6+.2*(qj-.5)+.18*(fbm(uv,16.,7.)-.5))*(.55+.45*smoothstep(0.,.02,e))*(1.+.12*smoothstep(.02,0.,abs(e-.012)))+.08;gl_FragColor=vec4(pl,shg,brd,stn);}';
+function w3texBuild(){if(W3T.build)return W3T.build;{const T=typeof perfTier==='function'?perfTier():{},t=w3bake(T.name==='high'?1024:512,W3BAKE_BUILD);if(t)return W3T.build=t;}const N=256,pa=w3fbm(N,16,3,91),pa2=w3noise(N,64,92),wo=w3fbm(N,4,3,101),wg=w3noise(N,64,102),st=w3fbm(N,8,2,111);
  return W3T.build=w3dataTex(N,(x,y,o)=>{o[0]=.6+pa(x,y)*.3+pa2(x,y)*.1;
   // Schindeln: 8 Reihen, versetzt, unten dunkler
   const R=N/8,row=Math.floor(y/R),fy=(y%R)/R,sh=(x+(row%2)*N/16)%(N/8),fx=sh/(N/8);o[1]=(.5+.35*fy+.12*hs(row*31+Math.floor((x+(row%2)*N/16)/(N/8)),5))*sst(0,.06,fx)*sst(1,.94,fx)*sst(0,.08,fy)+.08;
@@ -210,7 +218,7 @@ function addDetail(mt,kind,scale){const prev=mt.onBeforeCompile,pk=mt.customProg
  mt.onBeforeCompile=(sh,r)=>{if(prev)prev.call(mt,sh,r);const town=kind==='town';sh.uniforms.uTD={value:town||kind==='bark'?w3texBuild():kind==='rock'?w3texGround2():w3texGround()};
   sh.vertexShader='varying vec3 vDW;varying vec3 vDN;'+(town?'attribute float aMat;varying float vDM;':'')+'\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n{vec4 dw=vec4(transformed,1.);vec3 dn=objectNormal;\n#ifdef USE_INSTANCING\ndw=instanceMatrix*dw;dn=mat3(instanceMatrix)*dn;\n#endif\nvDW=(modelMatrix*dw).xyz;vDN=normalize(mat3(modelMatrix)*dn);'+(town?'vDM=aMat;':'')+'}');
   const pick=town?'float dmK=vDM>9.5?vDM-10.:vDM;float k=dmK<.5?.8:dmK<1.5?dt.r:dmK<2.5?dt.g:dmK<3.5?dt.b:dt.a;float s=dmK<.5?0.:1.;':kind==='rock'?'float k=dt.r;float s=1.;':kind==='bark'?'float k=dt.b;float s=.8;':'float k=dt.r;float s=.7;';
-  sh.fragmentShader='uniform sampler2D uTD;varying vec3 vDW;varying vec3 vDN;'+(town?'varying float vDM;':'')+'\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n{vec3 an=abs(vDN);vec2 tp=an.y>max(an.x,an.z)?vDW.xz:(an.x>an.z?vDW.zy:vDW.xy);vec4 dt=texture2D(uTD,tp*'+sc+');'+pick+'diffuseColor.rgb*=mix(1.,.7+.52*k,s);}');
+  sh.fragmentShader='uniform sampler2D uTD;varying vec3 vDW;varying vec3 vDN;'+(town?'varying float vDM;':'')+'\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n{vec3 an=abs(vDN);vec2 tp=an.y>max(an.x,an.z)?vDW.xz:(an.x>an.z?vDW.zy:vDW.xy);vec4 dt=texture2D(uTD,tp*'+sc+');'+pick+'diffuseColor.rgb*=mix(1.,.7+.52*k,s);'+(town?'diffuseColor.rgb*=.74+.26*smoothstep(.02,.55,vDW.y);':'')+'}');
   // Nachbesserung 1 (W-2/W-3): ferne Wahrzeichen (aMat ≥ 10) bekommen nur gut halb so viel Dunst → bleiben vor dem Horizont lesbar (kein „Zuckerhut“)
   if(town)sh.fragmentShader=sh.fragmentShader.replace('#include <fog_fragment>','#ifdef USE_FOG\nfloat fogFactor=smoothstep(fogNear,fogFar,fogDepth)*(vDM>9.5?.55:1.);gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,fogFactor);\n#endif');};
  const base=pk?pk.call(mt):'';mt.customProgramCacheKey=()=>base+'|d'+kind+sc+(kind==='town'?'w':'');mt.needsUpdate=true;return mt;}
@@ -623,8 +631,8 @@ function build3d(){if(!PAL[cur.theme])PAL[cur.theme]=palOf(cur);const m=cur,p=pa
   [[cx0,-.15,m.w+.3,0],[cx0,m.h+.15,m.w+.3,0]].forEach(([x,z,l])=>add(new THREE.BoxGeometry(l,.06,.1),'#b07a48',M4(x,.72,z)));[[-.15,cz0],[m.w+.15,cz0]].forEach(([x,z])=>add(new THREE.BoxGeometry(.1,.06,m.h+.3),'#b07a48',M4(x,.72,z)));}
  // Schiffskabine (inside+ship): Bullaugen
  if(inside&&m.theme==='ship'){for(let x=2;x<m.w-1;x+=3){glow(g3('port',()=>new THREE.CircleGeometry(.2,14)),'#9fd0f0','#2a3a6a',M4(x+.5,1.3,1.01));add(g3('portR',()=>new THREE.TorusGeometry(.22,.04,6,16)),'#c8a050',M4(x+.5,1.3,1.02));}}
- if(TOWN.length){const tm=new THREE.Mesh(w3merge(TOWN),townMat());tm.castShadow=tm.receiveShadow=true;tm.frustumCulled=false;S.add(tm);if(!inside)addOutline(tm,.018,'#3a3038');S.userData.town=tm;}
- if(PROP.length){const pm=new THREE.Mesh(w3merge(PROP),townMat(1));pm.castShadow=pm.receiveShadow=true;pm.frustumCulled=false;S.add(pm);if(!inside)addOutline(pm,.018,'#3a3038');S.userData.prop=pm;}
+ if(TOWN.length){const tm=new THREE.Mesh(w3merge(TOWN),townMat());tm.castShadow=tm.receiveShadow=true;tm.frustumCulled=false;S.add(tm);if(!inside)addOutline(tm,.011,'#4a4048');S.userData.town=tm;}
+ if(PROP.length){const pm=new THREE.Mesh(w3merge(PROP),townMat(1));pm.castShadow=pm.receiveShadow=true;pm.frustumCulled=false;S.add(pm);if(!inside)addOutline(pm,.011,'#4a4048');S.userData.prop=pm;}
  const gw=glowMesh(GLOW);if(gw){S.add(gw);S.userData.glow=gw;}
  if(LAN.length){const hp=new Float32Array(LAN.length*3);LAN.forEach(([x,y,z],i)=>hp.set([x,y,z+.02],i*3));const hg=new THREE.BufferGeometry();hg.setAttribute('position',new THREE.BufferAttribute(hp,3));
   const halo=new THREE.Points(hg,new THREE.PointsMaterial({color:'#ffc068',size:1.1,map:dotTex(),transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));halo.frustumCulled=false;S.add(halo);S.userData.halo=halo;S.userData.lan=LAN;}

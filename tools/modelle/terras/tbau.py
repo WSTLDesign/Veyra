@@ -785,3 +785,113 @@ def clips_zweibeiner(gang=None):
     make_action(C.ARMO, 'joy', 36, joy, loop=False); make_action(C.ARMO, 'catch', 45, catch, loop=False)
     C.gang = {'walk': [g['wL'], g['wF'] / 30], 'run': [g['rL'], g['rF'] / 30]}
     rest_pose(C.ARMO); return ['idle', 'walk', 'run', 'attack', 'hit', 'faint', 'joy', 'catch']
+
+# ======================= Vorlage 3: VOGEL (Eule/Singvogel; hüpft am Boden, Flügelschlag, Clip „fly“) =======================
+# Landmarken: C.SPV = [Becken, Brust, Halsbasis, Kopfbasis]; C.WING = [Schulter, Ellbogen, Handgelenk, Spitze] (links); C.LEGV = [Hüfte, Ferse, Zehen] (links); C.TAILV = [Basis, Ende]
+def rig_vogel():
+    S = C.SPV; HC = C.HC; hd1 = HC + Vector((0, -.1 * C.HR[1], .95 * C.HR[2]))
+    B = [('root', (0, 0, 0), (0, 0, .15 * C.H), None), ('hips', tuple(S[0]), tuple(S[1]), 'root'), ('chest', tuple(S[1]), tuple(S[2]), 'hips'),
+         ('neck1', tuple(S[2]), tuple(S[2].lerp(S[3], .5)), 'chest'), ('neck2', tuple(S[2].lerp(S[3], .5)), tuple(S[3]), 'neck1'), ('head', tuple(S[3]), tuple(hd1), 'neck2'),
+         ('tail1', tuple(C.TAILV[0]), tuple(C.TAILV[1]), 'hips')]
+    for s in (-1, 1):
+        k = 'L' if s > 0 else 'R'; Wg = [S_(p, s) for p in C.WING]; Lg = [S_(p, s) for p in C.LEGV]; Cc, f = C.EYES[s]
+        B += [('eye.' + k, tuple(Cc), tuple(Cc + f * C.RE * .7), 'head'), ('wing1.' + k, tuple(Wg[0]), tuple(Wg[1]), 'chest'), ('wing2.' + k, tuple(Wg[1]), tuple(Wg[2]), 'wing1.' + k),
+              ('wing3.' + k, tuple(Wg[2]), tuple(Wg[3]), 'wing2.' + k), ('thigh.' + k, tuple(Lg[0]), tuple(Lg[1]), 'hips'), ('foot.' + k, tuple(Lg[1]), tuple(Lg[2]), 'thigh.' + k)]
+        if s in C.EARS:
+            eb, eu, L, fw, side = C.EARS[s]; B += [('ear1.' + k, tuple(eb), tuple(eb + eu * L * .45), 'head'), ('ear2.' + k, tuple(eb + eu * L * .45), tuple(eb + eu * L * .95), 'ear1.' + k)]
+    C.TAILB = ['tail1']; return armature_from(B)
+def body_allowed_vogel(co, r):
+    k = 'L' if co.x > 0 else 'R'
+    if r in C.__dict__.get('FLUEGEL', ()): return ['chest', 'wing1.' + k, 'wing2.' + k, 'wing3.' + k]
+    if r in C.__dict__.get('SCHWANZ', ()): return ['hips', 'tail1']
+    if r in C.__dict__.get('BEIN', ()): return ['hips', 'thigh.' + k, 'foot.' + k]
+    return ['hips', 'chest', 'neck1', 'neck2', 'head', 'tail1']
+def clips_vogel(gang=None):
+    H = C.H; g = dict(wL=.12 * H, rL=.22 * H, wF=18, rF=12); g.update(gang or {})
+    def wings(P, fold, flap=0.0, tw=0.0):
+        for s in (-1, 1):
+            k = 'L' if s > 0 else 'R'; P['wing1.' + k] = qmul(ry(s * (-fold * .9 + flap)), rz(s * tw)); P['wing2.' + k] = ry(s * (-fold * .7 + flap * .4)); P['wing3.' + k] = ry(s * (-fold * .5 + flap * .3))
+        return P
+    def hop(t, hh, L, flap=0.0):
+        ph = 2 * math.pi * t; up = max(0, math.sin(ph)); P = {'hips:loc': V(0, 0, hh * up - .01 * H * (1 - up))}
+        P['chest'] = rx(.08 * math.sin(ph)); P['head'] = rx(-.08 * math.sin(ph)); wings(P, .75 - .3 * up, flap * math.sin(ph * 2))
+        for s in (-1, 1): k = 'L' if s > 0 else 'R'; P['thigh.' + k] = rx(-.5 * up); P['foot.' + k] = rx(.6 * up)
+        P['tail1'] = rx(.2 * math.sin(ph)); return P
+    def idle(t):
+        ph = 2 * math.pi * t; br = math.sin(ph * 3); look = ss(.3, .45, t) * (1 - ss(.62, .78, t)) - .6 * ss(.75, .82, t) * (1 - ss(.9, 1, t))
+        P = {'hips:loc': V(0, 0, .003 * H * br), 'chest': rx(.02 * br), 'head': qmul(rz(.45 * look), ry(.25 * math.sin(ph * 2) * ss(.05, .2, t) * (1 - ss(.25, .3, t)))), 'tail1': rx(.06 * math.sin(ph * 4))}
+        rf = env01(t, .5, .53, .6, .65); wings(P, .8 - .3 * rf, .2 * rf * math.sin(ph * 30)); ears_pose(P, .05 * math.sin(ph * 2)); return P
+    def fly(t):
+        ph = 2 * math.pi * t; P = {'hips:loc': V(0, 0, .03 * H * math.sin(ph)), 'chest': rx(-.15), 'head': rx(.15), 'tail1': rx(-.1)}; wings(P, 0, .9 * math.sin(ph), .1 * math.cos(ph))
+        for s in (-1, 1): k = 'L' if s > 0 else 'R'; P['thigh.' + k] = rx(-.7); P['foot.' + k] = rx(.9)
+        return P
+    def attack(t):
+        c = env01(t, 0, .3, .32, .42); j = env01(t, .32, .48, .62, 1)
+        P = {'hips:loc': V(0, -.15 * H * j, .06 * H * j), 'chest': rx(.25 * c - .2 * j), 'head': rx(.3 * j)}; wings(P, .8 * (1 - c) * (1 - j), .9 * c - .6 * j); ears_pose(P, -.3 * c); return P
+    def hit(t):
+        k_ = math.sin(math.pi * min(1, t * 2.5)) * (1 - t) ** 1.2; P = {'hips:loc': V(0, .08 * H * k_, 0), 'chest': rx(-.25 * k_), 'head': qmul(rx(.3 * k_), ry(.3 * k_))}; wings(P, .8 - .5 * k_, .4 * k_); return P
+    def faint(t):
+        f = ss(.15, .7, t); P = {'root': ry(1.3 * f), 'hips:loc': V(0, 0, -.03 * H * f), 'head': rx(.3 * f)}; wings(P, .8 - .6 * f, -.2 * f); return P
+    def joy(t):
+        h = math.sin(math.pi * ss(.08, .5, t)) * (1 - ss(.5, .62, t)) + .45 * math.sin(math.pi * ss(.55, .85, t))
+        P = {'hips:loc': V(0, 0, .2 * H * h), 'chest': rx(-.15 * h), 'head': rz(.25 * math.sin(t * 4 * math.pi))}; wings(P, .1, .8 * math.sin(t * 8 * 2 * math.pi) * env01(t, 0, .1, .8, .95)); ears_pose(P, -.3 * h); return P
+    def catch(t):
+        fl = env01(t, 0, .1, .2, .35); cr = env01(t, .15, .35, .8, 1); wig = math.sin(t * 6 * 2 * math.pi) * env01(t, .35, .45, .8, .95)
+        P = {'hips:loc': V(0, .04 * H * fl, -.04 * H * cr), 'chest': rz(.15 * wig), 'head': qmul(rx(.25 * cr), rz(.2 * wig))}; wings(P, .9 * cr + .3 * (1 - cr), .3 * abs(wig)); return P
+    make_action(C.ARMO, 'idle', 120, idle); make_action(C.ARMO, 'walk', g['wF'], lambda t: hop(t, .05 * H, g['wL'])); make_action(C.ARMO, 'run', g['rF'], lambda t: hop(t, .09 * H, g['rL'], .6))
+    make_action(C.ARMO, 'fly', 20, fly)
+    make_action(C.ARMO, 'attack', 27, attack, loop=False); make_action(C.ARMO, 'hit', 15, hit, loop=False); make_action(C.ARMO, 'faint', 36, faint, loop=False)
+    make_action(C.ARMO, 'joy', 36, joy, loop=False); make_action(C.ARMO, 'catch', 45, catch, loop=False)
+    C.gang = {'walk': [g['wL'], g['wF'] / 30], 'run': [g['rL'], g['rF'] / 30]}
+    rest_pose(C.ARMO); return ['idle', 'walk', 'run', 'fly', 'attack', 'hit', 'faint', 'joy', 'catch']
+
+# ======================= Vorlage 5: SCHWEBEND (schwebt über dem Boden, Flügelchen flattern; Bewegung = Gleiten mit Neigung) =======================
+# Landmarken: C.SPS = [Unterkörper, Brust, Kopfbasis]; C.ARMS = [Schulter, Pfote] (links); C.FLW = Flügelansatz (links); C.TAILV = [Basis, Ende] (z. B. Laterne)
+def rig_schwebend():
+    S = C.SPS; HC = C.HC; hd1 = HC + Vector((0, -.1 * C.HR[1], .95 * C.HR[2]))
+    B = [('root', (0, 0, 0), (0, 0, .15 * C.H), None), ('hips', tuple(S[0]), tuple(S[1]), 'root'), ('chest', tuple(S[1]), tuple(S[2]), 'hips'),
+         ('neck2', tuple(S[2]), tuple(S[2] + Vector((0, 0, .02 * C.H))), 'chest'), ('head', tuple(S[2] + Vector((0, 0, .02 * C.H))), tuple(hd1), 'neck2'), ('tail1', tuple(C.TAILV[0]), tuple(C.TAILV[1]), 'hips')]
+    for s in (-1, 1):
+        k = 'L' if s > 0 else 'R'; A = [S_(p, s) for p in C.ARMS]; Fw = S_(C.FLW, s); Cc, f = C.EYES[s]
+        B += [('eye.' + k, tuple(Cc), tuple(Cc + f * C.RE * .7), 'head'), ('arm.' + k, tuple(A[0]), tuple(A[1]), 'chest'), ('wing1.' + k, tuple(Fw), tuple(Fw + Vector((s * .1, .1, .05)) * C.H), 'chest')]
+        if s in C.EARS:
+            eb, eu, L, fw, side = C.EARS[s]; B += [('ear1.' + k, tuple(eb), tuple(eb + eu * L * .45), 'head'), ('ear2.' + k, tuple(eb + eu * L * .45), tuple(eb + eu * L * .95), 'ear1.' + k)]
+    C.TAILB = ['tail1']; return armature_from(B)
+def body_allowed_schwebe(co, r):
+    k = 'L' if co.x > 0 else 'R'
+    if r in C.__dict__.get('FLUEGEL', ()): return ['chest', 'wing1.' + k]
+    if r in C.__dict__.get('SCHWANZ', ()): return ['hips', 'tail1']
+    if r in C.__dict__.get('ARMREG', ()): return ['chest', 'arm.' + k]
+    return ['hips', 'chest', 'neck2', 'head', 'tail1']
+def clips_schwebend(gang=None):
+    H = C.H; g = dict(wL=.3 * H, rL=.5 * H, wF=30, rF=20); g.update(gang or {})
+    def flutter(P, t, f=12, a=.5, base=0.0):
+        for s in (-1, 1): k = 'L' if s > 0 else 'R'; P['wing1.' + k] = ry(s * (base + a * math.sin(2 * math.pi * t * f)))
+        return P
+    def arms(P, a):
+        for s in (-1, 1): P['arm.' + ('L' if s > 0 else 'R')] = rx(a)
+        return P
+    def idle(t):
+        ph = 2 * math.pi * t; look = ss(.3, .45, t) * (1 - ss(.62, .78, t)) - .6 * ss(.75, .82, t) * (1 - ss(.9, 1, t))
+        P = {'hips:loc': V(0, 0, .04 * H * math.sin(ph * 2)), 'chest': rx(.04 * math.sin(ph * 2 + 1)), 'head': qmul(rz(.35 * look), ry(.12 * math.sin(ph))), 'tail1': rx(.15 * math.sin(ph * 2 - .8))}
+        flutter(P, t, 16, .45); arms(P, -.2 + .1 * math.sin(ph * 2)); ears_pose(P, .15 * math.sin(ph * 2 - 1.2)); return P
+    def glide(t, run=False):
+        ph = 2 * math.pi * t; P = {'hips:loc': V(0, 0, .04 * H * math.sin(ph)), 'root': rx(.18 if run else .1), 'head': rx(-.1), 'tail1': rx(-.2 + .1 * math.sin(ph))}
+        flutter(P, t, 6 if run else 4, .6); arms(P, .3); ears_pose(P, .35 if run else .2); return P
+    def attack(t):
+        c = env01(t, 0, .3, .32, .42); j = env01(t, .32, .48, .62, 1)
+        P = {'hips:loc': V(0, -.2 * H * j, .05 * H * c), 'root': rx(.3 * j - .2 * c), 'head': rx(.2 * j)}; flutter(P, t, 6, .7); arms(P, -1.2 * c + .6 * j); ears_pose(P, -.4 * c + .5 * j); return P
+    def hit(t):
+        k_ = math.sin(math.pi * min(1, t * 2.5)) * (1 - t) ** 1.2; P = {'hips:loc': V(0, .1 * H * k_, -.03 * H * k_), 'root': rx(-.35 * k_), 'head': ry(.3 * k_)}; flutter(P, t, 3, .3); arms(P, -.8 * k_); ears_pose(P, .9 * k_); return P
+    def faint(t):
+        f = ss(.1, .7, t); P = {'hips:loc': V(0, 0, -.06 * H * f), 'root': ry(1.25 * f), 'head': rx(.3 * f)}; flutter(P, t, 1, .05, -.3 * f); arms(P, .4 * f); ears_pose(P, .8 * f); return P
+    def joy(t):
+        h = math.sin(math.pi * ss(.05, .85, t)); P = {'hips:loc': V(0, 0, .18 * H * h), 'root': rz(2 * math.pi * ss(.15, .75, t))}; flutter(P, t, 10, .7); arms(P, -2.0 * h); ears_pose(P, -.4 * h); return P
+    def catch(t):
+        fl = env01(t, 0, .1, .2, .35); cr = env01(t, .15, .35, .8, 1); wig = math.sin(t * 6 * 2 * math.pi) * env01(t, .35, .45, .8, .95)
+        P = {'hips:loc': V(0, .04 * H * fl, -.05 * H * cr), 'root': rz(.15 * wig), 'head': rx(.3 * cr)}; flutter(P, t, 14, .5 * (1 - cr) + .2); arms(P, -1.3 * cr); ears_pose(P, .9 * max(fl, cr)); return P
+    make_action(C.ARMO, 'idle', 120, idle); make_action(C.ARMO, 'walk', g['wF'], lambda t: glide(t)); make_action(C.ARMO, 'run', g['rF'], lambda t: glide(t, True))
+    make_action(C.ARMO, 'attack', 27, attack, loop=False); make_action(C.ARMO, 'hit', 15, hit, loop=False); make_action(C.ARMO, 'faint', 36, faint, loop=False)
+    make_action(C.ARMO, 'joy', 36, joy, loop=False); make_action(C.ARMO, 'catch', 45, catch, loop=False)
+    C.gang = {'walk': [g['wL'], g['wF'] / 30], 'run': [g['rL'], g['rF'] / 30]}
+    rest_pose(C.ARMO); return ['idle', 'walk', 'run', 'attack', 'hit', 'faint', 'joy', 'catch']

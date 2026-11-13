@@ -1,0 +1,46 @@
+# Figuren Runde 2 – Modelle (Schalter an)
+✓ alle Figuren geladen → {"fig_noa":613,"fig_rayan":4489,"fig_veyran":4872,"fig_mama":9110,"fig_mirael":4726,"fig_haendler":8031,"fig_buerger_a":6214,"fig_buerger_b":3437,"fig_buerger_c":8168,"fig_buerger_d":5072}
+✓ fig_noa gebaut → {"id":"fig_noa","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13463,"lodTris":5871,"lod":true,"h":1.36}
+✓ fig_noa Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_noa 9 Shape Keys → 9
+✓ fig_noa Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13463,"lod":5871}
+✓ fig_rayan gebaut → {"id":"fig_rayan","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13464,"lodTris":5871,"lod":true,"h":1.49}
+✓ fig_rayan Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_rayan 9 Shape Keys → 9
+✓ fig_rayan Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13464,"lod":5871}
+✓ fig_veyran gebaut → {"id":"fig_veyran","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13463,"lodTris":5871,"lod":true,"h":1.57}
+✓ fig_veyran Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_veyran 9 Shape Keys → 9
+✓ fig_veyran Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13463,"lod":5871}
+✓ fig_mama gebaut → {"id":"fig_mama","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13464,"lodTris":5871,"lod":true,"h":1.63}
+✓ fig_mama Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_mama 9 Shape Keys → 9
+✓ fig_mama Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13464,"lod":5871}
+✓ fig_mirael gebaut → {"id":"fig_mirael","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13463,"lodTris":5871,"lod":true,"h":1.63}
+✓ fig_mirael Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_mirael 9 Shape Keys → 9
+✓ fig_mirael Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13463,"lod":5871}
+✓ fig_haendler gebaut → {"id":"fig_haendler","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13411,"lodTris":5819,"lod":true,"h":1.74}
+✓ fig_haendler Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_haendler 9 Shape Keys → 9
+✓ fig_haendler Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13411,"lod":5819}
+✓ fig_buerger_a gebaut → {"id":"fig_buerger_a","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13463,"lodTris":5870,"lod":true,"h":1.6}
+✓ fig_buerger_a Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_buerger_a 9 Shape Keys → 9
+✓ fig_buerger_a Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13463,"lod":5870}
+✓ fig_buerger_b gebaut → {"id":"fig_buerger_b","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13463,"lodTris":5871,"lod":true,"h":1.5}
+✓ fig_buerger_b Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_buerger_b 9 Shape Keys → 9
+✓ fig_buerger_b Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13463,"lod":5871}
+✓ fig_buerger_c gebaut → {"id":"fig_buerger_c","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13463,"lodTris":5871,"lod":true,"h":1.7}
+✓ fig_buerger_c Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_buerger_c 9 Shape Keys → 9
+✓ fig_buerger_c Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13463,"lod":5871}
+✓ fig_buerger_d gebaut → {"id":"fig_buerger_d","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13437,"lodTris":5845,"lod":true,"h":1.58}
+✓ fig_buerger_d Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
+✓ fig_buerger_d 9 Shape Keys → 9
+✓ fig_buerger_d Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13437,"lod":5845}
+✓ Zuordnung Typ → Modell → {"held":"fig_noa","heldin":null,"veyran":"fig_veyran","mirael":"fig_mirael","shop":"fig_haendler","buerger":"fig_buerger_a","tarek":null}
+✓ Gang: 2,8 → Laufen (jog), 5 → Rennen (run) → {"0":{"idle":1,"walk":0,"jog":0,"run":0},"1":{"idle":0,"walk":1,"jog":0,"run":0},"5":{"idle":0,"walk":0,"jog":0,"run":1},"2.8":{"idle":0,"walk":0,"jog":0.87,"run":0.13}}
+✓ Morgenau: Held + NPCs als Modelle → {"modelle":7,"held":true,"calls":115}
+✓ keine Konsolenfehler → []

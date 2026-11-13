@@ -2,7 +2,7 @@
 //   LOCK=/home/claude/veyra/.chromium.lock; until mkdir "$LOCK" 2>/dev/null; do sleep 5; done; trap 'rmdir "$LOCK"' EXIT; node test/terras2/vorschau.mjs [funki|linie|welt|kampf|anim|nah|alle]
 import { start, page, newGame } from '../qa_lc_lib.mjs';
 import { writeFileSync } from 'fs';
-const OUT = new URL('./', import.meta.url).pathname, W = 1600, H = 900, what = process.argv[2] || 'alle', has = k => what === 'alle' || what.split(',').includes(k);
+const PRE = process.env.PRE || '', OUT = new URL('./', import.meta.url).pathname, W = 1600, H = 900, what = process.argv[2] || 'alle', has = k => what === 'alle' || what.split(',').includes(k);
 const LINIEN = { glut: [1, 2, 3], flut: [4, 5, 6], flora: [7, 8, 9] };
 const ARTEN = (process.env.ARTEN || '1,2,3,4,5,6,7,8,9,59,61').split(',').map(Number);
 // Intro robust wegklicken (langsamer Start bei ausgelasteter CPU)
@@ -11,7 +11,7 @@ async function boot(p) { for (let i = 0; i < 60; i++) { for (const sel of ['#iPr
   if (gone) return; await p.waitForTimeout(1000); } }
 const env = await start(); const res = {};
 const toWebp = async (p, src, file, q = .92) => { const d = await p.evaluate(async ([s, q]) => { const im = new Image(); await new Promise(r => { im.onload = r; im.src = s; }); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0); return c.toDataURL('image/webp', q); }, [src, q]);
-  writeFileSync(OUT + file, Buffer.from(d.split(',')[1], 'base64')); console.log('→ test/terras2/' + file); };
+  writeFileSync(OUT + PRE + file, Buffer.from(d.split(',')[1], 'base64')); console.log('→ test/terras2/' + PRE + file); };
 async function studio(p) {
   await p.evaluate(([W, H]) => {
     mode = 'wait'; if (typeof VILL !== 'undefined') VILL.list = []; window.__ty = terrainY; terrainY = () => 0;
@@ -88,7 +88,7 @@ await P.evaluate(() => { try { STU.rr.domElement.remove(); STU.rr.dispose(); ter
 res.fehlerStudio = P.errs;
 // Welt: wild im Gras (Route 1), Spielkamera; Kampf: echter 3D-Kampf mit Modell
 if (has('welt') || has('kampf')) {
-  for (const [nm, ids] of Object.entries(LINIEN)) {
+  for (const [nm, ids] of Object.entries(Object.assign({}, LINIEN, has('welt') ? { knabbi: [112], flausch: [59], blinki: [61] } : {}))) {
     const id = ids[0];
     if (has('welt')) {
       const img = await P.evaluate(async (id) => { mode = 'world'; loadMap('route1', 9, 15); setView('third', true); VILL && (VILL.list = []); G.time = 11 * 60; P.dir = 'up'; P.ang = 0;
@@ -99,7 +99,7 @@ if (has('welt') || has('kampf')) {
         if (typeof toonProSync === 'function') toonProSync(rr); rr.render(S, cam); return { img: rr.domElement.toDataURL('image/png'), tm: !!(o && o.userData.tm) }; }, id);
       console.log('Welt', nm, img.tm); await toWebp(P, img.img, 'welt_' + nm + '.webp');
     }
-    if (has('kampf')) {
+    if (has('kampf') && id !== 112 && id !== 59 && id !== 61) {
       const ok = await P.evaluate(async (id) => { const foe = { 1: 4, 4: 7, 7: 1 }[id]; G.team = [mk(id, 12)]; await tmLoad(id); await tmLoad(foe); G.time = 11 * 60; loadMap('route1', 9, 12); SET.btl = 'runde'; startBattle({ wild: mk(foe, 6) }); return true; }, id);
       await P.waitForFunction(() => typeof BT !== 'undefined' && BT && BT.foe && BT.me, null, { timeout: 15000 }).catch(() => { }); await P.waitForTimeout(2500);
       await P.evaluate(() => { if (B) { B.lunge = { who: 'me', t: performance.now() - 300 }; BT.me && (BT.me.userData.act.atk = performance.now() - 200); } });

@@ -12,7 +12,7 @@ import { writeFileSync, unlinkSync } from 'fs';
 const tag = process.argv[2] || 'x', tiers = (process.argv[3] || 'hoch').split(','), only = process.argv[4] ? process.argv[4].split(',') : null;
 const W = 1600, H = 900, dir = new URL('./', import.meta.url).pathname;
 // Szene: Karte, x, y, Blickrichtung, Uhrzeit (Minuten), Kamera-Gier relativ (Rad), optional Kamera-Abstand
-const SC = {
+const SC = process.env.SZENEN ? JSON.parse(process.env.SZENEN) : {
   morgenau: ['morgenau', 9, 3, 'down', 700],
   route1: ['route1', 9, 15, 'up', 690],
   hoehle: ['nebelgrotte', 6, 12, 'up', 720],
@@ -32,7 +32,7 @@ for (const t of tiers) {
   page.on('pageerror', e => errs.push('PAGEERROR ' + e.message)); page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|GPU stall/.test(m.text())) errs.push(m.text().slice(0, 200)); });
   await page.route(/fonts\.googleapis|fonts\.gstatic/, r => r.fulfill({ body: '', contentType: 'text/css' }));
   await page.route(/sw\.js$/, r => r.fulfill({ status: 404, body: '' }));
-  await page.addInitScript(s => { try { localStorage.setItem('veyra_set', JSON.stringify(Object.assign({ hudDim: 'aus', fs: 0 }, s))); } catch (e) { } }, Object.assign({ gfxForce: 1 }, TIER[t]));
+  await page.addInitScript(s => { try { localStorage.setItem('veyra_set', JSON.stringify(Object.assign({ hudDim: 'aus', fs: 0, modelle3d: !!s.m3 }, s))); } catch (e) { } }, Object.assign({ gfxForce: 1, m3: process.env.MODELLE === '1' }, TIER[t]));
   await page.goto(S.url + 'index.html', { waitUntil: 'load' });
   try { await page.click('#iPrompt', { timeout: 4000 }); } catch (e) { }
   await page.waitForTimeout(400); try { await page.click('#iSkip', { timeout: 4000 }); } catch (e) { }

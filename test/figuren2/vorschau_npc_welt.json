@@ -1,0 +1,23 @@
+{
+ "laden": {
+  "noa": 11944,
+  "fig_noa": 714,
+  "fig_veyran": 16107,
+  "fig_rayan": 12976,
+  "fig_mama": 12803,
+  "fig_mirael": 20801,
+  "fig_haendler": 14008,
+  "fig_buerger_a": 11993,
+  "fig_buerger_b": 11415,
+  "fig_buerger_c": 7884,
+  "fig_buerger_d": 9239
+ },
+ "fehlerStudio": [],
+ "welt": {
+  "calls": 116,
+  "tris": 438304,
+  "modelle": 7,
+  "held": true
+ },
+ "fehlerWelt": []
+}

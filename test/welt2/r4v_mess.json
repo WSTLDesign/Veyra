@@ -1,0 +1,26 @@
+{
+ "hoch_morgenau": {
+  "calls": 85,
+  "tris": 197118,
+  "ms": 2316.9,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_labor": {
+  "calls": 84,
+  "tris": 187728,
+  "ms": 2144.9,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_station": {
+  "calls": 111,
+  "tris": 189928,
+  "ms": 2492.3,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ }
+}

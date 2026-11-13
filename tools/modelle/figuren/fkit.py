@@ -262,7 +262,7 @@ def build_head():
                 for j in range(NT):
                     a = i * (NT + 1) + j; Fc.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1))
                     phc = -80 + 160 * (i + .5) / NPH
-                    R_.append('lidlinie' if (which == 'o' and j <= 1 and not (j == 1 and phc < -30)) or (which == 'u' and j == 0 and phc > 22) else 'lid')
+                    R_.append('lidlinie' if (which == 'o' and j <= 1 and not (j == 1 and phc < -30)) or (which == 'u' and j == 0 and phc > 40) else 'lid')
             base = len(V)
             for i in range(NPH + 1):
                 ph = -80 + 160 * i / NPH; e0 = th_u(ph) if which == 'o' else th_l(ph); V.append(sp_(ph, e0 + (-3 if which == 'o' else 2.5), RE * .985))
@@ -275,7 +275,7 @@ def build_head():
             orient_out(lo, C); smooth(lo)
             vg = lo.vertex_groups.new(name='lid_%s_%s' % (which, 'L' if s > 0 else 'R')); vg.add(list(range(len(V))), 1, 'REPLACE'); parts['lids'].append(lo)
         # Lidlinie verdickt + Wimpernflügel außen (zwei kleine Spitzen)
-        W0 = [sp_(84 - k * 16, th_u(min(84 - k * 16, 70)) + 3.5 + 6 * ss(60, 84, 84 - k * 16), RE * 1.1) for k in range(10)]
+        W0 = [sp_(80 - k * 15.5, th_u(min(80 - k * 15.5, 72)) + .8 + 5 * ss(62, 80, 80 - k * 15.5), RE * 1.055) for k in range(10)]
         wo = loft('Lidstrich', W0, lambda t: RE * .26 * ss(0, .3, t) ** .7 * (1 - .55 * ss(.75, 1, t)) + RE * .02, lambda t: RE * .07, ring=4, n=12, flat_up=tuple(u)); set_region(wo, 'lidlinie')
         vg = wo.vertex_groups.new(name='lid_o_%s' % ('L' if s > 0 else 'R')); vg.add(list(range(len(wo.data.vertices))), 1, 'REPLACE'); parts['lids'].append(wo)
         for k, (a0, l) in enumerate(()):

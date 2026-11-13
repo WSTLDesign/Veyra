@@ -131,16 +131,16 @@ def accessories(spec, bvb):
     if 'schutzbrille' in ex:
         rp = []
         for j in range(29):
-            ph = j / 28 * 2 * math.pi; th = .74 + .1 * ss(-.2, -1, math.cos(ph)); rp.append(head_dir_point(sdir(th, ph), .024 * k))
+            ph = j / 28 * 2 * math.pi; th = .74 + .1 * ss(-.2, -1, math.cos(ph)); rp.append(head_dir_point(sdir(th, ph), .04 * k))
         o = loft('Band', rp, lambda t: .0045 * k, lambda t: .0018 * k, ring=4, n=34, flat_up=(0, 0, 1), cap0=False); set_region(o, 'leder'); out.append(o)
         for s in (-1, 1):
-            d = Vector((s * .3, -math.cos(.58), math.sin(.85))).normalized(); c = head_dir_point(d, .032 * k)
+            d = Vector((s * .3, -math.cos(.58), math.sin(.85))).normalized(); c = head_dir_point(d, .048 * k)
             nrm = ((c - D.HC).normalized() + Vector((0, 0, .45))).normalized(); q = nrm.to_track_quat('Z', 'Y')
             bm = bmesh.new(); bmesh.ops.create_cone(bm, cap_ends=True, segments=14, radius1=.025 * k, radius2=.022 * k, depth=.017 * k)
             o = obj_bm('Brillenrahmen', bm); M = q.to_matrix().to_4x4(); M.translation = c; o.data.transform(M); mod(o, 'BEVEL', width=.002 * k, segments=1); apply_mods(o); smooth(o); set_region(o, 'metall'); out.append(o)
             bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=12, v_segments=6, radius=.02 * k)
             o = obj_bm('Glas', bm); o.data.transform(Matrix.Diagonal((1, 1, .38, 1))); M = q.to_matrix().to_4x4(); M.translation = c + nrm * .0085 * k; o.data.transform(M); smooth(o); set_region(o, 'glas'); out.append(o)
-        pL = head_dir_point(Vector((.12, -math.cos(.58), math.sin(.85))).normalized(), .032 * k); pR = mx(pL)
+        pL = head_dir_point(Vector((.12, -math.cos(.58), math.sin(.85))).normalized(), .048 * k); pR = mx(pL)
         o = loft('Steg', [pR, (pR + pL) / 2 + Vector((0, -.004, .002)), pL], lambda t: .0035 * k, lambda t: .0025 * k, ring=5, n=6); set_region(o, 'metall'); out.append(o)
     if 'brille_rund' in ex:
         for s in (-1, 1):

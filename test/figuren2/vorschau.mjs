@@ -100,7 +100,7 @@ if (has('welt')) {
     for (let y = 7; y < M.h - 3; y++)for (let x = 4; x < M.w - 4; x++) { let n = 0; for (let dy = -6; dy <= 1; dy++)for (let dx = -3; dx <= 3; dx++)if (ok(x + dx, y + dy)) n++; if (n > bs) { bs = n; best = [x, y]; } } return best; });
   await p.evaluate(([x, y]) => { const id = cur.id || 'morgenau'; NPCS[id] = NPCS[id] || []; NPCS[id].push({ x: x - 1, y: y - 3, c: '#e8e8e8', t: 'talk', fig: 'veyran', d: 'down', txt: ['Hallo!'] }, { x: x + 1, y: y - 3, c: '#c8463a', t: 'talk', fig: 'rayan', d: 'down', txt: ['Na?'] },
     { x: x - 2, y: y - 4, c: '#c9a77c', t: 'talk', fig: 'mama', d: 'down', txt: ['Hallo!'] }, { x: x + 2, y: y - 4, c: '#7a9a5a', t: 'talk', d: 'down', txt: ['Hallo!'] }, { x: x, y: y - 5, c: '#6aa0e0', t: 'talk', d: 'down', txt: ['Hallo!'] });
-    VILL.list = []; G.time = 10.5 * 60; mode = 'world'; R3.mapId = null; loadMap(id, x, y); P.dir = 'up'; P.ang = 0; setView('third', true); }, pos);
+    VILL.list = []; G.time = 10.5 * 60; mode = 'world'; loadMap('route1', 9, 12); R3.mapId = null; loadMap(id, x, y); P.dir = 'up'; P.ang = 0; setView('third', true); }, pos);
   p.setDefaultTimeout(180000); await p.waitForTimeout(6000); await p.evaluate(() => { document.querySelectorAll('.toast,#toast').forEach(e => e.remove()); });
   const b = await p.screenshot({ timeout: 180000 }); await toWebp(p, 'data:image/png;base64,' + b.toString('base64'), (has('r2') ? 'r3_morgenau.webp' : 'welt_morgenau.webp'));
   const r = await p.evaluate(() => { const S = R3.scene, r = R3.r; r.info.autoReset = false; r.info.reset(); r.render(S, R3.activeCam || R3.cam); const info = { calls: r.info.render.calls, tris: r.info.render.triangles }; r.info.autoReset = true;

@@ -107,8 +107,8 @@ def ohr(s, base, up_, fw, L, W, D, cup=1.5, regs=('fell_kopf', 'ohr_innen'), run
     C.EARS[s] = (base, up_, L, fw, side); return o
 
 # ---------------- Augen + Lider + Mund (Funktion; Pilot-System verallgemeinert) ----------------
-def th_u(ph): k = ss(0, 1, abs(ph) / 52.0); return 35 * (1 - k ** 1.6) + (6 if ph > 0 else -4) * k
-def th_l(ph): k = ss(0, 1, abs(ph) / 52.0); return -28 * (1 - k ** 1.5) + (4 if ph > 0 else -4) * k
+def th_u(ph): k = ss(0, 1, abs(ph) / 56.0); return 44 * (1 - k ** 1.6) + (6 if ph > 0 else -4) * k
+def th_l(ph): k = ss(0, 1, abs(ph) / 56.0); return -36 * (1 - k ** 1.5) + (4 if ph > 0 else -4) * k
 def augen(RE, xn=.5, yn=-.86, zn=.1, spread=.42, lid_col=None):
     """Augäpfel (eigene Netze, Iris/Glanz in der Augen-Textur + Shader-Glanz), Ober-/Unterlid-Schalen mit Lidlinie. Liefert Shape-Key-fähige Lider."""
     C.RE = RE
@@ -132,7 +132,7 @@ def augen(RE, xn=.5, yn=-.86, zn=.1, spread=.42, lid_col=None):
                     t = j / NT; th = (e0 + (80 - e0) * t ** 1.3) if which == 'o' else (e0 + (-75 - e0) * t ** 1.3); Vt.append(sp_(ph, th, RE * (1.045 + .02 * t)))
             for i in range(NPH):
                 for j in range(NT):
-                    a = i * (NT + 1) + j; F_.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1)); R_.append('lidlinie' if j == 0 else 'lid')
+                    a = i * (NT + 1) + j; F_.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1)); R_.append('lidlinie' if (j == 0 or (which == 'o' and j == 1)) else 'lid')
             base = len(Vt)
             for i in range(NPH + 1):
                 ph = -84 + 168 * i / NPH; e0 = th_u(ph) if which == 'o' else th_l(ph); Vt.append(sp_(ph, e0 + (-3 if which == 'o' else 2.5), RE * .985))

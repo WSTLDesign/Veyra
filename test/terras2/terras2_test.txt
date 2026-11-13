@@ -5,3 +5,6 @@
 ✓ Kampf 1: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.17},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.23}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.17},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.23}}}
 ✓ Kampf 1 vs 4: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
 ✓ Welt 2: Modell → {"tm":true,"clips":8,"h":0.85}
+✓ Kampf 2: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.32}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.32}}}
+✓ Kampf 2 vs 5: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 3: Modell → {"tm":true,"clips":8,"h":1.34}

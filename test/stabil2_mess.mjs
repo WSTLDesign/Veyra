@@ -65,7 +65,13 @@ for (const tier of TIERS) for (const map of SZ) {
   await p.waitForTimeout(8000);
   await p.evaluate(() => { STICK.x = STICK.y = 0; window.__M.on = false; });
   if (THR > 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
-  const s = await p.evaluate(SUM); s.req = reqs.slice(r0).map(x => x[1]); s.settle = settle; s.errs = errs;
+  const s = await p.evaluate(SUM);
+  // Aufschlüsselung der sichtbaren Dreiecke je Kategorie (mit der Entfernungs-LOD aus 59, so wie gezeichnet)
+  s.budget = await p.evaluate(() => { const cam = R3.shown || R3.activeCam || R3.cam; try { if (typeof gfxModelPre === 'function') gfxModelPre(R3.scene, cam); } catch (e) { }
+    const cat = o => { for (let q = o; q; q = q.parent) { const U = q.userData || {}; if (U.pilot) return U.pilot === 'fig_noa' || U.pilot === 'fig_heldin' || q === R3.player ? 'spieler' : U.pilot.startsWith('t') ? 'terra' : 'figur'; if (U.tm) return 'terra'; if (q.parent === R3.scene) return o.isInstancedMesh ? 'instanzen' : 'welt'; } return '?'; };
+    const out = {}; R3.scene.traverse(o => { if (!o.isMesh) return; for (let q = o; q; q = q.parent) if (!q.visible) return; const g = o.geometry, t = (g.index ? g.index.count : g.attributes.position.count) / 3 * (o.isInstancedMesh ? o.count : 1);
+      const k = cat(o) + (o.userData && o.userData.outline ? '-umriss' : ''); const e = out[k] || (out[k] = [0, 0, 0]); e[0] += Math.round(t); e[1]++; if (o.castShadow) e[2] += Math.round(t); });
+    try { if (typeof gfxModelPost === 'function') gfxModelPost(); } catch (e) { } return out; }); s.req = reqs.slice(r0).map(x => x[1]); s.settle = settle; s.errs = errs;
   OUT[tier + '_' + map] = s; console.log(`[${TAG}] ${tier} ${map}: ${JSON.stringify(s).slice(0, 900)}`);
   await ctx.close();
 }

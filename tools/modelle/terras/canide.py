@@ -62,7 +62,7 @@ hs = HR[0] / .12
 for s in (-1, 1):
     for k in range(4 if ART == '001' else 3):
         p, n = hsurf((s * .95, -.2 + k * .07, -.28 - k * .13), -.012 * hs)
-        C.parts_head.append(bueschel(p, n * .8 + V(s * .3, .75 + .1 * k, -.35 - .15 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .036 * hs, 'creme', up=(0, 0, 1), dick=.85, bend=(0, .01 * hs, -.012 * hs)))
+        C.parts_head.append(bueschel(p, n * .8 + V(s * .3, .75 + .1 * k, -.35 - .15 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .036 * hs, 'creme', up=(0, 0, 1), dick=1.0, bend=(0, .01 * hs, -.012 * hs)))
 for k in range(3):
     a = (k - 1); p, n = hsurf((a * .3, .25, .97), -.012 * hs); C.parts_head.append(bueschel(p, n * .35 + V(a * .3, .95, .05), .05 * hs, .03 * hs, 'fell_kopf', up=tuple(n), dick=.45, bend=(0, .005, -.012 * hs)))
 # Ohren: volumetrisch (Rand dick, Innenseite hohl), Innenfell-Büschel, dunkle Spitze (Farbe)
@@ -88,13 +88,13 @@ if K['flame'] == 'ball':
 else:
     tail, TP = rute(C.TAIL, lambda t: .03 * rk + tR * math.sin(min(1, t * 1.1 + .05) * math.pi) ** .8 * (1 - .25 * t), 'fell', spike=.18, n=24)
 flames = []; tip = TP[-1]; td = (TP[-1] - TP[-5]).normalized(); fs = 1.0 if ART == '001' else .9 * (Lb / .2) ** .6
-FT = tip - td * .05 * fs; C.FT = FT
+FT = tip - td * (.08 if ART == '001' else .05) * fs; C.FT = FT
 if K['flame'] == 'ball':   # Flammenball an der Rutenspitze (wie das Bild): Kern + 9 Zungen
-    core = blob('Flammenkern', FT + td * .02, (.055, .055, .06), 4); set_region(core, 'flamme_kern'); flames.append(core)
+    core = blob('Flammenkern', FT + td * .02, (.045, .045, .05), 4); set_region(core, 'flamme_kern'); flames.append(core)
     for k in range(9):
         a = k / 9 * 2 * math.pi; rd = Vector((math.cos(a), math.sin(a) * .8, 0)); d = (td * 1.2 + rd * .9 + V(0, 0, .5)).normalized()
-        flames.append(flamme(FT + rd * .03 + td * .01, d, (.1 + .035 * (k % 3)) * fs, .042 * fs, up=tuple(rd.cross(d).normalized() if rd.cross(d).length > .1 else V(1, 0, 0))))
-    flames.append(flamme(FT + td * .04, (td + V(0, -.15, .4)).normalized(), .17 * fs, .05 * fs, up=(1, 0, 0)))
+        flames.append(flamme(FT + rd * .028 + td * .005, (d + td * .6).normalized(), (.065 + .022 * (k % 3)) * fs, .036 * fs, up=tuple(rd.cross(d).normalized() if rd.cross(d).length > .1 else V(1, 0, 0))))
+    flames.append(flamme(FT + td * .03, (td + V(0, -.15, .4)).normalized(), .11 * fs, .042 * fs, up=(1, 0, 0)))
 else:
     core = blob('Flammenkern', FT + td * .015, (.035 * fs, .035 * fs, .04 * fs), 3); set_region(core, 'flamme_kern'); flames.append(core)
     for k in range(6):
@@ -107,14 +107,14 @@ hb_ = BVB.ray_cast(Vector((0, C.NECK[0].y - .4, C.NECK[0].z - .03 * rk)), Vector
 bib = blob('Latz', hb_[0] + V(0, .022 * rk, -.004 * rk), (.046 * rk, .03 * rk, .058 * rk), 4, rot=(-.3, 0, 0)); set_region(bib, 'creme'); ruff.append(bib)
 for k in range(5):
     a = (k - 2) / 2; p0 = V(a * .045 * rk, C.NECK[0].y - .04 * rk + abs(a) * .012 * rk, C.NECK[0].z - .085 * rk + abs(a) * .02 * rk)
-    ruff.append(bueschel(p0, V(a * .35, -.3, -.9), (.045 - .01 * abs(a)) * rk, .03 * rk, 'creme', up=(0, -1, 0), dick=.9, bend=(0, .012 * rk, 0)))
+    ruff.append(bueschel(p0, V(a * .35, -.3, -.9), (.045 - .01 * abs(a)) * rk, .03 * rk, 'creme', up=(0, -1, 0), dick=1.1, bend=(0, .012 * rk, 0)))
 if K['kragen']:
     nk_ = 16 if ART == '003' else 12; mf = 1.6 if ART == '003' else 1.15
     for k in range(nk_):
         a = k / nk_ * 2 * math.pi; ctr = C.NECK[1].lerp(C.NECK[0], .4); rd = Vector((math.cos(a), math.sin(a) * .35, math.sin(a) * .9)).normalized()
         if rd.z < -.55: continue
         hit = BVB.ray_cast(ctr + rd * .3, -rd)
-        if hit[0]: flames.append(flamme(hit[0] - rd * .005, (rd + V(0, .9, .35)).normalized(), (.09 + .03 * (k % 2)) * Lb / .31 * mf, .03 * Lb / .31 * mf, up=tuple(V(0, 1, 0).cross(rd).normalized() if V(0, 1, 0).cross(rd).length > .1 else V(1, 0, 0))))
+        if hit[0]: flames.append(flamme(hit[0] - rd * .005, (rd + V(0, .9, .35)).normalized(), (.08 + .03 * (k % 2)) * Lb / .31 * mf, .045 * Lb / .31 * mf, up=tuple(V(0, 1, 0).cross(rd).normalized() if V(0, 1, 0).cross(rd).length > .1 else V(1, 0, 0))))
 # Ellbogen-/Hüftbüschel, Fersenfell (Silhouette)
 for s in (-1, 1):
     F1 = S_(C.FL[1], s); hit = BVB.ray_cast(F1 + V(s * .002, .12, 0), V(0, -1, 0))

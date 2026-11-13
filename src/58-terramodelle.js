@@ -7,15 +7,16 @@
 // API: tmOn() · tmLoad(id)→Promise · tmReady(id) · tmMake(id,h,opts) · tmClip(o,name) · TMOD
 const TMOD={ids:{1:'t001',2:'t002',3:'t003',4:'t004',5:'t005',6:'t006',7:'t007',8:'t008',9:'t009',59:'t059',61:'t061'},gltf:{},st:{},wait:{},ms:{},hOld:{},
  // Schrittlänge (Modellmaß) und Clip-Dauer (s) aus dem Bau (tools/modelle/terras/build/*.json) · glow = Leuchtstärke · fx = Leuchtpunkte (Knochen, Farbe, Größe)
- fix:{t001:{walk:[.11,.867],run:[.2,.5],glow:1.7,fx:[['fx_flamme','#ffa030',1.0],['fx_stirn','#ffc050',.22]]},
-  t002:{walk:[.17,.867],run:[.32,.5],glow:1.7,fx:[['fx_flamme','#ffa030',1.0],['fx_kragen','#ff9030',.8]]},
-  t003:{walk:[.26,.867],run:[.5,.5],glow:1.7,fx:[['fx_flamme','#ffa030',1.1],['fx_kragen','#ff8020',1.1]]},
+ fix:{t001:{walk:[.11,.867],run:[.2,.5],glow:1.25,fx:[['fx_flamme','#ff9a30',.55],['fx_stirn','#ffc050',.16]]},
+  t002:{walk:[.17,.867],run:[.32,.5],glow:1.35,fx:[['fx_flamme','#ff9a30',.65],['fx_kragen','#ff9030',.6]]},
+  t003:{walk:[.26,.867],run:[.5,.5],glow:1.4,fx:[['fx_flamme','#ff9a30',.75],['fx_kragen','#ff8020',.85]]},
   t004:{walk:[.125,1],run:[.2,.6],glow:1.2,fx:[['fx_krone','#9fe8ff',.35]]},t005:{walk:[.155,1],run:[.248,.6],glow:1.2,fx:[['fx_krone','#9fe8ff',.4]]},
   t006:{walk:[.2,1],run:[.32,.6],glow:1.4,fx:[['fx_krone','#7ff6ff',.5]]},
   t007:{walk:[.09,.8],run:[.16,.5]},t008:{walk:[.12,.8],run:[.22,.5]},t009:{walk:[.3,.867],run:[.5,.5]}},
  tint:{1:'#9ad8ff',2:'#9ad8ff',3:'#9ad8ff',4:'#c8ffb0',5:'#c8ffb0',6:'#c8ffb0',7:'#ffd0f0',8:'#ffd0f0',9:'#ffd0f0',59:'#ffe0a0',61:'#b0ffe8'},lodD:7};
 const TM_EXPR={neutral:{},freudig:{Augen_froh:1,Maul_auf:.75},froh:{Augen_froh:1,Maul_auf:.75},wuetend:{Augen_wach:1,Maul_auf:.35},entschlossen:{Augen_wach:.7},
  verletzt:{Augen_muede:.7,Maul_weit:.35,Ohren_an:1},muede:{Augen_muede:1,Ohren_an:.5},ueberrascht:{Staunen:1,Maul_auf:.55},staunen:{Staunen:1,Maul_auf:.55},schlaf:{Blinzeln:1,Ohren_an:.4},traurig:{Augen_muede:.8,Ohren_an:1}};
+try{if(typeof TOONPRO!=='undefined'&&!TOONPRO.variants.terra)TOONPRO.variants.terra={px:.8,dark:.15};}catch(e){}
 function tmOn(){try{return typeof pilotOn==='function'?pilotOn():(SET.modelle3d===true||/[?&]modelle3d=1/.test(location.search));}catch(e){return false;}}
 function tmKey(id){return TMOD.ids[id]||null;}
 function tmSrc(k){const P=window.PILOT_SRC||{};return P[k]||('models/terras/'+k+'.glb');}
@@ -35,7 +36,7 @@ let TM_GLOWT=null;function tmGlowTex(){if(TM_GLOWT)return TM_GLOWT;const c=docum
 // Instanz: Klon mit Skelett, Toon-Pro + Umriss, Höhe h, Füße auf y=0, Mixer mit allen Clips, LOD-Netze, Leuchtpunkte
 function tmMake(id,h,opts){opts=opts||{};const k=tmKey(id),g=TMOD.gltf[k];if(!g||!THREE.SkeletonUtils)return null;const F=TMOD.fix[k]||{};
  const root=new THREE.Group(),body=new THREE.Group(),inner=THREE.SkeletonUtils.clone(g.scene);root.add(body);body.add(inner);inner.rotation.y=Math.PI;
- toonProApply(inner,{outline:opts.outline||'duenn',mat:Object.assign({glow:F.glow||1.4},opts.mat||{})});
+ toonProApply(inner,{outline:opts.outline||'terra',mat:Object.assign({glow:F.glow||1.4},opts.mat||{})});
  const lod0=[],lod1=[],mats=[];inner.traverse(m=>{if(m.isMesh&&!m.userData.outline){(/LOD1/.test(m.name)?lod1:lod0).push(m);if(m.material&&m.material.uniforms)mats.push(m.material);}});
  lod1.forEach(m=>m.visible=false);
  if(opts.shiny&&TMOD.tint[id])mats.forEach(m=>{if(!m.uniforms.uEye.value)m.uniforms.uTint.value.set(TMOD.tint[id]);});
@@ -119,3 +120,33 @@ function tmPreload(){if(!tmOn())return;try{const ids=new Set();(G&&G.team||[]).f
  for(const i of ids)if(tmKey(i))tmLoad(i);}catch(e){}}
 if(typeof loadMap==='function'){const _loadMap58=loadMap;loadMap=function(){const r=_loadMap58.apply(this,arguments);try{setTimeout(tmPreload,50);}catch(e){}return r;};}
 setTimeout(()=>{try{tmPreload();}catch(e){}},0);
+
+// ---------- Kampfarena (nur mit Schalter): weiches Gras wie in der Welt statt Kegel-Halmen, runde Steine statt Kristall-Kieseln, Kampfkreis + Pfad ----------
+function tmArenaBlade(){if(typeof W3GEO!=='undefined'&&W3GEO.blade5b)return W3GEO.blade5b;if(TMOD.blade)return TMOD.blade;
+ const pos=[],col=[],nor=[];for(let b=0;b<5;b++){const a=b*1.26+.3,ox=Math.cos(a)*.06,oz=Math.sin(a)*.06,ca=Math.cos(a+1.4),sa=Math.sin(a+1.4),hh=[.42,.34,.4,.3,.37][b];
+  const ring=[0,.5,1].map(t=>{const w=.03*Math.pow(1-t,.8)+.002,bz=t*t*.1;return[[ox-ca*w+Math.cos(a)*bz,t*hh,oz-sa*w+Math.sin(a)*bz],[ox+ca*w+Math.cos(a)*bz,t*hh,oz+sa*w+Math.sin(a)*bz],.55+t*.6];});
+  for(let i=0;i<ring.length-1;i++){const A=ring[i],B=ring[i+1];[[A[0],A[2]],[A[1],A[2]],[B[0],B[2]],[A[1],A[2]],[B[1],B[2]],[B[0],B[2]]].forEach(([v,c])=>{pos.push(...v);col.push(c,c,c*.9);nor.push(0,1,0);});}}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));return TMOD.blade=g;}
+function tmArena(){if(!BT||BT.tmArena)return;BT.tmArena=1;const s=BT.s,P1=[2.4,-2.7],P2=[-2.2,1.6];
+ let rs=12345;const rn=()=>(rs=(rs*16807)%2147483647)/2147483647;
+ // Gras: viele Büschel, dicht um die Arena, frei auf den Plattformen und dem Pfad dazwischen
+ const pts=[];const segD=(x,z)=>{const ax=P2[0]-P1[0],az=P2[1]-P1[1],t=Math.max(0,Math.min(1,((x-P1[0])*ax+(z-P1[1])*az)/(ax*ax+az*az)));return Math.hypot(x-(P1[0]+ax*t),z-(P1[1]+az*t));};
+ for(let i=0;i<5200&&pts.length<1400;i++){const a=rn()*Math.PI*2,r=1.2+Math.pow(rn(),.7)*12,x=Math.cos(a)*r*.9,z=Math.sin(a)*r-.5;if(Math.hypot(x-P1[0],z-P1[1])<1.65||Math.hypot(x-P2[0],z-P2[1])<1.65||segD(x,z)<.75)continue;pts.push([x,z,.75+rn()*.75,rn()*6.3]);}
+ let mat;try{mat=typeof toonFx==='function'?toonFx(new THREE.MeshToonMaterial({color:'#ffffff',vertexColors:true,side:THREE.DoubleSide,gradientMap:toonGrad()}),{grass:1,rim:false,nf:1}):null;}catch(e){mat=null;}
+ mat=mat||new THREE.MeshToonMaterial({color:'#ffffff',vertexColors:true,side:THREE.DoubleSide,gradientMap:toonGrad()});
+ const gm=new THREE.InstancedMesh(tmArenaBlade(),mat,pts.length),d=new THREE.Object3D(),c=new THREE.Color('#ffffff');
+ pts.forEach(([x,z,k,a],i)=>{d.position.set(x,0,z);d.rotation.set(0,a,0);d.scale.set(k*1.6,k*1.5,k*1.6);d.updateMatrix();gm.setMatrixAt(i,d.matrix);gm.setColorAt(i,c);});
+ gm.receiveShadow=true;gm.castShadow=false;s.remove(BT.tuftM);s.add(gm);BT.tuftM=gm;
+ // Blumen: weiche, flache Blüten statt Ikosaeder; Steine: runde, flache Kiesel
+ BT.flM.geometry=new THREE.SphereGeometry(.07,8,5);BT.flM.geometry.scale(1,.45,1);BT.flM.castShadow=false;
+ BT.rockM.geometry=new THREE.SphereGeometry(1,16,10);BT.rockM.geometry.scale(1,.75,1);
+ // Kampfkreis + Pfad als weicher Bodenaufkleber
+ const cv=document.createElement('canvas');cv.width=cv.height=512;const x=cv.getContext('2d');const toU=(wx,wz)=>[256+wx*28,256+wz*28];
+ x.lineCap='round';x.strokeStyle='rgba(120,92,60,.32)';x.lineWidth=46;x.beginPath();x.moveTo(...toU(...P1));x.lineTo(...toU(...P2));x.stroke();
+ x.strokeStyle='rgba(150,118,80,.25)';x.lineWidth=28;x.beginPath();x.moveTo(...toU(...P1));x.lineTo(...toU(...P2));x.stroke();
+ for(const P of[P1,P2]){const[u,v]=toU(...P),g=x.createRadialGradient(u,v,30,u,v,58);g.addColorStop(0,'rgba(120,92,60,0)');g.addColorStop(.7,'rgba(110,86,56,.28)');g.addColorStop(1,'rgba(110,86,56,0)');x.fillStyle=g;x.beginPath();x.arc(u,v,60,0,7);x.fill();
+  x.strokeStyle='rgba(255,255,255,.5)';x.lineWidth=3;x.setLineDash([10,9]);x.beginPath();x.arc(u,v,44,0,7);x.stroke();x.setLineDash([]);}
+ const tex=new THREE.CanvasTexture(cv),dm=new THREE.Mesh(new THREE.PlaneGeometry(512/28,512/28),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false}));
+ dm.rotation.x=-Math.PI/2;dm.position.set(0,.012,0);dm.renderOrder=1;s.add(dm);BT.tmDecal=dm;
+ BT.th=null;}  // Thema neu anwenden (Farben je Instanz)
+if(typeof battle3d==='function'){const _b3d58=battle3d;battle3d=function(){const r=_b3d58.apply(this,arguments);try{if(r&&tmOn()&&BT&&!BT.tmArena)tmArena();}catch(e){console.warn('Arena',e);}return r;};}

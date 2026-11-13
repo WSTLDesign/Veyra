@@ -49,7 +49,7 @@ def hsurf(d, extra=0.0):
     return hit[0] + hit[1] * extra, hit[1]
 
 # ---------------- Büschel (Fellkanten-Silhouette), Blätter, Flammen ----------------
-def bueschel(p, d, L, w, regn, up=(0, 0, 1), bend=(0, 0, 0), dick=.5, ring=5, n=6, spitz=1.4):
+def bueschel(p, d, L, w, regn, up=(0, 0, 1), bend=(0, 0, 0), dick=.5, ring=6, n=6, spitz=1.4):
     d = Vector(d).normalized(); P = [p, p + d * L * .5 + Vector(bend) * .4, p + d * L + Vector(bend)]
     o = loft('Bueschel', P, lambda t: w * math.sin(math.pi * (.18 + .82 * t)) ** .7 * (1 - t ** 3) + .0004,
              lambda t: w * dick * (1 - t) ** .8 + .0004, ring=ring, n=n, flat_up=up); set_region(o, regn); return o
@@ -293,7 +293,7 @@ def gesicht_keys(HEAD, ohren=True):
     C.LIDS = {(w, s): gw(HEAD, 'lid_%s_%s' % (w, 'L' if s > 0 else 'R')) for w in 'ou' for s in (-1, 1)}
     C.ROW = gw(HEAD, 'mund_reihe'); C.COL = gw(HEAD, 'mund_spalte')
     shape_key(HEAD, 'Blinzeln', sk_lids(1, .3))
-    shape_key(HEAD, 'Augen_froh', sk_lids(.36, .45))
+    shape_key(HEAD, 'Augen_froh', sk_lids(.32, .26))
     shape_key(HEAD, 'Augen_wach', sk_lids(.32, 0, 0, -9))           # entschlossen/wütend: Oberlid schräg
     shape_key(HEAD, 'Augen_muede', sk_lids(.5, .15))
     shape_key(HEAD, 'Maul_auf', sk_maul(.16, .3))

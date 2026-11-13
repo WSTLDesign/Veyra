@@ -69,20 +69,20 @@ if (has('linie')) {
   for (const [nm, ids] of Object.entries(LINIEN)) {
     if (!ids.every(i => ld[i] !== 'FEHLT')) continue;
     const img = await P.evaluate(([ids, H0]) => { STU.clear(); let x = -1.45; const os = ids.map((i, k) => { const o = STU.terra(i, H0[i]); STU.add(o, x + k * 1.45, 0, -.55); STU.tick(o, .9 + k * .3); return o; });
-      return STU.shot([1.5, 1.05, 3.9], [0, .45, 0], 34); }, [ids, H0]);
+      return STU.shot([1.9, 1.05, 4.1], [.25, .45, 0], 36); }, [ids, H0]);
     await sheet(P, [{ img, label: 'Starter-Linie ' + nm + ': ' + ids.map(i => String(i).padStart(3, '0')).join(' → ') }], 'linie_' + nm + '.webp', { cols: 1, cw: 1600, ch: 900 });
   }
 }
 if (has('anim')) {
   const cells = await P.evaluate(() => { const out = []; STU.clear(); const o = STU.terra(1, .55); STU.add(o, 0, 0, -.6);
-    for (const [n, fs, e] of [['idle', [.1, .45, .8], 'neutral'], ['attack', [.25, .5, .7], 'wuetend'], ['joy', [.15, .35, .55], 'freudig']]) for (const f of fs) { STU.clip(o, n, f); STU.expr(o, e); out.push({ img: STU.shot([1.3, .5, 1.6], [0, .3, 0], 26, 533, 424), label: f === fs[0] ? n : '' }); }
+    for (const [n, fs, e] of [['idle', [.1, .45, .8], 'neutral'], ['attack', [.25, .5, .7], 'wuetend'], ['joy', [.15, .35, .55], 'freudig']]) for (const f of fs) { STU.clip(o, n, f); STU.expr(o, e); out.push({ img: STU.shot([1.3, .5, 1.6], [0, .3, 0], 26, 533, 282), label: f === fs[0] ? n : '' }); }
     return out; });
-  await sheet(P, cells, 'anim_funki_idle_attack_joy.webp', { cols: 3, cw: 533, ch: 424, title: 'Funki – idle · attack · joy (je 3 Bilder)', sub: 'Clips aus dem Baukasten, Mimik per Shape Keys' });
+  await sheet(P, cells, 'anim_funki_idle_attack_joy.webp', { cols: 3, cw: 533, ch: 282, title: 'Funki – idle · attack · joy (je 3 Bilder)', sub: 'Clips aus dem Baukasten, Mimik per Shape Keys' });
 }
 if (has('nah')) {
-  const n = await P.evaluate(() => { STU.clear(); const out = []; const o = STU.terra(1, .55); STU.add(o, 0, 0, -.4); STU.tick(o, .5); out.push(STU.shot([.32, .5, .55], [0, .42, 0], 24, 800, 900));
-    STU.clear(); const ids = [4, 6, 3].filter(i => tmReady(i)); const q = STU.terra(ids[0] || 1, .6); STU.add(q, 0, 0, -.9); STU.tick(q, .5); out.push(STU.shot([.5, .45, .55], [0, .3, 0], 24, 800, 900)); return out; });
-  await sheet(P, [{ img: n[0], label: 'Fell (Funki): Striche, Büschel, Normalkarte' }, { img: n[1], label: 'Haut/Schuppen nah' }], 'nah_fell_schuppen.webp', { cols: 2, cw: 800, ch: 900 });
+  const n = await P.evaluate(() => { STU.clear(); const out = []; const o = STU.terra(1, .55); STU.add(o, 0, 0, -.5); STU.tick(o, .5); out.push(STU.shot([.45, .36, .62], [0, .3, 0], 26, 800, 900));
+    STU.clear(); const ids = [4, 6, 3].filter(i => tmReady(i)); const q = STU.terra(6, .8); STU.add(q, 0, 0, -.7); STU.tick(q, .5); out.push(STU.shot([.75, .62, .9], [0, .45, 0], 28, 800, 900)); return out; });
+  await sheet(P, [{ img: n[0], label: 'Fell (Funki): Striche, Büschel, Normalkarte' }, { img: n[1], label: 'Haut + Kristallkrone (Aquilo) nah' }], 'nah_fell_schuppen.webp', { cols: 2, cw: 800, ch: 900 });
 }
 await P.evaluate(() => { try { STU.rr.domElement.remove(); STU.rr.dispose(); terrainY = window.__ty; mode = 'world'; } catch (e) { } });
 res.fehlerStudio = P.errs;

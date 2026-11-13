@@ -96,15 +96,16 @@ res.fehlerStudio = P.errs; await P.ctx.close();
 if (has('welt')) {
   const p = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } }); await newGame(p, { team: [[1, 12]], view: 'third' });
   await p.evaluate(async (ids) => { for (const k of ids) await pilotLoad(k); R3.ofk = null; }, ['fig_noa', ...NPCS_]);
-  const pos = await p.evaluate(() => { const M = MAPS.morgenau; const ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); for (let y = 5; y < M.h - 4; y++)for (let x = 4; x < M.w - 4; x++)if (ok(x, y) && ok(x - 1, y + 2) && ok(x + 1, y + 2) && ok(x - 2, y + 3) && ok(x + 2, y + 3) && ok(x, y + 4)) return [x, y]; return [8, 8]; });
-  await p.evaluate(([x, y]) => { NPCS.morgenau.push({ x: x - 1, y: y + 2, c: '#e8e8e8', t: 'talk', fig: 'veyran', d: 'up', txt: ['Hallo!'] }, { x: x + 1, y: y + 2, c: '#c8463a', t: 'talk', fig: 'rayan', d: 'up', txt: ['Na?'] },
-    { x: x - 2, y: y + 3, c: '#c9a77c', t: 'talk', fig: 'mama', d: 'up', txt: ['Hallo!'] }, { x: x + 2, y: y + 3, c: '#7a9a5a', t: 'talk', d: 'up', txt: ['Hallo!'] }, { x: x, y: y + 4, c: '#6aa0e0', t: 'talk', d: 'up', txt: ['Hallo!'] });
-    VILL.list = []; G.time = 10.5 * 60; mode = 'world'; loadMap('morgenau', x, y); P.dir = 'down'; P.ang = Math.PI; setView('third', true); }, pos);
-  await p.waitForTimeout(3500); await p.evaluate(() => { document.querySelectorAll('.toast,#toast').forEach(e => e.remove()); });
-  const b = await p.screenshot(); await toWebp(p, 'data:image/png;base64,' + b.toString('base64'), 'welt_morgenau.webp');
+  const pos = await p.evaluate(() => { const M = MAPS.morgenau; const ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); let best = null, bs = -1;
+    for (let y = 7; y < M.h - 3; y++)for (let x = 4; x < M.w - 4; x++) { let n = 0; for (let dy = -6; dy <= 1; dy++)for (let dx = -3; dx <= 3; dx++)if (ok(x + dx, y + dy)) n++; if (n > bs) { bs = n; best = [x, y]; } } return best; });
+  await p.evaluate(([x, y]) => { NPCS.morgenau.push({ x: x - 1, y: y - 3, c: '#e8e8e8', t: 'talk', fig: 'veyran', d: 'down', txt: ['Hallo!'] }, { x: x + 1, y: y - 3, c: '#c8463a', t: 'talk', fig: 'rayan', d: 'down', txt: ['Na?'] },
+    { x: x - 2, y: y - 4, c: '#c9a77c', t: 'talk', fig: 'mama', d: 'down', txt: ['Hallo!'] }, { x: x + 2, y: y - 4, c: '#7a9a5a', t: 'talk', d: 'down', txt: ['Hallo!'] }, { x: x, y: y - 5, c: '#6aa0e0', t: 'talk', d: 'down', txt: ['Hallo!'] });
+    VILL.list = []; G.time = 10.5 * 60; mode = 'world'; loadMap('morgenau', x, y); P.dir = 'up'; P.ang = 0; setView('third', true); }, pos);
+  p.setDefaultTimeout(180000); await p.waitForTimeout(6000); await p.evaluate(() => { document.querySelectorAll('.toast,#toast').forEach(e => e.remove()); });
+  const b = await p.screenshot({ timeout: 180000 }); await toWebp(p, 'data:image/png;base64,' + b.toString('base64'), 'welt_morgenau.webp');
   const r = await p.evaluate(() => { const S = R3.scene, r = R3.r; r.info.autoReset = false; r.info.reset(); r.render(S, R3.activeCam || R3.cam); const info = { calls: r.info.render.calls, tris: r.info.render.triangles }; r.info.autoReset = true;
     let fig = 0; S.traverse(o => { if (o.userData && o.userData.pilot) fig++; }); info.modelle = fig; info.held = !!R3.player.userData.pilot;
-    const a = R3.player.getWorldPosition(new THREE.Vector3()); const cam = new THREE.PerspectiveCamera(32, innerWidth / innerHeight, .05, 300); cam.position.set(a.x + 1.6, a.y + 1.7, a.z + 5.2); cam.lookAt(a.x, a.y + .75, a.z + 1.6); cam.updateMatrixWorld();
+    const a = R3.player.getWorldPosition(new THREE.Vector3()); const cam = new THREE.PerspectiveCamera(32, innerWidth / innerHeight, .05, 300); cam.position.set(a.x + 1.4, a.y + 1.5, a.z + 1.2); cam.lookAt(a.x, a.y + .8, a.z - 2.4); cam.updateMatrixWorld();
     if (typeof toonProSync === 'function') toonProSync(r); r.render(S, cam); return { info, img: r.domElement.toDataURL('image/png') }; });
   await toWebp(p, r.img, 'welt_morgenau_nah.webp'); res.welt = r.info; res.fehlerWelt = p.errs; console.log('Welt', JSON.stringify(r.info));
   await p.ctx.close();

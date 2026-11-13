@@ -43,8 +43,8 @@ body = glied('Rumpf', TOR, TR, ring=20, n=40)
 legs = []
 for s in (-1, 1):
     F = [S_(p, s) for p in C.FL]; Hh = [S_(p, s) for p in C.HL]
-    legs.append(glied('BeinV', [F[0] + V(-F[0].x * .45, .008, .005 * rk), F[0] + V(-F[0].x * .1, 0, -.012 * rk), F[1], F[2], F[3] + V(0, -.002, .008 * ls)], [(.036 * ls, .046 * ls), (.04 * ls, .048 * ls), (.026 * ls, .03 * ls), (.02 * ls, .021 * ls), (.021 * ls, .019 * ls)], ring=12, n=26, flat=(0, -1, 0)))
-    legs.append(glied('BeinH', [Hh[0] + V(-Hh[0].x * .45, -.01, .005 * rk), Hh[0] + V(-Hh[0].x * .1, 0, -.01 * rk), Hh[1], Hh[2], Hh[3] + V(0, -.004, .008 * ls)], [(.044 * ls, .056 * ls), (.05 * ls, .06 * ls), (.034 * ls, .04 * ls), (.02 * ls, .022 * ls), (.021 * ls, .019 * ls)], ring=12, n=26, flat=(0, -1, 0)))
+    legs.append(glied('BeinV', [F[0] + V(-F[0].x * .45, .008, .005 * rk), F[0] + V(-F[0].x * .1, 0, -.012 * rk), F[1], F[2], F[3] + V(0, -.002, .008 * ls)], [(.036 * ls, .046 * ls), (.04 * ls, .048 * ls), (.031 * ls, .035 * ls), (.022 * ls, .023 * ls), (.021 * ls, .019 * ls)], ring=12, n=26, flat=(0, -1, 0)))
+    legs.append(glied('BeinH', [Hh[0] + V(-Hh[0].x * .45, -.01, .005 * rk), Hh[0] + V(-Hh[0].x * .1, 0, -.01 * rk), Hh[1], Hh[2], Hh[3] + V(0, -.004, .008 * ls)], [(.044 * ls, .056 * ls), (.05 * ls, .06 * ls), (.042 * ls, .05 * ls), (.023 * ls, .025 * ls), (.021 * ls, .019 * ls)], ring=12, n=26, flat=(0, -1, 0)))
 def body_shape(p):
     p = p.copy(); y = p.y / (Lb / .2)
     if abs(p.x) < .12 * rk and p.z < Lh and -Lb * .5 < p.y < Lb * .65:

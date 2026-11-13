@@ -1,26 +1,50 @@
 {
- "hoch_route1": {
-  "calls": 106,
-  "tris": 334382,
-  "ms": 5045.9,
+ "mittel_morgenau": {
+  "calls": 82,
+  "tris": 184250,
+  "ms": 2140.3,
   "px": "1600×900",
-  "tier": "high",
-  "shadow": 2048
+  "tier": "mid",
+  "shadow": 1024
  },
- "hoch_ufer": {
-  "calls": 97,
-  "tris": 219283,
-  "ms": 3961.1,
+ "mittel_route1": {
+  "calls": 91,
+  "tris": 227780,
+  "ms": 1827.6,
   "px": "1600×900",
-  "tier": "high",
-  "shadow": 2048
+  "tier": "mid",
+  "shadow": 1024
  },
- "hoch_abend": {
-  "calls": 110,
-  "tris": 336486,
-  "ms": 4694,
+ "mittel_abend": {
+  "calls": 91,
+  "tris": 227780,
+  "ms": 1961.3,
   "px": "1600×900",
-  "tier": "high",
-  "shadow": 2048
+  "tier": "mid",
+  "shadow": 1024
+ },
+ "niedrig_morgenau": {
+  "calls": 57,
+  "tris": 120942,
+  "ms": 1370.1,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ },
+ "niedrig_route1": {
+  "calls": 61,
+  "tris": 148884,
+  "ms": 1221.5,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ },
+ "niedrig_abend": {
+  "calls": 62,
+  "tris": 149192,
+  "ms": 1209.3,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
  }
 }

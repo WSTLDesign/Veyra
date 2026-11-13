@@ -80,3 +80,6 @@
 ✓ Route 2 → Kupferhain (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":933,"bumps":1}
 ✓ Route 2 → Kupferhain (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"kupferhain","t0":552074,"shown":524,"ms":3119}}
 ✓ Route 2 → Kupferhain (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":16,"y":6,"inZ":false}
+✓ Route 2 → Kupferhain (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":717,"bumps":1}
+✓ Route 2 → Kupferhain (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"kupferhain","t0":568854,"shown":783,"ms":2980}}
+✓ Route 2 → Kupferhain (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":16,"y":5,"inZ":false}

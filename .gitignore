@@ -11,3 +11,4 @@ test/*.log
 tools/leitstand/*.webp
 tools/leitstand/pilot/
 tools/leitstand/spiel/
+tools/leitstand/n/

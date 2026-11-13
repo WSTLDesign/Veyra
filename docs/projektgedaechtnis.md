@@ -143,3 +143,6 @@ Zweck: Alles Wichtige aus den Chats an einem Ort, damit bei einer Komprimierung 
 - Leitstand Version 9 veröffentlicht: Werkstatt mit Stabilitäts-Fix, Heldin, Terras R4.
 - 21:17 Nutzer bat um aktuelle Zip → Quellcode-Zip des Staging-Stands (d3c685c) im Chat geschickt.
 - 21:25 gestartet: Welt (R5 abschließen, R6 Innenräume) und UI R2 (App-Icon „V“, Titel am Handy, Chronik/Tasche/Fangkarte).
+- 21:21 Nutzer fragte, ob die Zip direkt auf Netlify spielbar ist → zweite Zip `veyra-staging-netlify.zip` (fertig gebautes, geschütztes Staging-Spiel aus Commit d3c685c) geschickt; Hinweis: als NEUE Netlify-Site hochladen, `?modelle3d=1` für neue Modelle, nicht in die Live-Site.
+- 21:40 UI R2 fertig: neues App-Icon (helles „V“ auf Indigo mit rosa Kristall, `public/icons/`, `tools/icon/icon_svg.py`); Ursache alter Titel: Service Worker cache-first mit festem Cache-Namen → jetzt Netz zuerst für Seite/Manifest/Icons; Startbildschirm und Opening-Endbild mit neuer Wortmarke; Tasche-Symbole, Chronik ab 1100 px, Fangkarte neu (ungeprüft als Bild). Offen: iOS übernimmt Icon nur nach Neu-Hinzufügen; keine iOS-Startbilder; theme-color in build.mjs noch alt; Nutzer wollte ursprünglich ein „schwarzes V“ – Rückfrage gestellt.
+- 21:40 gestartet: Terras R5 (Augen rund/offen, Flausch-Farben, Knospi sitzend).

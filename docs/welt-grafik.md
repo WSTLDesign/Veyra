@@ -59,3 +59,12 @@ Siehe `test/welt2/n1_mess.json` (Draw-Calls, Dreiecke inkl. Schatten- und Bloom-
 - Hoch liegt auf Route 1 bei ≈ 255–265 k Dreiecken inkl. Schattenpass (Budget 250 k gilt für Mittelklasse = Stufe Mittel).
 - Höhlen-Look (Wände, Kristalle) gehört zu 51-innen; hier nur Licht/Tonemapping/Fels-Form.
 - Nicht umgesetzt: Blender-GLB-Vegetation (prozedurale Kronen erreichen die Wirkung günstiger), Höhennebel, echte LOD je Entfernung für Gras.
+
+## Runde 2 (13.11., 01:00–04:30)
+- **Farbvariation:** Boden mit großflächigem Farbton-Wechsel (gelblich-trocken ↔ kühl-blaugrün, ~60 m) und Kräuterflecken; Gras-Instanzen nach großem Rauschen trockener oder kühler; jede Baumkrone mit eigener Farbton-/Sättigungs-/Helligkeitsstreuung; **Blumenwiesen** (zusammenhängende Flecken in einer Blütenfarbe).
+- **Luftperspektive** (`59-grafik.js`, Nebel-Chunks global ersetzt): Weitsicht-Dunst zusätzlich zum linearen Nebel, Bodendunst in der Ferne (Welthöhe im Vertex-Shader), Blaustich mit der Entfernung.
+- **Wege:** breiterer, verrauschter Übergang Weg ↔ Gras, Kiesel praktisch entfernt (nur feine Körnung).
+- **Höhlen (`51-innen.js`, jetzt mitbetreut):** Fels `iRock` als Ikosaeder Stufe 1 mit zwei Rauschlagen, Schichtung, abgeflachter Kuppe und ⅔ glatten Normalen statt Kristall-Facetten; Leucht-Teile (Kristalle, Laternen) bekommen Facetten-Schattierung + Randlicht im Glüh-Shader (09). Innenraum-API unverändert.
+- **Palmen:** gebogene, gezackte Wedel mit Mittelrippe und Farbverlauf (`frondGeo`) statt flacher Kugeln.
+- **Budget Hoch ≤ 250 k:** Krone 7 Büschel, Schatten-Stellvertreter 2, ferne Bäume 2 Büschel, Pflanzendichte Hoch 90 % → Route 1 ≈ 243 k (vorher 262 k).
+- Vorschauen: `test/welt2/r2_<szene>_<stufe>.webp`, Vergleiche `r2_vergleich_<szene>.webp`, `r2_stufen_route1.webp`; Messwerte `test/welt2/r2_mess.json`.

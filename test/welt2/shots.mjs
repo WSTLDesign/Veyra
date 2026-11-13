@@ -36,7 +36,7 @@ for (const t of tiers) {
   await page.goto(S.url + 'index.html', { waitUntil: 'load' });
   try { await page.click('#iPrompt', { timeout: 4000 }); } catch (e) { }
   await page.waitForTimeout(400); try { await page.click('#iSkip', { timeout: 4000 }); } catch (e) { }
-  await page.waitForTimeout(800); await page.click('#tNew'); await page.waitForFunction(() => typeof G !== 'undefined' && G, null, { timeout: 30000 }); await page.waitForTimeout(600);
+  await page.waitForTimeout(800); await page.waitForTimeout(800); await page.evaluate(() => { const i = document.querySelector('#iSkip'); if (i && i.offsetParent) i.click(); }); await page.waitForTimeout(600); await page.evaluate(() => document.querySelector('#tNew').click()); await page.waitForFunction(() => typeof G !== 'undefined' && G, null, { timeout: 30000 }); await page.waitForTimeout(600);
   await page.evaluate(() => { for (let i = 0; i < 30 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); } G.flags.starter = 1; SET.skipBattleIntro = 1; if (!G.team.length) G.team.push(mk(1, 12)); });
   // Stufe hart setzen (Test: nicht automatisch regeln)
   await page.evaluate(([g, sh]) => { try { Object.assign(SET, { res: 'native', shadows: sh, light: 1, particles: 1, fps: 0 }); try { applySet(); } catch (e) { } SET.gfx = g; if (typeof gfxForce === 'function') gfxForce(g); else if (typeof perfSet === 'function') { PERF.tier = g === 'high' ? 'mid' : 'high'; perfSet(g); } PERF.scale = 1; if (R3 && R3.fit) R3.fit(); } catch (e) { console.error(e.message); } }, [TIER[t].gfx, TIER[t].shadows]);

@@ -22,7 +22,7 @@ vec3 CustomToneMapping( vec3 color ){vec3 l=pow(max(color,vec3(0.)),vec3(2.2))*t
 // ---------- 2) Qualitätsstufen ----------
 // shadow = Schattenkarte (0 = nur Kontaktschatten), sExt = halbe Breite des Schattenausschnitts, sFwd = Verschiebung in Blickrichtung,
 // dpr = Deckel Pixelverhältnis, smin = kleinste dynamische Renderskala (darunter wird erst die Stufe gesenkt), bloom, aniso, grass = Halmdichte-Faktor
-Object.assign(PERF.TIERS.high,{shadow:2048,shadowEvery:1,part:1,veg:1,fog:1,leaves:34,sExt:12.5,sFwd:5,dpr:2,smin:.85,bloom:1,aniso:8,grass:1});
+Object.assign(PERF.TIERS.high,{shadow:2048,shadowEvery:1,part:1,veg:.9,fog:1,leaves:34,sExt:12.5,sFwd:5,dpr:2,smin:.85,bloom:1,aniso:8,grass:1});
 Object.assign(PERF.TIERS.mid,{shadow:1024,shadowEvery:1,part:.65,veg:.78,fog:.92,leaves:18,sExt:11,sFwd:4.5,dpr:1.75,smin:.75,bloom:0,aniso:4,grass:.8});
 Object.assign(PERF.TIERS.low,{shadow:0,shadowEvery:0,part:.3,veg:.5,fog:.78,leaves:0,sExt:10,sFwd:4,dpr:1.5,smin:.7,bloom:0,aniso:2,grass:.55});
 function gfxTier(){return perfTier();}
@@ -91,3 +91,15 @@ function gfxStats(){if(!R3||!R3.r)return null;const cv=R3.r.domElement;return{ca
 // ---------- Licht-Balance draußen: etwas mehr Sonne, etwas weniger Himmelslicht → klarere Schatten und Formen (nach dem Bild-Licht aus 44-sky) ----------
 GFX.lit={sun:1.12,amb:.9};
 if(typeof skyFrame==='function'&&!skyFrame._gfx){const _sf=skyFrame;skyFrame=function(S,O,c){_sf(S,O,c);try{if(c&&!c.inside&&!c.encl&&R3){R3.sun.intensity*=GFX.lit.sun;R3.hemi.intensity*=GFX.lit.amb;}}catch(e){}};skyFrame._gfx=1;}
+// ---------- Luftperspektive (Runde 2): Weitsicht-Dunst, Bodendunst in der Ferne, Blaustich mit der Entfernung ----------
+// Ersetzt die three-Nebel-Chunks global (gilt für alle Materialien mit Nebel). Welthöhe im Vertex-Shader aus mvPosition (starre Kameramatrix).
+(function(){const C=THREE.ShaderChunk;if(C.fog_vertex.includes('vFogY'))return;
+ C.fog_pars_vertex='#ifdef USE_FOG\n varying float fogDepth;\n varying float vFogY;\n#endif\n';
+ C.fog_vertex='#ifdef USE_FOG\n fogDepth = - mvPosition.z;\n vFogY = ( transpose( mat3( viewMatrix ) ) * ( mvPosition.xyz - viewMatrix[ 3 ].xyz ) ).y;\n#endif\n';
+ C.fog_pars_fragment='#ifdef USE_FOG\n uniform vec3 fogColor;\n varying float fogDepth;\n varying float vFogY;\n #ifdef FOG_EXP2\n  uniform float fogDensity;\n #else\n  uniform float fogNear;\n  uniform float fogFar;\n #endif\n#endif\n';
+ C.fog_fragment='#ifdef USE_FOG\n #ifdef FOG_EXP2\n  float fogFactor = 1.0 - exp( - fogDensity * fogDensity * fogDepth * fogDepth );\n  float vgF = fogFactor;\n #else\n'+
+  '  float fogFactor = smoothstep( fogNear, fogFar, fogDepth );\n  float vgF = smoothstep( fogNear * .5, fogFar * 1.3, fogDepth );\n'+
+  '  float vgH = ( 1.0 - exp( - max( fogDepth - fogNear * .25, 0.0 ) / ( fogFar * 1.4 ) ) ) * .36;\n'+
+  '  float vgL = exp( - max( vFogY + .2, 0.0 ) * .6 ) * smoothstep( fogNear * .3, fogFar * .9, fogDepth ) * .28;\n'+
+  '  fogFactor = 1.0 - ( 1.0 - fogFactor ) * ( 1.0 - vgH ) * ( 1.0 - vgL );\n #endif\n'+
+  ' vec3 vgC = mix( fogColor, fogColor * vec3( .88, .96, 1.1 ) + vec3( 0.0, .01, .035 ), vgF * .8 );\n gl_FragColor.rgb = mix( gl_FragColor.rgb, vgC, fogFactor );\n#endif\n';})();

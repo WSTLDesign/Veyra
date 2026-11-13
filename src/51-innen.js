@@ -15,9 +15,12 @@ const iCone=seg=>g3('innCo'+seg,()=>new THREE.ConeGeometry(1,1,seg));
 const iOct=()=>g3('innOct',()=>new THREE.OctahedronGeometry(1,0));
 const iTor=(arc,seg)=>g3('innTo'+arc+'_'+(seg||20),()=>new THREE.TorusGeometry(1,.12,6,seg||20,arc==='h'?Math.PI:Math.PI*2));
 const iDisc=seg=>g3('innDi'+seg,()=>new THREE.CircleGeometry(1,seg));
-const iRock=v=>g3('innRock'+v,()=>{const g=new THREE.IcosahedronGeometry(1,0),p=g.attributes.position,r=prng(97+v*31);
+// Welt-Grafik 2: Höhlenfels = Ikosaeder Stufe 1, gestreckt + zwei Rauschlagen + leichte Schichtung; Normalen ⅔ glatt (geschliffen statt Kristall-Facetten)
+const iRock=v=>g3('innRock2_'+v,()=>{const g=new THREE.IcosahedronGeometry(1,1),p=g.attributes.position,r=prng(97+v*31),a=.82+r()*.3,b=.88+r()*.25,o1=r()*6,o2=r()*6,n=new THREE.Vector3();
  const key=i=>Math.round(p.getX(i)*1e3)+','+Math.round(p.getY(i)*1e3)+','+Math.round(p.getZ(i)*1e3),J={};
- for(let i=0;i<p.count;i++){const k=key(i);if(!J[k])J[k]=[.78+r()*.4,.85+r()*.3];const[a,b]=J[k];p.setXYZ(i,p.getX(i)*a,p.getY(i)*b,p.getZ(i)*a);}g.computeVertexNormals();return g;});
+ for(let i=0;i<p.count;i++){const k=key(i);if(!J[k]){n.set(p.getX(i),p.getY(i),p.getZ(i)).normalize();const f=1+.26*Math.sin(n.x*3.3+o1)*Math.sin(n.y*2.9+o2)*Math.sin(n.z*3.7+o1)+.1*Math.sin(n.x*7.1+n.y*9+o2)*Math.sin(n.z*6.3+o1),st=Math.round(n.y*4)/4;let y=(n.y*.7+st*.3)*f*b;if(y>.62)y=.62+(y-.62)*.3;J[k]=[n.x*f*a,y,n.z*f*a];}const q=J[k];p.setXYZ(i,q[0],q[1],q[2]);}
+ g.computeVertexNormals();const fn=g.attributes.normal,acc={};for(let i=0;i<p.count;i++){const k=key(i);const t=acc[k]||(acc[k]=[0,0,0]);t[0]+=fn.getX(i);t[1]+=fn.getY(i);t[2]+=fn.getZ(i);}
+ for(let i=0;i<p.count;i++){const t=acc[key(i)],l=Math.hypot(t[0],t[1],t[2])||1;n.set(fn.getX(i)*.34+t[0]/l*.66,fn.getY(i)*.34+t[1]/l*.66,fn.getZ(i)*.34+t[2]/l*.66).normalize();fn.setXYZ(i,n.x,n.y,n.z);}return g;});
 
 // ---------- Baukasten: Teile in Raum-Listen (lokaler Rahmen je Möbel: Rückseite −z an der Wand, Vorderseite +z) ----------
 function IM(B,x,y,z,sx,sy,sz,rx,ry,rz){return new THREE.Matrix4().multiplyMatrices(B.M,w3M(x,y,z,sx,sy,sz,rx||0,ry||0,rz||0));}

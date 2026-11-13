@@ -5,6 +5,10 @@ import { writeFileSync } from 'fs';
 const OUT = new URL('./', import.meta.url).pathname, W = 1600, H = 900, what = process.argv[2] || 'alle', has = k => what === 'alle' || what.split(',').includes(k);
 const LINIEN = { glut: [1, 2, 3], flut: [4, 5, 6], flora: [7, 8, 9] };
 const ARTEN = (process.env.ARTEN || '1,2,3,4,5,6,7,8,9,59,61').split(',').map(Number);
+// Intro robust wegklicken (langsamer Start bei ausgelasteter CPU)
+async function boot(p) { for (let i = 0; i < 60; i++) { for (const sel of ['#iPrompt', '#iSkip']) await p.click(sel, { timeout: 800 }).catch(() => { });
+  const gone = await p.evaluate(() => { const s = document.querySelector('#intro'); if (!s || s.hidden) return true; const c = getComputedStyle(s); return c.display === 'none' || c.visibility === 'hidden' || +c.opacity === 0; });
+  if (gone) return; await p.waitForTimeout(1000); } }
 const env = await start(); const res = {};
 const toWebp = async (p, src, file, q = .92) => { const d = await p.evaluate(async ([s, q]) => { const im = new Image(); await new Promise(r => { im.onload = r; im.src = s; }); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0); return c.toDataURL('image/webp', q); }, [src, q]);
   writeFileSync(OUT + file, Buffer.from(d.split(',')[1], 'base64')); console.log('→ test/terras2/' + file); };
@@ -45,6 +49,7 @@ async function sheet(p, cells, file, { cols, cw, ch, title = '', sub = '' }) {
   await toWebp(p, d, file);
 }
 const P = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } });
+await boot(P);
 await newGame(P, { team: [[1, 12]], view: 'third' });
 const ld = await P.evaluate(async (ids) => { const out = {}; for (const i of ids) { const g = await tmLoad(i); out[i] = g ? TMOD.ms[TMOD.ids[i]] : 'FEHLT'; } if (typeof pilotLoad === 'function') { PILOT.wait.funki = null; PILOT.st.funki = null; await pilotLoad('funki'); } return out; }, ARTEN);
 console.log('Laden ms', JSON.stringify(ld)); res.laden = ld;
@@ -60,11 +65,11 @@ if (has('funki') || has('gesicht')) {
   await sheet(P, ex, 'funki_mimik.webp', { cols: 2, cw: 800, ch: 424, title: 'Funki Runde 2 – Mimik (Shape Keys)', sub: 'neutral · freudig · wütend · staunen' });
 }
 if (has('linie')) {
-  const H0 = { 1: .55, 2: .8, 3: 1.15, 4: .5, 5: .75, 6: 1.1, 7: .55, 8: .85, 9: 1.3 };
+  const H0 = { 1: .6, 2: .85, 3: 1.15, 4: .55, 5: .75, 6: 1.0, 7: .68, 8: .92, 9: 1.15 };
   for (const [nm, ids] of Object.entries(LINIEN)) {
     if (!ids.every(i => ld[i] !== 'FEHLT')) continue;
     const img = await P.evaluate(([ids, H0]) => { STU.clear(); let x = -1.45; const os = ids.map((i, k) => { const o = STU.terra(i, H0[i]); STU.add(o, x + k * 1.45, 0, -.55); STU.tick(o, .9 + k * .3); return o; });
-      return STU.shot([1.9, 1.35, 4.9], [0, .5, 0], 32); }, [ids, H0]);
+      return STU.shot([1.5, 1.05, 3.9], [0, .45, 0], 34); }, [ids, H0]);
     await sheet(P, [{ img, label: 'Starter-Linie ' + nm + ': ' + ids.map(i => String(i).padStart(3, '0')).join(' → ') }], 'linie_' + nm + '.webp', { cols: 1, cw: 1600, ch: 900 });
   }
 }
@@ -86,17 +91,17 @@ if (has('welt') || has('kampf')) {
   for (const [nm, ids] of Object.entries(LINIEN)) {
     const id = ids[0];
     if (has('welt')) {
-      const img = await P.evaluate(async (id) => { mode = 'world'; loadMap('route1', 9, 12); setView('third', true); VILL && (VILL.list = []); G.time = 11 * 60; P.dir = 'up'; P.ang = 0;
-        ROAM.list = []; ROAM.want = 0; await tmLoad(id); const r = { s: id, px: 9, py: 9, dir: 'down', t: 1, st: 'idle', o: {}, l: 5 }; ROAM.list.push(r);
-        const r2 = { s: [59, 61][id % 2], px: 7, py: 8, dir: 'right', t: 1, st: 'idle', o: {}, l: 5 }; if (tmReady(r2.s)) ROAM.list.push(r2);
+      const img = await P.evaluate(async (id) => { mode = 'world'; loadMap('route1', 9, 15); setView('third', true); VILL && (VILL.list = []); G.time = 11 * 60; P.dir = 'up'; P.ang = 0;
+        ROAM.list = []; ROAM.want = 0; await tmLoad(id); const r = ({s:id,l:5,x:9,y:12,px:9,py:12,fx:9,fy:12,t:1,dir:'down',next:performance.now()+99999,st:'idle',stT:0,nat:monNature(id),owl:nightOwl(id),shiny:false,o:{shiny:false},g:null}); ROAM.list.push(r);
+        
         await new Promise(res => setTimeout(res, 2500)); const S = R3.scene, mm = S.userData.mm, o = mm && mm.get(r); const rr = R3.r;
-        const a = o ? o.getWorldPosition(new THREE.Vector3()) : new THREE.Vector3(9.5, 0, 9.5); const cam = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, .05, 300); cam.position.set(a.x + 1.6, a.y + 1.05, a.z + 2.4); cam.lookAt(a.x, a.y + .3, a.z); cam.updateMatrixWorld();
+        const a = o ? o.getWorldPosition(new THREE.Vector3()) : new THREE.Vector3(9.5, 0, 12.5); const ry = o ? o.rotation.y : 0, fx = -Math.sin(ry), fz = -Math.cos(ry), h = o ? o.userData.baseH || .6 : .6; const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, .05, 300); cam.position.set(a.x + fx * h * 3.2 - fz * h * 1.6, a.y + h * 1.1, a.z + fz * h * 3.2 + fx * h * 1.6); cam.lookAt(a.x, a.y + h * .45, a.z); cam.updateMatrixWorld();
         if (typeof toonProSync === 'function') toonProSync(rr); rr.render(S, cam); return { img: rr.domElement.toDataURL('image/png'), tm: !!(o && o.userData.tm) }; }, id);
       console.log('Welt', nm, img.tm); await toWebp(P, img.img, 'welt_' + nm + '.webp');
     }
     if (has('kampf')) {
       const ok = await P.evaluate(async (id) => { const foe = { 1: 4, 4: 7, 7: 1 }[id]; G.team = [mk(id, 12)]; await tmLoad(id); await tmLoad(foe); G.time = 11 * 60; loadMap('route1', 9, 12); SET.btl = 'runde'; startBattle({ wild: mk(foe, 6) }); return true; }, id);
-      await P.waitForTimeout(3500);
+      await P.waitForFunction(() => typeof BT !== 'undefined' && BT && BT.foe && BT.me, null, { timeout: 15000 }).catch(() => { }); await P.waitForTimeout(2500);
       await P.evaluate(() => { if (B) { B.lunge = { who: 'me', t: performance.now() - 300 }; BT.me && (BT.me.userData.act.atk = performance.now() - 200); } });
       await P.waitForTimeout(400);
       const info = await P.evaluate(() => ({ me: !!(BT && BT.me && BT.me.userData.tm), foe: !!(BT && BT.foe && BT.foe.userData.tm), sprite: !!(BT && BT.foe && BT.foe.userData.sprite) }));

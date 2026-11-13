@@ -69,7 +69,7 @@ def assemble(spec):
     top = K.get('top'); bot = K.get('unten')
     if top:
         ring_fit(bvb, 'Saum', (0, 0, top['saum'] * H + .003 * H), (0, 0, 1), .007 * k, .0028 * k, 'saum', .0025 * k, 34, out=extra)
-        if top['art'] in ('tshirt', 'pulli', 'bluse'): ring_fit(bvb, 'Kragen', (0, D.NECK0.y + .002 * H, D.NECK0.z - .004 * H), (0, .2, 1), .0065 * k, .003 * k, 'saum', .0015 * k, 22, reach=.1, out=extra)
+        if top['art'] in ('tshirt', 'pulli', 'bluse'): ring_fit(bvb, 'Kragen', (0, D.NECK0.y + .002 * H, D.NECK0.z + .004 * H), (0, .25, 1), .0075 * k, .0035 * k, 'saum', .003 * k, 22, reach=.1, out=extra)
         L = D.L_UA + D.L_FA
         for s in (-1, 1):
             S = Lr(D.SH, s); A = Lr(D.ARM, s); t = top['arm'] * L - .004 * H

@@ -133,8 +133,8 @@ def sk_combo(*fns):
 shape_key(FACE, 'Blinzeln_L', sk_lids({1}, 1, .3)); shape_key(FACE, 'Blinzeln_R', sk_lids({-1}, 1, .3))
 shape_key(FACE, 'Augen_froh', sk_lids({1, -1}, .5, 1.0))
 shape_key(FACE, 'Laecheln', sk_combo(sk_mouth(0, 1.08, 1), lambda i, co, reg: brow_mv(.0015)(co) if reg == 'braue' else None))
-shape_key(FACE, 'Mund_A', sk_mouth(.13, 1.0, .3)); shape_key(FACE, 'Mund_O', sk_mouth(.11, .55, 0, 1))
-shape_key(FACE, 'Staunen', sk_combo(sk_lids({1, -1}, 0, 0, 7), sk_mouth(.06, .6, 0, 1, brow=brow_mv(.0075))))
+shape_key(FACE, 'Mund_A', sk_mouth(.13, 1.0, .3)); shape_key(FACE, 'Mund_O', sk_mouth(.09, .78, 0, 1))
+shape_key(FACE, 'Staunen', sk_combo(sk_lids({1, -1}, 0, 0, 7), sk_mouth(.06, .8, 0, 1, brow=brow_mv(.0075))))
 shape_key(FACE, 'Aerger', sk_combo(sk_lids({1, -1}, .22, .15), sk_mouth(0, .92, -.4, brow=brow_mv(-.0018, -.0055))))
 shape_key(FACE, 'Traurig', sk_combo(sk_lids({1, -1}, .25, 0), sk_mouth(0, .9, -.7, brow=brow_mv(0, .0065))))
 for _k in FACE.data.shape_keys.key_blocks[1:]: _k.value = 0
@@ -197,7 +197,7 @@ for s_ in (-1, 1):
     sel = (np.sign(X) == s_) & (np.abs(X) > D.SH.x * .72) & (t_ > -.03 * H) & (rad < .09 * kk) & (Z > HZ * .9); armT = np.where(sel, t_, armT)
 isArm = armT > 0; TOP = K_.get('top'); BOT = K_.get('unten')
 zTop = np.zeros(X.shape, bool); zBot = np.zeros(X.shape, bool); zSock = np.zeros(X.shape, bool)
-nkr = D.T['neck'] * H * (1.5 if TOP and TOP['art'] in ('hemd', 'bluse', 'pulli') else 1.75)
+nkr = D.T['neck'] * H * 1.22
 if TOP: zTop = np.where(isArm, armT < TOP['arm'] * L_, (Z > TOP['saum'] * H - .002 * H) & ((Z < D.NECK0.z - .005 * H) | ((np.hypot(X, Y - D.NECK0.y) >= nkr) & (Z < D.CHIN))))
 if BOT: zBot = (~isArm) & (Z < BOT.get('bund', .6) * H + .004 * H) & (Z > BOT.get('bis', 0) * H) & ~zTop
 if K_.get('socken'): zSock = (~isArm) & (Z < D.ANK.z + K_['socken'] * H) & ~zTop & ~zBot
@@ -239,7 +239,7 @@ mix(skin_b & isArm, '#e9b89c', .2 * ss(L_ - .03 * H, L_ + .06 * H, armT))   # HÃ
 # --- Haare: dunkler zum Ansatz, StrÃ¤hnen, Glanzband, Spitzen (haar_hi) ---
 hair = M('haar'); dist = np.sqrt((X - HC.x) ** 2 + (Y - HC.y) ** 2 + (Z - HC.z) ** 2)
 hc = hexrgb(FC['haar']); dark = '#%02x%02x%02x' % tuple(int(c * 255 * .6) for c in hc); lite = '#%02x%02x%02x' % tuple(min(255, int(c * 255 * 1.25 + 18)) for c in hc)
-mix(hair, dark, .35 * ss(hh * 1.18, hh * .98, dist))
+mix(hair, dark, (.35 if hc.mean() < .6 else .08) * ss(hh * 1.18, hh * .98, dist))
 streak = vnoise(Pn * np.array([1, 1, .3]), 520); mix(hair, lite, .18 * ss(.62, .86, streak)); mix(hair, dark, .28 * ss(.38, .14, streak))
 hgt += hair * (streak - .5) * .35
 if FC.get('haar_hi'): mix(hair, FC['haar_hi'], ss(hh * 1.32, hh * 1.55, dist) * .95)

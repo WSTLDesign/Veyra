@@ -1,0 +1,30 @@
+{
+ "laden": {
+  "1": 22934,
+  "2": 21307,
+  "3": 22696,
+  "4": 16911,
+  "5": 21739,
+  "6": 23055,
+  "7": 23950,
+  "8": 39165,
+  "9": 18769
+ },
+ "fehlerStudio": [],
+ "kampf_glut": {
+  "me": true,
+  "foe": true,
+  "sprite": false
+ },
+ "kampf_flut": {
+  "me": true,
+  "foe": true,
+  "sprite": false
+ },
+ "kampf_flora": {
+  "me": true,
+  "foe": true,
+  "sprite": false
+ },
+ "fehler": []
+}

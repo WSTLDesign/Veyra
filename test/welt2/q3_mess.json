@@ -1,0 +1,26 @@
+{
+ "hoch_route1": {
+  "calls": 100,
+  "tris": 243242,
+  "ms": 3848.8,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_hoehle": {
+  "calls": 45,
+  "tris": 77572,
+  "ms": 2690.9,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_abend": {
+  "calls": 96,
+  "tris": 241466,
+  "ms": 3122.8,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ }
+}

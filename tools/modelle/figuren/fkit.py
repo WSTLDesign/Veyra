@@ -455,7 +455,7 @@ def build_beard(kind):
             P = []
             for j in range(5):
                 xn = s * (.02 + j * .075); p, n = surf(xn, D.MZ + .08 - .035 * (j / 4) ** 2); P.append(p + n * .006 * k + Vector((0, 0, -.006 * (j / 4) ** 2)) * k)
-            out.append(clump(P, .03 * k, .011 * k, region='bart', n=7, up=(0, -1, 0)))
+            out.append(clump(P, .022 * k, .009 * k, region='bart', n=7, up=(0, -1, 0)))
     return out
 
 # =====================================================================
@@ -468,7 +468,7 @@ def body_cover(p, spec):
     if ac and ac[1] > 0:
         if top and ac[1] < top['arm'] * L: return 'top'
         return None
-    if p.z > D.NECK0.z - .005 * H and (math.hypot(p.x, p.y - D.NECK0.y) < D.T['neck'] * H * (1.5 if top and top['art'] in ('hemd', 'bluse', 'pulli') else 1.75) or p.z > D.CHIN): return None
+    if p.z > D.NECK0.z - .005 * H and (math.hypot(p.x, p.y - D.NECK0.y) < D.T['neck'] * H * 1.22 or p.z > D.CHIN): return None
     if top and p.z > top['saum'] * H: return 'top'
     if bot and p.z > bot.get('bis', .0) * H and p.z < bot.get('bund', .6) * H + .004 * H: return 'hose'
     if top and p.z > top['saum'] * H - .002 * H: return 'top'

@@ -78,10 +78,10 @@ else:  # 009 Blühro: Vierbeiner (Sohlengänger), Schulterbuckel
     kopf(HC, HR, sn=.42, sn_drop=.15, sn_w=0, sn_s=.55, stirn=.04, mulde=.04, backen=.06)
     ears_at = [(s * .66, .15, .7) for s in (-1, 1)]
     # Blättermähne über Nacken/Schultern, Ranken um den Körper
-    for k in range(22):
-        y = C.NECK[1].y + (C.SPINE[1].y - C.NECK[1].y) * (k % 11) / 10; a = (-.9 if k < 11 else .9) + .25 * math.sin(k * 1.3)
+    for k in range(30):
+        y = C.NECK[1].y + (C.SPINE[1].y - C.NECK[1].y) * (k % 15) / 14; a = (-.75 if k < 15 else .75) * (.4 + .6 * ((k * 7) % 5) / 4) + .15 * math.sin(k * 1.3)
         d = Vector((math.sin(a), 0, math.cos(a))); hit = BVB.ray_cast(V(0, y, Lh) + d * .6, -d)
-        if hit[0]: leaves.append(blatt(hit[0] - d * .005, (d * .7 + V(0, .7, -.3)).normalized(), .11 * (1.1 - .4 * abs(y - C.NECK[0].y)), .05, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.3))
+        if hit[0]: leaves.append(blatt(hit[0] - d * .012, (d * .35 + V(0, .9, -.25)).normalized(), .16 * (1.1 - .5 * abs(y - C.NECK[0].y)), .075, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.18, dick=.08))
     for s in (-1, 1):   # Ranken (Spiralen um Brust und Vorderbein)
         pts = [S_(C.FL[0], s) + V(0, -.02, .05), S_(C.FL[1], s) + V(s * .06, -.04, .02), S_(C.FL[1], s) + V(-s * .02, -.08, -.06), S_(C.FL[2], s) + V(s * .06, -.02, .02)]
         r_ = glied('Ranke', pts, [.012, .012, .01, .008], ring=6, n=16, regn='stiel'); leaves.append(r_)

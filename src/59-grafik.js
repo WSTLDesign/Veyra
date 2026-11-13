@@ -106,13 +106,14 @@ if(typeof skyFrame==='function'&&!skyFrame._gfx){const _sf=skyFrame;skyFrame=fun
 // ---------- Runde 5: Entfernungs-Budget für Figuren-/Terra-Modelle (57/58, nur Schalter an) ----------
 // Je Bild vor dem Zeichnen (und danach zurückgesetzt, damit 57/58/09 ihre eigenen Zustände behalten):
 //  ab sh Feldern kein Schattenwurf · ab ol Feldern kein Umriss · ab hide Feldern ausgeblendet (Spielfigur nie). Die LOD-Stufen von 57/58 bleiben aktiv.
-GFX.mlod={high:{sh:6,ol:8,hide:24},mid:{sh:5,ol:6,hide:18},low:{sh:0,ol:5,hide:14}};
+GFX.mlod={high:{sh:4.5,ol:7,hide:24,lod:5},mid:{sh:3.5,ol:5,hide:18,lod:4},low:{sh:0,ol:4,hide:14,lod:3}};
 const _gM={roots:[],t:0,undo:[],v:new THREE.Vector3()};
 function gfxModelRoots(S){const out=[];for(const o of S.children){const U=o.userData||{};if(U.pilot||U.lod0||U.lod1){out.push(o);continue;}for(const c of o.children){const V=c.userData||{};if(V.pilot||V.lod0||V.lod1)out.push(c);}}return out;}
 function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);}if(!_gM.roots.length||!c)return;
  const L=GFX.mlod[perfTier().name]||GFX.mlod.high,cp=c.getWorldPosition(_gM.v),u=_gM.undo;
  for(const r of _gM.roots){if(!r.visible||r===R3.player)continue;let p=r.userData._gp||(r.userData._gp=new THREE.Vector3());r.getWorldPosition(p);const d=p.distanceTo(cp);
   if(d>L.hide&&!r.userData.held){r.visible=false;u.push([r,'visible',true]);continue;}
+  {const lo=r.userData.lod;if(lo&&lo[0]&&lo[1]&&d>L.lod&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}}// Figuren-LOD1 (57) schon ab lod Feldern
   if(d>L.sh||d>L.ol){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
    for(const m of ms){if(d>L.sh&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
 function gfxModelPost(){const u=_gM.undo;for(let i=u.length-1;i>=0;i--){const[o,k,v]=u[i];o[k]=v;}u.length=0;}

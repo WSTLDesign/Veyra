@@ -270,9 +270,9 @@
     "log": {
      "from": "morgenau",
      "to": "route1",
-     "t0": 219722,
-     "shown": 753,
-     "ms": 4566
+     "t0": 201690,
+     "shown": 543,
+     "ms": 3956
     }
    },
    "expLd": true
@@ -307,9 +307,9 @@
     "log": {
      "from": "morgenau",
      "to": "route1",
-     "t0": 241496,
-     "shown": 799,
-     "ms": 3589
+     "t0": 218976,
+     "shown": 599,
+     "ms": 3292
     }
    },
    "expLd": true
@@ -344,9 +344,9 @@
     "log": {
      "from": "route1",
      "to": "morgenau",
-     "t0": 263812,
-     "shown": 710,
-     "ms": 2084
+     "t0": 236016,
+     "shown": 530,
+     "ms": 2054
     }
    },
    "expLd": true
@@ -381,9 +381,9 @@
     "log": {
      "from": "route1",
      "to": "morgenau",
-     "t0": 283473,
-     "shown": 792,
-     "ms": 2972
+     "t0": 250640,
+     "shown": 575,
+     "ms": 1694
     }
    },
    "expLd": true
@@ -418,9 +418,9 @@
     "log": {
      "from": "route1",
      "to": "kupferhain",
-     "t0": 306882,
-     "shown": 873,
-     "ms": 3811
+     "t0": 268128,
+     "shown": 579,
+     "ms": 2841
     }
    },
    "expLd": true
@@ -455,9 +455,9 @@
     "log": {
      "from": "route1",
      "to": "kupferhain",
-     "t0": 333442,
-     "shown": 948,
-     "ms": 3682
+     "t0": 287794,
+     "shown": 668,
+     "ms": 2750
     }
    },
    "expLd": true
@@ -492,9 +492,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 357171,
-     "shown": 714,
-     "ms": 3194
+     "t0": 304782,
+     "shown": 526,
+     "ms": 2451
     }
    },
    "expLd": true
@@ -529,9 +529,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 379102,
-     "shown": 776,
-     "ms": 3295
+     "t0": 319364,
+     "shown": 552,
+     "ms": 2494
     }
    },
    "expLd": true
@@ -566,9 +566,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 379102,
-     "shown": 776,
-     "ms": 3295
+     "t0": 319364,
+     "shown": 552,
+     "ms": 2494
     }
    },
    "expLd": false
@@ -603,9 +603,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 379102,
-     "shown": 776,
-     "ms": 3295
+     "t0": 319364,
+     "shown": 552,
+     "ms": 2494
     }
    },
    "expLd": false
@@ -640,9 +640,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 379102,
-     "shown": 776,
-     "ms": 3295
+     "t0": 319364,
+     "shown": 552,
+     "ms": 2494
     }
    },
    "expLd": false
@@ -677,9 +677,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 379102,
-     "shown": 776,
-     "ms": 3295
+     "t0": 319364,
+     "shown": 552,
+     "ms": 2494
     }
    },
    "expLd": false
@@ -714,9 +714,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route2",
-     "t0": 478074,
-     "shown": 803,
-     "ms": 4679
+     "t0": 392012,
+     "shown": 524,
+     "ms": 2933
     }
    },
    "expLd": true
@@ -751,9 +751,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route2",
-     "t0": 495670,
-     "shown": 876,
-     "ms": 3797
+     "t0": 406813,
+     "shown": 541,
+     "ms": 2608
     }
    },
    "expLd": true
@@ -788,9 +788,9 @@
     "log": {
      "from": "route2",
      "to": "nebelgrotte",
-     "t0": 523105,
-     "shown": 1017,
-     "ms": 4475
+     "t0": 427289,
+     "shown": 689,
+     "ms": 5018
     }
    },
    "expLd": true
@@ -825,9 +825,9 @@
     "log": {
      "from": "route2",
      "to": "nebelgrotte",
-     "t0": 550816,
-     "shown": 989,
-     "ms": 3964
+     "t0": 448717,
+     "shown": 794,
+     "ms": 2905
     }
    },
    "expLd": true
@@ -862,9 +862,9 @@
     "log": {
      "from": "nebelgrotte",
      "to": "route2",
-     "t0": 572944,
-     "shown": 717,
-     "ms": 2662
+     "t0": 466394,
+     "shown": 527,
+     "ms": 1656
     }
    },
    "expLd": true
@@ -899,9 +899,9 @@
     "log": {
      "from": "nebelgrotte",
      "to": "route2",
-     "t0": 591736,
-     "shown": 786,
-     "ms": 3152
+     "t0": 481530,
+     "shown": 617,
+     "ms": 2049
     }
    },
    "expLd": true
@@ -936,9 +936,9 @@
     "log": {
      "from": "route2",
      "to": "kupferhain",
-     "t0": 613702,
-     "shown": 928,
-     "ms": 3961
+     "t0": 498677,
+     "shown": 566,
+     "ms": 3064
     }
    },
    "expLd": true
@@ -973,9 +973,9 @@
     "log": {
      "from": "route2",
      "to": "kupferhain",
-     "t0": 636389,
-     "shown": 864,
-     "ms": 4315
+     "t0": 515430,
+     "shown": 674,
+     "ms": 2908
     }
    },
    "expLd": true
@@ -1053,83 +1053,83 @@
  "laden": [
   {
    "to": "route1",
-   "ms": 4566,
-   "shown": 753
+   "ms": 3956,
+   "shown": 543
   },
   {
    "to": "route1",
-   "ms": 3589,
-   "shown": 799
+   "ms": 3292,
+   "shown": 599
   },
   {
    "to": "morgenau",
-   "ms": 2084,
-   "shown": 710
+   "ms": 2054,
+   "shown": 530
   },
   {
    "to": "morgenau",
-   "ms": 2972,
-   "shown": 792
+   "ms": 1694,
+   "shown": 575
   },
   {
    "to": "kupferhain",
-   "ms": 3811,
-   "shown": 873
+   "ms": 2841,
+   "shown": 579
   },
   {
    "to": "kupferhain",
-   "ms": 3682,
-   "shown": 948
+   "ms": 2750,
+   "shown": 668
   },
   {
    "to": "route1",
-   "ms": 3194,
-   "shown": 714
+   "ms": 2451,
+   "shown": 526
   },
   {
    "to": "route1",
-   "ms": 3295,
-   "shown": 776
+   "ms": 2494,
+   "shown": 552
   },
   {
    "to": "route2",
-   "ms": 4679,
-   "shown": 803
+   "ms": 2933,
+   "shown": 524
   },
   {
    "to": "route2",
-   "ms": 3797,
-   "shown": 876
+   "ms": 2608,
+   "shown": 541
   },
   {
    "to": "nebelgrotte",
-   "ms": 4475,
-   "shown": 1017
+   "ms": 5018,
+   "shown": 689
   },
   {
    "to": "nebelgrotte",
-   "ms": 3964,
-   "shown": 989
+   "ms": 2905,
+   "shown": 794
   },
   {
    "to": "route2",
-   "ms": 2662,
-   "shown": 717
+   "ms": 1656,
+   "shown": 527
   },
   {
    "to": "route2",
-   "ms": 3152,
-   "shown": 786
+   "ms": 2049,
+   "shown": 617
   },
   {
    "to": "kupferhain",
-   "ms": 3961,
-   "shown": 928
+   "ms": 3064,
+   "shown": 566
   },
   {
    "to": "kupferhain",
-   "ms": 4315,
-   "shown": 864
+   "ms": 2908,
+   "shown": 674
   }
  ]
 }

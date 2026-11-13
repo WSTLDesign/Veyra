@@ -60,7 +60,7 @@ else:  # 009 Blühro: Vierbeiner (Sohlengänger), Schulterbuckel
     C.FL = [V(Wx, -Lb * .4, Lh * 1.0), V(Wx * 1.05, -Lb * .36, Lh * .55), V(Wx * 1.05, -Lb * .42, Lh * .14), V(Wx * 1.05, -Lb * .5, .02)]
     C.HL = [V(Wx * 1.05, Lb * .52, Lh * .92), V(Wx * 1.1, Lb * .36, Lh * .52), V(Wx * 1.1, Lb * .58, Lh * .16), V(Wx * 1.08, Lb * .5, .02)]
     C.TAIL = [C.SPINE[0] + V(0, .05, .0), C.SPINE[0] + V(0, .09, -.01), C.SPINE[0] + V(0, .11, -.03)]
-    HR = (.18, .17, .155); HC = C.NECK[1] + V(0, -.09, .05)
+    HR = (.19, .175, .165); HC = C.NECK[1] + V(0, -.09, .06)
     body = glied('Rumpf', [C.SPINE[0] + V(0, .07, -.01)] + C.SPINE + C.NECK + [HC + V(0, .06, -.03)], [(.13, .12), (.17, .17), (.19, .19), (.2, .21), (.19, .21), (.15, .16), (.13, .13), (.11, .11)], ring=22, n=40)
     deform(body, lambda p: p + V(0, 0, .03 * gauss((p.y + .08) ** 2, .06) * ss(Lh + .05, Lh + .15, p.z))); set_region(body, 'fell')   # Schulterbuckel
     legs = []
@@ -81,7 +81,10 @@ else:  # 009 Blühro: Vierbeiner (Sohlengänger), Schulterbuckel
     for k in range(30):
         y = C.NECK[1].y + (C.SPINE[1].y - C.NECK[1].y) * (k % 15) / 14; a = (-.75 if k < 15 else .75) * (.4 + .6 * ((k * 7) % 5) / 4) + .15 * math.sin(k * 1.3)
         d = Vector((math.sin(a), 0, math.cos(a))); hit = BVB.ray_cast(V(0, y, Lh) + d * .6, -d)
-        if hit[0]: leaves.append(blatt(hit[0] - d * .012, (d * .35 + V(0, .9, -.25)).normalized(), .16 * (1.1 - .5 * abs(y - C.NECK[0].y)), .075, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.18, dick=.08))
+        if hit[0]: leaves.append(blatt(hit[0] - d * .012, (d * .35 + V(0, .9, -.25)).normalized(), .16 * (1.1 - .5 * abs(y - C.NECK[0].y)), .075, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.22, dick=.14))
+    for k in range(7):   # Brustfell (Volumen-Klumpen, creme)
+        a = (k - 3) / 3; hit = BVB.ray_cast(V(a * .1, -1, Lh * 1.0 - abs(a) * .03), V(0, 1, 0))
+        if hit[0]: leaves.append(klumpen(hit[0] + V(0, .015, 0), V(a * .3, -.4, -.9), .08, .04, 'creme', up=(0, -1, 0), spitzen=3))
     for s in (-1, 1):   # Ranken (Spiralen um Brust und Vorderbein)
         pts = [S_(C.FL[0], s) + V(0, -.02, .05), S_(C.FL[1], s) + V(s * .06, -.04, .02), S_(C.FL[1], s) + V(-s * .02, -.08, -.06), S_(C.FL[2], s) + V(s * .06, -.02, .02)]
         r_ = glied('Ranke', pts, [.012, .012, .01, .008], ring=6, n=16, regn='stiel'); leaves.append(r_)

@@ -85,3 +85,18 @@ Siehe `test/welt2/n1_mess.json` (Draw-Calls, Dreiecke inkl. Schatten- und Bloom-
 - **Eigene Modelle** (`gebaeude.py`): `labor` (Nennmaß 6×3: flaches Dach mit Attika, Glas-Lichtband, Sternwarten-Kuppel mit Spalt, Antenne mit Schüssel, Solarfelder, Metallgesims, Lisenen; 1,6 k Dreiecke) und `laden` (4×3: Gesims, Eckpfosten, Flachdach mit drei Sheds und Oberlichtern; 0,6 k). 09 ordnet zu: h→haus, L→labor, P→station, M→laden; prozedurale Dachteile/Kuppel/Antenne/Sheddach entfallen bei Modell, Markise/Schaufenster/Schilder bleiben.
 - **Fenster**: jede Fensteröffnung bekommt eine Laibung (Sturz, seitliche Leibungen, 13 cm tief) mit dunklem Grund – die Scheibe sitzt sichtbar zurückgesetzt (gilt für Modell- und Kasten-Häuser, ohne Zusatz-Draw-Call). Echte Wandöffnungen im Modell sind nicht möglich, weil Fensterplätze je Haus von 09 gewürfelt werden.
 - Übergangstest zusätzlich mit `?modelle3d=1`: `node test/welt2/_ueb_m3.mjs` (Kopie von test/uebergaenge_qa.mjs mit Schalter, Ausgabe test/welt2/_ueb_m3.log).
+- Abschluss Runde 5: Das Vorladen der Hausmodelle beim Seitenstart ist entfernt; sie laden erst beim ersten Ort mit Häusern über `VMODEL_QUEUE` (61-stabil). Die Budget-/LOD-Steuerung in 59 (`GFX.mlod`, `gfxModelPre/Post`) hat jetzt der Agent „Stabilität PC“.
+- Messwerte (Hoch, Schalter an): Morgenau 239 k Dreiecke / 98 Draw-Calls, Labor-Blick 280 k / 108, Laden in Kupferhain 327 k / 141, Station 272 k / 144. Das Budget von 250 k ist in Kupferhain also weiter überschritten. Treiber sind die Figuren- und Terra-Modelle (je etwa 25 k Dreiecke inkl. Schattenpass) und das Laub.
+
+## Runde 6 – Innenräume (13.11.)
+- **Möbel mit gerundeten Kanten**: Teile ab 4 cm Dicke und 25 cm Länge werden in echter Größe als gerundeter Quader gebaut (`iRBox`, Radius ≤ 3 cm, weiche Kanten-Normalen, 108 Dreiecke, Zwischenspeicher je Maß). Kleinteile wie Bücher und Griffe bleiben einfache Quader.
+- **Umriss**: 6 mm in abgedunkelter Eigenfarbe (Vertexfarbe × 0,4) statt 11 mm Schwarzviolett (`innOlMat`).
+- **Kontaktschatten** unter jedem Möbel: eine Instanz-Ebene mit weichem Fleck, ein Draw-Call (`innContact`).
+- **Licht**: mehr Raumlicht (Himmelslicht ×0,72–1,17 statt 0,55–1), weichere Sonne (0,14–0,6 statt 0,18–0,8). Holz in Boden und Wandverkleidung ist etwas entsättigt.
+- **Pflanzen**: Topfbäume mit Büschel-Krone wie draußen (`crownGeo`).
+- Innenraum-Budget (Hoch): 29–40 Draw-Calls, 60–140 k Dreiecke.
+- Bilder `test/welt/r6_vergleich_<haus|labor|laden|station|arena>.webp` (vorher | nachher), dazu Einzelbilder `r6_*_vorher/nachher.webp`.
+- Offen:
+  - Stoff- und Keramik-Muster: Möbel tragen nur Holz-Maserung, Polster sind glatt.
+  - Ein echter Lichtkegel durchs Fenster mit Staub ist nur als vorhandener Lichtbalken da.
+  - Die Raumfarbe ist insgesamt noch sehr orange-warm.

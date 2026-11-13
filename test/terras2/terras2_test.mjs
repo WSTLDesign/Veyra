@@ -24,6 +24,13 @@ for (const id of IDS) {
   const foe = IDS[(IDS.indexOf(id) + 3) % IDS.length];
   await P.evaluate(([id, foe]) => { G.team = [mk(id, 12)]; G.time = 11 * 60; SET.btl = 'runde'; startBattle({ wild: mk(foe, 6) }); }, [id, foe]);
   await P.waitForFunction(() => typeof BT !== 'undefined' && BT && BT.foe && BT.me, null, { timeout: 15000 }).catch(() => { }); await P.waitForTimeout(1200);
+  // Kein Umfallen vor dem Kampf: zu Beginn und nach 3 s Idle, aufrecht, kein faint
+  const stehen = () => P.evaluate(() => { const chk = o => { const U = o && o.userData; if (!U || !U.tm) return { tm: false }; o.updateMatrixWorld(true); const r = U.B('root') || U.inner, up = new THREE.Vector3(0, 1, 0).applyQuaternion(r.getWorldQuaternion(new THREE.Quaternion()));
+      const h = U.B('hips'), hy = h ? h.getWorldPosition(new THREE.Vector3()).y - o.position.y : 1; return { tm: true, faint: U.onceN === 'faint' && !!U.once, idle: +(U.w.idle).toFixed(2), up: +up.y.toFixed(2), hipsH: +(hy / Math.max(.01, U.h)).toFixed(2) }; };
+    return { foe: chk(BT.foe), me: chk(BT.me) }; });
+  const s0 = await stehen(); await P.waitForTimeout(3000); const s3 = await stehen();
+  const ok = x => x.tm && !x.faint && x.up > .9 && x.idle > .5 && x.hipsH > .15;
+  R.t(`Kampf ${id}: steht zu Beginn und nach 3 s (kein Umfallen)`, ok(s0.foe) && ok(s0.me) && ok(s3.foe) && ok(s3.me), { s0, s3 });
   const b = await P.evaluate(() => { const A = BT && BT.me && BT.me.userData; if (A && A.act) A.act.atk = performance.now(); const F = BT && BT.foe && BT.foe.userData; if (F && F.act) F.act.hit = performance.now();
     return { me: !!(A && A.tm), foe: !!(F && F.tm), meSprite: !!(A && A.sprite), foeSprite: !!(F && F.sprite) }; });
   await P.waitForTimeout(900);
@@ -31,6 +38,20 @@ for (const id of IDS) {
   R.t(`Kampf ${id} vs ${foe}: beide als Modell`, b.me && b.foe && !b.meSprite && !b.foeSprite, b);
   await P.evaluate(() => { try { endBattle('run'); } catch (e) { } mode = 'world'; }); await P.waitForTimeout(500);
 }
+// Spät geladenes Modell + zwei Kämpfe hintereinander: steht, Umfallen erst bei KP 0
+for (let n = 0; n < 2; n++) {
+  const r = await P.evaluate(async (n) => { const id = 2; if (n === 0) { const k = TMOD.ids[id]; delete TMOD.gltf[k]; delete TMOD.st[k]; delete TMOD.wait[k]; }
+    G.team = [mk(4, 12)]; startBattle({ wild: mk(id, 6) }); for (let i = 0; i < 60 && !(BT && BT.foe && BT.foe.userData.tm); i++) await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 3000)); const U = BT.foe.userData; const r0 = { tm: !!U.tm, faint: U.onceN === 'faint' && !!U.once, idle: U.w && +U.w.idle.toFixed(2) };
+    B.foe[B.fi].hp = 0; await new Promise(r => setTimeout(r, 1500)); const r1 = { faint: U.onceN === 'faint' }; try { endBattle('run'); } catch (e) { } mode = 'world'; return { r0, r1 }; }, n);
+  R.t(`Kampf ${n + 1} (Loddo ${n ? 'geladen' : 'spät geladen'}): steht, fällt erst bei KP 0`, r.r0.tm && !r.r0.faint && r.r0.idle > .5 && r.r1.faint, r);
+  await P.waitForTimeout(600);
+}
+// Welt: schlafendes Terra liegt nicht um (Dösen statt faint)
+const sl = await P.evaluate(async () => { mode = 'world'; loadMap('route1', 9, 12); ROAM.list = []; ROAM.want = 0; const r = ({s:1,l:5,x:9,y:10,px:9,py:10,fx:9,fy:10,t:1,dir:'down',next:performance.now()+99999,st:'sleep',pose:'sleep',stT:0,nat:monNature(1),owl:false,shiny:false,o:{shiny:false},g:null}); ROAM.list.push(r);
+  let o = null; for (let i = 0; i < 20 && !(o && o.userData.tm); i++) { await new Promise(res => setTimeout(res, 250)); const mm = R3.scene.userData.mm; o = mm && mm.get(r); } await new Promise(res => setTimeout(res, 2500));
+  const U = o && o.userData; return { tm: !!(U && U.tm), faint: !!(U && U.onceN === 'faint' && U.once) }; });
+R.t('Welt: schlafendes Terra fällt nicht um', sl.tm && !sl.faint, sl);
 R.t('keine Konsolenfehler (an)', P.errs.length === 0, P.errs.slice(0, 4));
 await P.ctx.close();
 // Schalter aus ⇒ unverändert: neue Seite, nichts geladen (Titel + kurzes Warten genügt)

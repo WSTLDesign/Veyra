@@ -78,13 +78,15 @@ function tmAnim(o,t,st){const U=o.userData;st=st||{};const now=performance.now()
  if(A.hop&&A.hop!==U.hop0){U.hop0=A.hop;tmClip(o,'joy');}
  if(A.catch&&A.catch!==U.ca0){U.ca0=A.catch;tmClip(o,'catch',.08);}
  if(A.ko&&!U.ko0){U.ko0=A.ko;tmClip(o,'faint',.15);}else if(!A.ko&&U.ko0){U.ko0=0;if(U.onceN==='faint'){U.once.fadeOut(.3);U.once=null;}}
- const pose=st.pose||null;if(pose!==U.pose0){U.pose0=pose;if(pose==='sleep'){tmClip(o,'faint',.4);U.onceEnd=Infinity;}else if(U.onceN==='faint'&&!A.ko){U.once&&U.once.fadeOut(.4);U.once=null;}}
+ const pose=st.pose||null;if(pose!==U.pose0){U.pose0=pose;U.zz=0;if(U.onceN==='faint'&&!A.ko){U.once&&U.once.fadeOut(.4);U.once=null;}}
+ if(Ac.idle)Ac.idle.setEffectiveTimeScale(pose==='sleep'?.35:1);
  if(U.once&&now>U.onceEnd+60&&U.onceN!=='faint'){U.once.fadeOut(.2);U.once=null;}
  const fe=U.exT&&now<U.exT.until?U.exT.e:(U.expr||'neutral');U.fe=fe;
  if(st.still){tmFace(U,dt,false);return;}U.mixer.update(dt);
  // Zusatz nach dem Mixer: Blick, Grasen/Schnuppern, Feder-Nachschwingen von Rute und Ohren, Atmen
  const head=U.B('head'),neck=U.B('neck1');
- if(pose==='graze'||pose==='sniff'){const k=pose==='graze'?1:.55;tmAdd(neck,.45*k,0,0);tmAdd(head,.35*k+.08*Math.sin(now*.004)*k,0,0);}
+ if(pose==='sleep'){U.zz=(U.zz||0)+(1-(U.zz||0))*(1-Math.exp(-dt*2));tmAdd(neck,.5*U.zz,0,0);tmAdd(head,.35*U.zz+.03*Math.sin(now*.0012),0,.12*U.zz);}
+ else if(pose==='graze'||pose==='sniff'){const k=pose==='graze'?1:.55;tmAdd(neck,.45*k,0,0);tmAdd(head,.35*k+.08*Math.sin(now*.004)*k,0,0);}
  else if(st.lookAt&&head&&!A.ko){const lx=st.lookAt.x-p.x,lz=st.lookAt.z-p.z;let a=Math.atan2(-lx,-lz)-yaw;while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;
   const tgt=Math.max(-.7,Math.min(.7,a));U.look=(U.look||0)+(tgt-(U.look||0))*(1-Math.exp(-dt*5));tmAdd(neck,0,U.look*.35,0);tmAdd(head,0,U.look*.55,-U.look*.12);}
  else U.look=(U.look||0)*.9;

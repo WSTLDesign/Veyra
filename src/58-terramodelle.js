@@ -68,6 +68,7 @@ function tmAnim(o,t,st){const U=o.userData;st=st||{};const now=performance.now()
  // Tempo aus der Weltbewegung → idle/walk/run weich gewichtet, Abspieltempo = Tempo/Schrittlänge (kein Gleiten)
  const p=o.getWorldPosition(new THREE.Vector3());let v=0;if(U.lp&&dt>0){v=Math.hypot(p.x-U.lp.x,p.z-U.lp.z)/dt;if(v>30)v=0;}U.lp=p;
  const yaw=o.rotation.y;let yr=0;if(U.spr.yaw!=null&&dt>0){let d=yaw-U.spr.yaw;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;yr=d/dt;}U.spr.yaw=yaw;
+ if(st.battle)v=0; // Kampf: Stellungswechsel/Kamerafahrt der Arena sind kein Laufen
  U.spd+=(v-U.spd)*(1-Math.exp(-dt*8));const ws=o.scale.x*U.sc,wl=F.walk||[.4*U.h/ws,.87],rl=F.run||[.75*U.h/ws,.5],wv=wl[0]/wl[1]*ws,rv=rl[0]/rl[1]*ws;
  const s=st.moving===false&&U.spd<.05?0:U.spd,tR=Math.max(0,Math.min(1,(s-wv*1.6)/(wv*.9))),tM=Math.max(0,Math.min(1,s/(wv*.3))),want={idle:1-tM,walk:tM*(1-tR),run:tM*tR};
  const kw=1-Math.exp(-dt*10);for(const n in want){U.w[n]+=(want[n]-U.w[n])*kw;if(Ac[n])Ac[n].setEffectiveWeight(U.w[n]*(U.once&&now<U.onceEnd-150?.15:1));}

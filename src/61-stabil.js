@@ -34,11 +34,13 @@ function stabClass(r,touch){r=String(r||'');
  STAB.lim=STAB.ceil;
  // Werkstatt (Iframe im Leitstand / ?ws=1) am PC: mit „mittel“ starten, der Wachhund darf nach 10 s stabil höher
  if(STAB.ws&&pc&&!GFX.force&&STAB.base==='high'){STAB.base='mid';}
+ // R2: Handy/Tablet mit neuen 3D-Modellen (viele Figuren mit Skelett + Umriss) startet höchstens auf „mittel“ (kein Bloom/Bildkopie, Schatten 1024)
+ if(!pc&&!GFX.force&&STAB.base==='high'&&typeof pilotOn==='function'&&pilotOn())STAB.base='mid';
  if(pc&&c!=='dgpu')STAB.dpr=1.25;
- STAB.cap=pc?(c==='dgpu'||SET.quality!=='auto'?60:30):0;
+ STAB.cap=pc&&(c==='igpu-low'||c==='soft')&&SET.quality==='auto'?30:0;STAB.cap0=STAB.cap;
  try{const q=/[?&]fps=(\d+)/.exec(location.search);if(q)STAB.cap=Math.max(5,Math.min(60,+q[1]));}catch(e){}
  stabLog('GPU '+c+' · Start '+STAB.base+' · Deckel '+STAB.ceil+' · '+(STAB.cap||'∞')+' fps');})();
-function stabCap(){const f=+SET.fps||0;let c=STAB.cap||f||0;if(f&&c)c=Math.min(c,f);if(!PERF.touch)c=Math.min(c||60,60);return c||0;}
+function stabCap(){const f=+SET.fps||0;let c=STAB.cap||f||0;if(f&&c)c=Math.min(c,f);c=Math.min(c||60,60);return c;}
 // Stufe/Skala begrenzen (43 regelt weiter, aber nie über die Grenze des Wachhunds und nie nach oben, bevor 10 s stabil)
 if(typeof perfStart==='function'&&!perfStart._stab){const _pst=perfStart;perfStart=function(){_pst();
   if(!GFX.force&&SET.gfx==='auto'&&STAB.cls!=='mobil')PERF.tier=STAB.base;
@@ -46,7 +48,9 @@ if(typeof perfStart==='function'&&!perfStart._stab){const _pst=perfStart;perfSta
 if(typeof perfSet==='function'&&!perfSet._stab){const _pse=perfSet;perfSet=function(t){if(!PERF.TIERS[t])return;
   if(STAB_RK[t]>STAB_RK[STAB.lim])t=STAB.lim;if(STAB_RK[t]>STAB_RK[PERF.tier]&&performance.now()-STAB.lastBad<10000)return;if(t!==PERF.tier)STAB.grace=Math.max(STAB.grace,5);return _pse(t);};perfSet._stab=1;}// Stufenwechsel baut Pflanzen/Schatten neu → erwartbar langes Bild
 function stabScale(k){k=Math.max(.5,Math.min(1,Math.round(k*100)/100));PERF.scale=k;PERF.changed=performance.now();try{if(R3&&R3.fit)R3.fit();}catch(e){}}
-if(typeof perfScale==='function'&&!perfScale._stab){const _psc=perfScale;perfScale=function(k){k=Math.min(k,STAB.smax);const mn=perfTier().smin||.6;
+if(typeof perfScale==='function'&&!perfScale._stab){const _psc=perfScale;perfScale=function(k){k=Math.min(k,STAB.smax);
+  // R2: Renderskala nicht pendeln lassen (jede Änderung = neue Canvas-Größe = Ruckler): nach einer Absenkung 8 s nicht wieder anheben
+  {const nw=performance.now();if(k>PERF.scale+.001&&nw-(STAB.scDownT||-1e9)<8000)return;if(k<PERF.scale-.001)STAB.scDownT=nw;}const mn=perfTier().smin||.6;
   if(STAB.smax<mn-.001){stabScale(Math.min(k,STAB.smax));return;}return _psc(k);};perfScale._stab=1;}
 // Renderskala des Wachhunds gilt auch bei fester Auflösung (SET.res ≠ 'auto' ignoriert PERF.scale)
 if(typeof resH3==='function'&&!resH3._stab){const _rh3=resH3;resH3=function(){const h=_rh3();return SET.res!=='auto'&&STAB.smax<1?Math.max(180,Math.round(h*STAB.smax)):h;};resH3._stab=1;}
@@ -58,7 +62,7 @@ function stabDown(why){const now=performance.now();STAB.lastBad=now;STAB.downs++
  STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}
 function stabEmergency(why){const now=performance.now();STAB.lastBad=now;STAB.emerg++;STAB.lim='low';perfSet('low');STAB.smax=.5;stabScale(.5);
  try{GFX.post=false;}catch(e){}try{if(R3&&R3.sun)R3.sun.castShadow=false;}catch(e){}
- if(!PERF.touch)STAB.cap=30;if(STAB.emerg===1||STAB.emerg%20===0)stabLog('NOTBREMSE '+STAB.emerg+' ('+why+')');
+ STAB.cap=30;if(STAB.emerg===1||STAB.emerg%20===0)stabLog('NOTBREMSE '+STAB.emerg+' ('+why+')');
  if(STAB.emerg===1)try{toast('Grafik auf „niedrig“ gestellt, damit es flüssig bleibt');}catch(e){}
  STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;STAB.spikes.length=0;}
 function stabUp(){const now=performance.now();STAB.lastUp=now;STAB.ups++;
@@ -77,6 +81,9 @@ function stabMeasure(dt,t){const W=STAB.win;
  const avg=W.sum/W.n;W.n=W.sum=0;W.t0=t;STAB.avg=+avg.toFixed(1);
  if(avg>100){stabEmergency('Ø '+avg.toFixed(0)+' ms');return;}
  if(avg>45){stabDown('Ø '+avg.toFixed(0)+' ms');return;}
+ // R2: 60 nicht haltbar (Ø Bildkosten > 21 ms) → gleichmäßige 30; zurück auf 60 erst nach 10 s mit Ø < 12 ms
+ if(!STAB.cap&&avg>21&&(+SET.fps||60)>30){STAB.cap=30;STAB.capT=now;STAB.stableT=0;stabLog('Deckel → 30 (Ø '+avg.toFixed(0)+' ms)');return;}
+ if(STAB.cap===30&&!STAB.cap0&&!STAB.emerg){if(avg<12){if(!STAB.fastT)STAB.fastT=now;if(now-STAB.fastT>10000&&now-STAB.capT>10000){STAB.cap=0;STAB.fastT=0;stabLog('Deckel → 60');}}else STAB.fastT=0;}
  const c=stabCap(),tgt=c?1000/c:16.7;
  if(avg<tgt*1.2+4){if(!STAB.stableT)STAB.stableT=now;if(now-STAB.stableT>=10000&&now-STAB.lastBad>=10000&&now-STAB.lastUp>=10000){stabUp();STAB.stableT=now;}}else STAB.stableT=0;}
 // Ereignisse mit erwartbar langem Bild
@@ -94,18 +101,22 @@ if(typeof loop==='function'&&!loop._stab){const _lS=loop;loop=function(t){if(STA
   if(STAB.pc){STAB.pc=0;const cost=t-STAB.lr;if(cost<5000){const w=Math.max(0,cost-17);STAB.work+=(w-STAB.work)*(w>STAB.work?.6:.25);stabMeasure(cost,t);}}
   if(stabHold()){STAB.parked=true;STAB.prev=0;STAB.pc=0;return;}
   // Hauptthread-Budget (erst wenn schon „niedrig“): kostet ein Bild > 30 ms (JS + Warten auf GPU), höchstens die Hälfte der Zeit zeichnen (Leitstand/Eingaben behalten Luft)
-  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>30&&PERF.tier==='low'?Math.min(2*STAB.work,5000):0);
+  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>60&&PERF.tier==='low'?Math.min(2*STAB.work,5000):0);
   if(iv&&STAB.lr&&t-STAB.lr<iv-3){requestAnimationFrame(loop);return;}
-  const lf=lastFrame;_lS(t);
+  const lf=lastFrame;STAB.inLoop=1;try{_lS(t);}finally{STAB.inLoop=0;}
   if(lastFrame!==lf){STAB.lr=t;STAB.pc=1;stabCount(t);if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}}};loop._stab=1;}
 function stabResume(){if(STAB.stopped||window.__quit)return;STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;
  if(STAB.parked&&!stabHold()){STAB.parked=false;try{LOOP.paused=false;}catch(e){}lastT=0;requestAnimationFrame(loop);}}
 // Sichtbarkeit: außerhalb des Bildes (Iframe weggescrollt/ausgeblendet) → Pause; ohne Fokus → 5 Bilder/s
-try{if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{const e=es[es.length-1];const off=!e.isIntersecting;if(off!==STAB.off){STAB.off=off;stabLog(off?'außerhalb → Pause':'sichtbar');if(!off)stabResume();}},{threshold:0});
+try{if('IntersectionObserver' in window&&window.parent!==window){const io=new IntersectionObserver(es=>{const e=es[es.length-1];const off=!e.isIntersecting;if(off!==STAB.off){STAB.off=off;stabLog(off?'außerhalb → Pause':'sichtbar');if(!off)stabResume();}},{threshold:0});
   addEventListener('DOMContentLoaded',()=>io.observe(document.documentElement));if(document.readyState!=='loading')io.observe(document.documentElement);}}catch(e){}
-function stabFocus(){const b=!document.hasFocus();if(b!==STAB.blur){STAB.blur=b;STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}}
-addEventListener('blur',stabFocus);addEventListener('focus',stabFocus);setInterval(()=>{if(!STAB.stopped)stabFocus();},700);
-document.addEventListener('visibilitychange',()=>{STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;});
+// R2: nie aus document.hasFocus() schließen (iOS-Standalone/Touch/Iframe melden dort „kein Fokus“, obwohl gespielt wird) – nur ein echtes blur-Ereignis
+// des obersten Fensters am PC drosselt (nach 1,5 s), jede Eingabe/focus/Sichtbarkeit hebt es sofort auf. Im Iframe übernimmt der IntersectionObserver.
+function stabBlurSet(b){if(b===STAB.blur)return;STAB.blur=b;STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}
+const stabBlurOk=()=>{try{return!PERF.touch&&window.parent===window&&!matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches&&!navigator.standalone;}catch(e){return false;}};
+addEventListener('blur',()=>{clearTimeout(STAB.blurT);if(stabBlurOk())STAB.blurT=setTimeout(()=>{if(!STAB.stopped)stabBlurSet(true);},1500);});
+for(const ev of['focus','pointerdown','keydown','touchstart','wheel'])addEventListener(ev,()=>{clearTimeout(STAB.blurT);stabBlurSet(false);},{capture:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){clearTimeout(STAB.blurT);stabBlurSet(false);}STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;});
 // ---------- 3) Modell-Warteschlange ----------
 const VMODEL_QUEUE=window.VMODEL_QUEUE={q:[],busy:false,gap:100,done:0,fail:0,max:0,ms:[],log:[]};
 const stabIdle=f=>{try{if(window.requestIdleCallback)return requestIdleCallback(f,{timeout:400});}catch(e){}return setTimeout(f,16);};
@@ -169,3 +180,19 @@ function stabInfo(){return{cls:STAB.cls,gpu:STAB.gpu,base:STAB.base,ceil:STAB.ce
  q:{wait:VMODEL_QUEUE.q.length,done:VMODEL_QUEUE.done,fail:VMODEL_QUEUE.fail,max:VMODEL_QUEUE.max,busy:VMODEL_QUEUE.busy},log:STAB.log.slice(-12)};}
 // Für Werkstatt/Konsole auch im geschützten Build erreichbar (Namen werden dort gekürzt): VSTAB.info(), VSTAB.stop()
 try{window.VSTAB={info:()=>stabInfo(),stop:w=>stabStop(w||'konsole')};}catch(e){}
+
+// ---------- Runde 2 (13.11. abends): Ruckeln/Wackeln ----------
+// 43 regelt gegen SET.fps (60) – mit Deckel 30 hielt es jedes Bild für „zu langsam“ und senkte Auflösung/Stufe grundlos → Ziel = tatsächlicher Deckel
+if(typeof perfFrame==='function'&&!perfFrame._stab){const _pf=perfFrame;perfFrame=function(t,js){const f=SET.fps,c=stabCap();if(c&&(!f||c<f))SET.fps=c;try{return _pf(t,js);}finally{SET.fps=f;}};perfFrame._stab=1;}
+// Wackeln: draw3d (Kamera-Feder, Gangphase, Drehung) rechnete mit performance.now()-Abständen, die Bewegung (17) mit rAF-Abständen.
+// Schwankt die JS-Zeit je Bild, laufen Figur und Kamera-Feder auseinander → Zittern. Jetzt bekommt draw3d genau den Zeitschritt der Bewegung.
+if(typeof draw3d==='function'&&!draw3d._stab){const _d3=draw3d;draw3d=function(){try{if(STAB.inLoop&&typeof R3==='object'&&R3&&R3.lt&&!(typeof LADEN==='object'&&LADEN.own)&&lastDt>0)R3.lt=performance.now()-Math.min(100,lastDt);}catch(e){}return _d3.apply(this,arguments);};draw3d._stab=1;}
+// Ferne Figuren: Skelett-Animation seltener (ab 5 Feldern 20 Hz, ab 10 Feldern 10 Hz) – Zeitschritt wird aufsummiert, Gang bleibt synchron
+if(typeof gaitTick==='function'&&!gaitTick._stab){const _gt=gaitTick;gaitTick=function(o,dt,opt){try{if(o&&typeof R3==='object'&&R3&&R3.player&&o!==R3.player){const U=o.userData,p=o.position,q=R3.player.position,d=Math.abs(p.x-q.x)+Math.abs(p.z-q.z),iv=d<5?0:d<10?.05:.1;
+   U._ga=(U._ga||0)+(dt||.016);if(U._ga<iv)return null;dt=U._ga;U._ga=0;}}catch(e){}return _gt.call(this,o,dt,opt);};gaitTick._stab=1;}
+// Staging-Menü: Schalter „Neue 3D-Modelle“ (gespeichert in SET, kein URL-Zusatz nötig – Home-Bildschirm-Verknüpfungen verlieren ihn)
+function stabPanel(){const P_=document.getElementById('stgPanel');if(!P_||document.getElementById('stgM3d'))return;const url=/[?&]modelle3d=1/.test(location.search);
+ const w=document.createElement('div');w.innerHTML='<h3>Grafik</h3><div class="row"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="stgM3d"'+(SET.modelle3d===true||url?' checked':'')+(url?' disabled':'')+'> Neue 3D-Modelle'+(url?' (über Link an)':'')+'</label></div><div class="row" id="stgStab" style="opacity:.8;font-size:12px"></div>';
+ const h=[...P_.querySelectorAll('h3')].find(x=>/Fehler/.test(x.textContent));for(const c of[...w.childNodes])P_.insertBefore(c,h||null);
+ document.getElementById('stgM3d').onchange=e=>{SET.modelle3d=!!e.target.checked;try{saveSet();}catch(x){try{localStorage.setItem(SETKEY,JSON.stringify(SET));}catch(y){}}try{save();}catch(x){}setTimeout(()=>location.reload(),150);};}
+setInterval(()=>{if(STAB.stopped)return;try{stabPanel();const el=document.getElementById('stgStab');if(el&&el.offsetParent){const i=stabInfo();el.textContent=`GPU ${i.cls} · Stufe ${STAB_TL[i.tier]||i.tier} · ${i.fps} fps (Deckel ${i.cap}) · Skala ${Math.round(i.scale*100)} %`+(i.emerg?' · Notbremse':'');}}catch(e){}},1000);

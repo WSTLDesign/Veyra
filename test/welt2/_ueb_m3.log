@@ -23,3 +23,79 @@
 ✓ Labor → Morgenau (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":500,"bumps":0}
 ✓ Labor → Morgenau (rechts): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1}
 ✓ Labor → Morgenau (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":7,"y":11,"inZ":false}
+✓ Morgenau → Route 1 (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Morgenau → Route 1 (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"morgenau","to":"route1","t0":49856,"shown":794,"ms":3979}}
+✓ Morgenau → Route 1 (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":18,"inZ":false}
+✓ Morgenau → Route 1 (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":733,"bumps":0}
+✓ Morgenau → Route 1 (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"morgenau","to":"route1","t0":59059,"shown":243,"ms":2762}}
+✓ Morgenau → Route 1 (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":18,"inZ":false}
+✓ Route 1 → Morgenau (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Route 1 → Morgenau (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route1","to":"morgenau","t0":64616,"shown":242,"ms":3202}}
+✓ Route 1 → Morgenau (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":3,"inZ":false}
+✓ Route 1 → Morgenau (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":733,"bumps":0}
+✓ Route 1 → Morgenau (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route1","to":"morgenau","t0":71926,"shown":243,"ms":4026}}
+✓ Route 1 → Morgenau (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":3,"inZ":false}
+✓ Route 1 → Kupferhain (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Route 1 → Kupferhain (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route1","to":"kupferhain","t0":81263,"shown":243,"ms":4841}}
+✓ Route 1 → Kupferhain (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":12,"inZ":false}
+✓ Route 1 → Kupferhain (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":733,"bumps":0}
+✓ Route 1 → Kupferhain (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route1","to":"kupferhain","t0":89753,"shown":243,"ms":4407}}
+✓ Route 1 → Kupferhain (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":12,"inZ":false}
+✓ Kupferhain → Route 1 (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Kupferhain → Route 1 (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"kupferhain","to":"route1","t0":97702,"shown":243,"ms":4155}}
+✓ Kupferhain → Route 1 (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":3,"inZ":false}
+✓ Kupferhain → Route 1 (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":733,"bumps":0}
+✓ Kupferhain → Route 1 (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"kupferhain","to":"route1","t0":105817,"shown":774,"ms":4285}}
+✓ Kupferhain → Route 1 (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":3,"inZ":false}
+✓ Kupferhain → Kreaturenstation (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":717,"bumps":0}
+✓ Kupferhain → Kreaturenstation (links): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1,"log":{"from":"kupferhain","to":"route1","t0":105817,"shown":774,"ms":4285}}
+✓ Kupferhain → Kreaturenstation (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":5,"y":7,"inZ":false}
+✓ Kupferhain → Kreaturenstation (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":867,"bumps":0}
+✓ Kupferhain → Kreaturenstation (rechts): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1,"log":{"from":"kupferhain","to":"route1","t0":105817,"shown":774,"ms":4285}}
+✓ Kupferhain → Kreaturenstation (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":5,"y":7,"inZ":false}
+✓ Kreaturenstation → Kupferhain (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":1633,"bumps":0}
+✓ Kreaturenstation → Kupferhain (links): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1,"log":{"from":"kupferhain","to":"route1","t0":105817,"shown":774,"ms":4285}}
+✓ Kreaturenstation → Kupferhain (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":4,"y":10,"inZ":false}
+✓ Kreaturenstation → Kupferhain (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":867,"bumps":0}
+✓ Kreaturenstation → Kupferhain (rechts): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1,"log":{"from":"kupferhain","to":"route1","t0":105817,"shown":774,"ms":4285}}
+✓ Kreaturenstation → Kupferhain (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":4,"y":10,"inZ":false}
+✓ Kupferhain → Route 2 (links, Versatz -1.30, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Kupferhain → Route 2 (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"kupferhain","to":"route2","t0":129140,"shown":249,"ms":4118}}
+✓ Kupferhain → Route 2 (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":3,"y":5,"inZ":false}
+✓ Kupferhain → Route 2 (rechts, Versatz 1.30, rennen): löst beim ersten Anlauf aus  {"ms":717,"bumps":1}
+✓ Kupferhain → Route 2 (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"kupferhain","to":"route2","t0":137912,"shown":245,"ms":3639}}
+✓ Kupferhain → Route 2 (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":3,"y":7,"inZ":false}
+✓ Route 2 → Nebelgrotte (erste Höhle) (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":1633,"bumps":0}
+✓ Route 2 → Nebelgrotte (erste Höhle) (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"nebelgrotte","t0":144730,"shown":249,"ms":4519}}
+✓ Route 2 → Nebelgrotte (erste Höhle) (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":12,"inZ":false}
+✓ Route 2 → Nebelgrotte (erste Höhle) (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":867,"bumps":0}
+✓ Route 2 → Nebelgrotte (erste Höhle) (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"nebelgrotte","t0":152433,"shown":242,"ms":3824}}
+✓ Route 2 → Nebelgrotte (erste Höhle) (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":9,"y":12,"inZ":false}
+✓ Nebelgrotte → Route 2 (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":1633,"bumps":0}
+✓ Nebelgrotte → Route 2 (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"nebelgrotte","to":"route2","t0":161035,"shown":242,"ms":2659}}
+✓ Nebelgrotte → Route 2 (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":3,"inZ":false}
+✓ Nebelgrotte → Route 2 (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":867,"bumps":0}
+✓ Nebelgrotte → Route 2 (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"nebelgrotte","to":"route2","t0":167379,"shown":242,"ms":3492}}
+✓ Nebelgrotte → Route 2 (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":10,"y":3,"inZ":false}
+✓ Route 2 → Kupferhain (links, Versatz -0.80, gehen): löst beim ersten Anlauf aus  {"ms":1200,"bumps":0}
+✓ Route 2 → Kupferhain (links): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"kupferhain","t0":174033,"shown":242,"ms":4184}}
+✓ Route 2 → Kupferhain (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":16,"y":6,"inZ":false}
+✓ Route 2 → Kupferhain (rechts, Versatz 0.80, rennen): löst beim ersten Anlauf aus  {"ms":717,"bumps":1}
+✓ Route 2 → Kupferhain (rechts): Ladebildschirm ja (Innenraum = nur Blende)  {"ld":1,"fade":0,"log":{"from":"route2","to":"kupferhain","t0":182130,"shown":243,"ms":4674}}
+✓ Route 2 → Kupferhain (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":16,"y":5,"inZ":false}
+✓ Rückkehrpunkt nach dem Hausbesuch = Feld vor der Tür (morgenau 4,5)  {"map":"morgenau","x":4,"y":5}
+✓ Stick über den Wechsel gehalten: kein Hin-und-her (bleibt auf Route 1, Ankunft eine Kachel innen)  {"id":"route1","y":18,"h":22}
+✓ 2D Morgenau → Haus: löst aus, Ladebildschirm nein  {"id":"haus_spieler","ld":0,"fd":1}
+✓ 2D Haus → Morgenau: löst aus, Ladebildschirm nein  {"id":"morgenau","ld":0,"fd":1}
+✓ 2D Morgenau → Route 1: löst aus, Ladebildschirm ja  {"id":"route1","ld":1,"fd":0}
+✓ 2D Route 2 → Nebelgrotte: löst aus, Ladebildschirm ja  {"id":"nebelgrotte","ld":1,"fd":0}
+✓ Spielstand nach den Wechseln: Karte/Position/Rückkehrpunkt gespeichert und ladbar (keine neuen Pflichtfelder)  {"map":"nebelgrotte","px":10,"py":2,"ret":{"map":"route2","x":10,"y":3},"team":1,"okL":true,"keys":41}
+Messwerte: {"gehen":{"fps":60,"tempo":1.87,"anfahren90ms":383,"bremsweg":0.23,"bremszeitMs":417,"amaxStart":8},"rennen":{"fps":60,"tempo":5,"anfahren90ms":633,"bremsweg":0.75,"bremszeitMs":583,"amaxStart":9},"dreh90":{"zeitMs":283,"kameraFigurWinkelEnde":1.57},"dreh180":{"zeitMs":517,"kameraFigurWinkelEnde":3.14},"kamerafolge25":{"kameraDrehungRad":0.61,"figurDrehungRad":0.88},"totzonePx":12,"wand45":{"gleitweg":2.03,"xMin":0.77,"zitternWechsel":0,"anstoss":0},"ecke":{"vorbei":true,"ms":1800,"x":4.79,"anstoss":0}}
+✗ Gehen ≈ 2,8 Felder/s, Rennen ≈ 5 Felder/s (gut unterscheidbar)  [1.87,5]
+✓ Sanftes Anfahren (Start-Beschleunigung ≤ 10 F/s²) und kontrollierbarer Bremsweg (Rennen ≤ 1,1 Feld)  {"gehen":{"fps":60,"tempo":1.87,"anfahren90ms":383,"bremsweg":0.23,"bremszeitMs":417,"amaxStart":8},"rennen":{"fps":60,"tempo":5,"anfahren90ms":633,"bremsweg":0.75,"bremszeitMs":583,"amaxStart":9}}
+✓ Wand schräg: gleitet entlang (≥ 1 Feld), kein Zittern (≤ 2 Richtungswechsel)  {"gleitweg":2.03,"xMin":0.77,"zitternWechsel":0,"anstoss":0}
+✓ Baumkante mit 0,38 Versatz: Figur rutscht vorbei statt hängenzubleiben  {"vorbei":true,"ms":1800,"x":4.79,"anstoss":0}
+✓ Laden: Ladebildschirm voll sichtbar ≥ 0,6 s (Gesamtdauer unter SwiftShader nur Info)  [{"to":"route1","ms":3979,"shown":794},{"to":"route1","ms":2762,"shown":243},{"to":"morgenau","ms":3202,"shown":242},{"to":"morgenau","ms":4026,"shown":243},{"to":"kupferhain","ms":4841,"shown":243},{"to":"kupferhain","ms":4407,"shown":243},{"to":"route1","ms":4155,"shown":243},{"to":"route1","ms":4285,"shown":774},{"to":"route2","ms":4118,"shown":249},{"to":"route2","ms":3639,"shown":245},{"to":"nebelgrotte","ms":4519,"shown":249},{"to":"nebelgrotte","ms":3824,"shown":242},{"to":"route2","ms":2659,"shown":242},{"to":"route2","ms":3492,"shown":242},{"to":"kupferhain","ms":4184,"shown":242},{"to":"kupferhain","ms":4674,"shown":243}]
+✓ Keine Konsolenfehler  []
+Anläufe beim ersten Versuch: 28/28
+96 ✓ / 1 ✗

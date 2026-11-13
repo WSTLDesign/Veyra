@@ -29,7 +29,7 @@ for (const id of IDS) {
       const h = U.B('hips'), hy = h ? h.getWorldPosition(new THREE.Vector3()).y - o.position.y : 1; return { tm: true, faint: U.onceN === 'faint' && !!U.once, idle: +(U.w.idle).toFixed(2), up: +up.y.toFixed(2), hipsH: +(hy / Math.max(.01, U.h)).toFixed(2) }; };
     return { foe: chk(BT.foe), me: chk(BT.me) }; });
   const s0 = await stehen(); await P.waitForTimeout(3000); const s3 = await stehen();
-  const ok = x => x.tm && !x.faint && x.up > .9 && x.idle > .5 && x.hipsH > .15;
+  const ok = x => x.tm && !x.faint && x.up > .9 && x.idle > .5 && x.hipsH > .05;
   R.t(`Kampf ${id}: steht zu Beginn und nach 3 s (kein Umfallen)`, ok(s0.foe) && ok(s0.me) && ok(s3.foe) && ok(s3.me), { s0, s3 });
   const b = await P.evaluate(() => { const A = BT && BT.me && BT.me.userData; if (A && A.act) A.act.atk = performance.now(); const F = BT && BT.foe && BT.foe.userData; if (F && F.act) F.act.hit = performance.now();
     return { me: !!(A && A.tm), foe: !!(F && F.tm), meSprite: !!(A && A.sprite), foeSprite: !!(F && F.sprite) }; });

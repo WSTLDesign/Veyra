@@ -14,3 +14,12 @@
 ✓ Morgenau → Labor (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":717,"bumps":0}
 ✓ Morgenau → Labor (links): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1}
 ✓ Morgenau → Labor (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":5,"y":7,"inZ":false}
+✓ Morgenau → Labor (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":500,"bumps":0}
+✓ Morgenau → Labor (rechts): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1}
+✓ Morgenau → Labor (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":5,"y":7,"inZ":false}
+✓ Labor → Morgenau (links, Versatz -0.36, gehen): löst beim ersten Anlauf aus  {"ms":717,"bumps":0}
+✓ Labor → Morgenau (links): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1}
+✓ Labor → Morgenau (links): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":7,"y":11,"inZ":false}
+✓ Labor → Morgenau (rechts, Versatz 0.36, rennen): löst beim ersten Anlauf aus  {"ms":500,"bumps":0}
+✓ Labor → Morgenau (rechts): Ladebildschirm nein (Innenraum = nur Blende)  {"ld":0,"fade":1}
+✓ Labor → Morgenau (rechts): Ankunft stabil, außerhalb der Gegenzone, Eingabe frei  {"x":7,"y":11,"inZ":false}

@@ -1,32 +1,32 @@
 {
  "hoch_morgenau": {
-  "calls": 100,
-  "tris": 238803,
-  "ms": 3665.9,
+  "calls": 98,
+  "tris": 238580,
+  "ms": 3432,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_labor": {
-  "calls": 107,
-  "tris": 276687,
-  "ms": 2996.4,
+  "calls": 108,
+  "tris": 280029,
+  "ms": 3387.3,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_laden": {
-  "calls": 138,
-  "tris": 285781,
-  "ms": 3548.7,
+  "calls": 141,
+  "tris": 326997,
+  "ms": 3647.8,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048
  },
  "hoch_station": {
   "calls": 144,
-  "tris": 277704,
-  "ms": 3231.7,
+  "tris": 271804,
+  "ms": 3593.8,
   "px": "1600×900",
   "tier": "high",
   "shadow": 2048

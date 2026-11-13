@@ -323,3 +323,6 @@ Recht: alles eigene Entwürfe; Intro-Stills sind Nutzermaterial. Performance-Gre
 - Bilder für vorschau/shots/live: als Datei shots/<name>.webp bzw. live/<name>.webp mit dem Leitstand veröffentlichen (Artifact publish, file_path tools/leitstand/leitstand.html, files {…}); bestehende Dateien bleiben erhalten.
 - Werkstatt-Build: `node build.mjs && node tools/werkstatt-build.mjs "<Kurztext>"` → tools/leitstand/spiel/index.html (Staging-Variante, verschleiert), dann mit files {"spiel/index.html": "tools/leitstand/spiel/index.html"} veröffentlichen.
 - Vor jeder Staging-Auslieferung: `npm run build:staging && npm run test:staging` und `npm run build:live && npm run test:live` grün; Ergebnis in tests eintragen. Code-Schutz (tools/protect.mjs) gilt für alles Veröffentlichte.
+
+# PROJEKTGEDÄCHTNIS (ab 13.11. 10:55)
+- docs/projektgedaechtnis.md (Kopie im Claude-Projekt: claude/projektgedaechtnis.md) hält alle Entscheidungen, Zugänge und den Stand je Agent fest. Der Dirigent ergänzt es nach jeder Nutzerentscheidung und jedem Agentenbericht und lädt es ins Projekt hoch (project_write). Nach einer Chat-Komprimierung zuerst dieses Dokument lesen.

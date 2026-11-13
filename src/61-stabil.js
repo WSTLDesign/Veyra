@@ -44,7 +44,7 @@ if(typeof perfStart==='function'&&!perfStart._stab){const _pst=perfStart;perfSta
   if(!GFX.force&&SET.gfx==='auto'&&STAB.cls!=='mobil')PERF.tier=STAB.base;
   if(STAB_RK[PERF.tier]>STAB_RK[STAB.lim])PERF.tier=STAB.lim;PERF.scale=Math.min(PERF.scale,STAB.smax);};perfStart._stab=1;perfStart();}
 if(typeof perfSet==='function'&&!perfSet._stab){const _pse=perfSet;perfSet=function(t){if(!PERF.TIERS[t])return;
-  if(STAB_RK[t]>STAB_RK[STAB.lim])t=STAB.lim;if(STAB_RK[t]>STAB_RK[PERF.tier]&&performance.now()-STAB.lastBad<10000)return;return _pse(t);};perfSet._stab=1;}
+  if(STAB_RK[t]>STAB_RK[STAB.lim])t=STAB.lim;if(STAB_RK[t]>STAB_RK[PERF.tier]&&performance.now()-STAB.lastBad<10000)return;if(t!==PERF.tier)STAB.grace=Math.max(STAB.grace,5);return _pse(t);};perfSet._stab=1;}// Stufenwechsel baut Pflanzen/Schatten neu → erwartbar langes Bild
 function stabScale(k){k=Math.max(.5,Math.min(1,Math.round(k*100)/100));PERF.scale=k;PERF.changed=performance.now();try{if(R3&&R3.fit)R3.fit();}catch(e){}}
 if(typeof perfScale==='function'&&!perfScale._stab){const _psc=perfScale;perfScale=function(k){k=Math.min(k,STAB.smax);const mn=perfTier().smin||.6;
   if(STAB.smax<mn-.001){stabScale(Math.min(k,STAB.smax));return;}return _psc(k);};perfScale._stab=1;}
@@ -66,8 +66,9 @@ function stabUp(){const now=performance.now();STAB.lastUp=now;STAB.ups++;
  if(STAB.downs>=3)return;// mehrfach zu langsam: Stufe nicht mehr anheben
  if(STAB_RK[STAB.lim]<STAB_RK[STAB.ceil]){STAB.lim=STAB_TN[STAB_RK[STAB.lim]+1];}
  if(STAB_RK[PERF.tier]<STAB_RK[STAB.lim]&&(SET.gfx==='auto'||GFX.force)&&!STAB.emerg){const t=STAB_TN[STAB_RK[PERF.tier]+1];perfSet(t);stabLog('hoch → '+t);if(t==='high')try{GFX.post=true;}catch(e){}}}
-function stabMeasure(t){const W=STAB.win,dt=STAB.prev?t-STAB.prev:0;STAB.prev=t;STAB.frames++;
- STAB.fpsN++;if(t-STAB.fpsT>=1000){STAB.fps=Math.round(STAB.fpsN*1000/(t-STAB.fpsT||1));STAB.fpsN=0;STAB.fpsT=t;}
+// Bildzeit = Kosten eines gezeichneten Bildes (Beginn bis zum nächsten rAF: JS + Warten auf GPU/Compositor), unabhängig vom fps-Deckel
+function stabCount(t){STAB.frames++;STAB.fpsN++;if(t-STAB.fpsT>=1000){STAB.fps=Math.round(STAB.fpsN*1000/(t-STAB.fpsT||1));STAB.fpsN=0;STAB.fpsT=t;}}
+function stabMeasure(dt,t){const W=STAB.win;
  if(!dt)return;if(STAB.blur)return;// gedrosselt: nicht bewerten
  if(STAB.grace>0){STAB.grace--;if(dt>100)return;}// Kartenwechsel, Kampfstart, Modell fertig: ein langes Bild ist erwartet
  const now=performance.now();
@@ -89,20 +90,22 @@ function stabLoad(ms){STAB.load=+ms||0;}
 function stabHold(){return STAB.off;}
 if(typeof loop==='function'&&!loop._stab){const _lS=loop;loop=function(t){if(STAB.stopped||window.__quit)return;
   if(t===STAB.lt)return;STAB.lt=t;// zweite Kette im selben Bild verwerfen
-  if(stabHold()){STAB.parked=true;STAB.prev=0;return;}
-  // Hauptthread-Budget: kostet ein Bild > 30 ms Rechenzeit, höchstens die Hälfte der Zeit zeichnen (Leitstand/Eingaben behalten Luft)
-  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>30?Math.min(2*STAB.work,2000):0);
+  // Kosten des letzten gezeichneten Bildes = Abstand bis zum nächsten rAF (enthält GPU-/Compositor-Wartezeit, nicht nur JS)
+  if(STAB.pc){STAB.pc=0;const cost=t-STAB.lr;if(cost<5000){const w=Math.max(0,cost-17);STAB.work+=(w-STAB.work)*(w>STAB.work?.6:.25);stabMeasure(cost,t);}}
+  if(stabHold()){STAB.parked=true;STAB.prev=0;STAB.pc=0;return;}
+  // Hauptthread-Budget (erst wenn schon „niedrig“): kostet ein Bild > 30 ms (JS + Warten auf GPU), höchstens die Hälfte der Zeit zeichnen (Leitstand/Eingaben behalten Luft)
+  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>30&&PERF.tier==='low'?Math.min(2*STAB.work,5000):0);
   if(iv&&STAB.lr&&t-STAB.lr<iv-3){requestAnimationFrame(loop);return;}
-  const lf=lastFrame,a=performance.now();_lS(t);
-  if(lastFrame!==lf){STAB.lr=t;const w=performance.now()-a;if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}STAB.work+=(w-STAB.work)*(w>STAB.work?.5:.2);stabMeasure(t);}};loop._stab=1;}
-function stabResume(){if(STAB.stopped||window.__quit)return;STAB.prev=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;
+  const lf=lastFrame;_lS(t);
+  if(lastFrame!==lf){STAB.lr=t;STAB.pc=1;stabCount(t);if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}}};loop._stab=1;}
+function stabResume(){if(STAB.stopped||window.__quit)return;STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;
  if(STAB.parked&&!stabHold()){STAB.parked=false;try{LOOP.paused=false;}catch(e){}lastT=0;requestAnimationFrame(loop);}}
 // Sichtbarkeit: außerhalb des Bildes (Iframe weggescrollt/ausgeblendet) → Pause; ohne Fokus → 5 Bilder/s
 try{if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{const e=es[es.length-1];const off=!e.isIntersecting;if(off!==STAB.off){STAB.off=off;stabLog(off?'außerhalb → Pause':'sichtbar');if(!off)stabResume();}},{threshold:0});
   addEventListener('DOMContentLoaded',()=>io.observe(document.documentElement));if(document.readyState!=='loading')io.observe(document.documentElement);}}catch(e){}
-function stabFocus(){const b=!document.hasFocus();if(b!==STAB.blur){STAB.blur=b;STAB.prev=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}}
+function stabFocus(){const b=!document.hasFocus();if(b!==STAB.blur){STAB.blur=b;STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}}
 addEventListener('blur',stabFocus);addEventListener('focus',stabFocus);setInterval(()=>{if(!STAB.stopped)stabFocus();},700);
-document.addEventListener('visibilitychange',()=>{STAB.prev=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;});
+document.addEventListener('visibilitychange',()=>{STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;});
 // ---------- 3) Modell-Warteschlange ----------
 const VMODEL_QUEUE=window.VMODEL_QUEUE={q:[],busy:false,gap:100,done:0,fail:0,max:0,ms:[],log:[]};
 const stabIdle=f=>{try{if(window.requestIdleCallback)return requestIdleCallback(f,{timeout:400});}catch(e){}return setTimeout(f,16);};
@@ -164,3 +167,5 @@ setInterval(()=>{if(STAB.stopped)return;const b=document.getElementById('stgBadg
 function stabInfo(){return{cls:STAB.cls,gpu:STAB.gpu,base:STAB.base,ceil:STAB.ceil,lim:STAB.lim,tier:PERF.tier,scale:PERF.scale,smax:STAB.smax,dpr:dprCap(),cap:stabCap(),fps:STAB.fps,avg:STAB.avg,
  frames:STAB.frames,work:+STAB.work.toFixed(1),emerg:STAB.emerg,downs:STAB.downs,ups:STAB.ups,off:STAB.off,blur:STAB.blur,parked:STAB.parked,stopped:STAB.stopped,ws:STAB.ws,gls:STAB.gls.length,
  q:{wait:VMODEL_QUEUE.q.length,done:VMODEL_QUEUE.done,fail:VMODEL_QUEUE.fail,max:VMODEL_QUEUE.max,busy:VMODEL_QUEUE.busy},log:STAB.log.slice(-12)};}
+// Für Werkstatt/Konsole auch im geschützten Build erreichbar (Namen werden dort gekürzt): VSTAB.info(), VSTAB.stop()
+try{window.VSTAB={info:()=>stabInfo(),stop:w=>stabStop(w||'konsole')};}catch(e){}

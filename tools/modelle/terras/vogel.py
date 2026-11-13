@@ -5,7 +5,7 @@ from tbau import *
 OUT = [a for a in sys.argv[1:] if a.endswith('.glb')]; OUT = OUT[0] if OUT else '/tmp/t059.glb'
 FORM = '--form' in sys.argv
 start('t059', .5)
-treg('fell', '#fbf6ec', 'haut'); treg('fell_kopf', '#fbf6ec', 'haut'); treg('feder_s', '#fbf6ec', 'haut'); treg('schwinge', '#ffffff', 'feder'); treg('wirbel', '#bfeee0', 'feder'); treg('schnabel', '#ffb43a', 'horn')
+treg('fell', '#fbf6ec', 'haut'); treg('fell_kopf', '#fbf6ec', 'haut'); treg('feder_s', '#fbf6ec', 'haut', (.3, .5, .1, 0)); treg('schwinge', '#ffffff', 'feder'); treg('wirbel', '#bfeee0', 'feder'); treg('schnabel', '#ffb43a', 'horn')
 treg('bein', '#f2a830', 'schuppe'); treg('kralle', '#4a3428', 'kralle'); treg('nase', '#ffb43a', 'horn')
 C.FLUEGEL = ('schwinge',); C.SCHWANZ = (); C.BEIN = ('bein', 'kralle')
 C.SPV = [V(0, .02, .13), V(0, -.005, .2), V(0, -.01, .25), V(0, -.015, .28)]

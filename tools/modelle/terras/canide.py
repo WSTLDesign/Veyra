@@ -181,4 +181,4 @@ def paint(P):
     mix(M('pfote'), '#ffffff', .15); mix(M('nase'), '#5a4040', ss(0, 1, (Z - (np_.z)) * 120) * .5)
     if K['basalt']: mix(M('lava'), '#ffd25a', .4)
     mix(M('ohr_innen'), '#fff0e0', .35 * ss(.5, .8, P.fur) if 'fur' in P.__dict__ else 0)
-standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(K['gang']), paint, K['iris'], fur_scale=1.0 if ART == '001' else .8, nstr=.45, IR=K.get('IR', .62))
+standard_ablauf(OUT, body_allowed_vb, lambda: clips_vierbeiner(K['gang']), paint, K['iris'], fur_scale=1.0 if ART == '001' else .8, nstr=.45, IR=K.get('IR', .72))

@@ -1,0 +1,334 @@
+{
+ "n": {
+  "start": {
+   "gpu": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics (0x00009A49) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+   "strong": false,
+   "tier": "mid",
+   "weak": false,
+   "dpr": 1.25,
+   "fps": 60,
+   "stab": {
+    "cls": "igpu",
+    "gpu": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics (0x00009A49) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "base": "mid",
+    "ceil": "mid",
+    "lim": "mid",
+    "tier": "mid",
+    "scale": 1,
+    "smax": 1,
+    "dpr": 1.25,
+    "cap": 30,
+    "fps": 0,
+    "frames": 2,
+    "work": 29.8,
+    "emerg": 0,
+    "downs": 0,
+    "ups": 0,
+    "off": false,
+    "blur": false,
+    "parked": false,
+    "stopped": 0,
+    "ws": false,
+    "gls": 0,
+    "q": {
+     "wait": 4,
+     "done": 0,
+     "fail": 0,
+     "max": 4,
+     "busy": true
+    },
+    "log": [
+     "241 GPU igpu · Start mid · Deckel mid · 30 fps"
+    ]
+   }
+  },
+  "morgenau": {
+   "loadS": "21.4",
+   "queue": {
+    "w": 0,
+    "b": false,
+    "d": 9
+   },
+   "laden": {
+    "ltMax": 4288,
+    "ltN": 4,
+    "ltSum": 11023
+   },
+   "danach": {
+    "ms": 15000,
+    "rafN": 574,
+    "rafAvg": 27.2,
+    "rafMax": 2200,
+    "slow": 0.01,
+    "ltMax": 2210,
+    "ltN": 4,
+    "ltSum": 6030,
+    "lag": 2216,
+    "frames": 4,
+    "tier": "low",
+    "scale": 0.5,
+    "stab": {
+     "tier": "low",
+     "lim": "low",
+     "smax": 0.5,
+     "fps": 0,
+     "emerg": 2,
+     "downs": 1,
+     "q": {
+      "wait": 0,
+      "done": 9,
+      "fail": 0,
+      "max": 4,
+      "busy": false
+     }
+    },
+    "occ": 0.4
+   }
+  },
+  "route1": {
+   "loadS": "6.0",
+   "queue": {
+    "w": 0,
+    "b": false,
+    "d": 9
+   },
+   "laden": {
+    "ltMax": 1720,
+    "ltN": 1,
+    "ltSum": 1720
+   },
+   "danach": {
+    "ms": 15000,
+    "rafN": 568,
+    "rafAvg": 26.4,
+    "rafMax": 1017,
+    "slow": 0.01,
+    "ltMax": 1032,
+    "ltN": 6,
+    "ltSum": 5607,
+    "lag": 1015,
+    "frames": 6,
+    "tier": "low",
+    "scale": 0.5,
+    "stab": {
+     "tier": "low",
+     "lim": "low",
+     "smax": 0.5,
+     "fps": 0,
+     "emerg": 4,
+     "downs": 1,
+     "q": {
+      "wait": 0,
+      "done": 12,
+      "fail": 0,
+      "max": 4,
+      "busy": false
+     }
+    },
+    "occ": 0.37
+   }
+  },
+  "models": {
+   "fig": [
+    "fig_buerger_a",
+    "fig_mama",
+    "fig_noa"
+   ],
+   "terra": [
+    "t001",
+    "t004",
+    "t059",
+    "t112",
+    "t061"
+   ],
+   "haus": 2,
+   "q": [
+    [
+     "haus",
+     573
+    ],
+    [
+     "station",
+     94
+    ],
+    [
+     "labor",
+     2139
+    ],
+    [
+     "laden",
+     214
+    ],
+    [
+     "fig_buerger_a",
+     403
+    ],
+    [
+     "fig_mama",
+     256
+    ],
+    [
+     "t001",
+     212
+    ],
+    [
+     "t004",
+     216
+    ],
+    [
+     "fig_noa",
+     2553
+    ],
+    [
+     "t059",
+     206
+    ],
+    [
+     "t112",
+     315
+    ],
+    [
+     "t061",
+     102
+    ]
+   ]
+  },
+  "nachStop": {
+   "ms": 2500,
+   "rafN": 150,
+   "rafAvg": 16.7,
+   "rafMax": 17,
+   "slow": 0,
+   "ltMax": 0,
+   "ltN": 0,
+   "ltSum": 0,
+   "lag": 0,
+   "frames": 0,
+   "tier": "low",
+   "scale": 0.5,
+   "stab": {
+    "tier": "low",
+    "lim": "low",
+    "smax": 0.5,
+    "fps": 0,
+    "emerg": 2,
+    "downs": 4,
+    "q": {
+     "wait": 0,
+     "done": 12,
+     "fail": 0,
+     "max": 4,
+     "busy": false
+    }
+   }
+  }
+ },
+ "ls_n": {
+  "vorStart": {
+   "ms": 3000,
+   "rafN": 180,
+   "rafAvg": 16.7,
+   "rafMax": 17,
+   "slow": 0,
+   "ltMax": 0,
+   "ltN": 0,
+   "ltSum": 0,
+   "lag": 0,
+   "frames": 0,
+   "tier": "?",
+   "scale": "?",
+   "stab": null
+  },
+  "laden": {
+   "ms": 3000,
+   "rafN": 2,
+   "rafAvg": 1799.9,
+   "rafMax": 1800,
+   "slow": 1,
+   "ltMax": 0,
+   "ltN": 0,
+   "ltSum": 0,
+   "lag": 3982,
+   "frames": 0,
+   "tier": "?",
+   "scale": "?",
+   "stab": null
+  },
+  "queue": {
+   "w": 0,
+   "b": false,
+   "d": 9
+  },
+  "lauf": {
+   "ms": 20000,
+   "rafN": 735,
+   "rafAvg": 27.3,
+   "rafMax": 700,
+   "slow": 0.02,
+   "ltMax": 0,
+   "ltN": 0,
+   "ltSum": 0,
+   "lag": 664,
+   "frames": 0,
+   "tier": "?",
+   "scale": "?",
+   "stab": null
+  },
+  "innen": {
+   "tier": "low",
+   "frames": 31,
+   "stab": {
+    "cls": "igpu",
+    "gpu": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics (0x00009A49) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "base": "mid",
+    "ceil": "mid",
+    "lim": "low",
+    "tier": "low",
+    "scale": 0.5,
+    "smax": 0.5,
+    "dpr": 1.25,
+    "cap": 30,
+    "fps": 1,
+    "avg": 347.2,
+    "frames": 31,
+    "work": 638.6,
+    "emerg": 7,
+    "downs": 0,
+    "ups": 0,
+    "off": false,
+    "blur": false,
+    "parked": false,
+    "stopped": 0,
+    "ws": true,
+    "gls": 1,
+    "q": {
+     "wait": 0,
+     "done": 9,
+     "fail": 0,
+     "max": 8,
+     "busy": false
+    },
+    "log": [
+     "503 GPU igpu · Start mid · Deckel mid · 30 fps",
+     "14937 NOTBREMSE 1 (Ø 347 ms)"
+    ]
+   }
+  },
+  "beendenMs": 881,
+  "nach": {
+   "ms": 3000,
+   "rafN": 180,
+   "rafAvg": 16.7,
+   "rafMax": 17,
+   "slow": 0,
+   "ltMax": 0,
+   "ltN": 0,
+   "ltSum": 0,
+   "lag": 0,
+   "frames": 0,
+   "tier": "?",
+   "scale": "?",
+   "stab": null
+  }
+ }
+}

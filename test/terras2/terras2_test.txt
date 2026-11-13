@@ -1,7 +1,7 @@
 # Terra-Serie: Welt + Kampf mit Schalter modelle3d an
-✓ alle Modelle geladen → {"1":{"ok":true,"ms":7413},"2":{"ok":true,"ms":15810},"3":{"ok":true,"ms":17048},"4":{"ok":true,"ms":9965},"5":{"ok":true,"ms":11303},"6":{"ok":true,"ms":12023},"7":{"ok":true,"ms":14609},"8":{"ok":true,"ms":14612},"9":{"ok":true,"ms":13999},"59":{"ok":true,"ms":13316},"61":{"ok":true,"ms":12696},"112":{"ok":true,"ms":13995},"gesamt":17048,"pilotFunki":"serie"}
+✓ alle Modelle geladen → {"1":{"ok":true,"ms":7882},"2":{"ok":true,"ms":7940},"3":{"ok":true,"ms":9427},"4":{"ok":true,"ms":10469},"5":{"ok":true,"ms":11899},"6":{"ok":true,"ms":13054},"7":{"ok":true,"ms":14598},"8":{"ok":true,"ms":15792},"9":{"ok":true,"ms":17355},"59":{"ok":true,"ms":18774},"61":{"ok":true,"ms":19993},"112":{"ok":true,"ms":21273},"gesamt":21273,"pilotFunki":"serie"}
 ✓ Pilot-Funki nicht doppelt geladen → serie
-✓ Welt 1: Modell → {"tm":true,"clips":8,"h":0.7}
+✓ Welt 1: Modell → {"tm":true,"clips":8,"h":0.67}
 ✓ Kampf 1 vs 4: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
 ✓ Welt 2: Modell → {"tm":true,"clips":8,"h":0.85}
 ✓ Kampf 2 vs 5: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}

@@ -11,8 +11,8 @@ import types
 
 C = types.SimpleNamespace()          # Bau-Kontext des aktuellen Modells
 KIND = {}                            # Region → Materialart
-MASK = {'fell': (1, .5, .1, 0), 'haut': (1, .75, .2, 0), 'schuppe': (1, .25, .55, 0), 'feder': (1, .35, .12, 0), 'horn': (1, .1, .6, 0),
-        'glut': (.25, 0, 0, 1), 'kristall': (.6, 0, .9, .45), 'blatt': (1, .3, .25, 0), 'bluete': (.8, .6, .15, .08), 'nase': (1, 0, .9, 0),
+MASK = {'fell': (1, .5, .1, 0), 'haut': (1, .75, .2, 0), 'schuppe': (1, .25, .55, 0), 'feder': (.4, .35, .12, 0), 'horn': (1, .1, .6, 0),
+        'glut': (.25, 0, 0, 1), 'kristall': (.6, 0, .9, .45), 'blatt': (.22, .3, .25, 0), 'bluete': (.8, .6, .15, .08), 'nase': (1, 0, .9, 0),
         'linie': (0, 0, 0, 0), 'lid': (0, .4, 0, 0), 'auge': (0, 0, 1, 0), 'mund': (0, 0, 0, 0), 'kralle': (1, 0, .4, 0)}
 def treg(name, col, kind='fell', mask=None):
     region(name, col, mask or MASK.get(kind, (1, .5, .1, 0))); KIND[name] = kind; return name
@@ -107,8 +107,8 @@ def ohr(s, base, up_, fw, L, W, D, cup=1.5, regs=('fell_kopf', 'ohr_innen'), run
     C.EARS[s] = (base, up_, L, fw, side); return o
 
 # ---------------- Augen + Lider + Mund (Funktion; Pilot-System verallgemeinert) ----------------
-def th_u(ph): k = ss(0, 1, abs(ph) / 56.0); return 44 * (1 - k ** 1.6) + (6 if ph > 0 else -4) * k
-def th_l(ph): k = ss(0, 1, abs(ph) / 56.0); return -36 * (1 - k ** 1.5) + (4 if ph > 0 else -4) * k
+def th_u(ph): k = ss(0, 1, abs(ph) / 62.0); return 58 * (1 - k ** 1.8) + (8 if ph > 0 else -2) * k
+def th_l(ph): k = ss(0, 1, abs(ph) / 62.0); return -50 * (1 - k ** 1.6) + (4 if ph > 0 else -4) * k
 def augen(RE, xn=.5, yn=-.86, zn=.1, spread=.42, lid_col=None):
     """Augäpfel (eigene Netze, Iris/Glanz in der Augen-Textur + Shader-Glanz), Ober-/Unterlid-Schalen mit Lidlinie. Liefert Shape-Key-fähige Lider."""
     C.RE = RE
@@ -132,7 +132,7 @@ def augen(RE, xn=.5, yn=-.86, zn=.1, spread=.42, lid_col=None):
                     t = j / NT; th = (e0 + (80 - e0) * t ** 1.3) if which == 'o' else (e0 + (-75 - e0) * t ** 1.3); Vt.append(sp_(ph, th, RE * (1.045 + .02 * t)))
             for i in range(NPH):
                 for j in range(NT):
-                    a = i * (NT + 1) + j; F_.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1)); R_.append('lidlinie' if (j == 0 or (which == 'o' and j == 1)) else 'lid')
+                    a = i * (NT + 1) + j; F_.append((a, a + NT + 1, a + NT + 2, a + 1) if which == 'o' else (a, a + 1, a + NT + 2, a + NT + 1)); R_.append('lidlinie' if j == 0 else 'lid')
             base = len(Vt)
             for i in range(NPH + 1):
                 ph = -84 + 168 * i / NPH; e0 = th_u(ph) if which == 'o' else th_l(ph); Vt.append(sp_(ph, e0 + (-3 if which == 'o' else 2.5), RE * .985))
@@ -359,13 +359,13 @@ def augen_textur(iris=('#d87a1e', '#8a3a10', '#ffc24a'), pupille='rund', sclera=
     vv, uu = np.mgrid[0:TH, 0:TW].astype(np.float32); u = (uu + .5) / TW; v = (vv + .5) / TH; ex = (u - .25) / .25; ey = (v - .5) / .5; rr = np.sqrt(ex ** 2 + ey ** 2)
     def put(mask, c, a=1.0):
         a = np.clip(a, 0, 1) * mask; tex[..., :3] = tex[..., :3] * (1 - a[..., None]) + hexrgb(c) * a[..., None]
-    L_ = u < .5; put(L_, sclera or '#2a160e')
+    L_ = u < .5; put(L_, sclera or '#fbf7f2'); put(L_, '#c8c0d0', .5 * ss(.6, 1.0, rr))   # helle Lederhaut mit weichem Randschatten
     iris_m = L_ & (rr < IR); ang = np.arctan2(ey, ex)
     put(iris_m, iris[0]); put(iris_m, iris[1], ss(-.1, .55, ey)); put(iris_m, iris[2], .75 * ss(0, -.55, ey) * ss(.18, .5, rr))
-    put(iris_m, iris[1], .3 * (.5 + .5 * np.sin(ang * 23)) * ss(.25, .55, rr)); put(iris_m, ring, ss(IR * .82, IR * .97, rr))
+    put(iris_m, iris[1], .3 * (.5 + .5 * np.sin(ang * 23)) * ss(.25, .55, rr)); put(iris_m, ring, ss(IR * .84, IR * .98, rr)); put(L_ & (rr >= IR), '#2a1a14', ss(IR + .03, IR, rr))
     if pupille == 'schlitz': put(L_, '#100604', ((np.abs(ex) < .085 * np.sqrt(np.clip(1 - (ey / .5) ** 2, 0, 1)) + .01) & (np.abs(ey) < .5)).astype(np.float32))
     else: put(L_ & (rr < .29), '#100604')
-    put(L_, '#ffffff', ((ex - .2) ** 2 + (ey - .24) ** 2 < .13 ** 2).astype(np.float32)); put(L_, '#ffffff', .85 * ((ex + .2) ** 2 + (ey + .2) ** 2 < .06 ** 2).astype(np.float32))
+    put(L_, '#ffffff', ((ex - .22) ** 2 + (ey - .26) ** 2 < .16 ** 2).astype(np.float32)); put(L_, '#ffffff', .85 * ((ex + .2) ** 2 + (ey + .2) ** 2 < .06 ** 2).astype(np.float32))
     put(L_, '#ffffff', .5 * ((ex - .02) ** 2 + (ey - .3) ** 2 < .04 ** 2).astype(np.float32))
     Rm = (u >= .5) & (v < .5); mxn = (u - .5) / .5; myn = v / .5; inside = (np.abs(2 * mxn - 1) ** 2.2 + np.abs(2 * myn - 1) ** 2) < 1
     put(Rm, '#6a2028'); put(Rm, '#e07a80', (((2 * mxn - 1) / .5) ** 2 + ((myn - .15) / .3) ** 2 < 1).astype(np.float32))
@@ -592,6 +592,7 @@ def zusammen(head_extra=(), body_parts=(), body_max=None, head_max=4200):
     bm_ = bmesh.new(); bm_.from_mesh(C.BODY.data); bmesh.ops.recalc_face_normals(bm_, faces=bm_.faces[:]); bm_.to_mesh(C.BODY.data); bm_.free()
     if body_max and tris(C.BODY) > body_max:
         n0 = tris(C.BODY); decimate(C.BODY, body_max / n0); smooth(C.BODY); log('Körper reduziert', n0, '→', tris(C.BODY))
+        bm_ = bmesh.new(); bm_.from_mesh(C.BODY.data); bmesh.ops.recalc_face_normals(bm_, faces=bm_.faces[:]); bm_.to_mesh(C.BODY.data); bm_.free()
     C.EYE_OBJ = join(C.eye_parts + C.lids + C.mouth, C.name + '_Augen')   # Gesicht: Augen + Lider + Mund (nur dieses kleine Netz trägt Shape Keys)
     log('Dreiecke Kopf', tris(C.HEAD), 'Körper', tris(C.BODY), 'Augen', tris(C.EYE_OBJ))
 def gesichts_normalen(k=.6):
@@ -622,7 +623,7 @@ def lod_red(o, ratio):
         mm = o.modifiers.new('Dec', 'DECIMATE'); mm.ratio = max(.1, target / n); mm.use_symmetry = False
         bpy.ops.object.modifier_apply(modifier=mm.name)
     return o
-def standard_ablauf(out, body_allowed, clipfn, paint, iris, pupille='rund', head_w_extra=None, fur_scale=1.0, nstr=.4, ohren=True, lod=.5, meta_extra=None, sclera=None, IR=.62):
+def standard_ablauf(out, body_allowed, clipfn, paint, iris, pupille='rund', head_w_extra=None, fur_scale=1.0, nstr=.4, ohren=True, lod=.5, meta_extra=None, sclera=None, IR=.72):
     """Nach dem Formenbau: Normalen, Gewichte, LOD, Shape Keys, Masken, Malen, Materialien, Clips, Export"""
     gesichts_normalen()
     for o in (C.HEAD, C.BODY, C.EYE_OBJ): bind(o, C.ARMO)

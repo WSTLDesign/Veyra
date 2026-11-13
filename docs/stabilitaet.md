@@ -18,7 +18,7 @@ Leitstand → Werkstatt → „Spiel hier starten“ (Neue 3D-Modelle an) → de
 1. **GPU-Klasse → Startstufe (nur bei „Auto“)**: dediziert (GeForce RTX/GTX, Quadro, Radeon RX/Pro, Arc A/B, Apple M) → hoch · Iris Xe, Arc integriert, Radeon(TM) Graphics/680M, GeForce MX → mittel · UHD/HD, Vega, ältere Iris/Iris Plus, Software → niedrig · Handy/Tablet: wie bisher (59). `GFX.strong` gilt am PC nur noch für dediziert.
    PC-Bilddeckel 60, integriert/unbekannt 30 (wenn Qualität „Auto“; `?fps=60` übersteuert); DPR-Deckel integriert 1,25.
    Werkstatt (Iframe oder `?ws=1`) am PC: Start höchstens „mittel“; der Wachhund darf nach 10 s stabil bis zur Klassenstufe anheben.
-2. **Wachhund** (äußerste Hülle um `loop`, misst jedes gezeichnete Bild, ohne 250-ms-Grenze, auch im Kampf und bei fester Auflösung):
+2. **Wachhund** (äußerste Hülle um `loop`, misst die Kosten jedes gezeichneten Bildes = Beginn bis zum nächsten rAF, unabhängig vom fps-Deckel, ohne 250-ms-Grenze, auch im Kampf und bei fester Auflösung; Stufenwechsel zählen 3 Bilder nicht):
    Ø > 45 ms über 1,5 s → eine Stufe runter (hoch → mittel → niedrig), danach Renderskala in 0,15-Schritten bis 0,5 (auch unter die Mindestskala; bei fester Auflösung über `resH3`).
    Ø > 100 ms oder zwei Einzelbilder > 250 ms in 4 s → **Notbremse**: niedrig, Skala 0,5, Bloom und Sonnenschatten aus, 30 fps.
    Hoch erst nach 10 s stabil (gilt auch für die 43-Automatik über `perfSet`); nach einer Notbremse oder 3 Absenkungen keine Stufe mehr hoch.
@@ -34,10 +34,33 @@ Leitstand → Werkstatt → „Spiel hier starten“ (Neue 3D-Modelle an) → de
 6. **Staging-Badge**: zeigt „– <fps> fps · <Stufe>“ (gezeichnete Spielbilder, nicht rAF), „Pause“ wenn pausiert, „(Notbremse)“ nach Notbremse.
 
 ## Messwerte (SwiftShader, 2 Kerne, 1536×695 @ DPR 1,25, Renderer-Name auf Iris Xe gesetzt – nur relativ)
-MESSWERTE
+Test `node test/stabil_qa.mjs` (Ergebnis `test/stabil_qa.json`, Log `test/stabil_qa.log`). Vorher = gleicher Quellstand ohne `61-stabil.js`, alter Werkstatt-Build (28 Skript-Tags), gleicher Leitstand.
+SwiftShader braucht für EIN Bild der 3D-Welt selbst auf „niedrig“/50 % ≈ 1–2 s → „längste Aufgabe < 300 ms“ ist hier nicht erreichbar; geprüft werden Hauptthread-Anteil, rAF-Folge der Außenseite und Beenden.
+
+| | vorher | nachher |
+|---|---|---|
+| Startstufe bei „Iris Xe“ | hoch (`GFX.strong`), 60 fps, kein Deckel | mittel, 30 fps, DPR 1,25 |
+| Morgenau nach dem Laden: Abstand der Bilder (rAF Ø) | 6000 ms | 23–44 ms (Endlauf 27 ms) |
+| Morgenau: längste Aufgabe / Zeitgeber-Verzug | 5926 ms / 11,3 s | 1,3–3,3 s / 1,3–3,3 s (einzelne Spielbilder) |
+| Morgenau: Hauptthread belegt | ≈ 100 % (Stufe bleibt „hoch“) | 30–63 % (Stufe → niedrig, Skala 0,5, Halbzeit-Budget) |
+| Route 1: rAF Ø / längste Aufgabe | 7900 ms / 7883 ms | 25–27 ms / 1,7 s |
+| Laden Morgenau: längste Aufgabe | 10,3 s | 4,3 s (Szenenaufbau; Modelle einzeln 0,1–4,7 s) |
+| Leitstand mit Spiel im Rahmen, 20 s: rAF Ø Außenseite | 3717 ms (≈ 0,3 Bilder/s), Verzug 7,9 s | während des Ladens 40–64 ms (Verzug bis 4,3 s beim Kartenaufbau); eingeschwungen 27 ms, 98 % < 50 ms, Verzug max. 0,66 s |
+| „Spiel beenden“ bis Rahmen weg | 342 s (Klick wartete auf das eingefrorene Spiel) | 0,9–1,5 s (ein laufendes SwiftShader-Bild muss fertig werden), Außenseite danach 16,7 ms |
+| Strg+Q mit Fokus im Leitstand | wirkungslos | 0,9 s, gespeichert |
+| nach `stop`: Bilder / WebGL / Ton | – | 0 Bilder nach 50 ms, 2/2 Kontexte verloren, AudioContext geschlossen, Seite ruhig (rAF 16,7 ms, keine Long Tasks) |
+
+Hinweis: Long Tasks des Spiels im Rahmen werden der Außenseite nicht zugeordnet; dort zählt die rAF-Folge.
+Der Leitstand-Test nutzt den Werkstatt-Build ohne Code-Schutz (protect.mjs kürzt alle globalen Namen) und lädt three.js lokal statt vom CDN; sonst identisch.
+Zusätzlich gefunden und behoben: Im Leitstand lag die Bild-Lupe `#lb` trotz `hidden` über der Seite (`#lb{display:grid}` schlägt `[hidden]`), lokal waren dadurch keine Klicks möglich → `#lb[hidden]{display:none}`.
+Hauptthread-Budget (neu, Regel 2b): Ist die Stufe schon „niedrig“ und kostet ein Bild trotzdem > 30 ms (JS + Warten auf GPU/Compositor, gemessen bis zum nächsten rAF), zeichnet das Spiel höchstens die Hälfte der Zeit – der Rest bleibt für Eingaben und den Leitstand. Auf einer echten GPU greift das nur im Notfall.
 
 ## Auf dem echten PC prüfen
 - Werkstatt → „Spiel hier starten“ (Neue 3D-Modelle an, Qualität Auto): Badge soll „30 fps · mittel“ zeigen; Leitstand bleibt bedienbar; nach 1–2 Minuten in Morgenau/Route 1 ohne Ruckeln? Wenn die Stufe auf „niedrig“ fällt, ist das gewollt.
 - „Spiel beenden“, „Vollbild verlassen“, Strg+Q (Fokus im Leitstand oder im Spiel) → Rahmen weg in < 1 s, Lüfter beruhigt sich.
 - Qualität „Hoch“ wählen → darf ruckeln, muss sich aber binnen weniger Sekunden selbst herunterregeln (Badge).
 - Lässt sich der Tab trotzdem einmal schlecht bedienen: „In eigenem Tab öffnen“ (läuft in eigenem Prozess).
+
+## Testergebnis (13.11., 21:10)
+`stabil_qa` 25 ✓ / 0 ✗ · `smoke` „Keine Fehler.“ · `uebergaenge_qa` 97 ✓ / 0 ✗ (28/28). Während der Läufe arbeitete parallel Blender (Figuren-Agent) → SwiftShader-Werte schwanken stark; Grenzen deshalb auf Hauptthread-Anteil/rAF-Folge statt Einzelwerte.
+Bilder: `test/stabil_vorher_route1.png`, `test/stabil_leitstand.png`, `test/stabil_nach_stop.png`.

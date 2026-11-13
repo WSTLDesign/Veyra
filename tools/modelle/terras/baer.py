@@ -51,7 +51,7 @@ if ART in ('007', '008'):
         for k in range(14):
             z = C.SPB[0].z + (C.SPB[3].z - C.SPB[0].z) * ((k * 5) % 14) / 14; a = k * 2.4
             d = Vector((math.cos(a), math.sin(a) * .9, 0)); hit = BVB.ray_cast(V(0, 0, z) + d * .5, -d)
-            if hit[0] and abs(hit[0].y) < .2: leaves.append(blatt(hit[0] - d * .004, (d + V(0, 0, -1.2)).normalized(), .065 * s_, .03 * s_, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.3))
+            if hit[0] and abs(hit[0].y) < .2 and hit[0].z > C.SPB[2].z - .02 * s_: leaves.append(blatt(hit[0] - d * .004, (d + V(0, 0, -1.2)).normalized(), .065 * s_, .03 * s_, ('blatt', 'blatt2')[k % 2], up=tuple(d), krumm=.3))
     parts = [body]
 else:  # 009 Blühro: Vierbeiner (Sohlengänger), Schulterbuckel
     Lb, Lh = .46, .34; Wx = .11

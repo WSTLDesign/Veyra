@@ -1,0 +1,20 @@
+// QA Phase 2 · Eis: es gibt keine I-Kacheln in den Karten → Testkachel-Streifen in route1 einfügen (2D rutschen, 3D laufen), danach kein Feststecken
+import { boot, done } from './qa_p2_lib.mjs';
+const t = await boot(); const { p, ev, Wt, ok } = t;
+await ev("startBattle=function(){held=null}");
+await ev("loadMap('route1',9,18);mode='world';VILL.list=[];ROAM.list.length=0");
+await ev("(()=>{const y=P.y;let r=cur.rows[y].split('');for(let x=P.x;x<P.x+6&&x<r.length;x++)r[x]=x===P.x?'.':'I';cur.rows[y]=r.join('');})()");
+const ice = await ev("(()=>{const o=[];for(let x=P.x-1;x<P.x+8;x++)o.push(tileAt(cur,x,P.y));return[o.join(''),terrainType(P.x+2,P.y)]})()");
+ok('Eis-Teststreifen gesetzt, terrainType=ice', ice[1] === 'ice', ice);
+await ev("P.dir='right';tryMove('right')"); await Wt(1800); let s = await ev('({x:P.x,x0:9,moving:P.moving,s:P.state})');
+ok('2D: Rutschen über mehrere Eis-Felder (>2 Felder durch einen Schritt)', s.x >= 13, s);
+await ev("held='left'"); await Wt(2500); await ev('held=null'); await Wt(500); s = await ev('({x:P.x,s:P.state,sl:MV.slide})');
+ok('2D: kein Feststecken auf Eis (zurück an Land)', s.x <= 9 && !s.sl, s);
+await ev("loadMap('route1',9,18);mode='world';VILL.list=[];ROAM.list.length=0;setView('third',true)"); 
+await ev("(()=>{const y=P.y;let r=cur.rows[y].split('');for(let x=P.x+1;x<P.x+6;x++)r[x]='I';cur.rows[y]=r.join('');})()"); await Wt(1000);
+await ev("P.ang=YAW.right;P.dir='right';STICK.y=-1"); await Wt(1800); const px0 = await ev('P.px'); await ev('STICK.y=0'); await Wt(2500); s = await ev('({px:+P.px.toFixed(2),v:+(P.v||0).toFixed(2)})');
+ok('3D: Eis rutscht nach Loslassen weiter (Auslauf), Software-GL dehnt Zeit', s.px > px0 + .3, { px0: +px0.toFixed(2), ...s });
+await ev("P.ang=YAW.left;P.dir='left';STICK.y=-1"); for (let i = 0; i < 100 && !(await ev('P.x<=9')); i++) await Wt(150); await ev('STICK.y=0'); await Wt(800); s = await ev('({x:P.x,px:+P.px.toFixed(2)})');
+ok('3D: von der Eisfläche wieder herunter (kein Feststecken)', s.x <= 9, s);
+await ev("setView('2d',true)");
+await done(t);

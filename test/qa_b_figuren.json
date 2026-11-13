@@ -1,0 +1,84 @@
+{
+ "figures": 40,
+ "rows": 40,
+ "faces": 93,
+ "noArt": [
+  "eira",
+  "brann",
+  "zaria",
+  "ondra",
+  "hesper",
+  "ardena",
+  "lehrling",
+  "mama",
+  "fiete",
+  "lotte",
+  "grom",
+  "jorin",
+  "halvard",
+  "ylva",
+  "wilma",
+  "marlene",
+  "corvin",
+  "ruven",
+  "asta",
+  "wache"
+ ],
+ "world": 257,
+ "R": {
+  "warn": [
+   "Figuren mit art-Schlüssel, aber ohne Porträt-Datei (nur prozedural): eira, brann, zaria, ondra, hesper, ardena"
+  ],
+  "info": [
+   "Figuren ohne Porträt-Bild (prozeduraler Anime-Kopf): 20 → eira, brann, zaria, ondra, hesper, ardena, lehrling, mama, fiete, lotte, grom, jorin, halvard, ylva, wilma, marlene, corvin, ruven, asta, wache",
+   "Interner Flag-Name tr_bruno bleibt (nicht sichtbar; Umbenennung bräuchte Migration) – Veyra-Profi Anselm"
+  ],
+  "weich": [
+   "FIGURES.rayan.gruss: Na? Bereit, gegen den Besten zu verlieren?",
+   "FIGURES.mirael.sieg: Gewonnen. Aber niemand ist verletzt, versprochen.",
+   "FIGURES.elowen.alltag: Schatten sind nicht böse. Sie gehören dazu.",
+   "FIGURES.nymera.alltag: Schatten sind nicht böse. Sie schützen.",
+   "FIGURES.seraphine.kampf: Ich verliere nicht. Nie.",
+   "FIGURES.kaine.kampf: Ich bin leise. Aber nicht schwach."
+  ],
+  "worldCount": 257,
+  "longSentences": [],
+  "worldWeich": [
+   "nebelgrotte:Ordensrekruten-Trio pre: Rekrut: Nach dem Fels-Kristall! Ups, verraten.",
+   "arena4:Arenaleiterin Nymera pre: Nymera: Schatten sind nicht böse. Sie schützen das Licht. Zeig mir dein Herz!",
+   "siegesstrasse:Lord Varkon pre: Varkon: Die Kristalle werden schwach. Ich muss sie retten!",
+   "windkueste:Seglerin Frauke pre: Mit dem Wind im Rücken verliere ich nie!",
+   "fluestertal:Schattenseherin Mireille pre: Der Mondstein hat mir deinen Besuch verraten.",
+   "Hilfe catch: Tipp: Schwäche eine wilde Kreatur. Tippe dann auf Tasche und wirf eine Fangkapsel.",
+   "Anruf 0: Der Orden hat Angst um die Kristalle. Vielleicht können wir helfen, statt nur zu kämpfen."
+  ],
+  "muster": [
+   [
+    "Professor mit drei Startern + zwei Rivalen",
+    "Genre-Standard (Professor, Rivale, 3 Starter); Namen/Optik eigen (Veyran, Blättchen, Rayan/Mira) → ok"
+   ],
+   [
+    "Arenaleiter + 8 Medaillen",
+    "Genre-Standard; Begriffe „Medaille“, „Arenaleiter“ allgemein; Reihenfolge/Elemente eigen → ok"
+   ],
+   [
+    "Elite-Gruppe aus 4 + Meisterin",
+    "als Turmrat (Tageszeiten-Säle) + Kronenhüterin eigen umgesetzt (kein „Top Vier“/„Champion“) → ok"
+   ],
+   [
+    "Böse Organisation mit Chef, rechter Hand, Rekruten",
+    "Genre-Standard; Schattenorden mit Läuterung/Dämmerbund statt Raketen-Motiv; Rekruten ohne Komik-Duo → ok"
+   ],
+   [
+    "Kreaturen-Heilerin in jeder Station",
+    "Genre-Standard (Heilstation); Name Mirael + eigenes Aussehen, „Kreaturenstation“ → ok"
+   ],
+   [
+    "Rivale benennbar",
+    "entfernt (Kanon-Namen fest, Webdriver-Pfad „Lio“ nur intern) → ok"
+   ]
+  ]
+ },
+ "passed": 18,
+ "failed": 0
+}

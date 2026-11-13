@@ -1,0 +1,412 @@
+[
+ {
+  "vp": "860x400",
+  "checks": [
+   {
+    "n": "Titel-Opening: Endbild mit „VEYRA Kreaturenchronik“, Überspringen sofort (Demo-Pfad)",
+    "ok": true
+   },
+   {
+    "n": "Titel-Opening zu, Titelbild sichtbar",
+    "ok": true
+   },
+   {
+    "n": "Abkürzung aus: VEYRA_DEMO gesetzt, SEQ nicht automatisch",
+    "ok": true
+   },
+   {
+    "n": "Szene 1: Veyran spricht, Textkasten im Bild",
+    "ok": true
+   },
+   {
+    "n": "Überspringen-Knopf sichtbar, im Bild, nicht über dem Textkasten",
+    "ok": true
+   },
+   {
+    "n": "Textkasten ≤ 2 Zeilen",
+    "ok": true
+   },
+   {
+    "n": "Szene 2: Charaktererstellung geöffnet",
+    "ok": true
+   },
+   {
+    "n": "Panel „Wer bist du?“: Panel, „Los geht’s!“ und Namensfeld liegen im Bild",
+    "ok": true
+   },
+   {
+    "n": "Live-Porträts Held/Heldin gezeichnet",
+    "ok": true
+   },
+   {
+    "n": "Auswahl im Panel markiert (Figur, Hautton, Haar, Jacke)",
+    "ok": true
+   },
+   {
+    "n": "Szene 3: Rayan & Mira treten auf",
+    "ok": true
+   },
+   {
+    "n": "Starterwahl: 3 Karten, Panel im Bild, keine Überlappung mit Textkasten",
+    "ok": true
+   },
+   {
+    "n": "Starterkarten ≥ 44 px und vollständig im Bild",
+    "ok": true
+   },
+   {
+    "n": "Rivalen-Regel auf den Karten: Rayan stark, Mira schwach gegen deinen Starter",
+    "ok": true
+   },
+   {
+    "n": "Szene 5: Chronik + Fangkapseln sichtbar, Geschenke im Bild",
+    "ok": true
+   },
+   {
+    "n": "Spielstart erreicht (Welt/Dialog), Intro-Ebene weg",
+    "ok": true
+   },
+   {
+    "n": "G: Name = Eingabe",
+    "ok": true
+   },
+   {
+    "n": "G: Figur Held/Heldin, Hautton, Haarfarbe, Jacke = Auswahl",
+    "ok": true
+   },
+   {
+    "n": "G: Frisur/Mütze passen zur Figur (Heldin: Zopf + Mütze, Held: Wuschel)",
+    "ok": true
+   },
+   {
+    "n": "G: Starter im Team (Level 5), Dex-Eintrag, G.starter",
+    "ok": true
+   },
+   {
+    "n": "G: Rivalen-Starter nach Regel (Rayan stark: Wirkung ≥ 2, Mira schwach: Wirkung ≤ 0,5)",
+    "ok": true
+   },
+   {
+    "n": "G: Flags starter/introStarter/s1_rivalen, 5 Fangkapseln, 3 Kräutertränke, Begegnungen",
+    "ok": true
+   },
+   {
+    "n": "Spielfigur-Darstellung nutzt Auswahl (heroLook)",
+    "ok": true
+   },
+   {
+    "n": "Speichern → Laden: Name, Figur, Hautton, Starter, Rivale bleiben",
+    "ok": true
+   },
+   {
+    "n": "Keine Seitenfehler im Lauf",
+    "ok": true
+   }
+  ],
+  "titleClick": true,
+  "g": {
+   "n": "Lina",
+   "body": "heldin",
+   "skin": "#9a6440",
+   "hairCol": "#2a1d16",
+   "top": "#6a4a9a",
+   "hair": "zopf",
+   "cap": true,
+   "team": [
+    7
+   ],
+   "lv": 5,
+   "st": 7,
+   "rv": {
+    "rayan": 1,
+    "mira": 4
+   },
+   "effR": 2,
+   "effM": 0.5,
+   "f": [
+    1,
+    1,
+    1
+   ],
+   "kap": 5,
+   "trank": 3,
+   "met": "mira,rayan,veyran",
+   "mode": "dialog",
+   "hero": "#9a6440",
+   "heroTop": "#6a4a9a",
+   "dex": true,
+   "map": "haus_spieler"
+  }
+ },
+ {
+  "vp": "1180x820",
+  "checks": [
+   {
+    "n": "Titel-Opening: Endbild mit „VEYRA Kreaturenchronik“, Überspringen sofort (Demo-Pfad)",
+    "ok": true
+   },
+   {
+    "n": "Titel-Opening zu, Titelbild sichtbar",
+    "ok": true
+   },
+   {
+    "n": "Abkürzung aus: VEYRA_DEMO gesetzt, SEQ nicht automatisch",
+    "ok": true
+   },
+   {
+    "n": "Szene 1: Veyran spricht, Textkasten im Bild",
+    "ok": true
+   },
+   {
+    "n": "Überspringen-Knopf sichtbar, im Bild, nicht über dem Textkasten",
+    "ok": true
+   },
+   {
+    "n": "Textkasten ≤ 2 Zeilen",
+    "ok": true
+   },
+   {
+    "n": "Szene 2: Charaktererstellung geöffnet",
+    "ok": true
+   },
+   {
+    "n": "Panel „Wer bist du?“: Panel, „Los geht’s!“ und Namensfeld liegen im Bild",
+    "ok": true
+   },
+   {
+    "n": "Live-Porträts Held/Heldin gezeichnet",
+    "ok": true
+   },
+   {
+    "n": "Auswahl im Panel markiert (Figur, Hautton, Haar, Jacke)",
+    "ok": true
+   },
+   {
+    "n": "Szene 3: Rayan & Mira treten auf",
+    "ok": true
+   },
+   {
+    "n": "Starterwahl: 3 Karten, Panel im Bild, keine Überlappung mit Textkasten",
+    "ok": true
+   },
+   {
+    "n": "Starterkarten ≥ 44 px und vollständig im Bild",
+    "ok": true
+   },
+   {
+    "n": "Rivalen-Regel auf den Karten: Rayan stark, Mira schwach gegen deinen Starter",
+    "ok": true
+   },
+   {
+    "n": "Szene 5: Chronik + Fangkapseln sichtbar, Geschenke im Bild",
+    "ok": true
+   },
+   {
+    "n": "Spielstart erreicht (Welt/Dialog), Intro-Ebene weg",
+    "ok": true
+   },
+   {
+    "n": "G: Name = Eingabe",
+    "ok": true
+   },
+   {
+    "n": "G: Figur Held/Heldin, Hautton, Haarfarbe, Jacke = Auswahl",
+    "ok": true
+   },
+   {
+    "n": "G: Frisur/Mütze passen zur Figur (Heldin: Zopf + Mütze, Held: Wuschel)",
+    "ok": true
+   },
+   {
+    "n": "G: Starter im Team (Level 5), Dex-Eintrag, G.starter",
+    "ok": true
+   },
+   {
+    "n": "G: Rivalen-Starter nach Regel (Rayan stark: Wirkung ≥ 2, Mira schwach: Wirkung ≤ 0,5)",
+    "ok": true
+   },
+   {
+    "n": "G: Flags starter/introStarter/s1_rivalen, 5 Fangkapseln, 3 Kräutertränke, Begegnungen",
+    "ok": true
+   },
+   {
+    "n": "Spielfigur-Darstellung nutzt Auswahl (heroLook)",
+    "ok": true
+   },
+   {
+    "n": "Speichern → Laden: Name, Figur, Hautton, Starter, Rivale bleiben",
+    "ok": true
+   },
+   {
+    "n": "Keine Seitenfehler im Lauf",
+    "ok": true
+   }
+  ],
+  "titleClick": true,
+  "g": {
+   "n": "Ben",
+   "body": "held",
+   "skin": "#f6d3b3",
+   "hairCol": "#c8462e",
+   "top": "#2f6fb0",
+   "hair": "wuschel",
+   "cap": false,
+   "team": [
+    1
+   ],
+   "lv": 5,
+   "st": 1,
+   "rv": {
+    "rayan": 4,
+    "mira": 7
+   },
+   "effR": 2,
+   "effM": 0.5,
+   "f": [
+    1,
+    1,
+    1
+   ],
+   "kap": 5,
+   "trank": 3,
+   "met": "mira,rayan,veyran",
+   "mode": "dialog",
+   "hero": "#f6d3b3",
+   "heroTop": "#2f6fb0",
+   "dex": true,
+   "map": "haus_spieler"
+  }
+ },
+ {
+  "vp": "1920x1080",
+  "checks": [
+   {
+    "n": "Titel-Opening: Endbild mit „VEYRA Kreaturenchronik“, Überspringen sofort (Demo-Pfad)",
+    "ok": true
+   },
+   {
+    "n": "Titel-Opening zu, Titelbild sichtbar",
+    "ok": true
+   },
+   {
+    "n": "Abkürzung aus: VEYRA_DEMO gesetzt, SEQ nicht automatisch",
+    "ok": true
+   },
+   {
+    "n": "Szene 1: Veyran spricht, Textkasten im Bild",
+    "ok": true
+   },
+   {
+    "n": "Überspringen-Knopf sichtbar, im Bild, nicht über dem Textkasten",
+    "ok": true
+   },
+   {
+    "n": "Textkasten ≤ 2 Zeilen",
+    "ok": true
+   },
+   {
+    "n": "Überspringen: landet direkt bei „Wer bist du?“",
+    "ok": true
+   },
+   {
+    "n": "Panel „Wer bist du?“: Panel, „Los geht’s!“ und Namensfeld liegen im Bild",
+    "ok": true
+   },
+   {
+    "n": "Live-Porträts Held/Heldin gezeichnet",
+    "ok": true
+   },
+   {
+    "n": "Auswahl im Panel markiert (Figur, Hautton, Haar, Jacke)",
+    "ok": true
+   },
+   {
+    "n": "Starterwahl: 3 Karten, Panel im Bild, keine Überlappung mit Textkasten",
+    "ok": true
+   },
+   {
+    "n": "Starterkarten ≥ 44 px und vollständig im Bild",
+    "ok": true
+   },
+   {
+    "n": "Überspringen: Intro ist allein per „Überspringen“ (ohne Tippen) bis ins Spiel durchlaufbar",
+    "ok": true
+   },
+   {
+    "n": "Spielstart erreicht (Welt/Dialog), Intro-Ebene weg",
+    "ok": true
+   },
+   {
+    "n": "G: Name = Eingabe",
+    "ok": true
+   },
+   {
+    "n": "G: Figur Held/Heldin, Hautton, Haarfarbe, Jacke = Auswahl",
+    "ok": true
+   },
+   {
+    "n": "G: Frisur/Mütze passen zur Figur (Heldin: Zopf + Mütze, Held: Wuschel)",
+    "ok": true
+   },
+   {
+    "n": "G: Starter im Team (Level 5), Dex-Eintrag, G.starter",
+    "ok": true
+   },
+   {
+    "n": "G: Rivalen-Starter nach Regel (Rayan stark: Wirkung ≥ 2, Mira schwach: Wirkung ≤ 0,5)",
+    "ok": true
+   },
+   {
+    "n": "G: Flags starter/introStarter/s1_rivalen, 5 Fangkapseln, 3 Kräutertränke, Begegnungen",
+    "ok": true
+   },
+   {
+    "n": "Spielfigur-Darstellung nutzt Auswahl (heroLook)",
+    "ok": true
+   },
+   {
+    "n": "Speichern → Laden: Name, Figur, Hautton, Starter, Rivale bleiben",
+    "ok": true
+   },
+   {
+    "n": "Keine Seitenfehler im Lauf",
+    "ok": true
+   }
+  ],
+  "titleClick": true,
+  "skipClicksToWorld": 1,
+  "g": {
+   "n": "Mo",
+   "body": "heldin",
+   "skin": "#e2b48c",
+   "hairCol": "#7a4a26",
+   "top": "#d9822b",
+   "hair": "zopf",
+   "cap": true,
+   "team": [
+    4
+   ],
+   "lv": 5,
+   "st": 4,
+   "rv": {
+    "rayan": 7,
+    "mira": 1
+   },
+   "effR": 2,
+   "effM": 0.5,
+   "f": [
+    1,
+    1,
+    1
+   ],
+   "kap": 5,
+   "trank": 3,
+   "met": "mira,rayan,veyran",
+   "mode": "dialog",
+   "hero": "#e2b48c",
+   "heroTop": "#d9822b",
+   "dex": true,
+   "map": "haus_spieler"
+  }
+ }
+]

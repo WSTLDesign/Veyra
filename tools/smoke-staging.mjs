@@ -44,7 +44,7 @@ try {
     const st = await page.evaluate(() => {
       const o = {};
       try { o.env = document.querySelector('meta[name="veyra-env"]').content; } catch (e) {}
-      o.saveKey = typeof SAVEKEY !== 'undefined' ? SAVEKEY : null; o.setKey = typeof SETKEY !== 'undefined' ? SETKEY : null;
+      const k = window.__VEYRA_STG.keys(); o.saveKey = k.save; o.setKey = k.set;
       return o;
     });
     check('PC: Spielstand-Schlüssel = veyra_stg_save_v1', st.saveKey === 'veyra_stg_save_v1', String(st.saveKey));
@@ -57,17 +57,27 @@ try {
     // Debug-Pfad wie ein Tester: Schnellstart → Kreatur → Team heilen → Level → Dex → Items
     const btn = async t => { if (!(await page.locator('#stgPanel').isVisible())) await page.locator('#stgBadge').click(); await page.locator('#stgPanel button', { hasText: t }).click({ timeout: 150000 }); await page.waitForTimeout(400); };
     await btn('Neues Testspiel ohne Intro'); await page.waitForTimeout(2500);
-    check('PC: Schnellstart erzeugt Spiel', await page.evaluate(() => typeof G !== 'undefined' && !!G && typeof G.map === 'string'));
+    check('PC: Schnellstart erzeugt Spiel', await page.evaluate(() => { const g = window.__VEYRA_STG.game(); return !!g && typeof g.map === 'string'; }));
+    const ov = await page.evaluate(() => window.__VEYRA_STG.overlays());
+    check('PC: Spiel sichtbar (Intro/Titel geschlossen)', ov.length === 0, ov.join(', '));
     await page.locator('#stgBadge').click(); await page.waitForTimeout(300);
     check('PC: Kreaturenliste gefüllt', (await page.$$eval('#stgMon option', o => o.length)) > 10);
     check('PC: Kartenliste gefüllt', (await page.$$eval('#stgMap option', o => o.length)) > 3);
     await page.selectOption('#stgMon', { index: 0 }); await page.fill('#stgMonLv', '12');
     await btn('Ins Team'); await btn('Team heilen'); await page.fill('#stgLv', '25'); await btn('Level fürs Team setzen');
     await btn('Dex komplett'); await btn('10× alle Items');
-    const g = await page.evaluate(() => ({ team: G.team.length, lv: G.team.map(m => m.l), map: G.map }));
+    const g = await page.evaluate(() => { const G = window.__VEYRA_STG.game(); return { team: G.team.length, lv: G.team.map(m => m.l), map: G.map }; });
     check('PC: Kreatur im Team, Level gesetzt', g.team >= 1 && g.lv.every(l => l === 25), JSON.stringify(g));
     await btn('Schließen'); await page.waitForTimeout(800);
     await page.screenshot({ path: path.join(outDir, 'stg_PC_testspiel.png') });
+    // Welt und Kampf (prüft, dass das verschleierte Spiel auch in 3D-Welt und Kampf läuft)
+    await page.selectOption('#stgMap', 'morgenau').catch(() => {}); await btn('Hinreisen'); await page.waitForTimeout(4000);
+    await page.screenshot({ path: path.join(outDir, 'stg_PC_welt.png') });
+    check('PC: Reise in die Welt ohne Fehler', errs.length === 0, errs.slice(0, 2).join(' | '));
+    await btn('Wildkampf'); await page.waitForTimeout(6000);
+    await page.screenshot({ path: path.join(outDir, 'stg_PC_kampf.png') });
+    const md = await page.evaluate(() => window.__VEYRA_STG.mode());
+    check('PC: Wildkampf startet ohne Fehler', errs.length === 0 && md === 'battle', 'Modus ' + md + (errs.length ? ' | ' + errs.slice(0, 2).join(' | ') : ''));
     const raw = await page.evaluate(() => localStorage.getItem('veyra_stg_save_v1'));
     check('PC: Spielstand unter veyra_stg_save_v1 gespeichert', !!raw && raw.length > 20);
     const keys = await page.evaluate(() => Object.keys(localStorage));

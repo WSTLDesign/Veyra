@@ -49,8 +49,14 @@ const overlay = fs.readFileSync(path.join(here, 'staging-overlay.js'), 'utf8');
 const info = { version, built, stamp, note, prefix: 'veyra_stg', db: 'veyra_stg_save' };
 html = html.replace(/<head>/i, '<head><meta name="robots" content="noindex,nofollow"><meta name="veyra-env" content="staging">');
 html = html.replace(/(<meta name="theme-color" content=")[^"]*/i, '$1#ff8a00');
-html = html.replace(/<\/body>/i, `<script>window.VEYRA_STAGING=${JSON.stringify(info)};</script>\n<script>\n${overlay}\n</script>\n</body>`);
-if (!html.includes('window.VEYRA_STAGING=')) fail('Overlay konnte nicht eingefügt werden (kein </body>)');
+// Overlay ans Ende des Spielcode-Blocks – so bleibt es beim Verschleiern mit dem Spiel verbunden
+{ const re = /<script>([\s\S]*?)<\/script>/g; let best = null, mm;
+  const fnCount = c => (c.match(/\bfunction\b|=>/g) || []).length; // Block mit den meisten Funktionen = Spielcode
+  while ((mm = re.exec(html))) { const n = fnCount(mm[1]); if (!best || n > best.n) best = { n, len: mm[1].length, end: mm.index + mm[0].length }; }
+  if (!best || best.len < 100000) fail('Spielcode-Block nicht gefunden');
+  const cut = best.end - '</script>'.length;
+  html = html.slice(0, cut) + `\n;window.VEYRA_STAGING=${JSON.stringify(info)};\n${overlay}\n` + html.slice(cut); }
+if (!html.includes('window.VEYRA_STAGING=')) fail('Overlay konnte nicht eingefügt werden');
 fs.writeFileSync(idxPath, html);
 
 // 5) Service Worker: eigene Cache-Namen + Build-Stempel, damit jede Staging-Version sicher neu lädt

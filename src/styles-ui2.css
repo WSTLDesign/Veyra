@@ -1,0 +1,265 @@
+/* ===================== UI-DESIGN 2 · „Morgenglas“ (Agent UI-Design, Opus 5.5 hoch, 13.11.) – verbindlich, überschreibt ältere UI-Regeln =====================
+ Leitbild: ruhige, hochwertige Oberfläche für Kinder – warmes Milchglas mit klarer Hierarchie, eine freundliche Display-Schrift (Fredoka) für Namen/Titel,
+ eine sehr gut lesbare runde UI-Schrift (Nunito) für Text, tabellarische Zahlen. Wenige Farben: Tinte (Text), Milchglas (Flächen), Veyra-Fuchsie nur für
+ Fokus/Aktiv/Fortschritt, Element-Farben nur an Kreaturen/Attacken. Bewegung: Einblenden 240 ms, Antippen 95 % mit Feder, nichts blinkt dauerhaft.
+ Icons: eigene SVG-Strichzeichnungen (60-uidesign.js, UI_ICON). Dokumentation: docs/ui-design.md */
+:root{
+ --font-display:'Fredoka','Baloo 2','Trebuchet MS',system-ui,sans-serif;--font-ui:'Nunito','Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--fd:var(--font-display);--fb:var(--font-ui);
+ /* Tinte & Flächen */
+ --v-ink:#1b2333;--v-ink-2:#4a5468;--v-ink-3:#7b8497;--v-paper:#fbf8f2;--v-paper-2:#f3efe6;
+ --v-glass:rgba(252,250,246,.86);--v-glass-hi:rgba(255,254,251,.93);--v-glass-lo:rgba(252,250,246,.66);--v-glass-dark:rgba(20,26,40,.58);
+ --v-edge:rgba(255,255,255,.72);--v-hair:rgba(27,35,51,.09);--v-blur:blur(20px) saturate(1.45);
+ --v-hl:inset 0 1px 0 rgba(255,255,255,.85),inset 0 0 0 1px rgba(255,255,255,.35);
+ --v-sh-1:0 1px 2px rgba(20,26,40,.10),0 4px 12px -6px rgba(20,26,40,.28);--v-sh-2:0 2px 4px rgba(20,26,40,.08),0 14px 34px -16px rgba(20,26,40,.45);--v-sh-3:0 30px 70px -30px rgba(10,16,30,.6);
+ --v-r-s:calc(var(--u) * .8);--v-r:calc(var(--u) * 1.15);--v-r-l:calc(var(--u) * 1.7);
+ --v-ease:cubic-bezier(.2,.8,.2,1);--v-spring:cubic-bezier(.34,1.5,.64,1);--v-t:240ms;
+ --v-hp-hi:linear-gradient(180deg,#5ee38a,#27b863);--v-hp-mid:linear-gradient(180deg,#ffd45c,#f0a51e);--v-hp-lo:linear-gradient(180deg,#ff7a6e,#e0433f);
+ --v-gold:#e9b949}
+body{font-family:var(--font-ui);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+.v-ico{display:inline-block;width:1.15em;height:1.15em;flex-shrink:0;vertical-align:-.18em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes vIn{from{opacity:0;transform:translateY(8px)}}
+@keyframes vPop{from{opacity:0;transform:scale(.94)}}
+@keyframes vFade{from{opacity:0}}
+
+/* ---------- HUD: Ortsschild + Uhr oben links, Team-Kurzanzeige darunter, runde Minikarte oben rechts ---------- */
+body .hud .hudP{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:calc(var(--u) * .6);row-gap:1px;align-items:center;min-height:calc(var(--u) * 3.4);max-width:min(34vw,300px);
+ padding:calc(var(--u) * .5) calc(var(--u) * 1.1) calc(var(--u) * .55) calc(var(--u) * .6);border-radius:calc(var(--u) * 1.7);border:0;background:var(--v-glass);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);
+ box-shadow:var(--v-sh-1),var(--v-hl);opacity:1;transition:opacity 500ms var(--v-ease),transform 300ms var(--v-ease)}
+body .hud .hudP::before{display:block;content:'';grid-row:1/3;position:static;width:calc(var(--u) * 2.3);height:calc(var(--u) * 2.3);border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--lead) 35%,#fff),var(--lead) 72%);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 0 0 2px rgba(255,255,255,.9)}
+body .hud .hudP.dim,body.hud-idle .hud .hudP{opacity:.72}
+body .hud #hudMap{display:block;grid-column:2;font:600 calc(var(--u) * 1.08)/1.15 var(--font-display);color:var(--v-ink);letter-spacing:.01em}
+body .hud #hudClock{grid-column:2;display:flex!important;align-items:center;gap:5px;font:700 calc(var(--u) * .8)/1.2 var(--font-ui);color:var(--v-ink-2);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+body .hud #hudClock .v-ico{width:1.2em;height:1.2em;stroke-width:2.2}
+body .hud #hudClock[data-n="1"] .v-ico{color:#7a6be0}body .hud #hudClock[data-n="0"] .v-ico{color:#e79a1e}
+body .hudR{margin-right:calc(var(--mm) + 12px);height:var(--mm);gap:8px}
+body .hudR #mmBtn{display:none}
+body .hudR button{width:44px;height:44px;min-width:44px;border:0;border-radius:50%;background:var(--v-glass-lo);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-1),var(--v-hl);color:var(--v-ink);opacity:.9}
+body.hud-idle .hud .hudR button{opacity:.55}
+/* Minikarte: immer sichtbar, rund, Glasring mit Nordmarke */
+body #mmW{top:var(--gy-t);right:var(--gx-r);width:var(--mm);height:var(--mm);opacity:1;transform:none;pointer-events:auto;border-radius:50%;
+ box-shadow:0 0 0 3px rgba(255,255,255,.88),0 0 0 4px rgba(27,35,51,.12),var(--v-sh-2);transition:opacity 500ms var(--v-ease)}
+body #mmW::after{content:'N';position:absolute;left:50%;top:-2px;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--v-ink);color:#fff;font:700 9px/16px var(--font-ui);text-align:center;box-shadow:0 0 0 2px #fff}
+body.hud-idle #mmW{opacity:.8}
+:root{--mm:calc(var(--u) * 6.6);--u:clamp(12px,calc(1vh + .6vw),17px)}
+/* Team-Kurzanzeige */
+#vTeam{position:absolute;z-index:6;left:var(--gx-l);top:calc(var(--gy-t) + var(--u) * 3.4 + 8px);display:flex;gap:6px;padding:5px 8px;border-radius:999px;background:var(--v-glass-lo);
+ -webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-1),var(--v-hl);pointer-events:auto;cursor:pointer;transition:opacity 500ms var(--v-ease);animation:vIn 300ms var(--v-ease)}
+#vTeam:empty{display:none}
+#vTeam .vt{position:relative;width:calc(var(--u) * 2.3);height:calc(var(--u) * 2.3);min-width:26px;min-height:26px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 1px var(--v-hair)}
+#vTeam .vt>.art,#vTeam .vt>canvas,#vTeam .vt>img{position:absolute;inset:2px;width:calc(100% - 4px)!important;height:calc(100% - 4px)!important;border-radius:50%;overflow:hidden}
+#vTeam .vt svg.hpr{position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg);pointer-events:none}
+#vTeam .vt .hpr circle{fill:none;stroke-width:3}#vTeam .vt .hpr .b{stroke:rgba(27,35,51,.12)}#vTeam .vt .hpr .f{stroke:var(--hc,#27b863);stroke-linecap:round;transition:stroke-dashoffset .6s var(--v-ease)}
+#vTeam .vt.ko{filter:grayscale(1);opacity:.55}
+body.hud-idle #vTeam{opacity:.6}
+body:has(#hudOv[hidden]) #vTeam,body.lay-port #vTeam{display:none}
+#hq{top:calc(var(--gy-t) + var(--u) * 3.4 + 8px + var(--u) * 2.3 + 22px)!important}
+body:not(:has(#vTeam:not(:empty))) #hq{top:calc(var(--gy-t) + var(--u) * 3.4 + 10px)!important}
+#hq{border-radius:999px;background:var(--v-glass)!important;-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-1),var(--v-hl)!important}
+#hq b{font:700 calc(var(--u) * .9)/1.2 var(--font-ui);color:var(--v-ink)}#hq small{font:600 calc(var(--u) * .76)/1.25 var(--font-ui);color:var(--v-ink-2)}
+#hqCard{border-radius:var(--v-r-l);background:var(--v-glass-hi);box-shadow:var(--v-sh-2),var(--v-hl);font-family:var(--font-ui)}
+#hqCard b{font:600 calc(var(--u) * 1.15)/1.2 var(--font-display);color:var(--v-ink)}
+#hqCard small{font:800 calc(var(--u) * .66)/1.2 var(--font-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--sig-ink)}
+#toast{background:var(--v-glass-hi);color:var(--v-ink);box-shadow:var(--v-sh-2),var(--v-hl);font:700 calc(var(--u) * .95)/1.3 var(--font-ui);padding:9px 20px}
+
+/* ---------- Gebietsschild: ruhiges Schild mit Rauten-Ornament, Region in Kapitälchen ---------- */
+body #mapCard{top:calc(var(--gy-t) + var(--u) * 1.4);padding:calc(var(--u) * .7) calc(var(--u) * 2.6) calc(var(--u) * .85);border-radius:calc(var(--u) * 1.4);background:var(--v-glass-hi);
+ -webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-2),var(--v-hl);max-width:min(52vw,520px)}
+body #mapCard::before{display:none}
+body #mapCard b{order:2;font:600 calc(var(--u) * 2)/1.1 var(--font-display);color:var(--v-ink);letter-spacing:.01em;text-shadow:none}
+body #mapCard small{order:1;display:flex;align-items:center;gap:10px;margin:0 0 3px;font:800 calc(var(--u) * .64)/1.2 var(--font-ui);letter-spacing:.26em;text-transform:uppercase;color:var(--ab,var(--lead));filter:brightness(.72) saturate(1.2)}
+body #mapCard small::before,body #mapCard small::after{content:'';display:inline-block!important;width:calc(var(--u) * 2)!important;height:1.5px!important;margin:0!important;border-radius:2px;background:currentColor!important;opacity:.55;transition:none!important}
+body #mapCard::after{left:50%;right:auto;width:9px;height:9px;bottom:-5px;margin-left:-4.5px;border-radius:2px;transform:rotate(45deg);background:var(--ab,var(--lead));box-shadow:0 0 0 3px #fff}
+
+/* ---------- Dialog: breites Glasband, Sprecher-Schild, ruhiger Weiter-Hinweis ---------- */
+body #dlg{max-width:880px;background:var(--v-glass-hi);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);border:0;border-radius:var(--v-r-l);box-shadow:var(--v-sh-3),var(--v-sh-1),var(--v-hl);
+ padding:calc(var(--u) * 1.15) calc(var(--u) * 3.2) calc(var(--u) * 1.2) calc(var(--u) * 1.7);font:600 calc(var(--u) * 1.2)/1.55 var(--font-ui);color:var(--v-ink);letter-spacing:.005em;animation:vIn 260ms var(--v-ease)}
+body #dlg.who{padding-top:calc(var(--u) * 1.5);padding-left:calc(var(--u) * 8.8)}
+body #dlg:not(.who).por{padding-left:calc(var(--u) * 7.2)}
+body #dlg #dlgName,body #dlg.who #dlgName{top:calc(var(--u) * -1.15);left:calc(var(--u) * 8.4);padding:calc(var(--u) * .3) calc(var(--u) * 1.1) calc(var(--u) * .32);border-radius:calc(var(--u) * .8);
+ background:var(--v-ink);color:#fff;font:600 calc(var(--u) * .98)/1.2 var(--font-display);letter-spacing:.02em;box-shadow:var(--v-sh-1);animation:vPop 220ms var(--v-spring)}
+body #dlg #dlgName::before{content:'';display:inline-block;width:7px;height:7px;margin:0 8px 1px 0;border-radius:50%;background:var(--pc,var(--sig-hi));vertical-align:middle}
+body #dlg:not(.who) #dlgName{left:calc(var(--u) * 1.7)}
+body #dlg #dlgFace{top:calc(var(--u) * -2.6);left:calc(var(--u) * 1.3);width:calc(var(--u) * 6.6);height:calc(var(--u) * 6.6);border-radius:50%;box-shadow:0 0 0 4px #fff,0 0 0 5px var(--v-hair),var(--v-sh-2)}
+body #dlg #dlgPor{top:calc(var(--u) * -1.8);left:calc(var(--u) * 1.5);width:calc(var(--u) * 5.4);height:calc(var(--u) * 5.4);line-height:calc(var(--u) * 5.4);font:600 calc(var(--u) * 2.2)/calc(var(--u) * 5.4) var(--font-display);box-shadow:0 0 0 4px #fff,var(--v-sh-2)}
+body #dlg #dlgText{text-wrap:pretty}
+body #dlgMore{right:calc(var(--u) * 1.5);bottom:calc(var(--u) * 1.15);width:calc(var(--u) * 1.6);height:calc(var(--u) * 1.6);border:0;border-radius:50%;transform:none;background:var(--v-ink);font-size:0;animation:vNext 1.6s var(--v-ease) infinite}
+body #dlgMore::after{content:'';position:absolute;left:50%;top:50%;width:28%;height:28%;margin:-22% 0 0 -14%;border-right:2.2px solid #fff;border-bottom:2.2px solid #fff;transform:rotate(45deg)}
+@keyframes vNext{0%,100%{translate:0 0}50%{translate:0 3px}}
+body #dlgText.typing~#dlgMore{opacity:0;animation:none}
+body #dlgOpts button{border:0;border-radius:var(--v-r);background:var(--v-glass-hi);box-shadow:var(--v-sh-1),var(--v-hl);font:700 calc(var(--u) * 1)/1.25 var(--font-ui);color:var(--v-ink);min-height:50px}
+body #dlgOpts button:first-child{background:var(--v-ink);color:#fff;box-shadow:var(--v-sh-2)}
+body #dlgOpts button:first-child::after{opacity:.8}
+body #dlg.sign{background:linear-gradient(180deg,rgba(250,236,206,.96),rgba(238,214,170,.96));color:#3d2a14}
+body #dlg.sign #dlgName{background:#6b4a26}
+
+/* ---------- Steuerung: dezent halbtransparent ---------- */
+.in-root .in-base{background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.42),rgba(255,255,255,.16) 70%)!important;border:1.5px solid rgba(255,255,255,.55)!important;box-shadow:0 6px 20px -10px rgba(10,16,30,.4)!important}
+.in-root .in-base::before{border:1.5px solid rgba(255,255,255,.5)!important;opacity:.7}
+.in-root .in-knob{background:radial-gradient(circle at 35% 30%,#fff,rgba(255,255,255,.82))!important;border:0!important;box-shadow:0 4px 12px -4px rgba(10,16,30,.45)!important}
+.in-root .in-ring{border-width:2px;box-shadow:none}
+.in-root .in-btn:not(.in-a){background:rgba(252,250,246,.5)!important;-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);border:1px solid rgba(255,255,255,.6)!important;box-shadow:0 6px 18px -10px rgba(10,16,30,.45)!important;color:var(--v-ink)!important;font:700 calc(var(--u) * .86)/1 var(--font-ui)!important}
+.in-root .in-a{background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.28),transparent 60%),linear-gradient(160deg,var(--sig-2),var(--sig))!important;border:2px solid rgba(255,255,255,.7)!important;box-shadow:0 10px 26px -12px var(--sig-glow),0 4px 12px -6px rgba(10,16,30,.4)!important;font:700 calc(var(--in-a) * .34)/1 var(--font-display)!important;opacity:.94}
+.in-root .in-btn[aria-pressed=true]{background:var(--v-ink)!important;color:#fff!important}
+body.hud-idle .in-root .in-cluster{opacity:.62}
+body.hud-idle .in-root .in-btn:not(.in-a){background:rgba(252,250,246,.32)!important}
+
+/* ---------- Kampf: Statuskarten (Name, Level, Typ, KP mit Nachlauf), Befehlskarten, Attacken mit Typfarbe ---------- */
+body #battle .ibox{border:0;border-radius:var(--v-r);background:var(--v-glass-hi);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-2),var(--v-hl)}
+body #battle.dieg:not(.b2d) #bFoeBox,body #battle.dieg:not(.b2d) #bMeBox{min-width:186px;max-width:min(260px,40vw);padding:calc(var(--u) * .55) calc(var(--u) * .85) calc(var(--u) * .7);border-radius:var(--v-r);background:var(--v-glass-hi)}
+body #battle .ibox .n,body #battle .ibox .n>span{display:flex;align-items:center;gap:7px;font:600 calc(var(--u) * 1.05)/1.15 var(--font-display)!important;color:var(--v-ink)!important;min-width:0}
+body #battle .ibox .n .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body #battle .ibox .n small{margin-left:auto;padding:2px 7px 3px;border-radius:999px;background:var(--v-ink);color:#fff!important;font:800 max(10px,calc(var(--u) * .68))/1.15 var(--font-ui)!important;letter-spacing:.04em;text-shadow:none!important;font-variant-numeric:tabular-nums}
+body #battle .ibox .tb{width:calc(var(--u) * 1.55);height:calc(var(--u) * 1.55);min-width:20px;min-height:20px;border-radius:50%;box-shadow:inset 0 -2px 0 rgba(0,0,0,.14),0 0 0 2px #fff}
+body #battle .ibox .tb .ti{width:62%;height:62%}
+body #battle .ibox .own{color:var(--sig);font-size:9px}
+body #battle .ibox .hp{position:relative;height:calc(var(--u) * .62)!important;min-height:7px;margin-top:calc(var(--u) * .45)!important;border-radius:999px;background:rgba(27,35,51,.12)!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.12);overflow:hidden}
+body #battle .ibox .hp i{transition:width .75s cubic-bezier(.22,.9,.3,1)!important}
+body #battle .ibox .hp[data-band=hi] i{background:var(--v-hp-hi)!important}body #battle .ibox .hp[data-band=mid] i{background:var(--v-hp-mid)!important}body #battle .ibox .hp[data-band=lo] i{background:var(--v-hp-lo)!important}
+body #battle .ibox .hp .gh{background:rgba(255,255,255,.85)!important;transition:width .8s .5s cubic-bezier(.4,0,.2,1)!important}
+body #battle .ibox .hp::before{content:'';position:absolute;inset:0;z-index:2;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),rgba(255,255,255,.3) calc(10% - 1px) 10%);pointer-events:none}
+body #battle .ibox .hp.low i{animation:vLow 1.1s ease-in-out infinite}
+@keyframes vLow{50%{filter:brightness(1.25)}}
+body #battle #bMeNum{display:block;margin-top:4px;text-align:right;font:800 max(12px,calc(var(--u) * .86))/1.1 var(--font-ui)!important;color:var(--v-ink)!important;text-shadow:none!important;font-variant-numeric:tabular-nums}
+body #battle .ibox .xpb{height:3px!important;margin-top:4px;border-radius:3px;background:rgba(27,35,51,.08)!important;overflow:hidden}
+body #battle .ibox .xpb i{background:linear-gradient(90deg,#6aa8ff,#8a7dff)!important}
+body #battle #bBalls i{width:7px!important;height:7px!important;border-radius:2px!important;transform:rotate(45deg);background:var(--sig)!important}body #battle #bBalls i.out{background:rgba(27,35,51,.2)!important}
+/* Meldungszeile */
+body #battle:not(.b2d) #bLog{padding:calc(var(--u) * .6) calc(var(--u) * 1.6);border-radius:999px;background:var(--v-glass-hi);box-shadow:var(--v-sh-2),var(--v-hl);font:700 calc(var(--u) * 1.05)/1.35 var(--font-ui);color:var(--v-ink)}
+/* Befehlsmenü: Kampf groß, darüber Team · Tasche · Rückzug als gleich breite Karten */
+body #battle:not(.b2d) #bDock:has(#bMenu.rmain){width:auto}
+body #battle:not(.b2d) #bMenu.rmain{position:relative;display:grid!important;grid-template-columns:repeat(3,minmax(76px,calc(var(--u) * 6.6)));grid-template-rows:auto auto;gap:calc(var(--u) * .55);width:auto;height:auto;min-height:0;padding:0!important;margin-left:auto}
+body #battle:not(.b2d) #bMenu.rmain>.big{position:relative!important;inset:auto!important;width:auto!important;min-width:0!important;height:auto!important;min-height:calc(var(--u) * 4.6)!important;margin:0!important;padding:calc(var(--u) * .5) calc(var(--u) * .4)!important;
+ border:0;border-radius:var(--v-r)!important;background:var(--v-glass-hi)!important;-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-sh-2),var(--v-hl)!important;color:var(--v-ink)!important;animation:vIn 260ms var(--v-ease) both}
+body #battle:not(.b2d) #bMenu.rmain .cl{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+body #battle:not(.b2d) #bMenu.rmain .cl svg{width:calc(var(--u) * 1.6)!important;height:calc(var(--u) * 1.6)!important;min-width:20px;min-height:20px}
+body #battle:not(.b2d) #bMenu.rmain .cl b{font:600 calc(var(--u) * 1)/1.1 var(--font-display)!important}
+body #battle:not(.b2d) #bMenu.rmain .cl small{display:none!important}
+body #battle:not(.b2d) #bMenu.rmain .k2{grid-area:1/1/2/2!important;animation-delay:30ms}body #battle:not(.b2d) #bMenu.rmain .k3{grid-area:1/2/2/3!important;animation-delay:60ms}body #battle:not(.b2d) #bMenu.rmain .k4{grid-area:1/3/2/4!important;animation-delay:90ms;color:var(--v-ink-2)!important}
+body #battle:not(.b2d) #bMenu.rmain>.big{border-right:0!important;transform:none}body #battle:not(.b2d) #bMenu.rmain .cl svg{grid-row:auto!important}
+body #battle:not(.b2d) #bMenu.rmain .k1{grid-area:2/1/3/4!important;min-height:calc(var(--u) * 5)!important;background:linear-gradient(135deg,var(--sig-2),var(--sig))!important;color:#fff!important;box-shadow:0 14px 30px -14px var(--sig-glow),var(--v-sh-1)!important}
+body #battle:not(.b2d) #bMenu.rmain .k1 .cl{flex-direction:row;gap:12px}
+body #battle:not(.b2d) #bMenu.rmain .k1 .cl b{font-size:calc(var(--u) * 1.5)!important;letter-spacing:.02em}
+body #battle:not(.b2d) #bMenu.rmain .k1 .cl small{display:inline!important;margin-left:6px;font:700 calc(var(--u) * .76)/1 var(--font-ui);opacity:.85}
+body #battle:not(.b2d) #bMenu.rmain .k1 .cl svg{width:calc(var(--u) * 2)!important;height:calc(var(--u) * 2)!important}
+body #battle:not(.b2d) #bMenu.rmain>.big:active:not(:disabled){transform:scale(.95)}
+body #battle:not(.b2d) #bMenu.rmain .k4:disabled{opacity:.5}
+body #battle:not(.b2d) #bMenu.rmain #resBtn{position:absolute!important;right:calc(100% + var(--u) * .7)!important;left:auto!important;bottom:0!important;top:auto!important;width:calc(var(--u) * 4.2)!important;height:calc(var(--u) * 4.2)!important;min-width:52px;min-height:52px;border-radius:50%;
+ background:var(--v-glass-hi)!important;box-shadow:var(--v-sh-2),var(--v-hl)!important}
+/* Attacken: 2×2-Karten mit Typfarbe (Streifen + Symbol), Name groß, AP und Wirkung als Chips */
+body #battle:not(.b2d) #bDock:has(#bMenu.rmoves){width:min(52vw,560px)}
+body #battle:not(.b2d) #bMenu.rmoves{gap:calc(var(--u) * .6)}
+body #battle:not(.b2d) #bMenu.rmoves>.mv{position:relative;overflow:hidden;min-height:calc(var(--u) * 4.9);border:0;border-radius:var(--v-r);padding:calc(var(--u) * .6) calc(var(--u) * .8) calc(var(--u) * .6) calc(var(--u) * 1.1);
+ background:linear-gradient(100deg,color-mix(in srgb,var(--tc,#fff) 24%,#fffdf9) 0%,#fffdf9 58%)!important;box-shadow:var(--v-sh-2),var(--v-hl);grid-template-columns:calc(var(--u) * 2.7) 1fr;column-gap:calc(var(--u) * .75)}
+body #battle:not(.b2d) #bMenu.rmoves>.mv::before{content:'';position:absolute;left:0;top:0;bottom:0;width:calc(var(--u) * .4);background:var(--tc,#ccc)}
+body #battle:not(.b2d) #bMenu.rmoves .mv .tic{width:calc(var(--u) * 2.7);height:calc(var(--u) * 2.7);border-radius:50%;background:var(--tc)!important;box-shadow:inset 0 -3px 0 rgba(0,0,0,.14),0 0 0 3px #fff,0 3px 8px -3px rgba(0,0,0,.3)!important}
+body #battle:not(.b2d) #bMenu.rmoves .mv b{font:600 calc(var(--u) * 1.15)/1.15 var(--font-display)!important;color:var(--v-ink)!important}
+body #battle:not(.b2d) #bMenu.rmoves .mv span{font:700 max(11px,calc(var(--u) * .76))/1.2 var(--font-ui)!important;color:var(--v-ink-2)!important;letter-spacing:.02em}
+body #battle:not(.b2d) #bMenu.rmoves .mv .ap,body #battle:not(.b2d) #bMenu.rmoves .mv em{padding:1px 7px;border-radius:999px;font:800 max(10.5px,calc(var(--u) * .7))/1.5 var(--font-ui)!important;font-style:normal;background:rgba(27,35,51,.07)!important;color:var(--v-ink-2);font-variant-numeric:tabular-nums}
+body #battle:not(.b2d) #bMenu.rmoves .mv em.eff{background:#27b863!important;color:#fff}body #battle:not(.b2d) #bMenu.rmoves .mv em.weak{background:#8a93a6!important;color:#fff}
+body #battle:not(.b2d) #bMenu.rmoves .mv .ap.lo{background:#ffe2b8!important;color:#7a4a00}body #battle:not(.b2d) #bMenu.rmoves .mv .ap.out{background:#ffd5d0!important;color:#9c1c12}
+body #battle:not(.b2d) #bMenu.rmoves>.mv:disabled{filter:grayscale(.8);opacity:.6}
+body #battle:not(.b2d) #bMenu .back{min-height:48px;border-radius:999px;background:var(--v-glass)!important;box-shadow:var(--v-sh-1),var(--v-hl);font:700 calc(var(--u) * .92)/1 var(--font-ui);color:var(--v-ink)}
+body #battle:not(.b2d) #bMenu.rlist .mv{border:0;border-radius:var(--v-r);background:var(--v-glass-hi)!important;box-shadow:var(--v-sh-2),var(--v-hl)}
+body #battle:not(.b2d) #bMenu.rlist .mv b{font:600 calc(var(--u) * 1.02)/1.2 var(--font-display)}
+body #battle:not(.b2d) #bMenu.rlist .mv span{font:700 calc(var(--u) * .76)/1.3 var(--font-ui);color:var(--v-ink-2)}
+
+/* ---------- Chronik (Menü): Milchglas-Gerät, Navigationsleiste mit eigenen Symbolen, Karten ---------- */
+body #menu .chCase{background:linear-gradient(160deg,rgba(255,253,248,.62),rgba(240,236,228,.5))!important;border:0!important;-webkit-backdrop-filter:blur(26px) saturate(1.4);backdrop-filter:blur(26px) saturate(1.4);box-shadow:var(--v-sh-3),var(--v-hl)!important;border-radius:calc(var(--u) * 2.1)!important}
+body #menu .chPage{background:rgba(255,254,251,.9)!important;box-shadow:inset 0 0 0 1px var(--v-hair)!important;border-radius:calc(var(--u) * 1.5)!important}
+body #menu .chHinge,body #menu .chGem{display:none}
+body #menu #tabs{background:rgba(255,254,251,.55)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)!important}
+body #menu #tabs button{border-radius:var(--v-r)!important;color:var(--v-ink-2)!important;font:700 max(11px,calc(var(--u) * .78))/1.1 var(--font-ui)!important;letter-spacing:.01em}
+body #menu #tabs button .ap{display:grid;place-items:center;background:transparent!important;box-shadow:none!important}
+body #menu #tabs button .ap svg{width:100%;height:100%}
+body #menu #tabs button.on{color:#fff!important}
+body #menu #tabInk{background:var(--v-ink)!important;box-shadow:var(--v-sh-1)!important;border-radius:var(--v-r)!important}
+body .chPage .mhead h2{font:600 calc(var(--u) * 1.75)/1.15 var(--font-display);color:var(--v-ink);letter-spacing:.005em}
+body #menu .x,body #menu .quit{min-height:44px;border:0;border-radius:999px;background:rgba(27,35,51,.06)!important;color:var(--v-ink)!important;font:700 calc(var(--u) * .86)/1 var(--font-ui)!important;box-shadow:none!important}
+body #menu .x{background:var(--v-ink)!important;color:#fff!important;padding:0 20px}
+body #money{font:700 calc(var(--u) * .92)/1 var(--font-ui);color:var(--v-ink-2);font-variant-numeric:tabular-nums}
+body #mBody h3{font:800 calc(var(--u) * .7)/1.3 var(--font-ui);letter-spacing:.16em;color:var(--v-ink-3)}
+body #mBody .item,body #mBody .quest,body #mBody .orow,body #mBody .mon,body #mBody .dx,body #mBody .slot,body #mBody .kmv,body #mBody .dexhead{background:#fff;border:0;box-shadow:0 0 0 1px var(--v-hair),0 6px 16px -12px rgba(20,26,40,.4);border-radius:var(--v-r)}
+body #mBody .item b,body #mBody .quest b{font:600 calc(var(--u) * 1.05)/1.25 var(--font-display);color:var(--v-ink)}
+body #mBody .quest.now{background:linear-gradient(135deg,#fff 30%,color-mix(in srgb,var(--sig) 7%,#fff))}
+body #mBody .quest.now h2{font:600 calc(var(--u) * 1.55)/1.2 var(--font-display)}
+body #mBody .quest.now small{font:800 calc(var(--u) * .66)/1.2 var(--font-ui);letter-spacing:.16em}
+/* Team: große Bildkarten */
+body #mBody .grid{gap:calc(var(--u) * .8)}
+body #mBody .mon{position:relative;overflow:hidden;padding:calc(var(--u) * .9) calc(var(--u) * .8);transition:transform 160ms var(--v-spring),box-shadow 200ms}
+body #mBody .mon::before{content:'';position:absolute;left:0;right:0;top:0;height:46%;background:linear-gradient(180deg,color-mix(in srgb,var(--mc,#dfe6ee) 26%,#fff),transparent);pointer-events:none}
+body #mBody .mon>*:not(.lead){position:relative}
+body #mBody .mon .mt b{font:600 calc(var(--u) * 1.12)/1.2 var(--font-display);color:var(--v-ink)}
+body #mBody .mon .mt small{font:800 max(10px,calc(var(--u) * .68))/1.2 var(--font-ui);padding:2px 7px;border-radius:999px;background:var(--v-ink);color:#fff}
+body #mBody .mon .num{font:700 calc(var(--u) * .78)/1.2 var(--font-ui);color:var(--v-ink-2);font-variant-numeric:tabular-nums}
+body #mBody .mon .lead{background:var(--v-gold);color:#3d2a00;font:800 calc(var(--u) * .62)/1 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 8px}
+body #mBody .mon:active{transform:scale(.97)}
+body #mBody .ring{filter:drop-shadow(0 6px 10px rgba(20,26,40,.18))}
+/* Dex: Bildkarten mit Nummer, Name, gefangen-Marke */
+body #mBody .dexhead b{font:600 calc(var(--u) * 1.3)/1.2 var(--font-display)}
+body #mBody .dex{gap:calc(var(--u) * .7)}
+body #mBody .dx{position:relative;background:linear-gradient(180deg,#f6f3ec,#fff 60%);transition:transform 160ms var(--v-spring)}
+body #mBody .dx:active{transform:scale(.96)}
+body #mBody .dx small{font:600 calc(var(--u) * .84)/1.2 var(--font-display);color:var(--v-ink)}
+body #mBody .dx.got::after{content:'';position:absolute;top:9px;right:9px;width:9px;height:9px;transform:rotate(45deg);border-radius:2px;background:var(--sig);box-shadow:0 0 0 2px #fff}
+body #mBody .dx.none{background:rgba(255,255,255,.6);box-shadow:0 0 0 1px var(--v-hair)}
+body #mBody .dx .q{background:rgba(27,35,51,.05);color:var(--v-ink-3)}
+body #mBody .dtop{border-radius:var(--v-r-l);background:linear-gradient(160deg,#fff,#f4f0e8);box-shadow:0 0 0 1px var(--v-hair)}
+body #mBody .dinfo h2{font:600 calc(var(--u) * 1.7)/1.15 var(--font-display);color:var(--v-ink)}
+/* Chips (Element) einheitlich */
+body .chip{border-radius:999px;font:800 max(10.5px,calc(var(--u) * .7))/1 var(--font-ui);letter-spacing:.03em;padding:4px 9px 4px 6px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.1)}
+/* Optionen */
+body .orow b{font:700 calc(var(--u) * .98)/1.25 var(--font-ui);color:var(--v-ink)}
+body .seg{border-radius:999px;background:rgba(27,35,51,.06);padding:3px}
+body .seg button{border-radius:999px;font:700 calc(var(--u) * .84)/1 var(--font-ui)}
+body .seg button.on,body .seg button[aria-pressed=true]{background:var(--v-ink);color:#fff;box-shadow:var(--v-sh-1)}
+/* Laden & Einstellungen-Ebene */
+body.lay-land #shop,body.lay-land #opts{background:rgba(255,254,251,.94);border-radius:calc(var(--u) * 2)}
+#shop .mhead h2,#opts .mhead h2{font:600 calc(var(--u) * 1.75)/1.15 var(--font-display);color:var(--v-ink)}
+#shop .x,#opts .x{min-height:44px;border:0;border-radius:999px;background:var(--v-ink);color:#fff;padding:0 20px;font:700 calc(var(--u) * .9)/1 var(--font-ui)}
+
+/* ---------- Titelbildschirm: Himmel + Horizont aus der Spielwelt, eigene Wortmarke, ruhige Glas-Knöpfe ---------- */
+body #title{background:#1b2440;overflow:hidden;justify-content:center;gap:0}
+#title .vtBg{position:absolute;inset:0;z-index:0;max-width:none!important;pointer-events:none;overflow:hidden}
+#title .vtBg i{position:absolute;display:block;background-repeat:no-repeat}
+#title .vtBg .sky{inset:-4% -6%;background-size:cover;background-position:50% 62%;animation:vSky 60s ease-in-out infinite alternate}
+#title .vtBg .hz{left:-10%;right:-10%;bottom:14%;height:34%;background-size:auto 100%;background-repeat:repeat-x;background-position:0 100%;opacity:.95;animation:vHz 120s linear infinite;filter:saturate(.9) brightness(1.02)}
+#title .vtBg .hz.b{bottom:10%;height:26%;opacity:.55;filter:blur(1.5px) brightness(1.08);animation-duration:200s;animation-direction:reverse}
+#title .vtBg .mist{left:0;right:0;bottom:0;height:42%;background:linear-gradient(180deg,transparent,rgba(250,236,226,.55) 45%,rgba(246,226,214,.9))}
+#title .vtBg .shade{inset:0;background:radial-gradient(70% 60% at 50% 42%,transparent 40%,rgba(20,24,48,.38) 100%),linear-gradient(180deg,rgba(24,28,60,.35),transparent 40%)}
+#title .vtBg .mote{width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px rgba(255,240,210,.8);opacity:0;animation:vMote 9s ease-in-out infinite}
+@keyframes vSky{to{transform:scale(1.06) translateX(-1.5%)}}
+@keyframes vHz{to{background-position:-2048px 100%}}
+@keyframes vMote{0%{opacity:0;transform:translateY(0)}25%,70%{opacity:.85}100%{opacity:0;transform:translateY(-60px) translateX(14px)}}
+body #title>*:not(.vtBg):not(.foot):not(.vtVer){position:relative;z-index:1}
+body #title>.foot,body #title>.vtVer{position:absolute;z-index:1;margin:0}
+body #title h1{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;animation:none}
+body #title .tsub{display:none}
+body #title::before{display:none}
+#title .vtLogo{display:block;width:min(560px,62vw);height:auto;margin:0 0 calc(var(--u) * .2);filter:drop-shadow(0 10px 24px rgba(30,20,60,.35));animation:vLogoIn 1.1s var(--v-ease) both}
+@keyframes vLogoIn{from{opacity:0;transform:translateY(10px) scale(.97)}}
+#title .vtLogo text{font-family:var(--font-display)}
+body #title .tbtn{display:flex;flex-direction:column;gap:calc(var(--u) * .7);width:min(340px,80vw);margin-top:calc(var(--u) * 1.6);animation:vIn .7s .35s var(--v-ease) both}
+body #title .tbtn button{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 24px;border:0;border-radius:999px;background:rgba(255,253,248,.78);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);
+ box-shadow:0 10px 30px -14px rgba(20,24,48,.55),var(--v-hl);font:600 calc(var(--u) * 1.2)/1 var(--font-display);color:var(--v-ink);letter-spacing:.02em}
+body #title .tbtn button.pri,body #title .tbtn button:first-child:not([hidden]){background:var(--v-ink);color:#fff;box-shadow:0 14px 34px -14px rgba(20,24,48,.8),inset 0 1px 0 rgba(255,255,255,.18)}
+body #title .tbtn button.pri::after,body #title .tbtn button:first-child:not([hidden])::after{content:'';width:8px;height:8px;border-right:2.4px solid currentColor;border-top:2.4px solid currentColor;transform:rotate(45deg);margin-left:4px;opacity:.8}
+body #title .tbtn button:active{transform:scale(.96)}
+body #title .foot{bottom:max(14px,var(--sa-b));left:0;right:0;text-align:center;font:700 12px/1.4 var(--font-ui);letter-spacing:.08em;color:rgba(60,44,60,.62)}
+body #title .vtVer{position:absolute;right:max(16px,var(--sa-r));bottom:max(14px,var(--sa-b));font:700 11px/1 var(--font-ui);color:rgba(60,44,60,.5);letter-spacing:.06em}
+@media (orientation:landscape) and (max-height:620px){
+ #title .vtLogo{width:min(400px,50vw)}
+ body #title .tbtn{flex-direction:row!important;width:min(560px,86vw)!important;margin-top:calc(var(--u) * 1)}
+ body #title .tbtn button{flex:1;min-height:50px;padding:0 14px;font-size:calc(var(--u) * 1.15)}
+}
+
+/* ---------- Bewegung reduzieren ---------- */
+@media (prefers-reduced-motion:reduce){
+ #title .vtBg *,#title .vtLogo,body #title .tbtn,#vTeam,body #dlg,body #dlgMore,body #dlg #dlgName,body #battle:not(.b2d) #bMenu>*,body #battle .ibox .hp.low i{animation:none!important}
+ body #battle .ibox .hp i,body #battle .ibox .hp .gh{transition-duration:.01s!important}
+}
+body.red #title .vtBg *,body.red #title .vtLogo,body.red #title .tbtn,body.red #vTeam,body.red #dlg,body.red #dlgMore,body.red #battle:not(.b2d) #bMenu>*{animation:none!important}
+
+.in-root .in-menu small{font-size:10px!important;letter-spacing:0}
+body #title>.vtVer{left:auto!important;right:max(16px,var(--sa-r))!important;width:auto!important}
+@media (max-height:460px){body #title>.vtVer{display:none}}

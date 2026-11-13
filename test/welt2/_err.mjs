@@ -1,0 +1,10 @@
+import { chromium } from 'playwright';
+import { serve } from '../art_serve.mjs';
+const S=await serve();const b=await chromium.launch({args:['--use-gl=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+const p=await b.newPage({viewport:{width:800,height:450}});p.on('pageerror',e=>console.log('ERR',e.message));p.on('console',m=>{if(m.type()==='error')console.log('CE',m.text().slice(0,300))});
+await p.route(/sw\.js$/, r => r.fulfill({ status: 404, body: '' }));
+await p.goto(S.url+'index.html',{waitUntil:'load'});await p.waitForTimeout(3000);
+console.log(await p.evaluate(()=>({tNew:!!document.querySelector('#tNew'),vis:[...document.querySelectorAll('section.layer')].filter(e=>!e.hidden).map(e=>e.id)})));
+await p.evaluate(()=>{const i=document.querySelector('#iPrompt');if(i)i.click();});await p.waitForTimeout(800);await p.evaluate(()=>{const i=document.querySelector('#iSkip');if(i)i.click();});await p.waitForTimeout(1500);
+await p.evaluate(()=>document.querySelector('#tNew').click());await p.waitForTimeout(3000);console.log(await p.evaluate(()=>({G:typeof G!=='undefined'&&!!G,mode})));
+await b.close();S.close();

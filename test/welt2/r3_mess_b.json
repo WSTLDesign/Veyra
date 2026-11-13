@@ -1,0 +1,26 @@
+{
+ "hoch_morgenau": {
+  "calls": 85,
+  "tris": 197118,
+  "ms": 3434.1,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_ufer": {
+  "calls": 91,
+  "tris": 212437,
+  "ms": 3768.8,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_abend": {
+  "calls": 96,
+  "tris": 245046,
+  "ms": 3726.3,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ }
+}

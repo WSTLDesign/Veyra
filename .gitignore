@@ -1,4 +1,14 @@
 node_modules/
+dist/
 build/
 test-out/
+test/*.png
 *.zip
+# Referenzbilder (127 MB) bleiben lokal beim Nutzer, nicht im Repo
+public/art_ref/
+tools/leitstand/spiel/
+test/*.log
+tools/leitstand/*.webp
+tools/leitstand/pilot/
+tools/leitstand/spiel/
+tools/leitstand/n/

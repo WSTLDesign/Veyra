@@ -1,0 +1,122 @@
+{
+ "hoch_morgenau": {
+  "calls": 87,
+  "tris": 224934,
+  "ms": 4616.8,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_route1": {
+  "calls": 94,
+  "tris": 262190,
+  "ms": 4619.3,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_hoehle": {
+  "calls": 50,
+  "tris": 67180,
+  "ms": 3535.4,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_ufer": {
+  "calls": 99,
+  "tris": 210869,
+  "ms": 3648,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "hoch_abend": {
+  "calls": 101,
+  "tris": 268458,
+  "ms": 4019.2,
+  "px": "1600×900",
+  "tier": "high",
+  "shadow": 2048
+ },
+ "mittel_morgenau": {
+  "calls": 81,
+  "tris": 204640,
+  "ms": 4089.9,
+  "px": "1600×900",
+  "tier": "mid",
+  "shadow": 1024
+ },
+ "mittel_route1": {
+  "calls": 95,
+  "tris": 234208,
+  "ms": 3199,
+  "px": "1600×900",
+  "tier": "mid",
+  "shadow": 1024
+ },
+ "mittel_hoehle": {
+  "calls": 43,
+  "tris": 64500,
+  "ms": 3079.6,
+  "px": "1600×900",
+  "tier": "mid",
+  "shadow": 1024
+ },
+ "mittel_ufer": {
+  "calls": 94,
+  "tris": 207633,
+  "ms": 2700.6,
+  "px": "1600×900",
+  "tier": "mid",
+  "shadow": 1024
+ },
+ "mittel_abend": {
+  "calls": 94,
+  "tris": 239550,
+  "ms": 4158.3,
+  "px": "1600×900",
+  "tier": "mid",
+  "shadow": 1024
+ },
+ "niedrig_morgenau": {
+  "calls": 60,
+  "tris": 142572,
+  "ms": 2916.7,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ },
+ "niedrig_route1": {
+  "calls": 65,
+  "tris": 155450,
+  "ms": 1791.8,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ },
+ "niedrig_hoehle": {
+  "calls": 32,
+  "tris": 53188,
+  "ms": 2353.1,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ },
+ "niedrig_ufer": {
+  "calls": 56,
+  "tris": 121685,
+  "ms": 2089.3,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ },
+ "niedrig_abend": {
+  "calls": 65,
+  "tris": 163200,
+  "ms": 2559.7,
+  "px": "1600×900",
+  "tier": "low",
+  "shadow": 0
+ }
+}

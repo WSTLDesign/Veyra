@@ -1,0 +1,34 @@
+{
+ "laden": {
+  "noa": true,
+  "funki": true,
+  "msNoa": 719,
+  "msFunki": 668
+ },
+ "fehlerStudio": [],
+ "fehlerAlt": [],
+ "fps": {
+  "alt": 0.8,
+  "neu": 0.7,
+  "hinweis": "SwiftShader (Software-GL, 2 Kerne) – nur relativ vergleichbar"
+ },
+ "welt": {
+  "alt": {
+   "calls": 71,
+   "tris": 198522,
+   "pilotHeld": false,
+   "pilotFunki": false
+  },
+  "neu": {
+   "calls": 76,
+   "tris": 260635,
+   "pilotHeld": true,
+   "pilotFunki": true
+  }
+ },
+ "fehlerNeu": [],
+ "ladeMs": {
+  "noa": 1010,
+  "funki": 1001
+ }
+}

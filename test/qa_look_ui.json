@@ -1,0 +1,704 @@
+{
+ "out": {
+  "titel_h": {
+   "touch": {
+    "n": 2,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [
+     {
+      "n": "#tNew",
+      "c": 4.37,
+      "fs": 17,
+      "txt": "Neues Spiel"
+     },
+     {
+      "n": "#tOpt",
+      "c": 4.26,
+      "fs": 17,
+      "txt": "Einstellungen"
+     },
+     {
+      "n": "#tFoot.foot",
+      "c": 3.8,
+      "fs": 12,
+      "txt": "Beim ersten Tippen geht "
+     }
+    ],
+    "min": 3.8
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt-banner_h": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.06
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt_h": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.06
+   },
+   "overlap": [],
+   "overflow": [],
+   "hud": {
+    "hudP": 0.72,
+    "hq": 0,
+    "mm": 0,
+    "view": 0,
+    "map": 0,
+    "mmBtn": 0.5
+   }
+  },
+  "welt-info_h": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.06
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt-aktiv_h": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.37
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dialog_h": {
+   "touch": {
+    "n": 3,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 3,
+    "fail": [],
+    "min": 11.74
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dialog-opts_h": {
+   "touch": {
+    "n": 6,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 5.65
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "kampf-start_h": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 11,
+    "fail": [],
+    "min": 5.59
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "kampf-attacken_h": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 18,
+    "fail": [],
+    "min": 5.24
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "chronik_h": {
+   "touch": {
+    "n": 9,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 18,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dex_h": {
+   "touch": {
+    "n": 14,
+    "small": [],
+    "clipped": 5,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 18,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "team_h": {
+   "touch": {
+    "n": 12,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 21,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "optionen_h": {
+   "touch": {
+    "n": 14,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 16,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "optionen-erweitert_h": {
+   "touch": {
+    "n": 16,
+    "small": [],
+    "clipped": 1,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 15,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 4
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "titel_t": {
+   "touch": {
+    "n": 2,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [
+     {
+      "n": "#tNew",
+      "c": 3.81,
+      "fs": 17,
+      "txt": "Neues Spiel"
+     },
+     {
+      "n": "#tOpt",
+      "c": 3.88,
+      "fs": 17,
+      "txt": "Einstellungen"
+     },
+     {
+      "n": "#tFoot.foot",
+      "c": 3.51,
+      "fs": 12,
+      "txt": "Beim ersten Tippen geht "
+     }
+    ],
+    "min": 3.51
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt-banner_t": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.02
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt_t": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.02
+   },
+   "overlap": [],
+   "overflow": [],
+   "hud": {
+    "hudP": 0.72,
+    "hq": 0,
+    "mm": 0,
+    "view": 0,
+    "map": 0,
+    "mmBtn": 0.5
+   }
+  },
+  "welt-info_t": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.02
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt-aktiv_t": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.32
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dialog_t": {
+   "touch": {
+    "n": 3,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 3,
+    "fail": [],
+    "min": 9.85
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dialog-opts_t": {
+   "touch": {
+    "n": 6,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 4,
+    "fail": [],
+    "min": 5.63
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "kampf-start_t": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 11,
+    "fail": [],
+    "min": 5.59
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "kampf-attacken_t": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 17,
+    "fail": [],
+    "min": 5.29
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "chronik_t": {
+   "touch": {
+    "n": 9,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 20,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dex_t": {
+   "touch": {
+    "n": 33,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 23,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "team_t": {
+   "touch": {
+    "n": 12,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 19,
+    "fail": [],
+    "min": 4.86
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "optionen_t": {
+   "touch": {
+    "n": 21,
+    "small": [],
+    "clipped": 5,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 23,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 6
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "optionen-erweitert_t": {
+   "touch": {
+    "n": 22,
+    "small": [
+     {
+      "n": ".tog.on",
+      "w": 58,
+      "h": 38,
+      "txt": ""
+     }
+    ],
+    "clipped": 2,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 17,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 4
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "titel_p": {
+   "touch": {
+    "n": 2,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [
+     {
+      "n": ".tsub",
+      "c": 3.57,
+      "fs": 12,
+      "txt": "Die Welt der Terras"
+     },
+     {
+      "n": "#tNew",
+      "c": 3.85,
+      "fs": 17,
+      "txt": "Neues Spiel"
+     },
+     {
+      "n": "#tOpt",
+      "c": 3.76,
+      "fs": 17,
+      "txt": "Einstellungen"
+     },
+     {
+      "n": "#tFoot.foot",
+      "c": 3.02,
+      "fs": 12,
+      "txt": "Beim ersten Tippen geht "
+     }
+    ],
+    "min": 3.02
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt-banner_p": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.18
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt_p": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.17
+   },
+   "overlap": [],
+   "overflow": [],
+   "hud": {
+    "hudP": 0.72,
+    "hq": 0,
+    "mm": 0,
+    "view": 0,
+    "map": 0,
+    "mmBtn": 0.5
+   }
+  },
+  "welt-info_p": {
+   "touch": {
+    "n": 8,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 7,
+    "fail": [],
+    "min": 4.17
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "welt-aktiv_p": {
+   "touch": {
+    "n": 7,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 5,
+    "fail": [],
+    "min": 4.46
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dialog_p": {
+   "touch": {
+    "n": 3,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 3,
+    "fail": [],
+    "min": 10.91
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dialog-opts_p": {
+   "touch": {
+    "n": 6,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 4,
+    "fail": [],
+    "min": 5.65
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "kampf-start_p": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 9,
+    "fail": [],
+    "min": 5.59,
+    "clipped": 1
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "kampf-attacken_p": {
+   "touch": {
+    "n": 5,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 17,
+    "fail": [],
+    "min": 5.42,
+    "clipped": 1
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "chronik_p": {
+   "touch": {
+    "n": 9,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 17,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 1
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "dex_p": {
+   "touch": {
+    "n": 17,
+    "small": [],
+    "clipped": 2,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 17,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 4
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "team_p": {
+   "touch": {
+    "n": 12,
+    "small": [],
+    "covered": 0
+   },
+   "contrast": {
+    "n": 18,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 1
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "optionen_p": {
+   "touch": {
+    "n": 17,
+    "small": [],
+    "clipped": 4,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 15,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 4
+   },
+   "overlap": [],
+   "overflow": []
+  },
+  "optionen-erweitert_p": {
+   "touch": {
+    "n": 18,
+    "small": [],
+    "clipped": 1,
+    "covered": 0
+   },
+   "contrast": {
+    "n": 13,
+    "fail": [],
+    "min": 4.86,
+    "clipped": 1
+   },
+   "overlap": [],
+   "overflow": []
+  }
+ },
+ "errs": []
+}

@@ -2,6 +2,12 @@
 
 Stand: 12.11.2026 · Spielversion 0.9.0 · gebaut mit Fable 5.1 (mittel)
 
+## Leitstand
+Der **Staging-Leitstand** (https://claude.ai/artifact/JXDZfPmFX3wRZA4QXPk7m4) vereint Agentenübersicht, die Strecke Quellcode → Build → Code-Schutz → Tests → Staging → Live, Testergebnisse, die Freigabe für Live und Feedback. Der Bereich „Werkstatt“ liegt in derselben Seite: Werkstatt-Build zum Spielen, Vorschauen zur Freigabe, Bilder der Agenten. Wie gemeldet wird, steht in AGENTS.md (Abschnitt STAGING-LEITSTAND).
+
+## Code-Schutz
+`tools/protect.mjs` wird auf jeden veröffentlichten Build angewendet (Live, Staging, Werkstatt). Es entfernt alle Kommentare, verkürzt alle Namen und liefert keine Source-Maps und keine artifact.html aus. Das Repo bleibt privat und unverschlüsselt (Entscheidung des Nutzers, 12.11.).
+
 ## Zweck
 Staging ist die Testumgebung zwischen Agenten-Arbeit und Live-Version. Neue Stände laufen **zuerst auf Staging**.
 Christoph prüft dort auf dem Handy oder Tablet. Erst nach seinem OK geht derselbe Stand live.

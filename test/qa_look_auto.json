@@ -1,0 +1,207 @@
+{
+ "checks": [
+  {
+   "n": "A1 Start: Stufe high, Maßstab 1",
+   "ok": true,
+   "d": "{\"tier\":\"high\",\"scale\":1} Canvas 400 px hoch"
+  },
+  {
+   "n": "A2 lange Frames: Auflösung sinkt zuerst (bis ≥ 0,6)",
+   "ok": true,
+   "d": "erster Abfall bei Takt 1, Minimum 0.6"
+  },
+  {
+   "n": "A3 Canvas-Höhe sinkt mit dem Maßstab",
+   "ok": true,
+   "d": "Canvas-Höhe min 240 von 400"
+  },
+  {
+   "n": "A4 danach fällt die Stufe (high → mid → low)",
+   "ok": true,
+   "d": "Stufenwechsel ab Takt 28, Ende low"
+  },
+  {
+   "n": "A5 kurze Frames: Auflösung steigt wieder auf 1,0",
+   "ok": true,
+   "d": "Ende Maßstab 1, Canvas 400 (Start 400)"
+  },
+  {
+   "n": "A6 danach steigt die Stufe (low → mid → high)",
+   "ok": true,
+   "d": "Ende Stufe high"
+  },
+  {
+   "n": "A7 Reihenfolge beim Erholen: erst Auflösung, dann Stufe",
+   "ok": true,
+   "d": "Auflösung 1,0 ab Takt 73, Stufenwechsel ab Takt 96"
+  },
+  {
+   "n": "B1 Regelkreis pendelt sich ein: ≤ 8 Wechsel insgesamt, keine in den letzten 60 Takten",
+   "ok": true,
+   "d": "Wechsel 4, Ende [\"high\",0.81,324] · Verlauf [1,0.92,0.84,0.76,0.81]"
+  },
+  {
+   "n": "B2 knapp zu langsam (22 ms): Maßstab fällt schrittweise, nie unter 0,6",
+   "ok": true,
+   "d": "Minimum 0.6"
+  },
+  {
+   "n": "B3 im Bereich 1,08–1,25 × Ziel (18–20 ms) bleibt alles stehen",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "C1 gfx fest „mid“: Stufe bleibt, Auflösung regelt",
+   "ok": true,
+   "d": "Ende [\"mid\",0.6,240]"
+  },
+  {
+   "n": "C2 res fest „native“: Maßstab bleibt 1, Stufe regelt",
+   "ok": true,
+   "d": "Ende [\"low\",1,400]"
+  },
+  {
+   "n": "C3 alles fest: keine Änderung",
+   "ok": true,
+   "d": "Wechsel 0"
+  },
+  {
+   "n": "D1 schwache GPU: Start low, Maßstab 0,8",
+   "ok": true,
+   "d": "{\"tier\":\"low\",\"scale\":0.8}"
+  },
+  {
+   "n": "D2 Touch-Gerät: Start mid",
+   "ok": true,
+   "d": "mid"
+  },
+  {
+   "n": "E1 keine Seitenfehler",
+   "ok": true,
+   "d": ""
+  }
+ ],
+ "traces": {
+  "A_slow": [
+   {
+    "tier": "high",
+    "scale": 1,
+    "canvasH": 400
+   },
+   {
+    "tier": "high",
+    "scale": 0.85,
+    "canvasH": 340
+   },
+   {
+    "tier": "high",
+    "scale": 0.7,
+    "canvasH": 280
+   },
+   {
+    "tier": "high",
+    "scale": 0.6,
+    "canvasH": 240
+   },
+   {
+    "tier": "mid",
+    "scale": 0.6,
+    "canvasH": 240
+   },
+   {
+    "tier": "low",
+    "scale": 0.6,
+    "canvasH": 240
+   }
+  ],
+  "A_fast": [
+   {
+    "tier": "low",
+    "scale": 0.6,
+    "canvasH": 240
+   },
+   {
+    "tier": "low",
+    "scale": 0.65,
+    "canvasH": 260
+   },
+   {
+    "tier": "low",
+    "scale": 0.7,
+    "canvasH": 280
+   },
+   {
+    "tier": "low",
+    "scale": 0.75,
+    "canvasH": 300
+   },
+   {
+    "tier": "low",
+    "scale": 0.8,
+    "canvasH": 320
+   },
+   {
+    "tier": "low",
+    "scale": 0.85,
+    "canvasH": 340
+   },
+   {
+    "tier": "low",
+    "scale": 0.9,
+    "canvasH": 360
+   },
+   {
+    "tier": "low",
+    "scale": 0.95,
+    "canvasH": 380
+   },
+   {
+    "tier": "low",
+    "scale": 1,
+    "canvasH": 400
+   },
+   {
+    "tier": "mid",
+    "scale": 1,
+    "canvasH": 400
+   },
+   {
+    "tier": "high",
+    "scale": 1,
+    "canvasH": 400
+   }
+  ],
+  "A_shadow_high": {
+   "tier": "high",
+   "shadow": 1024,
+   "sunShadow": false
+  },
+  "B": [
+   {
+    "tier": "high",
+    "scale": 1,
+    "canvasH": 400
+   },
+   {
+    "tier": "high",
+    "scale": 0.92,
+    "canvasH": 368
+   },
+   {
+    "tier": "high",
+    "scale": 0.84,
+    "canvasH": 336
+   },
+   {
+    "tier": "high",
+    "scale": 0.76,
+    "canvasH": 304
+   },
+   {
+    "tier": "high",
+    "scale": 0.81,
+    "canvasH": 324
+   }
+  ]
+ }
+}

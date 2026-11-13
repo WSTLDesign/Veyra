@@ -1,0 +1,420 @@
+{
+ "checks": [
+  {
+   "n": "S alte Standards (1440 / 30 fps / eigene / view 2d)",
+   "ok": true,
+   "d": "{\"res\":\"auto\",\"fps\":60,\"quality\":\"auto\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S leere Einstellungen (Neuinstallation)",
+   "ok": true,
+   "d": "{\"res\":\"auto\",\"fps\":60,\"quality\":\"auto\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S bewusst 1080p / 60 fps / hoch bleibt",
+   "ok": true,
+   "d": "{\"res\":\"1080\",\"fps\":60,\"quality\":\"hoch\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S bewusst nativ / unbegrenzt bleibt",
+   "ok": true,
+   "d": "{\"res\":\"native\",\"fps\":0,\"quality\":\"eigene\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S bewusst 720p / 30 fps / niedrig bleibt",
+   "ok": true,
+   "d": "{\"res\":\"720\",\"fps\":30,\"quality\":\"niedrig\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":0,\"dist\":\"nah\"}"
+  },
+  {
+   "n": "S bewusst 1440 + 60 fps (nur fps geändert) bleibt",
+   "ok": true,
+   "d": "{\"res\":\"1440\",\"fps\":60,\"quality\":\"eigene\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S bewusst 1440 + 30 fps nach der Migration (lookV 1) bleibt",
+   "ok": true,
+   "d": "{\"res\":\"1440\",\"fps\":30,\"quality\":\"eigene\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S ungültige Auflösung → auto",
+   "ok": true,
+   "d": "{\"res\":\"auto\",\"fps\":60,\"quality\":\"hoch\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S ungültige Grafikstufe → auto",
+   "ok": true,
+   "d": "{\"res\":\"auto\",\"fps\":60,\"quality\":\"auto\",\"gfx\":\"auto\",\"view\":\"third\",\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "S SET.view2d=1 (bewusst Draufsicht) bleibt",
+   "ok": true,
+   "d": "{\"res\":\"auto\",\"fps\":60,\"quality\":\"auto\",\"gfx\":\"auto\",\"view\":\"2d\",\"view2d\":1,\"lookV\":1,\"shadows\":1,\"dist\":\"mittel\"}"
+  },
+  {
+   "n": "F old_save_pre_a1.json: Titel zeigt „Fortsetzen“",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "F old_save_pre_a1.json: lädt, Welt, 3D-Start (view third), Team 4 → 4",
+   "ok": true,
+   "d": "{\"mode\":\"dialog\",\"view\":\"third\",\"map\":\"route1\",\"team\":4,\"box\":12,\"dexSeen\":41,\"name\":\"Noa\",\"wr\":true}"
+  },
+  {
+   "n": "F old_save_4orden.json: Titel zeigt „Fortsetzen“",
+   "ok": true,
+   "d": ""
+  },
+  {
+   "n": "F old_save_4orden.json: lädt, Welt, 3D-Start (view third), Team 4 → 4",
+   "ok": true,
+   "d": "{\"mode\":\"dialog\",\"view\":\"third\",\"map\":\"schattmoor\",\"team\":4,\"box\":2,\"dexSeen\":90,\"name\":\"Kim\",\"wr\":true}"
+  },
+  {
+   "n": "F2 Spielstand mit view „2d“ startet in 3D",
+   "ok": true,
+   "d": "{\"view\":\"third\",\"gview\":\"third\",\"mode\":\"dialog\"}"
+  },
+  {
+   "n": "F3 Neues Spiel (Altwert view „2d“) startet in 3D",
+   "ok": true,
+   "d": "{\"view\":\"third\",\"mode\":\"world\"}"
+  },
+  {
+   "n": "H1 HUD ohne Umschalt-Button (#viewBtn unsichtbar)",
+   "ok": true,
+   "d": "{\"exists\":true,\"hidden\":true,\"display\":\"none\",\"w\":0,\"h\":0,\"hudBtns\":[\"mmBtn:\",\"fsBtn:\"]}"
+  },
+  {
+   "n": "H2 Mehrere 2D/3D-Texte im sichtbaren HUD? kein Treffer „2D“/„3D“",
+   "ok": true,
+   "d": "mmBtn:, fsBtn:"
+  },
+  {
+   "n": "H3 Optionen › Erweitert vorhanden, eingeklappt",
+   "ok": true,
+   "d": "{\"has\":true,\"open\":false,\"summary\":\"Erweitert Ansicht und Draufsicht\",\"btns\":[\"3D\",\"Ego\",\"Draufsicht\",\"Illustration\",\"3D-Arena\"]}"
+  },
+  {
+   "n": "H4 Erweitert › Ansicht: 3D · Ego · Draufsicht",
+   "ok": true,
+   "d": "3D | Ego | Draufsicht | Illustration | 3D-Arena"
+  },
+  {
+   "n": "H5 Umschalten auf Draufsicht funktioniert (view „2d“, gespeichert)",
+   "ok": true,
+   "d": "{\"view\":\"2d\",\"v2\":1,\"saved\":1}"
+  },
+  {
+   "n": "H6 2D-Ansicht zeichnet (#world sichtbar)",
+   "ok": true,
+   "d": "{\"w\":860,\"h\":400,\"disp\":\"block\",\"hidden\":false}"
+  },
+  {
+   "n": "H7 zurück auf 3D",
+   "ok": true,
+   "d": "{\"view\":\"third\",\"v2\":0}"
+  },
+  {
+   "n": "I1a „Qualitätsstufe“ hat Auto",
+   "ok": true,
+   "d": "{\"l\":\"Qualitätsstufe\",\"b\":[\"Auto*\",\"Niedrig\",\"Mittel\",\"Hoch\",\"Ultra\"]}"
+  },
+  {
+   "n": "I1b „Auflösung“ hat Auto",
+   "ok": true,
+   "d": "{\"l\":\"Auflösung\",\"b\":[\"Auto*\",\"720p\",\"1080p\",\"2K\",\"Nativ\"]}"
+  },
+  {
+   "n": "I1c Zeile „Grafikstufe“ mit Auto/Niedrig/Mittel/Hoch",
+   "ok": true,
+   "d": "{\"l\":\"Grafikstufe\",\"b\":[\"Auto*\",\"Niedrig\",\"Mittel\",\"Hoch\"]}"
+  },
+  {
+   "n": "I1d Grafikstufe „Niedrig“: SET.gfx low, PERF.tier low, gespeichert",
+   "ok": true,
+   "d": "{\"gfx\":\"low\",\"tier\":\"low\",\"q\":\"eigene\",\"saved\":\"low\",\"sh\":false}"
+  },
+  {
+   "n": "I1e Grafikstufe „Hoch“: Stufe high, Schatten 1024",
+   "ok": true,
+   "d": "{\"gfx\":\"high\",\"tier\":\"high\",\"sh\":1024}"
+  },
+  {
+   "n": "I1f Auflösung 720p → „Eigene“ Qualität, Canvas ≤ 720",
+   "ok": true,
+   "d": "{\"res\":\"720\",\"q\":\"eigene\",\"h\":400}"
+  },
+  {
+   "n": "I1g Auflösung Auto setzt SET.res auto",
+   "ok": true,
+   "d": "{\"res\":\"auto\",\"scale\":0.8}"
+  },
+  {
+   "n": "I1h Qualitätsstufe Auto setzt PRESET.auto (res auto, gfx auto, 60 fps)",
+   "ok": true,
+   "d": "{\"q\":\"auto\",\"res\":\"auto\",\"gfx\":\"auto\",\"fps\":60,\"tier\":\"low\"}"
+  },
+  {
+   "n": "Z keine Seitenfehler",
+   "ok": true,
+   "d": ""
+  }
+ ],
+ "migration": [
+  {
+   "n": "alte Standards (1440 / 30 fps / eigene / view 2d)",
+   "set": {
+    "res": "1440",
+    "fps": 30,
+    "quality": "eigene",
+    "view": "2d",
+    "shadows": 1,
+    "light": 1,
+    "particles": 1,
+    "dist": "mittel"
+   },
+   "result": {
+    "res": "auto",
+    "fps": 60,
+    "quality": "auto",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "leere Einstellungen (Neuinstallation)",
+   "set": null,
+   "result": {
+    "res": "auto",
+    "fps": 60,
+    "quality": "auto",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "bewusst 1080p / 60 fps / hoch bleibt",
+   "set": {
+    "res": "1080",
+    "fps": 60,
+    "quality": "hoch",
+    "view": "2d"
+   },
+   "result": {
+    "res": "1080",
+    "fps": 60,
+    "quality": "hoch",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "bewusst nativ / unbegrenzt bleibt",
+   "set": {
+    "res": "native",
+    "fps": 0,
+    "quality": "eigene"
+   },
+   "result": {
+    "res": "native",
+    "fps": 0,
+    "quality": "eigene",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "bewusst 720p / 30 fps / niedrig bleibt",
+   "set": {
+    "res": "720",
+    "fps": 30,
+    "quality": "niedrig",
+    "shadows": 0,
+    "light": 0,
+    "particles": 0,
+    "dist": "nah"
+   },
+   "result": {
+    "res": "720",
+    "fps": 30,
+    "quality": "niedrig",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 0,
+    "dist": "nah"
+   },
+   "ok": true
+  },
+  {
+   "n": "bewusst 1440 + 60 fps (nur fps geändert) bleibt",
+   "set": {
+    "res": "1440",
+    "fps": 60,
+    "quality": "eigene"
+   },
+   "result": {
+    "res": "1440",
+    "fps": 60,
+    "quality": "eigene",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "bewusst 1440 + 30 fps nach der Migration (lookV 1) bleibt",
+   "set": {
+    "res": "1440",
+    "fps": 30,
+    "quality": "eigene",
+    "lookV": 1,
+    "gfx": "auto"
+   },
+   "result": {
+    "res": "1440",
+    "fps": 30,
+    "quality": "eigene",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "ungültige Auflösung → auto",
+   "set": {
+    "res": "abc",
+    "fps": 60,
+    "quality": "hoch"
+   },
+   "result": {
+    "res": "auto",
+    "fps": 60,
+    "quality": "hoch",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "ungültige Grafikstufe → auto",
+   "set": {
+    "gfx": "ultra"
+   },
+   "result": {
+    "res": "auto",
+    "fps": 60,
+    "quality": "auto",
+    "gfx": "auto",
+    "view": "third",
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  },
+  {
+   "n": "SET.view2d=1 (bewusst Draufsicht) bleibt",
+   "set": {
+    "view2d": 1
+   },
+   "result": {
+    "res": "auto",
+    "fps": 60,
+    "quality": "auto",
+    "gfx": "auto",
+    "view": "2d",
+    "view2d": 1,
+    "lookV": 1,
+    "shadows": 1,
+    "dist": "mittel"
+   },
+   "ok": true
+  }
+ ],
+ "fixture_old_save_pre_a1.json": {
+  "mode": "dialog",
+  "view": "third",
+  "map": "route1",
+  "team": 4,
+  "box": 12,
+  "dexSeen": 41,
+  "name": "Noa",
+  "wr": true
+ },
+ "fixture_old_save_4orden.json": {
+  "mode": "dialog",
+  "view": "third",
+  "map": "schattmoor",
+  "team": 4,
+  "box": 2,
+  "dexSeen": 90,
+  "name": "Kim",
+  "wr": true
+ },
+ "optionRows": [
+  {
+   "l": "Qualitätsstufe",
+   "b": [
+    "Auto*",
+    "Niedrig",
+    "Mittel",
+    "Hoch",
+    "Ultra"
+   ]
+  },
+  {
+   "l": "Auflösung",
+   "b": [
+    "Auto*",
+    "720p",
+    "1080p",
+    "2K",
+    "Nativ"
+   ]
+  },
+  {
+   "l": "Grafikstufe",
+   "b": [
+    "Auto*",
+    "Niedrig",
+    "Mittel",
+    "Hoch"
+   ]
+  },
+  {
+   "l": "Bildrate",
+   "b": [
+    "30",
+    "60*",
+    "Max"
+   ]
+  }
+ ]
+}

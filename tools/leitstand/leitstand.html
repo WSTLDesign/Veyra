@@ -1,0 +1,483 @@
+<title>Veyra Staging-Leitstand</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Leitstand: oben die Strecke Quellcode → Live, darunter Agenten (links) und Freigabe/Feedback (rechts), unten Protokoll und Tests */
+:root{
+  --bg:#eef1f3;--panel:#ffffff;--panel2:#f5f7f8;--line:rgba(22,34,44,.10);--line2:rgba(22,34,44,.18);
+  --ink:#16222c;--ink2:#4c5b66;--ink3:#7d8a94;
+  --sig:#e2700a;--sig-ink:#b5560a;--sig-soft:rgba(226,112,10,.12);
+  --ok:#23845a;--warn:#b07c12;--err:#c2413a;--plan:#6b7a86;
+  --f-head:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:12px;--r-s:8px;--ease:cubic-bezier(.2,.7,.2,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f151a;--panel:#162028;--panel2:#1c2832;--line:rgba(220,232,240,.08);--line2:rgba(220,232,240,.15);
+  --ink:#e4ebf0;--ink2:#a5b3bd;--ink3:#73828d;
+  --sig:#ff9a3d;--sig-ink:#ffb36b;--sig-soft:rgba(255,154,61,.15);
+  --ok:#4cc48a;--warn:#e0b048;--err:#f07068;--plan:#8b9aa6;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151a;--panel:#162028;--panel2:#1c2832;--line:rgba(220,232,240,.08);--line2:rgba(220,232,240,.15);
+  --ink:#e4ebf0;--ink2:#a5b3bd;--ink3:#73828d;
+  --sig:#ff9a3d;--sig-ink:#ffb36b;--sig-soft:rgba(255,154,61,.15);
+  --ok:#4cc48a;--warn:#e0b048;--err:#f07068;--plan:#8b9aa6;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-head);font-variant-numeric:tabular-nums;
+  padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+.mono{font-family:var(--f-mono);font-size:12px;color:var(--ink3)}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:20px}
+button,select,textarea,input{font:inherit;color:inherit}
+:is(button,select,textarea,a,.ag):focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+
+/* Kopf */
+header{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--sig);color:#1a0d00;font:700 11px/1.4 var(--f-head);letter-spacing:.08em;text-transform:uppercase}
+h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;line-height:1.15;text-wrap:balance}
+h1 small{display:block;font-size:14px;font-weight:400;color:var(--ink2);letter-spacing:0;margin-top:2px}
+.hlinks{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:var(--r-s);border:1px solid var(--line2);background:var(--panel);text-decoration:none;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .15s var(--ease)}
+.btn:hover{background:var(--panel2)}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.pri:hover{opacity:.88;background:var(--ink)}
+
+/* Tabs */
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:10px;background:var(--panel);border:1px solid var(--line);justify-self:start;max-width:100%}
+.tabs button{min-height:40px;padding:0 18px;border-radius:7px;border:0;background:transparent;font-weight:600;font-size:15px;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tabs button:hover{color:var(--ink);background:var(--panel2)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tabs .cnt{min-width:20px;padding:0 6px;border-radius:999px;background:var(--sig);color:#1a0d00;font-size:12px;line-height:20px;text-align:center}
+.view{display:grid;gap:20px}
+.view[hidden]{display:none!important}
+
+/* Werkstatt */
+.wb{display:grid;gap:12px}
+.frame{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#0c1519;border:1px solid var(--line2)}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0c1519}
+.frame .fb{position:absolute;inset:0;display:grid;grid-template-columns:repeat(2,1fr);gap:2px}
+.frame .fb img{width:100%;height:100%;object-fit:cover;display:block}
+.startOv{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:10px;padding:16px;text-align:center;background:linear-gradient(180deg,rgba(12,21,25,.2),rgba(12,21,25,.82));color:#e4ebf0}
+.startOv span{font-size:14px;max-width:48ch;color:#c3cfd8}
+#startGame{min-height:48px;padding:0 24px;border-radius:12px;border:0;background:var(--sig);color:#1a0d00;font-weight:700;font-size:16px;cursor:pointer}
+#startGame:hover{filter:brightness(1.08)}
+.frame.on .fb,.frame.on .startOv{display:none}
+.frame.fs{position:fixed;inset:0;z-index:90;width:100%;height:100%;max-width:none;aspect-ratio:auto;border-radius:0;border:0}
+#fsExit{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 8px);min-height:40px;padding:0 14px;border-radius:999px;border:0;background:rgba(12,21,25,.72);color:#fff;font-weight:600;font-size:14px;cursor:pointer}
+.frame:not(.fs) #fsExit{display:none}
+.mods{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2);min-height:36px}
+.mods input{width:18px;height:18px;accent-color:var(--sig)}
+.shots{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.shots figure{margin:0;min-width:0;display:grid;gap:6px;align-content:start}
+.shots img{width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--panel2);display:block;cursor:zoom-in}
+.shots figcaption{display:grid;gap:2px;font-size:13px;color:var(--ink2)}
+.vs .st2{font-size:12px;font-weight:600}.vs .st2.offen{color:var(--warn)}.vs .st2.freigegeben{color:var(--ok)}.vs .st2.abgelehnt{color:var(--err)}
+.vs textarea{min-height:56px;font-size:14px}
+.vs .acts{display:flex;gap:6px;flex-wrap:wrap}
+.vs .acts button{min-height:36px;padding:0 12px;border-radius:var(--r-s);font-weight:600;cursor:pointer;background:var(--panel)}
+.vs .acts .ok{border:1px solid var(--ok);color:var(--ok)}.vs .acts .no{border:1px solid var(--err);color:var(--err)}
+#lb{position:fixed;inset:0;z-index:100;background:rgba(10,14,18,.92);display:grid;place-items:center;align-content:center;gap:8px;cursor:zoom-out;
+  padding:calc(env(safe-area-inset-top,0px) + 24px) max(24px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(24px,env(safe-area-inset-left,0px))}
+#lb img{max-width:100%;max-height:80vh;border-radius:8px;object-fit:contain}
+#lb .cap{color:#e4ebf0;font-size:14px;text-align:center}
+
+/* Strecke */
+.track{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;overflow-x:auto}
+.track ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:0;min-width:900px}
+.st{position:relative;padding:4px 14px 4px 0;display:grid;gap:4px;align-content:start}
+.st::after{content:"";position:absolute;top:13px;left:22px;right:0;height:2px;background:var(--line2)}
+.st:last-child::after{display:none}
+.st.done::after{background:var(--ok)}
+.st .head{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+.st .pin{width:18px;height:18px;border-radius:50%;border:2px solid var(--line2);background:var(--panel);flex:none;display:grid;place-items:center}
+.st.done .pin{background:var(--ok);border-color:var(--ok)}
+.st.done .pin::after{content:"";width:6px;height:3px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.st.run .pin{border-color:var(--sig);background:var(--sig-soft);animation:pulse 1.8s var(--ease) infinite}
+.st.wait .pin{border-color:var(--warn)}
+.st.err .pin{background:var(--err);border-color:var(--err)}
+.st b{font-size:14px;font-weight:600;background:var(--panel);padding-right:6px}
+.st .d{font-size:13px;color:var(--ink2);padding-left:26px;min-width:0;overflow-wrap:anywhere}
+.st .m{padding-left:26px}
+.st a.d{text-decoration:underline;text-decoration-color:var(--line2)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--sig-soft)}50%{box-shadow:0 0 0 6px var(--sig-soft)}}
+@media (prefers-reduced-motion:reduce){.st.run .pin,.dot.laeuft{animation:none}}
+
+/* Spalten */
+.cols{display:grid;gap:20px;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);align-items:start}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+h2{margin:0 0 12px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:10px}
+h2 .mono{margin-left:auto;text-transform:none;letter-spacing:0}
+.empty{color:var(--ink3);font-size:14px;margin:0}
+.hint{font-size:13px;color:var(--ink3);margin:8px 0 0}
+
+/* Agenten */
+.sum{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:13px;color:var(--ink2)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--plan);flex:none}
+.dot.laeuft{background:var(--sig);animation:pulse 1.8s var(--ease) infinite}
+.dot.fertig{background:var(--ok)}.dot.wartet{background:var(--warn)}.dot.fehler{background:var(--err)}.dot.geplant{background:transparent;border:1.5px solid var(--plan)}
+.agl{display:grid;gap:2px}
+.ag{display:grid;grid-template-columns:16px minmax(150px,1fr) minmax(0,1.6fr) 120px 70px;gap:12px;align-items:center;width:100%;min-height:48px;padding:8px 10px;border-radius:var(--r-s);border:1px solid transparent;background:none;text-align:left;cursor:pointer;transition:background-color .15s var(--ease)}
+.ag:hover{background:var(--panel2)}
+.ag.orch{background:var(--panel2);border-color:var(--line);margin-bottom:6px}
+.ag .nm b{display:block;font-weight:600;font-size:14px;line-height:1.3}
+.ag .nm span{display:block;font:12px/1.3 var(--f-mono);color:var(--ink3)}
+.ag .nt{font-size:14px;color:var(--ink2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{display:grid;gap:4px}
+.bar i{display:block;height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
+.bar i::after{content:"";display:block;height:100%;width:var(--p,0%);background:var(--ink);transition:width .6s var(--ease)}
+.bar.fertig i::after{background:var(--ok)}.bar.laeuft i::after{background:var(--sig)}
+.bar span{font-size:12px;color:var(--ink3)}
+.ag .when{text-align:right}
+@media (max-width:640px){.ag{grid-template-columns:16px 1fr 64px}.ag .nt{grid-column:2/4;white-space:normal}.ag .bar{grid-column:2/3}.ag .when{grid-row:1;grid-column:3}}
+
+/* Detail */
+.det{display:none}
+body.show-det .ov-agents{display:none}
+body.show-det .det{display:grid;gap:12px}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:36px;color:var(--ink2);text-decoration:none;font-size:14px;cursor:pointer;background:none;border:0;padding:0}
+.back:hover{color:var(--ink)}
+.det h3{margin:0;font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:14px;margin:0}
+.kv dt{color:var(--ink3)}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+
+/* Freigabe */
+.rel{display:grid;gap:10px}
+.rel .state{display:flex;align-items:center;gap:10px;font-weight:600}
+.rel .state .pill{padding:2px 10px;border-radius:999px;font-size:13px;background:var(--panel2);border:1px solid var(--line2)}
+.rel .state .pill.ok{background:rgba(35,132,90,.12);border-color:var(--ok);color:var(--ok)}
+.rel .state .pill.zurueck{background:rgba(194,65,58,.1);border-color:var(--err);color:var(--err)}
+.rel .acts{display:flex;gap:8px;flex-wrap:wrap}
+.b-ok{min-height:40px;padding:0 14px;border-radius:var(--r-s);border:1px solid var(--ok);background:var(--ok);color:#fff;font-weight:600;cursor:pointer}
+.b-no{min-height:40px;padding:0 14px;border-radius:var(--r-s);border:1px solid var(--err);background:transparent;color:var(--err);font-weight:600;cursor:pointer}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--ink2)}
+textarea{width:100%;min-height:80px;resize:vertical;border-radius:var(--r-s);border:1px solid var(--line2);background:var(--bg);padding:10px 12px}
+textarea::placeholder{color:var(--ink3)}
+select{min-height:36px;border-radius:var(--r-s);border:1px solid var(--line2);background:var(--bg);padding:0 10px;font-size:14px;max-width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.send{min-height:36px;padding:0 14px;border-radius:var(--r-s);border:1px solid var(--sig);background:var(--sig);color:#1a0d00;font-weight:600;cursor:pointer}
+.send:hover{background:var(--sig-ink);border-color:var(--sig-ink);color:#fff}
+.mic{min-height:36px;padding:0 12px;border-radius:var(--r-s);border:1px solid var(--line2);background:var(--panel);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.mic[aria-pressed="true"]{border-color:var(--sig);background:var(--sig-soft)}
+form{display:grid;gap:8px}
+.fbl{display:grid}
+.fbl .e{padding:10px 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.fbl .h{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;font-size:13px;color:var(--ink2)}
+.fbl .h b{color:var(--ink);font-weight:600}
+.fbl .s{font-size:12px}.fbl .s.offen{color:var(--warn)}.fbl .s.in-arbeit{color:var(--sig-ink)}.fbl .s.erledigt{color:var(--ok)}
+.fbl .ans{font-size:14px;color:var(--ink2);border-left:2px solid var(--sig);padding:4px 0 4px 10px;white-space:pre-line}
+
+/* Protokoll + Tests */
+.two{display:grid;gap:20px;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+.log{display:grid;max-height:560px;overflow:auto}
+.log .e{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.log .e:first-child{border-top:0}
+.log .k{display:grid;gap:2px;font-size:13px;min-width:0}
+.log .k b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log .k span{font-size:12px;color:var(--ink3)}
+.log .k.fix span:first-of-type{color:var(--ok)}.log .k.bug span:first-of-type{color:var(--err)}.log .k.qa span:first-of-type{color:var(--sig-ink)}.log .k.deploy span:first-of-type{color:var(--sig-ink)}
+.log .t{min-width:0;overflow-wrap:anywhere;font-size:14px}
+@media (max-width:520px){.log .e{grid-template-columns:1fr}}
+.tst{display:grid;gap:12px}
+.suite{border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;display:grid;gap:6px}
+.suite .h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.suite .h b{font-weight:600}
+.res{padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.res.gruen{background:rgba(35,132,90,.12);color:var(--ok)}.res.rot{background:rgba(194,65,58,.12);color:var(--err)}.res.laeuft{background:var(--sig-soft);color:var(--sig-ink)}
+.suite ul{margin:0;padding:0;list-style:none;display:grid;gap:2px;font-size:13px;color:var(--ink2);max-height:180px;overflow:auto}
+.suite li.x{color:var(--err)}
+.suite details summary{cursor:pointer;font-size:13px;color:var(--ink3)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="tag">Staging</span>
+      <h1>Veyra Staging-Leitstand<small>Wer gerade woran arbeitet – und wie weit der Stand bis zur Freigabe ist</small></h1>
+    </div>
+    <nav class="hlinks">
+      <a class="btn" id="lnkStaging" href="#" target="_blank" rel="noopener" hidden>Staging-Spiel öffnen</a>
+      <a class="btn" href="https://github.com/WSTLDesign/veyra/tree/staging" target="_blank" rel="noopener">Repo</a>
+    </nav>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Bereich">
+    <button type="button" role="tab" id="tabL" aria-selected="true" data-v="leitstand">Leitstand</button>
+    <button type="button" role="tab" id="tabW" aria-selected="false" data-v="werkstatt">Werkstatt<span class="cnt" id="tabWcnt" hidden></span></button>
+  </div>
+
+  <div class="view" id="vL">
+  <div class="track" aria-label="Strecke vom Quellcode bis Live">
+    <ol id="track"></ol>
+  </div>
+
+  <div class="cols">
+    <section>
+      <div class="ov-agents">
+        <h2>Agenten <span class="mono" id="agMeta"></span></h2>
+        <div class="sum" id="agSum"></div>
+        <div class="agl" id="agents"><p class="empty">Noch keine Meldungen. Sobald der Dirigent Agenten startet, erscheinen sie hier mit Auftrag und Fortschritt.</p></div>
+        <p class="hint">Antippen zeigt Auftrag, Dateien, Protokoll und Feedback des Agenten</p>
+      </div>
+      <div class="det" id="det"></div>
+    </section>
+
+    <div style="display:grid;gap:20px;min-width:0">
+      <section class="rel" id="rel">
+        <h2>Freigabe für Live <span class="mono" id="relWhen"></span></h2>
+        <div class="state"><span id="relLabel">Stand wird geladen</span><span class="pill" id="relPill">offen</span></div>
+        <p class="empty" id="relWhat" style="margin:0"></p>
+        <textarea id="relNote" placeholder="Optional: Anmerkung zur Freigabe oder was vorher noch passen muss"></textarea>
+        <div class="acts" id="relActs">
+          <button type="button" class="b-ok" id="relOk">Für Live freigeben</button>
+          <button type="button" class="b-no" id="relNo">Noch nicht – zurück an das Team</button>
+        </div>
+        <div class="confirm" id="relConfirm" hidden><span id="relQ"></span><button type="button" class="btn pri" id="relYes">Ja, so speichern</button><button type="button" class="btn" id="relCancel">Abbrechen</button></div>
+        <p class="hint" id="relHint" style="margin:0">Der Produktions-Chat veröffentlicht nur Stände, die hier freigegeben sind.</p>
+      </section>
+
+      <section>
+        <h2>Dein Feedback</h2>
+        <form id="fbForm">
+          <textarea id="fbText" placeholder="Was soll anders werden? Ort, Situation, was du erwartest" required></textarea>
+          <div class="row">
+            <select id="fbTo" aria-label="Empfänger"><option value="alle">Alle / Dirigent</option></select>
+            <button class="mic" type="button" id="fbMic" hidden aria-pressed="false"><span class="dot"></span><span>Sprechen</span></button>
+            <button class="send" type="submit">Absenden</button>
+          </div>
+          <span class="hint" id="fbHint" style="margin:0"></span>
+        </form>
+        <div class="fbl" id="fbList"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="two">
+    <section>
+      <h2>Protokoll <select id="logFilter" aria-label="Protokoll filtern" style="margin-left:auto;text-transform:none;letter-spacing:0"><option value="">Alle</option></select></h2>
+      <div class="log" id="log"><p class="empty">Noch keine Einträge</p></div>
+    </section>
+    <section>
+      <h2>Automatische Tests <span class="mono" id="tstWhen"></span></h2>
+      <div class="tst" id="tests"><p class="empty">Noch keine Testläufe gemeldet</p></div>
+    </section>
+  </div>
+  </div>
+
+  <div class="view" id="vW" hidden>
+    <section class="wb">
+      <h2><span class="dot laeuft"></span>Werkstatt-Build <span class="mono" id="wbWhen"></span></h2>
+      <div class="frame" id="frame">
+        <div class="fb" id="liveFb"></div>
+        <button type="button" id="fsExit">Vollbild verlassen</button>
+        <div class="startOv" id="startOv">
+          <button type="button" id="startGame">Spiel hier starten</button>
+          <span>Der aktuelle Staging-Stand läuft direkt in diesem Fenster, mit eigenem Spielstand und Debug-Menü (orange Plakette oben).</span>
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn" id="stopGame" hidden>Spiel beenden</button>
+        <button type="button" class="btn pri" id="fullGame" hidden>Vollbild</button>
+        <a class="btn" id="tabGame" href="spiel/index.html?modelle3d=1" target="_blank" rel="noopener">In eigenem Tab öffnen</a>
+        <label class="mods"><input type="checkbox" id="mods3d" checked> Neue 3D-Modelle (Pilot)</label>
+        <span class="hint" id="wbLabel" style="margin:0"></span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Vorschauen zur Freigabe <span class="mono" id="vsCount"></span></h2>
+      <p class="hint" style="margin:0 0 12px">Neues kommt erst ins Spiel, wenn du es hier freigibst. „Ablehnen“ mit kurzer Begründung schickt es an den Agenten zurück.</p>
+      <div class="shots" id="vsList"><p class="empty">Keine offenen Vorschauen</p></div>
+    </section>
+
+    <section>
+      <h2>Bilder aus den Agenten <select id="shotFilter" aria-label="Bilder filtern" style="margin-left:auto;text-transform:none;letter-spacing:0"><option value="">Alle</option></select></h2>
+      <div class="shots" id="shots"><p class="empty">Noch keine Bilder</p></div>
+    </section>
+  </div>
+</div>
+<div id="lb" hidden><img alt=""><div class="cap"></div></div>
+
+<script>
+(async () => {
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const STATE = { laeuft: 'läuft', fertig: 'fertig', wartet: 'wartet', fehler: 'Fehler', geplant: 'geplant' };
+const KIND = { fix: 'Änderung', qa: 'Prüfung', bug: 'Fehler', info: 'Hinweis', deploy: 'Auslieferung' };
+const STAGES = [
+  ['quelle', 'Quellcode', 'GitHub, Branch staging'], ['build', 'Build', 'node build.mjs'], ['schutz', 'Code-Schutz', 'verschleiert, ohne Kommentare'],
+  ['test', 'Tests', 'Handy, Tablet, PC'], ['staging', 'Staging', 'Netlify „veyra-staging“'], ['live', 'Live', 'nach deiner Freigabe']];
+const PIN = { fertig: 'done', laeuft: 'run', wartet: 'wait', fehler: 'err' };
+const ago = t => { if (!t) return ''; const s = Math.max(0, (Date.now() - t) / 1000); if (s < 60) return 'gerade eben'; const m = Math.round(s / 60); if (m < 60) return 'vor ' + m + ' min'; const h = Math.round(m / 60); if (h < 24) return 'vor ' + h + ' h'; return clock(t); };
+const clock = t => t ? new Date(t).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+
+// Strecke sofort zeichnen (ohne Daten: alles offen)
+let PIPE = {};
+const drawTrack = () => { $('#track').innerHTML = STAGES.map(([id, name, sub]) => { const p = PIPE[id] || {}; const cls = PIN[p.state] || '';
+  const d = p.link ? `<a class="d" href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.detail || sub)}</a>` : `<span class="d">${esc(p.detail || sub)}</span>`;
+  return `<li class="st ${cls}"><div class="head"><span class="pin"></span><b>${esc(name)}</b></div>${d}<span class="m mono">${esc([STATE[p.state] || 'offen', p.ts ? ago(p.ts) : ''].filter(Boolean).join(' · '))}</span></li>`; }).join(''); };
+drawTrack();
+
+// Bereiche: Leitstand (Standard, #agent-<id> für Details) und Werkstatt (#werkstatt) – alles im selben Fenster
+let CUR = '', VIEW = 'leitstand', renderDet = () => {};
+const readHash = () => { const h = location.hash || ''; VIEW = h === '#werkstatt' ? 'werkstatt' : 'leitstand';
+  try { CUR = VIEW === 'leitstand' ? decodeURIComponent((h.match(/^#agent-([\w-]+)/) || [])[1] || '') : ''; } catch (e) { CUR = ''; } };
+const route = () => { $('#vL').hidden = VIEW !== 'leitstand'; $('#vW').hidden = VIEW !== 'werkstatt';
+  $('#tabL').setAttribute('aria-selected', VIEW === 'leitstand'); $('#tabW').setAttribute('aria-selected', VIEW === 'werkstatt');
+  document.body.classList.toggle('show-det', !!CUR); if (CUR) renderDet(); };
+const setHash = h => { try { if (h) location.hash = h; else history.replaceState(null, '', location.pathname + location.search); } catch (e) {} };
+const go = id => { VIEW = 'leitstand'; CUR = id || ''; setHash(id ? '#agent-' + id : ''); route(); window.scrollTo({ top: 0 }); };
+const show = v => { VIEW = v; CUR = ''; setHash(v === 'werkstatt' ? '#werkstatt' : ''); route(); window.scrollTo({ top: 0 }); };
+$('#tabL').onclick = () => show('leitstand'); $('#tabW').onclick = () => show('werkstatt');
+addEventListener('hashchange', () => { readHash(); route(); });
+readHash(); route();
+
+const db = await claude.use('db');
+if (!db) { $('#agMeta').textContent = 'Live-Daten nur angemeldet sichtbar'; $('#relLabel').textContent = 'Nur angemeldet verfügbar'; $('#relActs').hidden = true; $('#fbForm').hidden = true; return; }
+const user = await claude.use('user');
+
+let AG = [], LOG = [], FB = [];
+
+const logHtml = rows => rows.length ? rows.map(r => `<div class="e"><div class="k ${esc(r.kind || 'info')}"><b>${esc(r.agent || '')}</b><span>${esc(KIND[r.kind] || 'Hinweis')}</span><span class="mono">${clock(r.ts)}</span></div><div class="t">${esc(r.text || '')}</div></div>`).join('') : '<p class="empty">Noch keine Einträge</p>';
+const fbHtml = rows => rows.map(r => { const a = AG.find(x => x.id === r.to); const st = r.status || 'offen';
+  return `<div class="e"><div class="h"><b>${esc(r.to === 'alle' ? 'Alle' : a ? a.name : r.to)}</b><span class="s ${esc(st.replace(' ', '-'))}">${esc(st)}</span><span class="mono">${clock(r.ts)}</span></div><div>${esc(r.text)}</div>${r.answer ? `<div class="ans">${esc(r.answer)}</div>` : ''}</div>`; }).join('');
+
+// Pipeline
+db.collection('pipeline').onSnapshot(s => { PIPE = {}; s.docs.forEach(d => PIPE[d.id] = d.data()); drawTrack();
+  const st = PIPE.staging; const l = $('#lnkStaging'); if (st && st.link) { l.href = st.link; l.hidden = false; } else l.hidden = true; }, () => {});
+
+// Agenten
+db.collection('agents').onSnapshot(s => {
+  AG = s.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+  const el = $('#agents');
+  if (AG.length) el.innerHTML = AG.map(r => { const p = Math.max(0, Math.min(100, +r.pct || 0)); const st = r.state || 'geplant';
+    return `<button type="button" class="ag${r.id === 'dirigent' ? ' orch' : ''}" data-id="${esc(r.id)}"><span class="dot ${esc(st)}" title="${esc(STATE[st] || '')}"></span>
+      <span class="nm"><b>${esc(r.name || r.id)}</b><span>${esc(r.model || '')}</span></span><span class="nt">${esc(r.note || r.task || '')}</span>
+      <span class="bar ${esc(st)}"><i style="--p:${p}%"></i><span>${esc(STATE[st] || st)} · ${p} %</span></span><span class="mono when" data-t="${+r.updatedAt || 0}">${ago(r.updatedAt)}</span></button>`; }).join('');
+  el.querySelectorAll('.ag').forEach(b => b.onclick = () => go(b.dataset.id));
+  const cnt = {}; AG.forEach(r => { const k = r.state || 'geplant'; cnt[k] = (cnt[k] || 0) + 1; });
+  $('#agSum').innerHTML = ['laeuft', 'wartet', 'fehler', 'fertig', 'geplant'].filter(k => cnt[k]).map(k => `<span class="chip"><span class="dot ${k}"></span>${cnt[k]} ${STATE[k]}</span>`).join('');
+  $('#agMeta').textContent = AG.length ? 'Stand ' + ago(Math.max(...AG.map(r => +r.updatedAt || 0))) : '';
+  const sel = $('#fbTo'), v = sel.value; sel.innerHTML = '<option value="alle">Alle / Dirigent</option>' + AG.filter(r => r.id !== 'dirigent').map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join(''); sel.value = [...sel.options].some(o => o.value === v) ? v : 'alle';
+  const lf = $('#logFilter'), lv = lf.value; lf.innerHTML = '<option value="">Alle</option>' + AG.map(r => `<option value="${esc(r.name)}">${esc(r.name)}</option>`).join(''); lf.value = lv;
+  route();
+}, () => { $('#agMeta').textContent = 'Agenten konnten nicht geladen werden'; });
+
+// Protokoll
+const drawLog = () => { const f = $('#logFilter').value; $('#log').innerHTML = logHtml(LOG.filter(r => !f || r.agent === f).slice(0, 80)); };
+$('#logFilter').addEventListener('change', drawLog);
+db.collection('log').orderBy('ts', 'desc').limit(150).onSnapshot(s => { LOG = s.docs.map(d => d.data()); drawLog(); if (CUR) renderDet(); }, () => {});
+
+// Tests
+db.collection('tests').orderBy('ts', 'desc').limit(6).onSnapshot(s => { const rows = s.docs.map(d => d.data()); const el = $('#tests');
+  if (!rows.length) { el.innerHTML = '<p class="empty">Noch keine Testläufe gemeldet</p>'; return; }
+  $('#tstWhen').textContent = 'zuletzt ' + ago(rows[0].ts);
+  el.innerHTML = rows.map(r => { const lines = Array.isArray(r.lines) ? r.lines : []; const res = r.state === 'laeuft' ? 'laeuft' : (+r.failed ? 'rot' : 'gruen');
+    const lab = res === 'laeuft' ? 'läuft' : res === 'rot' ? `${+r.failed} rot` : 'alles grün';
+    return `<div class="suite"><div class="h"><b>${esc(r.suite || 'Test')}</b><span class="res ${res}">${lab}</span><span class="mono">${esc(r.version || '')} · ${clock(r.ts)}</span></div>
+      <span class="mono">${+r.passed || 0} bestanden${+r.failed ? ' · ' + (+r.failed) + ' fehlgeschlagen' : ''}</span>
+      ${lines.length ? `<details${+r.failed ? ' open' : ''}><summary>Einzelne Prüfungen</summary><ul>${lines.map(l => `<li class="${String(l).startsWith('✘') ? 'x' : ''}">${esc(l)}</li>`).join('')}</ul></details>` : ''}</div>`; }).join(''); }, () => {});
+
+// Freigabe (ein Dokument freigabe/aktuell)
+const relRef = db.doc('freigabe/aktuell'); let REL = null, pending = null;
+relRef.onSnapshot(d => { REL = d.exists ? d.data() : null; const st = (REL && REL.status) || 'offen';
+  $('#relPill').textContent = st === 'ok' ? 'freigegeben' : st === 'zurueck' ? 'zurück an das Team' : 'offen'; $('#relPill').className = 'pill ' + st;
+  $('#relLabel').textContent = REL && REL.version ? 'Staging-Stand ' + REL.version : 'Aktueller Staging-Stand';
+  $('#relWhat').textContent = (REL && REL.what) || 'Der Dirigent trägt hier ein, was seit der letzten Freigabe neu ist.';
+  $('#relWhen').textContent = REL && REL.decidedAt ? 'entschieden ' + ago(REL.decidedAt) : ''; }, () => {});
+const ask = (st, q) => { pending = st; $('#relQ').textContent = q; $('#relConfirm').hidden = false; $('#relActs').hidden = true; };
+const reset = () => { pending = null; $('#relConfirm').hidden = true; $('#relActs').hidden = false; };
+$('#relOk').onclick = () => ask('ok', 'Diesen Stand für Live freigeben?');
+$('#relNo').onclick = () => { if (!$('#relNote').value.trim()) { $('#relNote').focus(); $('#relNote').placeholder = 'Bitte kurz sagen, was vorher noch passen muss'; return; } ask('zurueck', 'An das Team zurückgeben?'); };
+$('#relCancel').onclick = reset;
+$('#relYes').onclick = async () => { const st = pending; if (!st) return; try {
+  await relRef.set({ ...(REL || {}), status: st, note: $('#relNote').value.trim(), decidedAt: Date.now(), by: user ? await user.id() : null });
+  $('#relNote').value = ''; $('#relHint').textContent = st === 'ok' ? 'Gespeichert. Der Produktions-Chat kann diesen Stand jetzt veröffentlichen.' : 'Gespeichert. Der Dirigent nimmt es im nächsten Schritt auf.';
+} catch (e) { $('#relHint').textContent = 'Nicht gespeichert (' + (e && e.code || 'Fehler') + '). Bitte später noch einmal.'; } reset(); };
+
+// Feedback
+db.collection('feedback').orderBy('ts', 'desc').limit(40).onSnapshot(s => { FB = s.docs.map(d => d.data()); $('#fbList').innerHTML = fbHtml(FB.slice(0, 15)); if (CUR) renderDet(); }, () => {});
+$('#fbForm').addEventListener('submit', async e => { e.preventDefault(); const t = $('#fbText').value.trim(); if (!t) return; const h = $('#fbHint');
+  try { await db.collection('feedback').add({ text: t, to: $('#fbTo').value, ts: Date.now(), status: 'offen', by: user ? await user.id() : null }); $('#fbText').value = ''; h.textContent = 'Angekommen. Der Dirigent markiert es mit „in Arbeit“ oder „erledigt“.'; }
+  catch (err) { h.textContent = 'Nicht gespeichert (' + (err && err.code || 'Fehler') + ')'; } setTimeout(() => h.textContent = '', 10000); });
+
+// Diktat
+claude.use('dictation').then(d => { if (!d) return; const b = $('#fbMic'), ta = $('#fbText'); b.hidden = false; let base = '';
+  d.onPartial(({ text }) => { ta.value = (base ? base + ' ' : '') + text; });
+  d.onFinal(({ text }) => { base = (base ? base + ' ' : '') + text.trim(); ta.value = base; });
+  d.onState(({ state }) => { const on = state === 'listening' || state === 'starting'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.lastElementChild.textContent = on ? 'Stopp' : 'Sprechen'; });
+  b.addEventListener('click', () => { if (b.getAttribute('aria-pressed') === 'true') { d.stop().catch(() => {}); return; } base = ta.value.trim(); d.start({ language: 'de-DE' }).catch(err => { if (err && err.code === 'not_granted') b.hidden = true; }); });
+});
+
+// Detail eines Agenten
+renderDet = function () { const r = AG.find(a => a.id === CUR), el = $('#det'); if (!r) { el.innerHTML = AG.length ? '<button class="back" type="button">← Alle Agenten</button><p class="empty">Agent nicht gefunden</p>' : ''; bindBack(); return; }
+  const p = Math.max(0, Math.min(100, +r.pct || 0)), st = r.state || 'geplant'; const mine = x => x.agent === r.name || x.agent === r.id;
+  const files = Array.isArray(r.files) ? r.files.join(', ') : (r.files || '');
+  const f = FB.filter(x => x.to === r.id || (r.id === 'dirigent' && x.to === 'alle'));
+  el.innerHTML = `<button class="back" type="button">← Alle Agenten</button>
+    <h3><span class="dot ${esc(st)}"></span>${esc(r.name)}</h3>
+    <div class="bar ${esc(st)}" style="max-width:420px"><i style="--p:${p}%"></i><span>${esc(STATE[st] || st)} · ${p} % · zuletzt ${ago(r.updatedAt)}</span></div>
+    <dl class="kv"><dt>Modell</dt><dd>${esc(r.model || '–')}</dd><dt>Auftrag</dt><dd>${esc(r.task || '–')}</dd><dt>Stand</dt><dd>${esc(r.note || '–')}</dd>
+      ${r.next ? `<dt>Als Nächstes</dt><dd>${esc(r.next)}</dd>` : ''}${files ? `<dt>Dateien</dt><dd class="mono">${esc(files)}</dd>` : ''}${r.doc ? `<dt>Doku</dt><dd class="mono">${esc(r.doc)}</dd>` : ''}</dl>
+    <h2 style="margin-top:8px">Protokoll</h2><div class="log">${logHtml(LOG.filter(mine).slice(0, 40))}</div>
+    <h2 style="margin-top:8px">Feedback an diesen Agenten</h2><div class="fbl">${f.length ? fbHtml(f) : '<p class="empty">Noch kein Feedback</p>'}</div>`;
+  bindBack(); const sel = $('#fbTo'); if ([...sel.options].some(o => o.value === r.id)) sel.value = r.id; };
+function bindBack() { const b = document.querySelector('#det .back'); if (b) b.onclick = () => go(''); }
+// ===== Werkstatt =====
+const clockT = clock;
+// Spiel im Rahmen starten/beenden (WebGL nur, solange gespielt wird)
+const frame = $('#frame');
+const touch = matchMedia('(pointer: coarse)').matches;
+const gameUrl = () => 'spiel/index.html?' + ($('#mods3d').checked ? 'modelle3d=1&' : '') + 't=' + Date.now();
+$('#mods3d').addEventListener('change', () => { $('#tabGame').href = 'spiel/index.html' + ($('#mods3d').checked ? '?modelle3d=1' : ''); const f = frame.querySelector('iframe'); if (f) f.src = gameUrl(); });
+// Seiten-Vollbild: füllt den ganzen Bildschirm, auch wo das Gerät kein echtes Vollbild erlaubt (iPhone, App-Ansicht)
+const pseudoFs = on => { frame.classList.toggle('fs', on); document.documentElement.style.overflow = on ? 'hidden' : ''; };
+const goFull = () => { const req = frame.requestFullscreen || frame.webkitRequestFullscreen; let r = null;
+  try { r = req ? req.call(frame) : null; } catch (e) { r = null; }
+  if (r && r.then) r.then(() => {}, () => pseudoFs(true)); else if (!document.fullscreenElement && !document.webkitFullscreenElement) pseudoFs(true); };
+$('#fsExit').onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} pseudoFs(false); };
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) pseudoFs(false); });
+$('#startGame').onclick = () => { if (frame.querySelector('iframe')) return; const f = document.createElement('iframe'); f.src = gameUrl(); f.title = 'Veyra Werkstatt-Build'; f.allow = 'fullscreen; autoplay'; f.setAttribute('allowfullscreen', '');
+  frame.appendChild(f); frame.classList.add('on'); $('#stopGame').hidden = false; $('#fullGame').hidden = false; if (touch) goFull(); setTimeout(() => { try { f.focus(); } catch (e) {} }, 300); };
+$('#stopGame').onclick = () => { const f = frame.querySelector('iframe'); if (f) { f.src = 'about:blank'; f.remove(); } pseudoFs(false); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} frame.classList.remove('on'); $('#stopGame').hidden = true; $('#fullGame').hidden = true; };
+$('#fullGame').onclick = goFull;
+// Bilder groß
+const lb = $('#lb');
+lb.addEventListener('click', () => { lb.hidden = true; }); addEventListener('keydown', e => { if (e.key === 'Escape') lb.hidden = true; });
+document.addEventListener('click', e => { const img = e.target.closest('.shots img, .frame .fb img'); if (!img) return; lb.querySelector('img').src = img.src; lb.querySelector('.cap').textContent = img.alt || ''; lb.hidden = false; });
+// Letzte Bilder des Builds
+db.collection('live').orderBy('ts', 'desc').limit(4).onSnapshot(sn => { const rows = sn.docs.map(d => d.data()); const fb = $('#liveFb');
+  fb.innerHTML = rows.map(r => `<img src="${esc(r.url)}" alt="${esc(r.title || '')}">`).join('');
+  if (rows[0]) { $('#wbWhen').textContent = 'Build ' + ago(rows[0].ts); $('#wbLabel').textContent = rows[0].label || ''; } }, () => {});
+// Vorschauen
+let VS = [];
+db.collection('vorschau').orderBy('ts', 'desc').limit(60).onSnapshot(sn => { VS = sn.docs.map(d => ({ id: d.id, ...d.data() }));
+  const open = VS.filter(v => (v.status || 'offen') === 'offen'); $('#vsCount').textContent = open.length ? open.length + ' offen' : '';
+  const c = $('#tabWcnt'); c.hidden = !open.length; c.textContent = open.length;
+  const el = $('#vsList'); if (!VS.length) { el.innerHTML = '<p class="empty">Keine offenen Vorschauen</p>'; return; }
+  const sorted = [...open, ...VS.filter(v => (v.status || 'offen') !== 'offen')];
+  el.innerHTML = sorted.map(v => { const st = v.status || 'offen'; return `<figure class="vs" data-id="${esc(v.id)}"><img loading="lazy" src="${esc(v.url)}" alt="${esc(v.title || '')}">
+    <figcaption><span>${esc(v.title || '')}</span><span class="mono">${esc(v.agent || '')} · ${clockT(v.ts)}</span><span class="st2 ${esc(st)}">${esc(st)}${v.note ? ' · ' + esc(v.note) : ''}</span></figcaption>
+    ${st === 'offen' ? `<textarea placeholder="Anmerkung – bei Ablehnung bitte kurz sagen, was anders soll" aria-label="Anmerkung"></textarea><div class="acts"><button type="button" class="ok">Freigeben</button><button type="button" class="no">Ablehnen</button></div>` : ''}</figure>`; }).join('');
+  el.querySelectorAll('.vs').forEach(f => { const v = VS.find(x => x.id === f.dataset.id), ta = f.querySelector('textarea');
+    const dec = async st => { f.querySelectorAll('.acts button').forEach(b => b.disabled = true); try { await db.doc('vorschau/' + v.id).update({ status: st, note: (ta && ta.value.trim()) || '', decidedAt: Date.now(), by: user ? await user.id() : null }); } catch (err) { f.querySelectorAll('.acts button').forEach(b => b.disabled = false); const h = f.querySelector('.st2'); if (h) h.textContent = 'Nicht gespeichert (' + (err && (err.message || err.code) || 'Fehler') + '). Bitte noch einmal tippen.'; } };
+    const ok = f.querySelector('.ok'), no = f.querySelector('.no');
+    if (ok) ok.onclick = () => dec('freigegeben');
+    if (no) no.onclick = () => { if (ta && !ta.value.trim()) { ta.focus(); ta.placeholder = 'Bitte kurz sagen, was anders soll'; return; } dec('abgelehnt'); }; }); }, () => {});
+// Bilder
+let SHOTS = [];
+const drawShots = () => { const f = $('#shotFilter').value; const rows = SHOTS.filter(r => !f || r.agent === f).slice(0, 36);
+  $('#shots').innerHTML = rows.length ? rows.map(r => `<figure><img loading="lazy" src="${esc(r.url)}" alt="${esc(r.title || '')}"><figcaption><span>${esc(r.title || '')}</span><span class="mono">${esc(r.agent || '')} · ${clockT(r.ts)}</span></figcaption></figure>`).join('') : '<p class="empty">Noch keine Bilder</p>'; };
+$('#shotFilter').addEventListener('change', drawShots);
+db.collection('shots').orderBy('ts', 'desc').limit(80).onSnapshot(sn => { SHOTS = sn.docs.map(d => d.data());
+  const sel = $('#shotFilter'), v = sel.value, names = [...new Set(SHOTS.map(r => r.agent).filter(Boolean))];
+  sel.innerHTML = '<option value="">Alle</option>' + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join(''); sel.value = names.includes(v) ? v : ''; drawShots(); }, () => {});
+
+route();
+setInterval(() => { document.querySelectorAll('.ag .when').forEach(w => { w.textContent = ago(+w.dataset.t); }); drawTrack(); }, 30000);
+})();
+</script>

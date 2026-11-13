@@ -1,0 +1,226 @@
+{
+ "results": [
+  {
+   "name": "ART_SRC: 105 Arten-Bilder + 20 Ortsbilder, alle ladefähig (naturalWidth>0)",
+   "ok": true,
+   "detail": {
+    "arten": 105,
+    "orte": 20,
+    "defekt": []
+   }
+  },
+  {
+   "name": "Jede Art mit art-Key hat ART_SRC-Eintrag; jeder Zahl-Key ist eine Art",
+   "ok": true,
+   "detail": {
+    "ohneQuelle": [],
+    "ohneArt": []
+   }
+  },
+  {
+   "name": "Fehlende Bilder (erwartet 002/003/005/006/058/060/062, 099–139)",
+   "ok": true,
+   "detail": "2,3,5,6,58,60,62,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139"
+  },
+  {
+   "name": "window.MON_RENDER === \"sprite\" (Standard)",
+   "ok": true,
+   "detail": "sprite"
+  },
+  {
+   "name": "bilder: keine console.error/pageerror",
+   "ok": true
+  },
+  {
+   "name": "Welt route1: alle 8 Bild-Kreaturen (7 Roamer + Begleiter) als Sprites",
+   "ok": true,
+   "detail": "25=Sprite 28=Sprite 10=Sprite 72=Sprite 46=Sprite 90=Sprite 84=Sprite 13=Sprite"
+  },
+  {
+   "name": "Draw-Calls route1 (7 Sprites + Begleiter) ≤ 150",
+   "ok": true,
+   "detail": "35 Calls, 358220 Dreiecke"
+  },
+  {
+   "name": "Draw-Calls route1, volle natürliche Population ≤ 150",
+   "ok": true,
+   "detail": {
+    "calls": 32,
+    "n": 3,
+    "spr": 4,
+    "species": [
+     61,
+     112
+    ]
+   }
+  },
+  {
+   "name": "Worst Case 22 Roamer (19 Bild-Arten > Atlas 16, 3 prozedural): Draw-Calls ≤ 150",
+   "ok": true,
+   "detail": {
+    "calls": 49,
+    "mons": 23,
+    "spr": 17,
+    "prog": [
+     142
+    ]
+   }
+  },
+  {
+   "name": "welt: keine console.error/pageerror",
+   "ok": true
+  },
+  {
+   "name": "Kampf 3D startet, Gegner (025) und eigene Kreatur (013) als Sprites",
+   "ok": true,
+   "detail": {
+    "calls": 15,
+    "foe": "sprite",
+    "me": "sprite",
+    "ext": false
+   }
+  },
+  {
+   "name": "Kampf 3D Draw-Calls ≤ 150",
+   "ok": true,
+   "detail": 15
+  },
+  {
+   "name": "Kampf 3D mit bildloser Art (110 Sprudel): prozedurales Modell, kein Fehler",
+   "ok": true,
+   "detail": {
+    "foe": "proc"
+   }
+  },
+  {
+   "name": "Kampf 3D Legende (142 Ignivar, Key-Art): kein Absturz (prozeduraler Nachbau)",
+   "ok": true,
+   "detail": {
+    "foe": "proc",
+    "enc": false
+   }
+  },
+  {
+   "name": "Kampf 2D zeigt Bild für Gegner + eigene Kreatur (Stichprobe 8 Arten inkl. Legende/Mythisch)",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "Fang-Karte zeigt Bild + 3-stellige Nummer (6 Arten)",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "kampf: keine console.error/pageerror",
+   "ok": true
+  },
+  {
+   "name": "MON_RENDER='proc': Welt mit prozeduralen Kreaturen, keine Sprites",
+   "ok": true,
+   "detail": {
+    "calls": 240,
+    "spr": 0,
+    "n": 6
+   }
+  },
+  {
+   "name": "MON_RENDER=proc: Draw-Calls ≤ 150 bei 3 prozeduralen Kreaturen (2 Roamer + Begleiter)",
+   "ok": true,
+   "detail": {
+    "calls": 148,
+    "n": 3
+   }
+  },
+  {
+   "name": "MON_RENDER=proc: Draw-Calls mit 6 prozeduralen Kreaturen (Info, Fallback-Modus, Grenze 150)",
+   "ok": true,
+   "detail": "240 > 150 (nur Fallback-Modus)"
+  },
+  {
+   "name": "MON_RENDER='proc': 3D-Kampf prozedural",
+   "ok": true,
+   "detail": {
+    "foe": "proc",
+    "me": "proc"
+   }
+  },
+  {
+   "name": "proc: keine console.error/pageerror",
+   "ok": true
+  }
+ ],
+ "info": {
+  "missing": [
+   2,
+   3,
+   5,
+   6,
+   58,
+   60,
+   62,
+   99,
+   100,
+   101,
+   102,
+   103,
+   104,
+   105,
+   106,
+   107,
+   108,
+   109,
+   110,
+   111,
+   112,
+   113,
+   114,
+   115,
+   116,
+   117,
+   118,
+   119,
+   120,
+   121,
+   122,
+   123,
+   124,
+   125,
+   126,
+   127,
+   128,
+   129,
+   130,
+   131,
+   132,
+   133,
+   134,
+   135,
+   136,
+   137,
+   138,
+   139
+  ],
+  "callsWelt": 35,
+  "callsVoll": {
+   "calls": 32,
+   "n": 3,
+   "spr": 4,
+   "species": [
+    61,
+    112
+   ]
+  },
+  "callsWorst": {
+   "calls": 49,
+   "mons": 23,
+   "spr": 17,
+   "prog": [
+    142
+   ]
+  },
+  "callsKampf3d": 15,
+  "callsProc6": 240,
+  "callsProc3": 148
+ },
+ "errs": []
+}

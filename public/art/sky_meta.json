@@ -1,0 +1,1114 @@
+{
+ "version": 1,
+ "convention": "equirect three.js: u=atan(z,x)/2π+.5, v=asin(y)/π+.5; Azimut a° → (cos a, 0, sin a); Hauptwahrzeichen bei −90° (−z)",
+ "sky": {
+  "sky_lichtlande_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_lichtlande_tag_lo",
+   "bytes": 34894,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#fff0d8",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#f2e4cc",
+   "stats": {
+    "top": "#98acd3",
+    "zenith": "#7a97cb",
+    "hor": "#e8e4df",
+    "below": "#e0dad5"
+   }
+  },
+  "sky_lichtlande_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_lichtlande_abend_lo",
+   "bytes": 47370,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#f2bf98",
+   "stats": {
+    "top": "#8f7f94",
+    "zenith": "#66638b",
+    "hor": "#e5ba9a",
+    "below": "#d6ad99"
+   }
+  },
+  "sky_lichtlande_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_lichtlande_nacht_lo",
+   "bytes": 32754,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 1,
+    "phase": 0.15
+   },
+   "haze": "#2a3a64",
+   "stats": {
+    "top": "#242c47",
+    "zenith": "#1b2139",
+    "hor": "#2a375d",
+    "below": "#303d63"
+   }
+  },
+  "sky_smaragdwald_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_smaragdwald_tag_lo",
+   "bytes": 33292,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#fff0d8",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#dfe4cc",
+   "stats": {
+    "top": "#97afc8",
+    "zenith": "#829fc2",
+    "hor": "#e0e3db",
+    "below": "#d6dacc"
+   }
+  },
+  "sky_smaragdwald_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_smaragdwald_abend_lo",
+   "bytes": 46400,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#ecc898",
+   "stats": {
+    "top": "#8f8191",
+    "zenith": "#6a678a",
+    "hor": "#e3bd98",
+    "below": "#d6af9a"
+   }
+  },
+  "sky_smaragdwald_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_smaragdwald_nacht_lo",
+   "bytes": 34374,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 1,
+    "phase": 0.5
+   },
+   "haze": "#21404c",
+   "stats": {
+    "top": "#24323f",
+    "zenith": "#1a2631",
+    "hor": "#294250",
+    "below": "#364d60"
+   }
+  },
+  "sky_flutkueste_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_flutkueste_tag_lo",
+   "bytes": 30052,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#fff0d8",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#e0eef2",
+   "stats": {
+    "top": "#8aacdd",
+    "zenith": "#6b95d8",
+    "hor": "#d5e2ea",
+    "below": "#a6c5d6"
+   }
+  },
+  "sky_flutkueste_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_flutkueste_abend_lo",
+   "bytes": 40546,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#f8bca6",
+   "stats": {
+    "top": "#927c99",
+    "zenith": "#746b93",
+    "hor": "#e8b79e",
+    "below": "#bf9899"
+   }
+  },
+  "sky_flutkueste_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_flutkueste_nacht_lo",
+   "bytes": 21472,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 1,
+    "phase": 0
+   },
+   "haze": "#2a3a64",
+   "stats": {
+    "top": "#222941",
+    "zenith": "#181e32",
+    "hor": "#2a375d",
+    "below": "#243152"
+   }
+  },
+  "sky_glutlande_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_glutlande_tag_lo",
+   "bytes": 44124,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#ffe0b4",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#e0a688",
+   "stats": {
+    "top": "#a78a97",
+    "zenith": "#967f94",
+    "hor": "#e2bca7",
+    "below": "#c19889"
+   }
+  },
+  "sky_glutlande_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_glutlande_abend_lo",
+   "bytes": 51842,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#e88a60",
+   "stats": {
+    "top": "#825062",
+    "zenith": "#704a59",
+    "hor": "#e1916c",
+    "below": "#d69278"
+   }
+  },
+  "sky_glutlande_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_glutlande_nacht_lo",
+   "bytes": 30122,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 1,
+    "phase": 0.35
+   },
+   "haze": "#5a2226",
+   "stats": {
+    "top": "#2e1a23",
+    "zenith": "#23131c",
+    "hor": "#5b2629",
+    "below": "#5a2a29"
+   }
+  },
+  "sky_kristallgebirge_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_kristallgebirge_tag_lo",
+   "bytes": 36082,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#fff0d8",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#e6eef8",
+   "stats": {
+    "top": "#89a3d5",
+    "zenith": "#728fcc",
+    "hor": "#dee4ec",
+    "below": "#d7dde5"
+   }
+  },
+  "sky_kristallgebirge_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_kristallgebirge_abend_lo",
+   "bytes": 51672,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#f2c8b0",
+   "stats": {
+    "top": "#8d7e94",
+    "zenith": "#847588",
+    "hor": "#e5bca3",
+    "below": "#d9b1a0"
+   }
+  },
+  "sky_kristallgebirge_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_kristallgebirge_nacht_lo",
+   "bytes": 32602,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 1,
+    "phase": 0.6
+   },
+   "haze": "#2a3a64",
+   "stats": {
+    "top": "#252a4b",
+    "zenith": "#151a2f",
+    "hor": "#2a405f",
+    "below": "#344168"
+   }
+  },
+  "sky_frosttundra_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_frosttundra_tag_lo",
+   "bytes": 28790,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#fff6e8",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#f0f4f8",
+   "stats": {
+    "top": "#a6bbd7",
+    "zenith": "#92abce",
+    "hor": "#e9ecf0",
+    "below": "#e2e8ed"
+   }
+  },
+  "sky_frosttundra_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_frosttundra_abend_lo",
+   "bytes": 38452,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#f4d0c8",
+   "stats": {
+    "top": "#9a8aac",
+    "zenith": "#7977a1",
+    "hor": "#e8c5c4",
+    "below": "#d9b3a7"
+   }
+  },
+  "sky_frosttundra_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_frosttundra_nacht_lo",
+   "bytes": 40108,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 0.7,
+    "phase": 0.8
+   },
+   "haze": "#203a5a",
+   "stats": {
+    "top": "#26294d",
+    "zenith": "#161d33",
+    "hor": "#265461",
+    "below": "#314065"
+   }
+  },
+  "sky_himmelsweiten_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_himmelsweiten_tag_lo",
+   "bytes": 35768,
+   "sun": {
+    "az": -30,
+    "el": 40,
+    "col": "#fff0d8",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#f6f0e6",
+   "stats": {
+    "top": "#8ba6d5",
+    "zenith": "#688dcc",
+    "hor": "#e6e5e6",
+    "below": "#e2dfde"
+   }
+  },
+  "sky_himmelsweiten_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_himmelsweiten_abend_lo",
+   "bytes": 49218,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#f2bf98",
+   "stats": {
+    "top": "#998496",
+    "zenith": "#8a788f",
+    "hor": "#e5b89a",
+    "below": "#d4ad9c"
+   }
+  },
+  "sky_himmelsweiten_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_himmelsweiten_nacht_lo",
+   "bytes": 39734,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#e6ecff",
+    "i": 1,
+    "phase": 0
+   },
+   "haze": "#2a3a64",
+   "stats": {
+    "top": "#222941",
+    "zenith": "#161c2f",
+    "hor": "#2a375d",
+    "below": "#4d5a82"
+   }
+  },
+  "sky_schattenmoor_tag": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_schattenmoor_tag_lo",
+   "bytes": 38956,
+   "sun": {
+    "az": -30,
+    "el": 26,
+    "col": "#fff0e6",
+    "i": 1
+   },
+   "moon": null,
+   "haze": "#d4c4d6",
+   "stats": {
+    "top": "#958fb3",
+    "zenith": "#7f7ca7",
+    "hor": "#dad0de",
+    "below": "#c0b3c9"
+   }
+  },
+  "sky_schattenmoor_abend": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_schattenmoor_abend_lo",
+   "bytes": 46524,
+   "sun": {
+    "az": -70,
+    "el": 6.5,
+    "col": "#ffb46c",
+    "i": 1.1
+   },
+   "moon": null,
+   "haze": "#c47a9a",
+   "stats": {
+    "top": "#764d71",
+    "zenith": "#56395c",
+    "hor": "#cd8499",
+    "below": "#bc7f93"
+   }
+  },
+  "sky_schattenmoor_nacht": {
+   "w": 2048,
+   "h": 1024,
+   "lo": "sky_schattenmoor_nacht_lo",
+   "bytes": 33462,
+   "sun": {
+    "az": 60,
+    "el": -30,
+    "col": "#000000",
+    "i": 0
+   },
+   "moon": {
+    "az": -112,
+    "el": 15,
+    "col": "#f2e8ff",
+    "i": 1,
+    "phase": 1
+   },
+   "haze": "#34224e",
+   "stats": {
+    "top": "#312b48",
+    "zenith": "#252038",
+    "hor": "#372a53",
+    "below": "#3f3662"
+   }
+  }
+ },
+ "horizon": {
+  "horizon_lichtlande": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_lichtlande_lo",
+   "bytes": 71642,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c6d0dc",
+   "landmarkAz": -90
+  },
+  "horizon_smaragdwald": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_smaragdwald_lo",
+   "bytes": 88814,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c6d0dc",
+   "landmarkAz": -90
+  },
+  "horizon_flutkueste": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_flutkueste_lo",
+   "bytes": 56360,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c6d0dc",
+   "landmarkAz": -90
+  },
+  "horizon_glutlande": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_glutlande_lo",
+   "bytes": 89384,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c8b0a8",
+   "landmarkAz": -90
+  },
+  "horizon_kristallgebirge": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_kristallgebirge_lo",
+   "bytes": 87370,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c6d0dc",
+   "landmarkAz": -90
+  },
+  "horizon_frosttundra": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_frosttundra_lo",
+   "bytes": 79180,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c6d0dc",
+   "landmarkAz": -90
+  },
+  "horizon_himmelsweiten": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_himmelsweiten_lo",
+   "bytes": 119428,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#c6d0dc",
+   "landmarkAz": -90
+  },
+  "horizon_schattenmoor": {
+   "w": 2048,
+   "h": 512,
+   "lo": "horizon_schattenmoor_lo",
+   "bytes": 93590,
+   "tan": [
+    -0.05,
+    0.45
+   ],
+   "haze": "#b8b0c8",
+   "landmarkAz": -90
+  }
+ },
+ "battle": {
+  "bg_battle_lichtlande_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_lichtlande_tag_lo",
+   "bytes": 17174,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_lichtlande_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_lichtlande_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_lichtlande_abend_lo",
+   "bytes": 15760,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_lichtlande_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_lichtlande_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_lichtlande_nacht_lo",
+   "bytes": 12736,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_lichtlande_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_smaragdwald_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_smaragdwald_tag_lo",
+   "bytes": 19984,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_smaragdwald_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_smaragdwald_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_smaragdwald_abend_lo",
+   "bytes": 15944,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_smaragdwald_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_smaragdwald_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_smaragdwald_nacht_lo",
+   "bytes": 9102,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_smaragdwald_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_flutkueste_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_flutkueste_tag_lo",
+   "bytes": 14302,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_flutkueste_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_flutkueste_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_flutkueste_abend_lo",
+   "bytes": 15938,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_flutkueste_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_flutkueste_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_flutkueste_nacht_lo",
+   "bytes": 10676,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_flutkueste_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_glutlande_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_glutlande_tag_lo",
+   "bytes": 21038,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_glutlande_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_glutlande_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_glutlande_abend_lo",
+   "bytes": 18036,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_glutlande_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_glutlande_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_glutlande_nacht_lo",
+   "bytes": 12314,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_glutlande_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_kristallgebirge_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_kristallgebirge_tag_lo",
+   "bytes": 21748,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_kristallgebirge_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_kristallgebirge_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_kristallgebirge_abend_lo",
+   "bytes": 19216,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_kristallgebirge_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_kristallgebirge_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_kristallgebirge_nacht_lo",
+   "bytes": 13688,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_kristallgebirge_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_frosttundra_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_frosttundra_tag_lo",
+   "bytes": 11940,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_frosttundra_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_frosttundra_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_frosttundra_abend_lo",
+   "bytes": 13468,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_frosttundra_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_frosttundra_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_frosttundra_nacht_lo",
+   "bytes": 19110,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_frosttundra_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_himmelsweiten_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_himmelsweiten_tag_lo",
+   "bytes": 15726,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_himmelsweiten_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.785,
+    -1.63
+   ],
+   "light": "sun"
+  },
+  "bg_battle_himmelsweiten_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_himmelsweiten_abend_lo",
+   "bytes": 17644,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_himmelsweiten_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_himmelsweiten_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_himmelsweiten_nacht_lo",
+   "bytes": 15468,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_himmelsweiten_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  },
+  "bg_battle_schattenmoor_tag": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_schattenmoor_tag_lo",
+   "bytes": 17178,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_schattenmoor_tag",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    1.838,
+    -0.753
+   ],
+   "light": "sun"
+  },
+  "bg_battle_schattenmoor_abend": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_schattenmoor_abend_lo",
+   "bytes": 16172,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_schattenmoor_abend",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.796,
+    0.413
+   ],
+   "light": "sun"
+  },
+  "bg_battle_schattenmoor_nacht": {
+   "w": 1280,
+   "h": 720,
+   "lo": "bg_battle_schattenmoor_nacht_lo",
+   "bytes": 11324,
+   "cam": {
+    "fov": 38,
+    "h": 1.7,
+    "az": -90,
+    "pitch": 3.5
+   },
+   "sky": "sky_schattenmoor_nacht",
+   "fov": 38,
+   "horizonY": 0.5893,
+   "sunScreen": [
+    0.175,
+    0.175
+   ],
+   "light": "moon"
+  }
+ }
+}

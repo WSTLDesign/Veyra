@@ -1,0 +1,12 @@
+// Mimik-Raster: 4 Arten × 5 Ausdrücke (Nahansicht) → test/p1_'+(process.argv[3]||'expr')+'.png
+import { chromium } from 'playwright';import { writeFileSync } from 'fs';
+const b=await chromium.launch({args:['--use-gl=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});const p=await b.newPage({viewport:{width:420,height:860},deviceScaleFactor:1});
+p.on('pageerror',e=>console.log('PAGEERROR',e.message));await p.route(/fonts\.googleapis|fonts\.gstatic/,r=>r.fulfill({body:'',contentType:'text/css'}));
+await p.goto(new URL('../dist/index.html',import.meta.url).href,{waitUntil:'load'});
+const ids=process.argv[2]?process.argv[2].split(',').map(Number):[1,7,21,38];
+const pose=process.argv[3]==='pose';const url=await p.evaluate(([ids,pose])=>{const E=pose?[null,'graze','sniff','sleep','hide']:['neutral','freudig','wuetend','muede','verletzt'],cell=170,out=document.createElement('canvas');out.width=E.length*cell;out.height=ids.length*cell;const o=out.getContext('2d');o.fillStyle='#eef2f5';o.fillRect(0,0,out.width,out.height);
+ const r=new THREE.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:true});r.setPixelRatio(1);r.setSize(cell,cell,false);r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.12;r.setClearColor(0,0);const s=new THREE.Scene();studio(s);const cam=new THREE.PerspectiveCamera(28,1,.1,50);
+ ids.forEach((id,row)=>E.forEach((e,col)=>{const m=buildMon3D(id,1);m.rotation.y=0;s.add(m);m.updateMatrixWorld(true);const U=m.userData;U.head.updateMatrixWorld(true);const hp=new THREE.Vector3();U.head.getWorldPosition(hp);const hr=U.hr*m.scale.x*U.head.scale.x;
+  if(pose){m.rotation.y=-Math.PI/2-.5;animMon(m,1000,{pose:e,still:true});m.updateMatrixWorld(true);const bx=new THREE.Box3().setFromObject(m),c=bx.getCenter(new THREE.Vector3());cam.position.set(c.x,.7,c.z+4.2);cam.lookAt(c.x,.45,c.z);}else{animMon(m,1000,{expr:e,still:true});m.updateMatrixWorld(true);cam.position.set(hp.x+.8*hr,hp.y+hr*.4,hp.z-hr*7.5);cam.lookAt(hp.x,hp.y,hp.z);}r.render(s,cam);s.remove(m);o.drawImage(r.domElement,col*cell,row*cell);o.fillStyle='#333';o.font='12px sans-serif';o.fillText(MONS[id].n+' · '+(e||'idle'),col*cell+4,row*cell+cell-6);}));
+ return out.toDataURL('image/png');},[ids,pose]);
+writeFileSync(new URL('./p1_'+(process.argv[3]||'expr')+'.png',import.meta.url),Buffer.from(url.split(',')[1],'base64'));console.log('ok');await b.close();

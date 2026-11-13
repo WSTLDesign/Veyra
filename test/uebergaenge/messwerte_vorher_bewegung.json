@@ -1,0 +1,48 @@
+{
+ "anlauf": [],
+ "d2": [],
+ "bewegung": {
+  "gehen": {
+   "fps": 60,
+   "tempo": 2.76,
+   "anfahren90ms": 367,
+   "bremsweg": 0.34,
+   "bremszeitMs": 467,
+   "amaxStart": 14.9
+  },
+  "rennen": {
+   "fps": 60,
+   "tempo": 5,
+   "anfahren90ms": 500,
+   "bremsweg": 0.62,
+   "bremszeitMs": 550,
+   "amaxStart": 21.2
+  },
+  "dreh90": {
+   "zeitMs": 283,
+   "kameraFigurWinkelEnde": 1.57
+  },
+  "dreh180": {
+   "zeitMs": 517,
+   "kameraFigurWinkelEnde": 3.14
+  },
+  "kamerafolge25": {
+   "kameraDrehungRad": 0,
+   "figurDrehungRad": 0.44
+  },
+  "totzonePx": null,
+  "wand45": {
+   "gleitweg": 3.02,
+   "xMin": 0.77,
+   "zitternWechsel": 0,
+   "anstoss": 2
+  },
+  "ecke": {
+   "vorbei": false,
+   "ms": null,
+   "x": 4.62,
+   "anstoss": 0
+  }
+ },
+ "laden": []
+}

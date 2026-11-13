@@ -31,11 +31,12 @@
   ].join('');
 
   function el(tag, attrs, html) { var e = document.createElement(tag); for (var k in attrs || {}) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
-  function has(name) { try { return typeof window[name] === 'function' || typeof eval(name) === 'function'; } catch (e) { return false; } }
   function game() { try { return typeof G !== 'undefined' && G ? G : null; } catch (e) { return null; } }
   function toast(t) { var x = document.getElementById('stgToast'); x.textContent = t; x.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { x.style.display = 'none'; }, 2200); }
   function safe(label, fn) { return function () { try { fn(); } catch (e) { errors.push('Debug „' + label + '“: ' + e.message); upd(); toast('Fehler: ' + e.message); } }; }
   function needGame() { if (!game()) throw new Error('Erst ein Spiel starten oder laden'); return game(); }
+  // Intro-/Titelschicht schließen, damit nach dem Schnellstart das Spiel sichtbar ist
+  function hideIntro() { try { if (typeof endIntro === 'function') endIntro(); } catch (e) {} ['intro', 'title'].forEach(function (id) { var x = document.getElementById(id); if (x) x.hidden = true; }); }
   function persist() { try { if (typeof save === 'function') save(); } catch (e) {} }
 
   var fps = 0;
@@ -75,7 +76,7 @@
       '<div class="row"><button data-a="reload">Neu laden</button><button data-a="update">Auf neue Version prüfen</button><button data-a="close">Schließen</button></div>';
     var A = {
       quick: function () { if (game() && !window.confirm('Laufendes Staging-Spiel verwerfen und neu starten?')) return;
-        togglePanel(false); beginGame({}, true); persist(); toast('Testspiel gestartet'); },
+        togglePanel(false); beginGame({}, true); hideIntro(); persist(); toast('Testspiel gestartet'); },
       heal: function () { needGame(); healAll(); persist(); toast('Team geheilt'); },
       level: function () { var g = needGame(), l = Math.max(1, Math.min(100, +document.getElementById('stgLv').value || 30));
         g.team.forEach(function (m, i) { var n = mk(m.s, l); n.shiny = m.shiny; n.gender = m.gender; if (m.nick) n.nick = m.nick; g.team[i] = Object.assign(m, { l: n.l, xp: n.xp, hp: n.hp, moves: n.moves, known: n.known }); });
@@ -103,10 +104,21 @@
         navigator.serviceWorker.getRegistration().then(function (r) { return r ? r.update() : null; }).then(function () { toast('Geprüft – lade neu'); setTimeout(function () { location.reload(); }, 800); }); },
       close: function () { togglePanel(false); }
     };
-    var NEEDS = { quick: ['beginGame'], heal: ['healAll'], level: ['mk'], give: ['mk', 'caught'], wild: ['mk', 'startBattle'], dex: ['caught'], warp: ['loadMap'], items: ['addItem'], day: ['isNight'] };
+    // Verfügbarkeit direkt per typeof prüfen (bleibt beim Verschleiern gültig, weil Overlay und Spiel im selben Skript liegen)
+    var NEEDS = {
+      quick: function () { return typeof beginGame === 'function'; },
+      heal: function () { return typeof healAll === 'function'; },
+      level: function () { return typeof mk === 'function'; },
+      give: function () { return typeof mk === 'function' && typeof caught === 'function'; },
+      wild: function () { return typeof mk === 'function' && typeof startBattle === 'function'; },
+      dex: function () { return typeof caught === 'function'; },
+      warp: function () { return typeof loadMap === 'function'; },
+      items: function () { return typeof addItem === 'function'; },
+      day: function () { return typeof isNight === 'function'; }
+    };
     p.querySelectorAll('button[data-a]').forEach(function (b) {
-      var a = b.getAttribute('data-a'); var miss = (NEEDS[a] || []).filter(function (n) { return !has(n); });
-      if (miss.length) { b.disabled = true; b.title = 'In dieser Spielversion nicht verfügbar: ' + miss.join(', '); }
+      var a = b.getAttribute('data-a'), ok = true; try { ok = !NEEDS[a] || NEEDS[a](); } catch (e) { ok = false; }
+      if (!ok) { b.disabled = true; b.title = 'In dieser Spielversion nicht verfügbar'; }
       b.addEventListener('click', safe(b.textContent, A[a]));
     });
     ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) { p.addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
@@ -125,6 +137,14 @@
     window.addEventListener('keydown', function (e) { if (e.ctrlKey && e.shiftKey && (e.key === 'D' || e.key === 'd')) { e.preventDefault(); togglePanel(); } });
     document.title = '[STAGING] ' + document.title;
     window.VEYRA_STAGING_ERRORS = errors;
+    // Kleine Test-Schnittstelle nur im Staging-Build (Live hat sie nicht)
+    window.__VEYRA_STG = {
+      game: function () { return game(); },
+      mode: function () { try { return typeof mode !== 'undefined' ? mode : null; } catch (e) { return null; } },
+      overlays: function () { return ['intro', 'title'].filter(function (id) { var x = document.getElementById(id); return x && !x.hidden; }); },
+      save: function () { persist(); },
+      keys: function () { return { save: typeof SAVEKEY !== 'undefined' ? SAVEKEY : null, set: typeof SETKEY !== 'undefined' ? SETKEY : null }; }
+    };
     upd();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();

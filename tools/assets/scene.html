@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><title>Veyra Offline-Render</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="64" height="64"></canvas>
+<script src="/public/three.min.js"></script>
+<script type="module">
+// Veyra – Offline-Szene (Hybrid H1). Wird von tools/render_assets.mjs in headless Chromium geöffnet.
+// API (window.R): R.setup(job) bereitet eine Aufnahme vor (sky | horizon | battle | preview), R.strip(i) rendert Streifen i und liefert RGBA (base64, GL-Zeilenfolge unten→oben).
+import { NOISE, SKY } from './sky_glsl.mjs';
+import { buildRegion } from './landmarks.mjs';
+const T = THREE, cv = document.getElementById('c');
+const r = new T.WebGLRenderer({ canvas: cv, antialias: false, alpha: true, premultipliedAlpha: false, preserveDrawingBuffer: true });
+r.setPixelRatio(1); r.outputEncoding = T.LinearEncoding; r.toneMapping = T.NoToneMapping;
+const lin = h => new T.Color(h).convertSRGBToLinear();
+const dir = (az, el) => { const a = az * Math.PI / 180, e = el * Math.PI / 180; return new T.Vector3(Math.cos(e) * Math.cos(a), Math.sin(e), Math.cos(e) * Math.sin(a)); };
+const VS_Q = 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}';
+const VS_DOME = 'varying vec3 vDir;void main(){vDir=position;vec4 p=projectionMatrix*modelViewMatrix*vec4(position,1.);gl_Position=p.xyww;}';
+const FS_EQ = `precision highp float;varying vec2 vUv;${NOISE}${SKY}
+void main(){float phi=(vUv.x-.5)*6.2831853,lat=(vUv.y-.5)*3.14159265;vec3 d=vec3(cos(lat)*cos(phi),sin(lat),cos(lat)*sin(phi));gl_FragColor=vec4(skyCol(d,gl_FragCoord.xy),1.);}`;
+const FS_DOME = `precision highp float;varying vec3 vDir;${NOISE}${SKY}
+void main(){gl_FragColor=vec4(skyCol(vDir,gl_FragCoord.xy),1.);}`;
+// Zylinder-Abwicklung einer Cubemap (Horizont-Band, transparent, Farbe entmultipliziert)
+const FS_CYL = `precision highp float;varying vec2 vUv;uniform samplerCube uCube;uniform float uT0,uT1;
+void main(){float phi=(vUv.x-.5)*6.2831853;float t=mix(uT0,uT1,vUv.y);vec3 d=normalize(vec3(cos(phi),t,sin(phi)));vec4 c=textureCube(uCube,d);
+ float fa=smoothstep(uT0,uT0+.035,t);gl_FragColor=vec4(c.a>0.002?c.rgb/c.a:vec3(0.),c.a*fa);}`;
+function skyU(P) {
+  const U = {}; const C = (k, v) => U[k] = { value: lin(v) }, F = (k, v) => U[k] = { value: v };
+  for (const k of ['zen', 'mid', 'hor', 'below', 'haze', 'sunCol', 'glowCol', 'moonCol', 'cloudLit', 'cloudShd', 'seaLit', 'seaShd', 'accCol', 'aurA', 'aurB']) C('u' + k[0].toUpperCase() + k.slice(1), P[k] || '#000000');
+  U.uSunDir = { value: dir(P.sunAz, P.sunEl) }; U.uMoonDir = { value: dir(P.moonAz ?? P.sunAz + 180, P.moonEl ?? -30) }; U.uAccDir = { value: dir(P.accAz || 0, 0) };
+  for (const [k, d] of [['sunI', 1], ['sunSize', .012], ['glowI', 1], ['moonI', 0], ['moonPhase', 0], ['cov', .52], ['cloudAmt', 1], ['cumAmt', .8], ['cumH', .2], ['cirrus', .4], ['seaAmt', .9], ['seaCov', .42], ['seaY', -.01], ['hazeAmt', .6], ['hazeK', 22], ['rays', .4], ['stars', 0], ['aurora', 0], ['accI', 0], ['seed', 1], ['expo', 1], ['milky', 0], ['topFade', .55]]) F('u' + k[0].toUpperCase() + k.slice(1), P[k] ?? d);
+  return U;
+}
+const quad = new T.Mesh(new T.PlaneGeometry(2, 2)), qcam = new T.Camera(), qscene = new T.Scene(); quad.frustumCulled = false; qscene.add(quad);
+let J = null;
+function makeRT(w, h) { return new T.WebGLRenderTarget(w, h, { type: T.UnsignedByteType, format: T.RGBAFormat, depthBuffer: true, minFilter: T.NearestFilter, magFilter: T.NearestFilter }); }
+const b64 = u8 => { let s = ''; const n = 0x8000; for (let i = 0; i < u8.length; i += n) s += String.fromCharCode.apply(null, u8.subarray(i, i + n)); return btoa(s); };
+window.R = {
+  // job: {kind, W, H, strip, params(sky), region, time, light{...}, cam{...}}
+  setup(job) {
+    if (J && J.rt) J.rt.dispose(); if (J && J.dispose) J.dispose();
+    J = Object.assign({ strip: 64 }, job); J.rt = makeRT(J.W, J.H); J.n = Math.ceil(J.H / J.strip); r.toneMapping = T.NoToneMapping; if (job.kind === 'battle') { J.rt.texture.encoding = T.sRGBEncoding; r.toneMapping = T.ACESFilmicToneMapping; r.toneMappingExposure = job.light.expo ?? 1; }
+    if (job.kind === 'sky') { quad.material = new T.ShaderMaterial({ vertexShader: VS_Q, fragmentShader: FS_EQ, uniforms: skyU(job.params), depthTest: false }); J.scene = qscene; J.cam = qcam; }
+    else if (job.kind === 'horizon' || job.kind === 'battle') {
+      const S = new T.Scene(); const R = buildRegion(job.region, job.light, job.kind); S.add(R.group); S.fog = new T.Fog(lin(job.light.haze), job.light.fogN ?? 0, job.light.fogF ?? 4200);
+      J.dispose = () => { S.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose && o.material.dispose(); }); };
+      if (job.kind === 'horizon') {
+        const crt = new T.WebGLCubeRenderTarget(job.cube || 2048, { format: T.RGBAFormat, type: T.UnsignedByteType, generateMipmaps: false, minFilter: T.LinearFilter, magFilter: T.LinearFilter, encoding: T.sRGBEncoding });
+        const cc = new T.CubeCamera(.5, 9000, crt); cc.position.set(0, job.camH ?? 6, 0); S.add(cc); S.background = null;
+        r.setClearColor(0x000000, 0); r.toneMapping = T.ACESFilmicToneMapping; r.toneMappingExposure = job.light.expo ?? 1; cc.update(r, S); r.toneMapping = T.NoToneMapping;
+        quad.material = new T.ShaderMaterial({ vertexShader: VS_Q, fragmentShader: FS_CYL, uniforms: { uCube: { value: crt.texture }, uT0: { value: job.t0 ?? -.05 }, uT1: { value: job.t1 ?? .45 } }, depthTest: false, transparent: false });
+        J.scene = qscene; J.cam = qcam; const od = J.dispose; J.dispose = () => { od(); crt.dispose(); };
+      } else {
+        const dome = new T.Mesh(new T.SphereGeometry(8000, 64, 32), new T.ShaderMaterial({ vertexShader: VS_DOME, fragmentShader: FS_DOME, uniforms: skyU(job.params), side: T.BackSide, depthWrite: false, fog: false }));
+        dome.renderOrder = -10; dome.frustumCulled = false; S.add(dome);
+        const c = job.cam || {}; const cam = new T.PerspectiveCamera(c.fov ?? 42, J.W / J.H, .5, 9500); cam.position.set(0, c.h ?? 1.7, 0);
+        const la = dir(c.az ?? -90, c.pitch ?? 2); cam.lookAt(la.x * 100, cam.position.y + la.y * 100, la.z * 100); cam.updateMatrixWorld(true); J.scene = S; J.cam = cam;
+        J.info = { fov: cam.fov, horizonY: (() => { const v = new T.Vector3(la.x, 0, la.z).multiplyScalar(5000).add(new T.Vector3(0, 0, 0)); v.project(cam); return +(.5 - v.y / 2).toFixed(4); })() };
+        const nt = job.time === 'nacht' && job.params.moonI, sd = dir(nt ? job.params.moonAz : job.params.sunAz, nt ? job.params.moonEl : job.params.sunEl).multiplyScalar(5000).add(cam.position).project(cam); J.info.sunScreen = [+((sd.x + 1) / 2).toFixed(3), +((1 - sd.y) / 2).toFixed(3)]; J.info.light = nt ? 'moon' : 'sun';
+        r.setClearColor(0x000000, 1);
+      }
+    }
+    if (job.kind === 'sky') r.setClearColor(0x000000, 1);
+    return { n: J.n, info: J.info || null };
+  },
+  strip(i) {
+    const y0 = i * J.strip, h = Math.min(J.strip, J.H - y0); r.setRenderTarget(J.rt); r.setScissorTest(true); r.setScissor(0, y0, J.W, h); r.setViewport(0, 0, J.W, J.H);
+    if (i === 0) r.clear(true, true, true); else r.clear(true, true, true);
+    r.render(J.scene, J.cam); const buf = new Uint8Array(J.W * h * 4); r.readRenderTargetPixels(J.rt, 0, y0, J.W, h, buf); r.setScissorTest(false); r.setRenderTarget(null);
+    return b64(buf);
+  }
+};
+window.READY = true;
+</script></body></html>

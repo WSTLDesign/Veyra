@@ -1,0 +1,194 @@
+{
+ "sums": {
+  "nummer": [
+   [
+    "Artenzahl = 153",
+    0
+   ],
+   [
+    "dexNr 3-stellig und = Index",
+    0
+   ],
+   [
+    "Name/Typ/Werte vorhanden",
+    0
+   ]
+  ],
+  "namen": [
+   [
+    "docs/kreaturen-kanon.md 001–048 exakt",
+    0
+   ],
+   [
+    "Nutzer-Linien-Namen (Doc Abschnitt 2–4 + AGENTS) kommen vor",
+    0
+   ],
+   [
+    "Quappi (Doc „Quappi → Quallio“) – bewusst als Dublette zu Glibbi → Quallio aufgelöst (Info)",
+    0
+   ],
+   [
+    "Namen eindeutig (inkl. Aliasse)",
+    0
+   ],
+   [
+    "Namensnähe-Kollisionen (Wirbel 2×, Sylvarok, Aurelion, Solaryn, Kristallin, Mooslein)",
+    0
+   ],
+   [
+    "Nutzer-Namen der AGENTS-Lieferungen an Kanon-Nummer",
+    0
+   ]
+  ],
+  "typen": [
+   [
+    "Haupttyp je Linie laut Kanon (Stufe 1 / Legende)",
+    0
+   ],
+   [
+    "Zweittyp/Endstufe laut AGENTS-Lieferungen enthalten",
+    0
+   ],
+   [
+    "Ursprung kampfneutral (TYPE_CHART ursprung als Angreifer/Verteidiger 1×)",
+    0
+   ]
+  ],
+  "werte": [
+   [
+    "BST je Stufe plausibel (Linien: 1/3→280–335, 2/3→400–440, 3/3→515–545; 2-stufige: 1/2 ≤ 335, 2/2 400–500)",
+    0
+   ],
+   [
+    "Legenden BST exakt 580 / Mythische 600 / myth:1 / legend:1",
+    0
+   ],
+   [
+    "Einzelwert-Rahmen 20–160 (kein Ausreißer, keine 0)",
+    0
+   ],
+   [
+    "Entwicklungs-BST steigend (ev + evolutions)",
+    0
+   ],
+   [
+    "Fangquote: Stufe 1 ≥ 100 (leicht fangbar), Legenden ≤ 12, Mythische ≤ 8",
+    4
+   ],
+   [
+    "shinyCols gültige Hex-Farben (nur Arten ohne ART_HUE-Überschreibung; VM-Stub ausgenommen)",
+    7
+   ],
+   [
+    "Beschreibung (d) 20–260 Zeichen, deutsch, nicht leer",
+    0
+   ]
+  ],
+  "lern": [
+   [
+    "≥ 4 verschiedene Attacken bis L40",
+    0
+   ],
+   [
+    "Attacken existieren in MOVES",
+    0
+   ],
+   [
+    "Schadensattacke ≤ L6 + sortiert",
+    0
+   ],
+   [
+    "Eigentyp-Attacke (STAB, Stärke>0) bis L40",
+    0
+   ],
+   [
+    "Legenden/Mythische: Signatur-Attacke L40 vorhanden",
+    0
+   ],
+   [
+    "Gleiche Lernliste bei Legende und Starter-Funki (Info: Legenden teilen Typ-Grundliste, kein Fehler)",
+    0
+   ]
+  ],
+  "evo": [
+   [
+    "EVO_DEF ↔ MONS.evolutions/ev deckungsgleich (beide Richtungen)",
+    0
+   ],
+   [
+    "Entwicklungs-Ziel hat höhere Stufe, kein Zyklus, Ziel ≠ Quelle",
+    0
+   ],
+   [
+    "Jede Art mit Stufe > 1 hat einen Vorgänger (ev oder evolutions)",
+    0
+   ],
+   [
+    "Jede Linie bis zur Endstufe per Level erreichbar (Kanon-Linien 001–107; Level-Weg)",
+    0
+   ],
+   [
+    "Ort-Evolutionen: Karte existiert (MAPS/INTERIORS)",
+    0
+   ],
+   [
+    "Item-Evolutionen: Item existiert in ITEMS",
+    0
+   ],
+   [
+    "Attacken-Evolution: Attacke existiert",
+    0
+   ],
+   [
+    "Stufenangabe stage passt zur Kette (Linie 1→2→3)",
+    0
+   ]
+  ],
+  "habitat": [
+   [
+    "Jede Art hat Region (8 Regionen) + ≥ 1 Zone",
+    0
+   ],
+   [
+    "Jede Region ≥ 6 Arten / alle 8 vertreten",
+    0
+   ],
+   [
+    "Legenden-/Mythen-Orte laut WELT-KANON",
+    0
+   ],
+   [
+    "Zonen-Namen gehören zur Region laut WELT-KANON (Starter-Ausnahme Aurenstadt)",
+    0
+   ],
+   [
+    "speciesIn(region) über alle 8 Regionen deckt alle 153 Arten ab (Funktion = Datenfeld)",
+    0
+   ]
+  ],
+  "altnamen": [
+   [
+    "Alte Namen in src/ (außerhalb ID_MAP/Kommentare)",
+    0
+   ]
+  ]
+ },
+ "findings": [
+  {
+   "k": "werte",
+   "msg": "Fangquote: Stufe 1 ≥ 100 (leicht fangbar), Legenden ≤ 12, Mythische ≤ 8: 1 Funki cr45 | 4 Plippi cr45 | 7 Knospi cr45 | 102 Dornwelp cr90",
+   "sev": "mittel"
+  },
+  {
+   "k": "werte",
+   "msg": "shinyCols gültige Hex-Farben (nur Arten ohne ART_HUE-Überschreibung; VM-Stub ausgenommen): 2 Loddo [\"#0\",\"#0\",\"#0\"] | 3 Flammel [\"#0\",\"#0\",\"#0\"] | 5 Wabbel [\"#0\",\"#0\",\"#0\"] | 6 Aquilo [\"#0\",\"#0\",\"#0\"] | 58 Brocken [\"#0\",\"#0\",\"#0\"] | 60 Wolkito [\"#0\",\"#0\",\"#0\"] | 62 Strahli [\"#0\",\"#0\",\"#0\"]",
+   "sev": "info"
+  },
+  {
+   "k": "habitat",
+   "msg": "Spielbarkeit (Info): in aktuellen Karten (MAPS.enc, Trainer-Teams, Starter/Geschenk, Entwicklung) erreichbar: 62/153; NICHT erreichbar (nur Habitat-Metadaten, wartet auf Loop C/D): 80 Arten → 10,13,14,15,16,17,18,19,20,21,28,29,30,40,41,42,43,44,45,46,47,48,49,50,51,52,55,56,63,64,65,66,67,68,69,70,71,78,79,80,81,82,83,84,85,86,87,88,89,93,94,95,96,97,98,108,109,110,111,114,116,118,119,120,121,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139; Legenden mit Fundort im Spiel: 142,144,147 von 140–153 (14)",
+   "sev": "mittel"
+  }
+ ],
+ "oldNameHits": []
+}

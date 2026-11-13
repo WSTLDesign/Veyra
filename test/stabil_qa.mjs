@@ -77,7 +77,7 @@ async function partA(tag, root) {
 if (VOR && ONLY !== 'n' && !process.env.STAB_SKIP_VA) { const pv = await partA('v', 'v'); await pv.screenshot({ path: here('stabil_vorher_route1.png') }).catch(e => note('Bildschirmfoto Zeitüberschreitung: ' + e.message.slice(0, 60))); await pv.context().close(); }
 if (!process.env.STAB_SKIP_A) {
 const p = await partA('n', 'n'); const ev = (f, a) => p.evaluate(f, a); const W = ms => p.waitForTimeout(ms); const N = R.mess.n;
-t('1 Iris Xe → Stufe „mittel“, 30 fps, DPR ≤ 1,25', N.start.stab && N.start.stab.cls === 'igpu' && N.start.tier === 'mid' && N.start.stab.cap === 30 && N.start.dpr <= 1.25, { cls: N.start.stab && N.start.stab.cls, tier: N.start.tier, cap: N.start.stab && N.start.stab.cap, dpr: N.start.dpr });
+t('1 Iris Xe → Stufe „mittel“, Deckel 60 (Wachhund → 30, wenn nicht haltbar), DPR ≤ 1,25', N.start.stab && N.start.stab.cls === 'igpu' && N.start.tier === 'mid' && N.start.stab.cap >= 30 && N.start.dpr <= 1.25, { cls: N.start.stab && N.start.stab.cls, tier: N.start.tier, cap: N.start.stab && N.start.stab.cap, dpr: N.start.dpr });
 t('1 GFX.strong für integrierte Grafik aus', N.start.strong === false, N.start.strong);
 { const cl = await ev(() => ['NVIDIA GeForce RTX 3060 Laptop GPU', 'AMD Radeon RX 6700 XT', 'ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified)', 'Intel(R) Iris(R) Xe Graphics', 'Intel(R) Arc(TM) Graphics', 'Intel(R) Arc(TM) A770 Graphics', 'AMD Radeon(TM) Graphics', 'Intel(R) UHD Graphics 620', 'Intel(R) HD Graphics 520', 'AMD Radeon(TM) Vega 8 Graphics', 'Intel(R) Iris(TM) Plus Graphics 655', 'NVIDIA GeForce MX450', 'Google SwiftShader'].map(r => stabClass('ANGLE (' + r + ')', false)));
   t('1 Klassen: RTX/RX/M1 dediziert · Iris Xe/Arc int./Radeon Graphics mittel · UHD/HD/Vega/Iris Plus niedrig', cl.join() === 'dgpu,dgpu,dgpu,igpu,igpu,dgpu,igpu,igpu-low,igpu-low,igpu-low,igpu-low,igpu,soft', cl); }
@@ -104,7 +104,7 @@ await W(1500);
   await W(300); const f1 = await ev(() => PERF.frames); await W(2000); const f2 = await ev(() => PERF.frames);
   await ev(() => { delete document.hidden; delete document.visibilityState; document.dispatchEvent(new Event('visibilitychange')); }); await W(1500); const f3 = await ev(() => PERF.frames);
   t('4d verdeckt (visibilitychange) → keine Bilder, danach weiter', f2 - f1 === 0 && f3 > f2, { f0, f1, f2, f3 });
-  await ev(() => { window.__hf = document.hasFocus; document.hasFocus = () => false; dispatchEvent(new Event('blur')); }); await W(500);
+  await ev(() => { window.__hf = document.hasFocus; document.hasFocus = () => false; dispatchEvent(new Event('blur')); }); await W(2200);
   const b0 = await ev(() => PERF.frames); await W(3000); const b1 = await ev(() => PERF.frames);
   await ev(() => { document.hasFocus = window.__hf; dispatchEvent(new Event('focus')); }); await W(800);
   t('4d ohne Fokus → höchstens 5 Bilder/s', (b1 - b0) / 3 <= 5.5 && b1 > b0, { fps: +((b1 - b0) / 3).toFixed(1) });
@@ -122,6 +122,23 @@ await W(1500);
 await p.screenshot({ path: here('stabil_nach_stop.png') }).catch(e => note('Bildschirmfoto Zeitüberschreitung: ' + e.message.slice(0, 60)));
 t('0 keine Seitenfehler (Spiel)', !p.errs.length, p.errs.slice(0, 5)); await p.context().close();
 }
+// ---------- M) Handy-Pfad (R2): Touch, iOS-Standalone, maskierte GPU „Apple GPU“, hasFocus() = false, 844×390 und 932×430 bei DPR 3 ----------
+if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 3, isMobile: true, hasTouch: true,
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1' });
+  await ctx.addInitScript(() => { for (const C of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) { if (!C) continue; const gp = C.prototype.getParameter; C.prototype.getParameter = function (p) { if (p === 0x9246) return 'Apple GPU'; if (p === 0x9245) return 'Apple Inc.'; return gp.call(this, p); }; }
+    try { Object.defineProperty(navigator, 'standalone', { get: () => true }); } catch (e) { } document.hasFocus = () => false; try { localStorage.clear(); localStorage.setItem('veyra_set', JSON.stringify({ modelle3d: true })); } catch (e) { } });
+  const mp = await ctx.newPage(); const me = []; mp.on('pageerror', e => me.push(e.message.slice(0, 120)));
+  await mp.route(/fonts\.googleapis|fonts\.gstatic/, r => r.fulfill({ body: '', contentType: 'text/css' })); mp.setDefaultTimeout(30000);
+  await mp.goto(URL0 + 'n/index.html', { waitUntil: 'load', timeout: 180000 }); await mp.waitForTimeout(1500);
+  await mp.evaluate(() => { const i = document.getElementById('intro'); if (i) i.hidden = true; beginGame({}); });
+  await mp.waitForFunction(() => { if (typeof TW === 'object' && TW && TW.finish) TW.finish(); if (mode === 'dialog') advDlg(); return !!G && !!R3; }, null, { timeout: 60000, polling: 300 });
+  await mp.evaluate(() => { for (let i = 0; i < 40 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); } G.team = [mk(1, 12)]; setView('third'); loadMap('morgenau', 9, 8); mode = 'world'; dispatchEvent(new Event('blur')); });
+  await mp.waitForTimeout(6000); const f0 = await mp.evaluate(() => PERF.frames); await mp.waitForTimeout(4000);
+  const mi = await mp.evaluate(f0 => ({ cls: STAB.cls, tier: PERF.tier, base: STAB.base, blur: STAB.blur, off: STAB.off, cap: stabCap(), dpr: dprCap(), models: pilotOn(), frames: PERF.frames - f0, touch: PERF.touch }), f0);
+  t(`M ${w}×${h} Handy: Apple GPU → mobil, mit Modellen Start ≤ „mittel“, kein Deckel unter 30, DPR ≤ 2`, mi.cls === 'mobil' && mi.touch && mi.base !== 'high' && mi.cap >= 30 && mi.dpr <= 2 && mi.models, mi);
+  t(`M ${w}×${h} Handy: hasFocus() = false + blur-Ereignis → KEINE Drosselung, keine Pause`, !mi.blur && !mi.off && mi.frames > 0, mi);
+  t(`M ${w}×${h} keine Seitenfehler`, !me.length, me.slice(0, 3)); R.mess['mobil_' + w] = mi; await ctx.close(); }
 // ---------- B) Leitstand mit Werkstatt-Build im Rahmen: Start → 20 s → Beenden → Außenseite wieder flüssig ----------
 async function partB(tag, root) {
   const lp = await mkPage(root + '/leitstand.html'); const M = R.mess['ls_' + tag] = {};
@@ -146,8 +163,12 @@ async function partB(tag, root) {
     t('5 Leitstand: Werkstatt ausgeblendet → Spiel pausiert, danach weiter', i1 - i0 <= 1 && off && i2 > i1, { i0, i1, i2, off });
     // Fokus auf der Außenseite → gedrosselt
     await lp.click('#vW h2'); await lp.waitForTimeout(900); const d0 = await fr.evaluate(() => PERF.frames); await lp.waitForTimeout(3000); const d1 = await fr.evaluate(() => PERF.frames);
-    t('5 Leitstand: Fokus außen → Spiel ≤ 5 Bilder/s', (d1 - d0) / 3 <= 5.5, { fps: +((d1 - d0) / 3).toFixed(1) });
+    const dbl = await fr.evaluate(() => STAB.blur);
+    t('5 Leitstand (R2): Fokus außen (z. B. Klick auf „Vollbild“) → Spiel wird NICHT gedrosselt, läuft weiter', !dbl && d1 > d0, { blur: dbl, fps: +((d1 - d0) / 3).toFixed(1) });
     t('5 Werkstatt startet auf „mittel“ oder niedriger, Badge zeigt fps + Stufe', M.innen.stab && M.innen.stab.ws && M.innen.stab.base === 'mid' && /fps|Pause/.test(await fr.evaluate(() => (document.querySelector('#stgBadge .stab') || {}).textContent || '')), { ws: M.innen.stab && M.innen.stab.ws, base: M.innen.stab && M.innen.stab.base, badge: await fr.evaluate(() => (document.querySelector('#stgBadge .stab') || {}).textContent || '') });
+    { const sw = await fr.evaluate(async () => { const b = document.getElementById('stgBadge'); if (b) b.click(); await new Promise(r => setTimeout(r, 1500)); const c = document.getElementById('stgM3d'); return { da: !!c, an: c ? c.checked : null }; });
+      t('R2 Staging-Menü: Schalter „Neue 3D-Modelle“ vorhanden (ohne URL-Zusatz erreichbar)', sw.da, sw);
+      await fr.evaluate(() => { const b = document.getElementById('stgBadge'); if (b) b.click(); }); }
     await lp.screenshot({ path: here('stabil_leitstand.png') }).catch(e => note('Bildschirmfoto Zeitüberschreitung: ' + e.message.slice(0, 60)));
   }
   const s0 = Date.now(); await lp.click('#stopGame', { timeout: 15000 }).catch(e => note('Klick Beenden: ' + e.message.slice(0, 100)));

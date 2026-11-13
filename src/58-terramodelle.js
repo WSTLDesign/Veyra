@@ -13,9 +13,9 @@ const TMOD={ids:{1:'t001',2:'t002',3:'t003',4:'t004',5:'t005',6:'t006',7:'t007',
   t004:{walk:[.125,1],run:[.2,.6],glow:1.2,fx:[['fx_krone','#9fe8ff',.35]]},t005:{walk:[.155,1],run:[.248,.6],glow:1.2,fx:[['fx_krone','#9fe8ff',.4]]},
   t006:{walk:[.2,1],run:[.32,.6],glow:1.4,fx:[['fx_krone','#7ff6ff',.5]]},
   t007:{walk:[.09,.8],run:[.16,.5]},t008:{walk:[.12,.8],run:[.22,.5]},t009:{walk:[.3,.867],run:[.5,.5]},t112:{walk:[.07,.867],run:[.13,.5]},t059:{walk:[.06,.6],run:[.11,.4]},t061:{walk:[.165,1],run:[.275,.667],glow:1.3,fx:[['fx_laterne','#ffe070',.5],['fx_fuehlerL','#ffeaa0',.18],['fx_fuehlerR','#ffeaa0',.18]]}},
- base:{t001:{Maul_auf:.6},t004:{Maul_auf:.6},t059:{Maul_auf:.45},t061:{Maul_auf:.5}},
+ base:{t001:{Maul_auf:.6,Maul_weit:.35},t004:{Maul_auf:.6,Maul_weit:.35},t059:{Maul_auf:.5},t061:{Maul_auf:.6}},
  tint:{1:'#9ad8ff',2:'#9ad8ff',3:'#9ad8ff',4:'#c8ffb0',5:'#c8ffb0',6:'#c8ffb0',7:'#ffd0f0',8:'#ffd0f0',9:'#ffd0f0',59:'#ffe0a0',61:'#b0ffe8',112:'#e8d0a0'},lodD:7};
-const TM_EXPR={neutral:{},freudig:{Augen_froh:1,Maul_auf:.75},froh:{Augen_froh:1,Maul_auf:.75},wuetend:{Augen_wach:1,Maul_auf:.35},entschlossen:{Augen_wach:.7},
+const TM_EXPR={neutral:{},freudig:{Augen_froh:.55,Maul_auf:.8},froh:{Augen_froh:.55,Maul_auf:.8},wuetend:{Augen_wach:1,Maul_auf:.35},entschlossen:{Augen_wach:.7},
  verletzt:{Augen_muede:.7,Maul_weit:.35,Ohren_an:1},muede:{Augen_muede:1,Ohren_an:.5},ueberrascht:{Staunen:1,Maul_auf:.55},staunen:{Staunen:1,Maul_auf:.55},schlaf:{Blinzeln:1,Ohren_an:.4},traurig:{Augen_muede:.8,Ohren_an:1}};
 try{if(typeof TOONPRO!=='undefined'&&!TOONPRO.variants.terra)TOONPRO.variants.terra={px:.7,dark:.09};}catch(e){}
 function tmOn(){try{return typeof pilotOn==='function'?pilotOn():(SET.modelle3d===true||/[?&]modelle3d=1/.test(location.search));}catch(e){return false;}}

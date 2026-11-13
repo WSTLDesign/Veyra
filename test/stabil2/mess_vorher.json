@@ -1,0 +1,312 @@
+{
+ "auto_morgenau": {
+  "n": 4,
+  "dauer": 6.1,
+  "fps": 0.5,
+  "ivAvg": 2044.1,
+  "ivP95": 2168,
+  "ivMax": 2168,
+  "ivSd": 130.3,
+  "js": 32.1,
+  "jsP95": 33.6,
+  "calls": 76,
+  "tris": "169k",
+  "wackelX": null,
+  "wackelY": null,
+  "wackelMax": null,
+  "tempo": 0.11,
+  "tempoCV": 0.118,
+  "camCV": 0.005,
+  "breiten": 2,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 2,
+   "fit": 2
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 2,
+   "downs": 1,
+   "ups": 0,
+   "work": 826.1
+  },
+  "budget": {
+   "welt": [
+    19328,
+    5,
+    0
+   ],
+   "instanzen": [
+    61490,
+    29,
+    18672
+   ],
+   "instanzen-umriss": [
+    12096,
+    8,
+    6048
+   ],
+   "welt-umriss": [
+    14300,
+    4,
+    7150
+   ],
+   "figur": [
+    29680,
+    16,
+    0
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "terra": [
+    8454,
+    4,
+    0
+   ]
+  },
+  "settle": "17.7",
+  "errs": []
+ },
+ "auto_route1": {
+  "n": 6,
+  "dauer": 6.7,
+  "fps": 0.7,
+  "ivAvg": 1349.2,
+  "ivP95": 1552,
+  "ivMax": 1552,
+  "ivSd": 123.2,
+  "js": 19.9,
+  "jsP95": 35.5,
+  "calls": 67,
+  "tris": "170k",
+  "wackelX": 0.13,
+  "wackelY": 0.35,
+  "wackelMax": 0.6,
+  "tempo": 0.16,
+  "tempoCV": 0.134,
+  "camCV": 0.013,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 3,
+   "fit": 3
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 4,
+   "downs": 0,
+   "ups": 0,
+   "work": 575.1
+  },
+  "budget": {
+   "welt": [
+    25788,
+    17,
+    188
+   ],
+   "instanzen": [
+    89996,
+    28,
+    25840
+   ],
+   "welt-umriss": [
+    12814,
+    6,
+    7654
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "terra": [
+    8454,
+    4,
+    0
+   ],
+   "terra-umriss": [
+    7814,
+    3,
+    0
+   ]
+  },
+  "settle": "16.1",
+  "errs": []
+ },
+ "mittel_morgenau": {
+  "n": 7,
+  "dauer": 6.4,
+  "fps": 0.9,
+  "ivAvg": 1068,
+  "ivP95": 1166,
+  "ivMax": 1166,
+  "ivSd": 62.3,
+  "js": 27.3,
+  "jsP95": 46,
+  "calls": 76,
+  "tris": "169k",
+  "wackelX": 0.04,
+  "wackelY": 0.83,
+  "wackelMax": 1.5,
+  "tempo": 0.21,
+  "tempoCV": 0.101,
+  "camCV": 0.005,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 4,
+   "fit": 4
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 5,
+   "downs": 0,
+   "ups": 0,
+   "work": 524.4
+  },
+  "budget": {
+   "welt": [
+    19328,
+    5,
+    0
+   ],
+   "instanzen": [
+    61490,
+    29,
+    18672
+   ],
+   "instanzen-umriss": [
+    12096,
+    8,
+    6048
+   ],
+   "welt-umriss": [
+    14300,
+    4,
+    7150
+   ],
+   "figur": [
+    29680,
+    16,
+    0
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "terra": [
+    8454,
+    4,
+    0
+   ]
+  },
+  "settle": "16.1",
+  "errs": []
+ },
+ "mittel_route1": {
+  "n": 6,
+  "dauer": 7.3,
+  "fps": 0.7,
+  "ivAvg": 1467.9,
+  "ivP95": 1657,
+  "ivMax": 1657,
+  "ivSd": 118.4,
+  "js": 25.2,
+  "jsP95": 32.7,
+  "calls": 78,
+  "tris": "183k",
+  "wackelX": 0.13,
+  "wackelY": 0.35,
+  "wackelMax": 0.6,
+  "tempo": 0.15,
+  "tempoCV": 0.126,
+  "camCV": 0.013,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 2,
+   "fit": 2
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 4,
+   "downs": 0,
+   "ups": 0,
+   "work": 631.5
+  },
+  "budget": {
+   "welt": [
+    25788,
+    17,
+    188
+   ],
+   "instanzen": [
+    89996,
+    28,
+    25840
+   ],
+   "welt-umriss": [
+    12814,
+    6,
+    7654
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "terra": [
+    23584,
+    16,
+    0
+   ],
+   "terra-umriss": [
+    7814,
+    3,
+    0
+   ]
+  },
+  "settle": "17.7",
+  "errs": []
+ }
+}

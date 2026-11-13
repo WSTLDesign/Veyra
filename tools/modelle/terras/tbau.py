@@ -154,7 +154,7 @@ def maul(w=.3, z=-.5, smile=.1, mid=True, dicke=1.0, yn=-1):
         for i in range(9):
             t = i / 8 * 2 - 1; MD.append(mpt(t * w, z + smile * t * t - .02, .001)); MUV.append((.5 + .5 * i / 8, .5 * j / 4))
     for j in range(4):
-        for i in range(8): a = j * 9 + i; MF.append((a, a + 1, a + 10, a + 9))
+        for i in range(8): a = j * 9 + i; MF.append((a, a + 9, a + 10, a + 1))   # Normale nach vorn (sonst wird die Mundhöhle weggeschnitten)
     md = obj_data('Maul', MD, MF); set_region(md, 'mund_innen'); uvl = md.data.uv_layers.new(name='UVMap')
     for l in md.data.loops: uvl.data[l.index].uv = MUV[l.vertex_index]
     gr = md.vertex_groups.new(name='mund_reihe'); gc = md.vertex_groups.new(name='mund_spalte')

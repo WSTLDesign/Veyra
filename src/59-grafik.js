@@ -25,6 +25,8 @@ vec3 CustomToneMapping( vec3 color ){vec3 l=pow(max(color,vec3(0.)),vec3(2.2))*t
 Object.assign(PERF.TIERS.high,{shadow:2048,shadowEvery:1,part:1,veg:.9,fog:1,leaves:34,sExt:12.5,sFwd:5,dpr:2,smin:.85,bloom:1,aniso:8,grass:1});
 Object.assign(PERF.TIERS.mid,{shadow:1024,shadowEvery:1,part:.65,veg:.78,fog:.92,leaves:18,sExt:11,sFwd:4.5,dpr:1.75,smin:.75,bloom:0,aniso:4,grass:.8});
 Object.assign(PERF.TIERS.low,{shadow:0,shadowEvery:0,part:.3,veg:.5,fog:.78,leaves:0,sExt:10,sFwd:4,dpr:1.5,smin:.7,bloom:0,aniso:2,grass:.55});
+// Stabilität R2: Handy/Tablet – Laub/Gras-Instanzen sind der größte Posten (60–90 k Dreiecke auf Route 1) → Dichte je Stufe auf Touch geringer
+if(typeof PERF==='object'&&PERF.touch){Object.assign(PERF.TIERS.high,{veg:.7,grass:.8,part:.8});Object.assign(PERF.TIERS.mid,{veg:.55,grass:.65,part:.5,leaves:10});Object.assign(PERF.TIERS.low,{veg:.35,grass:.45,part:.25});}
 function gfxTier(){return perfTier();}
 // Starke Mobil-GPUs (aktuelle iPhones/iPads, Adreno ≥ 640, Mali-G7x/G6xx-Oberklasse, Immortalis, Xclipse) dürfen auf „hoch“ starten
 (function(){try{const c=document.createElement('canvas'),g=c.getContext('webgl');if(!g)return;const e=g.getExtension('WEBGL_debug_renderer_info'),r=e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)):'';GFX.gpu=r;
@@ -106,15 +108,25 @@ if(typeof skyFrame==='function'&&!skyFrame._gfx){const _sf=skyFrame;skyFrame=fun
 // ---------- Runde 5: Entfernungs-Budget für Figuren-/Terra-Modelle (57/58, nur Schalter an) ----------
 // Je Bild vor dem Zeichnen (und danach zurückgesetzt, damit 57/58/09 ihre eigenen Zustände behalten):
 //  ab sh Feldern kein Schattenwurf · ab ol Feldern kein Umriss · ab hide Feldern ausgeblendet (Spielfigur nie). Die LOD-Stufen von 57/58 bleiben aktiv.
-GFX.mlod={high:{sh:4.5,ol:7,hide:24,lod:5},mid:{sh:3.5,ol:5,hide:18,lod:4},low:{sh:0,ol:4,hide:14,lod:3}};
+GFX.mlod={high:{sh:4.5,ol:7,hide:24,lod:5,max:14,nsh:3},mid:{sh:3.5,ol:5,hide:18,lod:4,max:10,nsh:2},low:{sh:0,ol:4,hide:14,lod:3,max:6,nsh:0}};
+// Stabilität R2: Handy/Tablet (Touch) strenger – Budget ≈ 80–100 k Dreiecke: Umriss nur nah, LOD1 früh, höchstens 4–8 Modelle, Schatten nur Spielfigur + nächste
+GFX.mlodT={high:{sh:3.5,ol:4,hide:16,lod:3.5,max:8,nsh:2},mid:{sh:3,ol:3.5,hide:14,lod:3,max:6,nsh:1},low:{sh:0,ol:3,hide:12,lod:2.5,max:4,nsh:0}};
 const _gM={roots:[],t:0,undo:[],v:new THREE.Vector3()};
 function gfxModelRoots(S){const out=[];for(const o of S.children){const U=o.userData||{};if(U.pilot||U.lod0||U.lod1){out.push(o);continue;}for(const c of o.children){const V=c.userData||{};if(V.pilot||V.lod0||V.lod1)out.push(c);}}return out;}
-function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);}if(!_gM.roots.length||!c)return;
- const L=GFX.mlod[perfTier().name]||GFX.mlod.high,cp=c.getWorldPosition(_gM.v),u=_gM.undo;
- for(const r of _gM.roots){if(!r.visible||r===R3.player)continue;let p=r.userData._gp||(r.userData._gp=new THREE.Vector3());r.getWorldPosition(p);const d=p.distanceTo(cp);
-  if(d>L.hide&&!r.userData.held){r.visible=false;u.push([r,'visible',true]);continue;}
+function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);const w=_gM.wol=[];for(const o of S.children){if(o.isMesh&&o.userData&&o.userData.outline)w.push(o);else for(const q of o.children)if(q.isMesh&&q.userData&&q.userData.outline)w.push(q);}}if(!c)return;
+ const tn=perfTier().name,touch=typeof PERF==='object'&&PERF.touch,L=((touch?GFX.mlodT:GFX.mlod)[tn])||GFX.mlod.high,cp=c.getWorldPosition(_gM.v),u=_gM.undo;
+ // Umrisshüllen der Welt (Häuser, Bäume): auf „niedrig“ und am Handy unter „hoch“ aus (≈ 25 k Dreiecke in Morgenau)
+ if(tn==='low'||(touch&&tn!=='high'))for(const m of _gM.wol)if(m.visible){m.visible=false;u.push([m,'visible',true]);}
+ if(!_gM.roots.length)return;
+ // Entfernung zur Spielfigur (nicht zur Kamera: die Kamera steht 2–4 Felder dahinter); nach Entfernung sortiert → Budget (max. Modelle, Schatten nur die nächsten)
+ const pp=R3.player?R3.player.position:cp,list=_gM.list||(_gM.list=[]);list.length=0;
+ for(const r of _gM.roots){if(!r.visible||r===R3.player)continue;const p=r.userData._gp||(r.userData._gp=new THREE.Vector3());r.getWorldPosition(p);r.userData._gd=Math.hypot(p.x-pp.x,p.z-pp.z);list.push(r);}
+ list.sort((a,b)=>a.userData._gd-b.userData._gd);let ni=0,si=0;
+ for(const r of list){const d=r.userData._gd;ni++;
+  if((d>L.hide||ni>(L.max||99))&&!r.userData.held){r.visible=false;u.push([r,'visible',true]);continue;}
+  const shOk=si<(L.nsh??9)&&d<=L.sh;if(shOk)si++;
   {const lo=r.userData.lod;if(lo&&lo[0]&&lo[1]&&d>L.lod&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}}// Figuren-LOD1 (57) schon ab lod Feldern
-  if(d>L.sh||d>L.ol){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
-   for(const m of ms){if(d>L.sh&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
+  if(!shOk||d>L.ol){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
+   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
 function gfxModelPost(){const u=_gM.undo;for(let i=u.length-1;i>=0;i--){const[o,k,v]=u[i];o[k]=v;}u.length=0;}
 if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=function(){_gs();const r=R3.r,rr=r.render;r.render=function(s,c){const w=s===R3.scene&&r.getRenderTarget()===null;if(w)try{gfxModelPre(s,c);}catch(e){}try{rr.call(r,s,c);}finally{if(w)gfxModelPost();}};};gfxSetup._m=1;}

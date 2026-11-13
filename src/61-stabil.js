@@ -88,7 +88,8 @@ function stabMeasure(dt,t){const W=STAB.win;
  if(avg<tgt*1.2+4){if(!STAB.stableT)STAB.stableT=now;if(now-STAB.stableT>=10000&&now-STAB.lastBad>=10000&&now-STAB.lastUp>=10000){stabUp();STAB.stableT=now;}}else STAB.stableT=0;}
 // Ereignisse mit erwartbar langem Bild
 function stabGrace(n){STAB.grace=Math.max(STAB.grace,n||3);}
-if(typeof loadMap==='function'&&!loadMap._stab){const _lm=loadMap;loadMap=function(){stabGrace(4);return _lm.apply(this,arguments);};loadMap._stab=1;}
+if(typeof loadMap==='function'&&!loadMap._stab){const _lm=loadMap;loadMap=function(){stabGrace(4);try{if(VMODEL_QUEUE.held)vmqRelease();}catch(e){}return _lm.apply(this,arguments);};loadMap._stab=1;}
+if(typeof transit==='function'&&!transit._stab){const _tr=transit;transit=function(){try{if(VMODEL_QUEUE.held)vmqRelease(4000);}catch(e){}return _tr.apply(this,arguments);};transit._stab=1;}
 if(typeof startBattle==='function'&&!startBattle._stab){const _sb=startBattle;startBattle=function(){stabGrace(4);return _sb.apply(this,arguments);};startBattle._stab=1;}
 if(typeof setView==='function'&&!setView._stab){const _sv=setView;setView=function(){stabGrace(3);return _sv.apply(this,arguments);};setView._stab=1;}
 // Test: künstliche Last je gezeichnetem Bild (ms Rechenzeit auf dem Hauptthread)
@@ -120,8 +121,13 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){clearTime
 // ---------- 3) Modell-Warteschlange ----------
 const VMODEL_QUEUE=window.VMODEL_QUEUE={q:[],busy:false,gap:100,done:0,fail:0,max:0,ms:[],log:[]};
 const stabIdle=f=>{try{if(window.requestIdleCallback)return requestIdleCallback(f,{timeout:400});}catch(e){}return setTimeout(f,16);};
-function vmqPush(job,prio,name){const Q=VMODEL_QUEUE;Q.q.push({job,prio:prio||5,t:performance.now(),name});Q.q.sort((a,b)=>a.prio-b.prio||a.t-b.t);Q.max=Math.max(Q.max,Q.q.length);vmqNext();}
+function vmqPush(job,prio,name,url){const Q=VMODEL_QUEUE;Q.q.push({job,prio:prio||5,t:performance.now(),name,welt:/welt\//.test(String(url||''))});Q.q.sort((a,b)=>a.prio-b.prio||a.t-b.t);Q.max=Math.max(Q.max,Q.q.length);vmqNext();}
+// R2: Hausmodelle bauen beim Fertigwerden die ganze Kartenszene neu (09) – das darf nie mitten im Spiel passieren (sichtbares „Neuladen“ des Dorfs).
+// Läuft schon eine Szene, warten sie bis zum nächsten Kartenwechsel (vmqRelease aus loadMap/transit, Bild dann vom Lade-/Türbild verdeckt).
+function vmqPlaying(){try{return typeof R3==='object'&&R3&&R3.mapId&&typeof mode!=='undefined'&&mode!=='title'&&!(typeof LADEN==='object'&&LADEN.active)&&!VMODEL_QUEUE.open;}catch(e){return false;}}
+function vmqRelease(ms){const Q=VMODEL_QUEUE;Q.open=true;clearTimeout(Q.openT);Q.openT=setTimeout(()=>{Q.open=false;},ms||2500);vmqNext();}
 function vmqNext(){const Q=VMODEL_QUEUE;if(Q.busy||!Q.q.length||STAB.stopped)return;if(STAB.off||document.hidden){setTimeout(vmqNext,500);return;}
+ if(Q.q[0].welt&&vmqPlaying()){const i=Q.q.findIndex(x=>!x.welt);if(i<0){Q.held=Q.q.length;return;}Q.q.unshift(Q.q.splice(i,1)[0]);}
  Q.busy=true;const it=Q.q.shift();stabIdle(()=>{const t0=performance.now();let fin=false;
   const end=ok=>{if(fin)return;fin=true;Q.busy=false;ok?Q.done++:Q.fail++;Q.ms.push([it.name,Math.round(performance.now()-t0)]);stabGrace(2);setTimeout(()=>stabIdle(vmqNext),Q.gap);};
   try{it.job(end);}catch(e){end(false);}});}
@@ -134,7 +140,7 @@ function vmqResolve(u){const id=vmqName(u),P=window.PILOT_SRC||{},Lz=window.PILO
  return new Promise(res=>{const s=document.createElement('script');s.src=Lz[id];s.async=true;s.onload=()=>{res((window.PILOT_SRC||{})[id]||u);};s.onerror=()=>res(u);document.head.appendChild(s);});}
 function vmqWrap(L){if(!L||L._stab)return L;L._stab=1;const ld=L.load.bind(L);
  L.load=function(url,onL,onP,onE){const nm=vmqName(url);vmqPush(end=>{vmqResolve(url).then(u=>{if(STAB.stopped){end(false);return;}
-   ld(u,g=>{try{onL&&onL(g);}finally{end(true);try{if(window.PILOT_SRC&&window.PILOT_LAZY&&window.PILOT_LAZY[nm])delete window.PILOT_SRC[nm];}catch(e){}}},onP,e=>{try{onE&&onE(e);}finally{end(false);}});});},vmqPrio(url),nm);};
+   ld(u,g=>{try{onL&&onL(g);}finally{end(true);try{if(window.PILOT_SRC&&window.PILOT_LAZY&&window.PILOT_LAZY[nm])delete window.PILOT_SRC[nm];}catch(e){}}},onP,e=>{try{onE&&onE(e);}finally{end(false);}});});},vmqPrio(url),nm,url);};
  try{if(L.dracoLoader&&L.dracoLoader.setWorkerLimit)L.dracoLoader.setWorkerLimit(1);}catch(e){}// Draco dekodiert im Worker – einer reicht, schont die CPU
  return L;}
 if(typeof modelLoaders==='function'&&!modelLoaders._stab){const _ml=modelLoaders;modelLoaders=function(){return _ml().then(vmqWrap);};modelLoaders._stab=1;}
@@ -196,3 +202,5 @@ function stabPanel(){const P_=document.getElementById('stgPanel');if(!P_||docume
  const h=[...P_.querySelectorAll('h3')].find(x=>/Fehler/.test(x.textContent));for(const c of[...w.childNodes])P_.insertBefore(c,h||null);
  document.getElementById('stgM3d').onchange=e=>{SET.modelle3d=!!e.target.checked;try{saveSet();}catch(x){try{localStorage.setItem(SETKEY,JSON.stringify(SET));}catch(y){}}try{save();}catch(x){}setTimeout(()=>location.reload(),150);};}
 setInterval(()=>{if(STAB.stopped)return;try{stabPanel();const el=document.getElementById('stgStab');if(el&&el.offsetParent){const i=stabInfo();el.textContent=`GPU ${i.cls} · Stufe ${STAB_TL[i.tier]||i.tier} · ${i.fps} fps (Deckel ${i.cap}) · Skala ${Math.round(i.scale*100)} %`+(i.emerg?' · Notbremse':'');}}catch(e){}},1000);
+// R2: Nachbarorte nicht mehr vorladen (45 dekodierte beim Betreten jedes Orts die Bilder aller Nachbarkarten) – der Ladebildschirm lädt das Bild beim Wechsel selbst
+if(typeof hyPlacePreload==='function')hyPlacePreload=function(){};

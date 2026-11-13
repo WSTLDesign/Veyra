@@ -1,0 +1,307 @@
+{
+ "auto_morgenau": {
+  "n": 11,
+  "dauer": 7.3,
+  "fps": 1.4,
+  "ivAvg": 729.6,
+  "ivP95": 792,
+  "ivMax": 792,
+  "ivSd": 22.3,
+  "js": 19.4,
+  "jsP95": 44,
+  "calls": 67,
+  "tris": "158k",
+  "wackelX": 0.06,
+  "wackelY": 0.4,
+  "wackelMax": 1.5,
+  "tempo": 0.31,
+  "tempoCV": 0.067,
+  "camCV": 0.006,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 5,
+   "fit": 5
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 36,
+   "downs": 2,
+   "ups": 0,
+   "work": 358.6
+  },
+  "budget": {
+   "welt": [
+    19328,
+    5,
+    0
+   ],
+   "instanzen": [
+    61490,
+    29,
+    18672
+   ],
+   "figur": [
+    35580,
+    16,
+    0
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "figur-umriss": [
+    11772,
+    1,
+    0
+   ],
+   "terra": [
+    8454,
+    4,
+    0
+   ],
+   "terra-umriss": [
+    7814,
+    3,
+    0
+   ]
+  },
+  "settle": "62.0",
+  "errs": []
+ },
+ "auto_route1": {
+  "n": 6,
+  "dauer": 6.2,
+  "fps": 0.8,
+  "ivAvg": 1238.1,
+  "ivP95": 1281,
+  "ivMax": 1281,
+  "ivSd": 43.3,
+  "js": 25.1,
+  "jsP95": 45.5,
+  "calls": 75,
+  "tris": "177k",
+  "wackelX": 0.13,
+  "wackelY": 0.35,
+  "wackelMax": 0.6,
+  "tempo": 0.18,
+  "tempoCV": 0.08,
+  "camCV": 0.013,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 3,
+   "fit": 3
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 4,
+   "downs": 0,
+   "ups": 0,
+   "work": 591.5
+  },
+  "budget": {
+   "welt": [
+    33448,
+    23,
+    188
+   ],
+   "instanzen": [
+    89996,
+    28,
+    25840
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "figur": [
+    7420,
+    4,
+    0
+   ],
+   "terra": [
+    13764,
+    8,
+    0
+   ],
+   "terra-umriss": [
+    7814,
+    3,
+    0
+   ]
+  },
+  "settle": "16.3",
+  "errs": []
+ },
+ "mittel_morgenau": {
+  "n": 13,
+  "dauer": 7.8,
+  "fps": 1.5,
+  "ivAvg": 648.3,
+  "ivP95": 755,
+  "ivMax": 755,
+  "ivSd": 52,
+  "js": 14.9,
+  "jsP95": 36.9,
+  "calls": 53,
+  "tris": "127k",
+  "wackelX": 0.07,
+  "wackelY": 0.42,
+  "wackelMax": 1.5,
+  "tempo": 0.35,
+  "tempoCV": 0.08,
+  "camCV": 0.042,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 5,
+   "fit": 5
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 2,
+   "emerg": 25,
+   "downs": 0,
+   "ups": 0,
+   "work": 274.6
+  },
+  "budget": {
+   "welt": [
+    19328,
+    5,
+    0
+   ],
+   "instanzen": [
+    61490,
+    29,
+    18672
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "figur": [
+    7420,
+    4,
+    0
+   ],
+   "terra": [
+    8454,
+    4,
+    0
+   ],
+   "terra-umriss": [
+    7814,
+    3,
+    0
+   ]
+  },
+  "settle": "52.6",
+  "errs": []
+ },
+ "mittel_route1": {
+  "n": 7,
+  "dauer": 7.1,
+  "fps": 0.8,
+  "ivAvg": 1181.7,
+  "ivP95": 1232,
+  "ivMax": 1232,
+  "ivSd": 30.8,
+  "js": 23.2,
+  "jsP95": 35.1,
+  "calls": 76,
+  "tris": "177k",
+  "wackelX": 0.1,
+  "wackelY": 0.41,
+  "wackelMax": 0.6,
+  "tempo": 0.19,
+  "tempoCV": 0.072,
+  "camCV": 0.012,
+  "breiten": 1,
+  "stufen": "low",
+  "ev": {
+   "perfSet": 3,
+   "fit": 3
+  },
+  "req": [],
+  "stab": {
+   "tier": "low",
+   "cap": 30,
+   "scale": 0.5,
+   "fps": 1,
+   "emerg": 5,
+   "downs": 0,
+   "ups": 0,
+   "work": 580.6
+  },
+  "budget": {
+   "welt": [
+    25788,
+    17,
+    188
+   ],
+   "instanzen": [
+    89996,
+    28,
+    25840
+   ],
+   "spieler": [
+    13319,
+    4,
+    11771
+   ],
+   "spieler-umriss": [
+    11771,
+    1,
+    0
+   ],
+   "figur": [
+    7420,
+    4,
+    0
+   ],
+   "terra": [
+    21978,
+    16,
+    0
+   ],
+   "terra-umriss": [
+    7814,
+    3,
+    0
+   ]
+  },
+  "settle": "15.2",
+  "errs": []
+ }
+}

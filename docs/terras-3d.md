@@ -107,6 +107,22 @@ Ergebnis 13.11. 02:05: terras2_test 20/20 (9 Modelle Welt + Kampf) bzw. 11/11 in
   Blätter/Federn haben einen dünneren Umriss (Maske r 0,22/0,4).
 - Vergleichsbilder „gemaltes Bild vs. Modell“: `test/terras2/r4_bild_vs_modell_<id>.webp` (001, 004, 007, 008, 009, 059, 061).
 
+## 6e. Runde 5 (13.11. abends) – Augen, Nähe zu den Bildern, Fehler „Terra fällt um“
+- **Fehler „Das Terra fällt um, bevor es bekämpft wurde“ (Nutzer 21:38) – Ursache:** Die Pose `sleep` (Begleiter nach 22 s Stillstand, wilde Terras nachts, 04-roam.js)
+  wurde in 58 auf den Clip **faint** (Umfallen) gelegt. Jetzt: Dösen ohne Umfallen (Idle verlangsamt, Kopf sinkt, Augen zu); faint nur noch bei KP 0 (`act.ko`).
+  Zweiter Befund: Im Kampf wurde das Lauftempo aus der Weltposition gemessen → Kamerafahrt/Stellungswechsel ließen die Modelle auf der Stelle „laufen“; im Kampf zählt jetzt nur Idle.
+  Test: terras2_test prüft je Art zu Kampfbeginn und nach 3 s Idle + aufrecht, ein spät geladenes Modell, zwei Kämpfe hintereinander (faint erst bei KP 0) und ein schlafendes Welt-Terra.
+- **Augen (alle 12):** kein dunkles Oberlid mehr (Lidplatte in Fellfarbe, nur dünne Linie am Oberlidrand, kein Unterlid-Strich, Lider ohne AO), große dunkle Pupille (50 % der Iris),
+  warme Iris mit hellem Unterrand, zwei klare Glanzpunkte, weiße Lederhaut.
+- **Mund:** Die Mundhöhle war bei allen Modellen unsichtbar (Flächen zeigten nach innen und wurden weggeschnitten) – behoben; offener, fröhlicher Mund als Grundausdruck
+  für Funki, Plippi, Flausch, Blinki (`TMOD.base` in 58). „freudig“ kneift die Augen nur noch halb.
+- **Funki:** Ohren voller und runder mit spitzer Spitze (`ohr(voll=.5)`, 50 % dicker), große gemalte Stirnflamme (drei Zungen, heller Kern), größere Schwanzflamme,
+  Gesicht mehr Orange (Creme nur an Schnauze/Wangen).
+- **Knospi/Rankel** sitzen im Idle wie im Bild (Becken tief, Beine nach vorn); beim Laufen stehen sie auf.
+- **Flausch:** Spiralen farbig (Minz → Himmelblau, weiße Streifen; Farbmaske repariert), Federrock aus weichen runden Schuppen statt Spitzen.
+- Dreiecke unverändert (Kopf ≤ 4,2 k, Körper ≤ 3–4,6 k, Gesicht 1,3 k), Dateien 0,6–1,14 MB (Funki +1 %).
+- Vergleichsbilder: `test/terras2/r5_bild_vs_modell_<id>.webp`.
+
 ## 7. Offen
 - Flausch: Wirbel-Federkränze lesen sich noch eher als Ohren; Federmuster nah zu gleichmäßig.
 - Arena-Verbesserung hängt am Schalter `modelle3d` (Schalter aus = alte Arena) – Freigabe für alle durch den Dirigenten.

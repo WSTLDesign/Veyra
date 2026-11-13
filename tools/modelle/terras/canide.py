@@ -62,7 +62,7 @@ hs = HR[0] / .12
 for s in (-1, 1):
     for k in range(4 if ART == '001' else 3):
         p, n = hsurf((s * .95, -.2 + k * .07, -.28 - k * .13), -.012 * hs)
-        C.parts_head.append(klumpen(p, n * .6 + V(s * .2, .45 + .1 * k, -.8 - .1 * k), (.07 - .008 * k) * hs * (1.15 if ART == '001' else 1), (.038 if ART == '001' else .03) * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
+        C.parts_head.append(klumpen(p, n * .6 + V(s * .2, .45 + .1 * k, -.8 - .1 * k), (.07 - .008 * k) * hs * (.95 if ART == '001' else 1), (.034 if ART == '001' else .03) * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
 for k in range(3):
     a = (k - 1); p, n = hsurf((a * .3, .25, .97), -.012 * hs); C.parts_head.append(klumpen(p, n * .35 + V(a * .3, .95, .05), .05 * hs, .024 * hs, 'fell_kopf', up=tuple(n), dick=.6, bend=(0, .005, -.012 * hs)))
 # Ohren: volumetrisch (Rand dick, Innenseite hohl), Innenfell-Büschel, dunkle Spitze (Farbe)
@@ -77,7 +77,7 @@ for s in (-1, 1):
 augen(K['RE'], xn=K['eyex'], yn=-.86, zn=K['eyez'], spread=.3 if ART == '001' else .42, lid_col=K['fell'])
 maul(w=.3, z=-.52, smile=.12)
 # Stirnflamme (erhabene Flammenzungen, leuchten)
-for cx, h_, w_ in (((0, .3, .04), (-.15, .2, .024), (.15, .2, .024)) if ART == '001' else ((0, .17, .022), (-.16, .11, .014), (.16, .11, .014))):
+for cx, h_, w_ in (() if ART == '001' else ((0, .17, .022), (-.16, .11, .014), (.16, .11, .014))):
     d0 = Vector((cx, -.62, .5)).normalized(); pts = [HC + Vector((cx + (cx * .4 + .03 * math.sin(k * 1.7)) * k / 6, -.62 + .35 * h_ * k / 6 * 2, .5 + h_ * k / 6 * 1.4)).normalized() * max(HR) for k in range(7)]
     pts = auf_kopf(pts, .0018 * hs); qn = hsurf(d0)[1]
     C.parts_head.append(loft('Stirnflamme', pts, lambda t, w_=w_: w_ * hs * (1 - t) ** .8 * (.7 + .3 * math.sin(t * 3)) + .0003, lambda t: (.004 if ART == '001' else .0016) * hs, ring=6, n=12, flat_up=tuple(qn))); set_region(C.parts_head[-1], 'flamme')
@@ -158,7 +158,7 @@ def paint(P):
     chest = ss(.085 * rk, .045 * rk, np.sqrt(X ** 2 + ((Z - C.NECK[0].z + .02) * .55) ** 2)) * (Y < C.SPINE[3].y + .02) * (Y > C.NECK[1].y - .1)
     mix(bc, K['creme'], chest)
     hx, hy, hz = P.hx, P.hy, P.hz
-    muzzle = ss(.5, .72, -hy) * ss(.1, -.15, hz); cheeks = ss(.55, .25, np.sqrt((np.abs(hx) - .7) ** 2 + (hz + .45) ** 2)) * ss(-.25, .3, -hy)
+    muzzle = ss(.5, .72, -hy) * ss(.1, -.15, hz) if ART != '001' else ss(.66, .86, -hy) * ss(-.05, -.3, hz); cheeks = ss(.55, .25, np.sqrt((np.abs(hx) - .7) ** 2 + (hz + .45) ** 2)) * ss(-.25, .3, -hy) * (1 if ART != '001' else .6)
     mix(M('fell_kopf'), K['creme'], np.clip(muzzle + cheeks + ss(-.5, -.8, hz) * ss(-.1, .4, -hy), 0, 1))
     mix(M('fell_kopf'), '#ffffff', .25 * ss(.3, -.1, np.abs(hx) - .25 + hz) * ss(.6, .8, -hy))
     mix(M('fell_kopf'), K['ohrspitze'], ss(HC.z + HR[2] * .6 + K['ear'][0] * .6, HC.z + HR[2] * .6 + K['ear'][0] * .85, Z))

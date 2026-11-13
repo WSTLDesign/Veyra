@@ -64,3 +64,35 @@ Hauptthread-Budget (neu, Regel 2b): Ist die Stufe schon „niedrig“ und kostet
 ## Testergebnis (13.11., 21:10)
 `stabil_qa` 25 ✓ / 0 ✗ · `smoke` „Keine Fehler.“ · `uebergaenge_qa` 97 ✓ / 0 ✗ (28/28). Während der Läufe arbeitete parallel Blender (Figuren-Agent) → SwiftShader-Werte schwanken stark; Grenzen deshalb auf Hauptthread-Anteil/rAF-Folge statt Einzelwerte.
 Bilder: `test/stabil_vorher_route1.png`, `test/stabil_leitstand.png`, `test/stabil_nach_stop.png`.
+
+## Runde 2 (13.11., 21:40–) – Ruckeln, Wackeln, „Laden anderer Gebiete“ (Nutzer am iPhone, Home-Bildschirm-Verknüpfung)
+
+### Ursachen
+| Befund | Bewertung |
+|---|---|
+| **5-fps-Drosselung „ohne Fokus“** aus Runde 1 fragte `document.hasFocus()` alle 0,7 s ab. In iOS-Standalone (Home-Bildschirm) und in Iframes meldet das „kein Fokus“, obwohl gespielt wird → Spiel lief mit **5 Bildern/s**, der Wachhund maß in diesem Zustand nicht. Erklärt „sehr krass am laggen“ und das ruckartige „Wackeln“ (große Bewegungssprünge je Bild). | **Hauptursache, behoben**: nur noch ein echtes `blur`-Ereignis des obersten Fensters am PC (nicht Touch, nicht Standalone, nicht Iframe) drosselt, nach 1,5 s; jede Eingabe hebt es auf. |
+| IntersectionObserver auf `<html>` als Oberfenster | riskant in iOS-Standalone (Fläche 0 → „außerhalb“ → Pause) → nur noch im Iframe (Leitstand). |
+| **30-fps-Deckel** für integrierte Grafik + 43-perf regelte gegen SET.fps = 60 → hielt jedes 33-ms-Bild für „zu langsam“ und senkte Auflösung/Stufe grundlos (Canvas-Größenwechsel = Ruckler) | behoben: 43 regelt gegen den tatsächlichen Deckel; Deckel startet bei 60 und geht nur auf gleichmäßige 30, wenn 60 nicht gehalten wird (Ø > 21 ms), zurück nach 10 s < 12 ms. |
+| Renderskala pendelte (43 hoch/runter, jede Änderung = neue Canvas-Größe) | 8 s Sperre nach jeder Absenkung. |
+| Halbzeit-Budget griff schon ab 30 ms Bildkosten | nur noch ab 60 ms auf „niedrig“ (echter Notfall). |
+| **Wackeln**: draw3d (Kamera-Feder, Gangphase, Drehung) rechnete mit `performance.now()`-Abständen, die Bewegung (17) mit rAF-Abständen → bei schwankender JS-Zeit laufen Figur und Kamera auseinander, die Gang-Mischung (57 pilotTick: Tempo = Weg/Zeit) springt | draw3d bekommt jetzt genau den Zeitschritt der Bewegung (Hülle in 61, kein Eingriff in 09/17). |
+| Ferne NPC-Skelette jedes Bild | ab 5 Feldern 20 Hz, ab 10 Feldern 10 Hz (Zeitschritt aufsummiert). |
+| **„Laden anderer Gebiete“**: (a) 45-hybrid dekodierte beim Betreten jedes Orts die Ortsbilder aller Nachbarkarten (`hyPlacePreload`); (b) fertig geladene Hausmodelle lassen 09 die **ganze Kartenszene neu bauen** – mitten im Dorf sichtbar als „Neuladen“ | (a) abgeschaltet (Ladebildschirm lädt sein Bild selbst); (b) Hausmodelle warten, wenn schon eine Szene läuft, bis zum nächsten Kartenwechsel/Tür (verdeckt). Modelle anderer Gebiete lädt die Warteschlange nicht (nur Team + Arten der aktuellen Karte + Figuren der Szene). |
+| Handy-Startstufe: iOS meldet nur „Apple GPU“ → 59 wertete das als stark → **hoch** (Bloom mit Bildkopie, Schatten 2048) | mit neuen Modellen startet Touch höchstens auf **mittel**; Wachhund darf nach 10 s stabil höher. |
+| Budget: Welt-Umrisse, Laub, Modelle | 59: Welt-Umrisshüllen auf „niedrig“ und am Handy unter „hoch“ aus (≈ 25 k Dreiecke); Modelle nach Entfernung zur Spielfigur sortiert: höchstens 14/10/6 (Handy 8/6/4), Schattenwurf nur die nächsten 3/2/0 (Handy 2/1/0), Umriss nur nah, LOD1 früher; Laub/Gras am Handy 70/55/35 %. |
+| Modell-Schalter nur über `?modelle3d=1` (geht in Home-Bildschirm-Verknüpfungen verloren) | Staging-Menü (orange Plakette) → „Grafik“ → **Neue 3D-Modelle** (in SET gespeichert, Neustart), mit Infozeile GPU/Stufe/fps/Deckel/Skala. |
+
+### Messwerte (SwiftShader 640×360, CPU ×4, Iris-Xe-Kennung; `node test/stabil2_mess.mjs <tag> [dist]`, Ergebnis `test/stabil2/mess_<tag>.json`)
+SwiftShader schafft hier ≈ 1 Bild/s – Bildfolge/Wackeln sind damit **nicht** aussagekräftig messbar (Wackel-Werte vorher wie nachher < 1 px). Aussagekräftig: Dreiecke/Draw-Calls und JS-Zeit.
+
+| Szene (Stufe) | vorher | nachher |
+|---|---|---|
+| Morgenau, mittel → niedrig: Dreiecke / Calls / JS Ø | 169 k / 76 / 27 ms | 127 k / 53 / 15 ms |
+| Route 1, mittel → niedrig | 183 k / 78 / 25 ms | 177 k / 76 / 23 ms (Laub dominiert; am Handy −35–65 %) |
+| Posten Morgenau (vorher) | Laub-Instanzen 61 k, Figuren 30 k, Spielfigur 13 k + Umriss 12 k, Welt-Umrisse 26 k, Terra 8 k | Welt-Umrisse 0, Figuren 7 k (Budget) |
+
+### Für die Modell-Agenten
+Die Spielfigur kostet 13 k Dreiecke + 12 k Umrisshülle, jede Figur ≈ 7 k (LOD1 ≈ 50 %), Terras 8–14 k. Fürs Handy-Budget (≤ 80–100 k) wäre eine leichtere LOD1 je Figur/Terra (≈ 2–3 k) und eine Umrisshülle nur auf LOD0 sinnvoll.
+
+### Am Handy prüfen
+Staging-Plakette antippen → „Grafik“: Infozeile zeigt fps/Stufe/Deckel. Laufen in Morgenau: gleichmäßig, Kamera ruhig; Häuser „springen“ nicht mehr mitten im Spiel um.

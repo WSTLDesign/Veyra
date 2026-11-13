@@ -8,3 +8,38 @@
 ✓ Kampf 2: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.32}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.32}}}
 ✓ Kampf 2 vs 5: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
 ✓ Welt 3: Modell → {"tm":true,"clips":8,"h":1.34}
+✓ Kampf 3: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.41}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.41}}}
+✓ Kampf 3 vs 6: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 4: Modell → {"tm":true,"clips":9,"h":0.65}
+✓ Kampf 4: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.17}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.17}}}
+✓ Kampf 4 vs 7: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 5: Modell → {"tm":true,"clips":9,"h":0.8}
+✓ Kampf 5: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.14},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.17}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18}}}
+✓ Kampf 5 vs 8: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 6: Modell → {"tm":true,"clips":9,"h":1.08}
+✓ Kampf 6: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.14},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.46},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.18}}}
+✓ Kampf 6 vs 9: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 7: Modell → {"tm":true,"clips":8,"h":0.64}
+✓ Kampf 7: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.2},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.2},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08}}}
+✓ Kampf 7 vs 59: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 8: Modell → {"tm":true,"clips":8,"h":0.85}
+✓ Kampf 8: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.24},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.26},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.08}}}
+✓ Kampf 8 vs 61: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 9: Modell → {"tm":true,"clips":8,"h":1.32}
+✓ Kampf 9: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.45},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.46}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.45},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.46}}}
+✓ Kampf 9 vs 112: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 59: Modell → {"tm":true,"clips":9,"h":0.56}
+✓ Kampf 59: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.45},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.43}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.23},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.2}}}
+✓ Kampf 59 vs 1: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 61: Modell → {"tm":true,"clips":8,"h":0.48}
+✓ Kampf 61: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.32},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.24}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.32},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.28}}}
+✓ Kampf 61 vs 2: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Welt 112: Modell → {"tm":true,"clips":8,"h":0.48}
+✓ Kampf 112: steht zu Beginn und nach 3 s (kein Umfallen) → {"s0":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.41},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.45}},"s3":{"foe":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.42},"me":{"tm":true,"faint":false,"idle":1,"up":1,"hipsH":0.45}}}
+✓ Kampf 112 vs 3: beide als Modell → {"me":true,"foe":true,"meSprite":false,"foeSprite":false}
+✓ Kampf 1 (Loddo spät geladen): steht, fällt erst bei KP 0 → {"r0":{"tm":true,"faint":false,"idle":1},"r1":{"faint":true}}
+✓ Kampf 2 (Loddo geladen): steht, fällt erst bei KP 0 → {"r0":{"tm":true,"faint":false,"idle":1},"r1":{"faint":true}}
+✓ Welt: schlafendes Terra fällt nicht um → {"tm":true,"faint":false}
+✓ keine Konsolenfehler (an) → []
+✓ Schalter aus: nichts geladen → {"on":false,"st":0,"pilotFunki":"serie"}
+✓ keine Konsolenfehler (aus) → []

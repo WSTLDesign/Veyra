@@ -7,7 +7,7 @@ OUT = [a for a in sys.argv[1:] if a.endswith('.glb')]; OUT = OUT[0] if OUT else 
 FORM = '--form' in sys.argv
 
 K = {
- '001': dict(name='t001', Lb=.2, Lh=.2, Wx=.05, Rb=.077, leg=1.08, HR=(.142, .12, .114), hoff=(-.3, .85), sn=.58, sn_s=.33, RE=.044, eyez=.1, eyex=.48,
+ '001': dict(name='t001', bmax=3000, Lb=.2, Lh=.2, Wx=.05, Rb=.077, leg=1.08, HR=(.142, .12, .114), hoff=(-.3, .85), sn=.58, sn_s=.33, RE=.044, eyez=.1, eyex=.48,
              ear=(.17, .07, .042, (.55, .05, .8)), tail=[(0, 0, 0), (0, .075, .03), (0, .14, .095), (0, .17, .185), (0, .16, .27), (0, .125, .33)], tailR=.085,
              fell='#ee6a22', dunkel='#c9481a', creme='#f9e4c4', ohrspitze='#6a2412', bein=None, flame='ball', kragen=False, basalt=False, H=.62,
              iris=('#d06c1a', '#6a2a0c', '#ffbf52'), gang=dict(wL=.11, rL=.2, wLift=.03, rLift=.05, bob=.006)),
@@ -35,7 +35,7 @@ HR = K['HR']; HC = C.NECK[1] + V(0, K['hoff'][0] * HR[1], K['hoff'][1] * HR[2])
 tb = C.SPINE[0] + V(0, .045 * Lb / .2, .012); C.TAIL = [tb + V(*p) * (Lb / .2 if ART != '001' else 1.0) for p in K['tail']]
 rk = Rb / .075
 # ---------------- Rumpf + Beine (Lofts: glatte Querschnitte, Beine stecken im Rumpf) ----------------
-ls = lg * (Lh / .2) ** .35
+ls = lg * (Lh / .2) ** (.35 if ART != '003' else .18)
 tz = lambda p, dz: p + V(0, 0, dz)
 TOR = [C.SPINE[0] + V(0, .045 * Lb / .2, .0), C.SPINE[0], C.SPINE[1], C.SPINE[2] + V(0, 0, -.004 * rk), C.SPINE[3] + V(0, 0, -.01 * rk), C.NECK[0] + V(0, -.004, -.01 * rk), C.NECK[1], C.NECK[1] + (HC - C.NECK[1]) * .45]
 TR = [(.045 * rk, .045 * rk), (.068 * rk, .066 * rk), (.074 * rk, .07 * rk), (.078 * rk, .076 * rk), (.08 * rk, .084 * rk), (.064 * rk * (1.12 if K['kragen'] else 1), .07 * rk), (.054 * rk * (1.1 if K['kragen'] else 1), .056 * rk), (.05 * rk, .05 * rk)]
@@ -62,9 +62,9 @@ hs = HR[0] / .12
 for s in (-1, 1):
     for k in range(4 if ART == '001' else 3):
         p, n = hsurf((s * .95, -.2 + k * .07, -.28 - k * .13), -.012 * hs)
-        C.parts_head.append(bueschel(p, n * .8 + V(s * .3, .75 + .1 * k, -.35 - .15 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .036 * hs, 'creme', up=(0, 0, 1), dick=1.0, bend=(0, .01 * hs, -.012 * hs)))
+        C.parts_head.append(klumpen(p, n * .8 + V(s * .3, .75 + .1 * k, -.35 - .15 * k), (.07 - .008 * k) * hs * (1.1 if ART == '001' else 1), .03 * hs, 'creme', up=(0, 0, 1), bend=(0, .01 * hs, -.012 * hs)))
 for k in range(3):
-    a = (k - 1); p, n = hsurf((a * .3, .25, .97), -.012 * hs); C.parts_head.append(bueschel(p, n * .35 + V(a * .3, .95, .05), .05 * hs, .03 * hs, 'fell_kopf', up=tuple(n), dick=.45, bend=(0, .005, -.012 * hs)))
+    a = (k - 1); p, n = hsurf((a * .3, .25, .97), -.012 * hs); C.parts_head.append(klumpen(p, n * .35 + V(a * .3, .95, .05), .05 * hs, .024 * hs, 'fell_kopf', up=tuple(n), dick=.6, bend=(0, .005, -.012 * hs)))
 # Ohren: volumetrisch (Rand dick, Innenseite hohl), Innenfell-Büschel, dunkle Spitze (Farbe)
 eL, eW, eD, ep = K['ear']
 for s in (-1, 1):
@@ -107,7 +107,7 @@ hb_ = BVB.ray_cast(Vector((0, C.NECK[0].y - .4, C.NECK[0].z - .03 * rk)), Vector
 bib = blob('Latz', hb_[0] + V(0, .022 * rk, -.004 * rk), (.046 * rk, .03 * rk, .058 * rk), 4, rot=(-.3, 0, 0)); set_region(bib, 'creme'); ruff.append(bib)
 for k in range(5):
     a = (k - 2) / 2; p0 = V(a * .045 * rk, C.NECK[0].y - .04 * rk + abs(a) * .012 * rk, C.NECK[0].z - .085 * rk + abs(a) * .02 * rk)
-    ruff.append(bueschel(p0, V(a * .35, -.3, -.9), (.045 - .01 * abs(a)) * rk, .03 * rk, 'creme', up=(0, -1, 0), dick=1.1, bend=(0, .012 * rk, 0)))
+    ruff.append(klumpen(p0, V(a * .35, -.3, -.9), (.05 - .01 * abs(a)) * rk, .026 * rk, 'creme', up=(0, -1, 0), dick=.9, bend=(0, .012 * rk, 0)))
 if K['kragen']:
     nk_ = 16 if ART == '003' else 12; mf = 1.6 if ART == '003' else 1.15
     for k in range(nk_):
@@ -118,11 +118,11 @@ if K['kragen']:
 # Ellbogen-/Hüftbüschel, Fersenfell (Silhouette)
 for s in (-1, 1):
     F1 = S_(C.FL[1], s); hit = BVB.ray_cast(F1 + V(s * .002, .12, 0), V(0, -1, 0))
-    if hit[0]: ruff.append(bueschel(hit[0], V(s * .15, .9, -.4), .035 * rk, .018 * rk, 'fell', up=(s, 0, 0)))
+    if hit[0]: ruff.append(klumpen(hit[0], V(s * .15, .9, -.4), .035 * rk, .016 * rk, 'fell', up=(s, 0, 0), spitzen=2))
     Hh0 = S_(C.HL[0], s); hit = BVB.ray_cast(Hh0 + V(s * .2, .02, -.01), V(-s, 0, 0))
-    if hit[0]: ruff.append(bueschel(hit[0], V(s * .6, .7, -.3), .04 * rk, .022 * rk, 'fell', up=(0, 0, 1)))
+    if hit[0]: ruff.append(klumpen(hit[0], V(s * .6, .7, -.3), .04 * rk, .018 * rk, 'fell', up=(0, 0, 1), spitzen=2))
     hit = BVB.ray_cast(V(s * .2, C.SPINE[1].y, C.SPINE[1].z - .02 * rk), V(-s, 0, 0))
-    if hit[0]: ruff.append(bueschel(hit[0], V(s * .7, .6, -.5), .035 * rk, .02 * rk, 'fell', up=(0, 0, 1)))
+    if hit[0]: ruff.append(klumpen(hit[0], V(s * .7, .6, -.5), .035 * rk, .017 * rk, 'fell', up=(0, 0, 1), spitzen=2))
 # Basaltplatten mit Glutfugen (Flammel)
 plates = []
 if K['basalt']:
@@ -133,7 +133,7 @@ if K['basalt']:
         for s in ((0,) if k % 2 else (-1, 1)):
             hit = BVB.ray_cast(V(s * .035, y, 1.0), V(0, 0, -1))
             if hit[0]:
-                pl = blob('Platte', hit[0] + hit[1] * .008, (.026, .024, .01), 2, rot=(0, s * .35, k * .4)); set_region(pl, 'basalt'); plates.append(pl)
+                pl = blob('Platte', hit[0] + hit[1] * .006, (.022, .02, .008), 3, lambda v, q: Vector((q.x * (1 + .15 * math.sin(v.y * 5)), q.y, q.z)), rot=(0, s * .35, k * .4)); set_region(pl, 'basalt'); plates.append(pl)
 # Pfoten: runde Zehenballen (creme) mit dunklen Sohlenballen, kleine Krallen
 paws = []
 for s_ in (-1, 1):

@@ -10,7 +10,7 @@ treg('bein', '#f2a830', 'schuppe'); treg('kralle', '#4a3428', 'kralle'); treg('n
 C.FLUEGEL = ('schwinge',); C.SCHWANZ = (); C.BEIN = ('bein', 'kralle')
 C.SPV = [V(0, .02, .13), V(0, -.005, .2), V(0, -.01, .25), V(0, -.015, .28)]
 HR = (.15, .14, .13); HC = V(0, -.02, .34)
-body = glied('Rumpf', [V(0, .04, .03), V(0, .03, .09), V(0, .0, .16), V(0, -.01, .23), HC + V(0, .01, -.05)], [(.08, .07), (.13, .12), (.145, .135), (.145, .135), (.14, .13)], ring=20, n=30, flat=(0, -1, 0), regn='fell')
+body = glied('Rumpf', [V(0, .04, .03), V(0, .03, .09), V(0, .0, .16), V(0, -.01, .23), HC + V(0, .01, -.05)], [(.1, .09), (.16, .15), (.16, .15), (.145, .135), (.14, .13)], ring=20, n=30, flat=(0, -1, 0), regn='fell')
 C.WING = [V(.12, .0, .22), V(.2, .02, .24), V(.28, .03, .23), V(.37, .05, .2)]
 C.LEGV = [V(.045, .0, .07), V(.05, -.01, .03), V(.05, -.05, .008)]
 C.TAILV = [V(0, .09, .08), V(0, .17, .05)]
@@ -30,16 +30,19 @@ for s in (-1, 1):
 for k in range(5):
     a = (k - 2) * .3; parts.append(blatt(C.TAILV[0], (math.sin(a), 1, -.3), .1, .035, 'schwinge', up=(0, 0, 1), krumm=.1, dick=.15))
 for k in range(6):
-    a = (k - 2.5) / 2.5; parts.append(bueschel(V(a * .1, -.11, .14 - abs(a) * .03), V(a * .3, -.6, -.8), .05, .04, 'fell', dick=1.0))
+    a = (k - 2.5) / 2.5; parts.append(klumpen(V(a * .11, -.12, .15 - abs(a) * .03), V(a * .3, -.5, -.8), .06, .03, 'fell', up=(0, -1, 0), spitzen=3))
+for s in (-1, 1):
+    for k in range(3):
+        parts.append(klumpen(V(s * .145, .0 + k * .03, .1 + k * .05), V(s * .8, .3, -.5), .05, .025, 'fell', up=(0, 0, 1), spitzen=2))
 kopf(HC, HR, sn=.05, sn_drop=0, sn_w=0, sn_s=.3, stirn=.0, mulde=.08, backen=.05, reg='fell_kopf')
 bp, bn = hsurf((0, -1, -.15)); C.NOSE = bp
 beak = glied('Schnabel', [bp - bn * .01, bp + bn * .018 + V(0, 0, -.006), bp + bn * .03 + V(0, 0, -.022)], [(.016, .012), (.012, .009), (.002, .002)], ring=8, n=8, regn='schnabel'); C.parts_head.append(beak)
 for s in (-1, 1):   # Wirbel-Federkränze (Spirale) als „Ohren“
-    base, bn2 = hsurf((s * .55, .05, .8), -.01); pts = []
+    base, bn2 = hsurf((s * .62, .05, .72), -.01); pts = []
     for i in range(14):
-        t = i / 13; a = t * 4.2; r = .07 * (1 - .65 * t)
+        t = i / 13; a = t * 5.0; r = .085 * (1 - .6 * t)
         pts.append(base + V(s * .09 * t, .0, .05 * t) + V(s * (math.cos(a) * r - .07), 0, math.sin(a) * r * 1.2))
-    sp = glied('Wirbel', pts, [(.026 * (1 - .7 * i / 13), .01) for i in range(14)], ring=8, n=40, flat=(0, 1, 0), regn='wirbel'); C.parts_head.append(sp)
+    sp = glied('Wirbel', pts, [(.034 * (1 - .6 * i / 13), .016) for i in range(14)], ring=8, n=40, flat=(0, 1, 0), regn='wirbel'); C.parts_head.append(sp)
     C.EARS[s] = (base, Vector((s * .5, 0, 1)).normalized(), .12, Vector((0, -1, 0)), Vector((1, 0, 0)))
 for k in range(5):
     a = (k - 2) * .35; p, n = hsurf((a * .6, -.4, .75), -.006); C.parts_head.append(bueschel(p, n * .4 + V(a * .3, .8, .3), .04, .03, 'fell_kopf', dick=1.0))

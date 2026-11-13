@@ -53,6 +53,17 @@ def bueschel(p, d, L, w, regn, up=(0, 0, 1), bend=(0, 0, 0), dick=.5, ring=6, n=
     d = Vector(d).normalized(); P = [p, p + d * L * .5 + Vector(bend) * .4, p + d * L + Vector(bend)]
     o = loft('Bueschel', P, lambda t: w * math.sin(math.pi * (.18 + .82 * t)) ** .7 * (1 - t ** 3) + .0004,
              lambda t: w * dick * (1 - t) ** .8 + .0004, ring=ring, n=n, flat_up=up); set_region(o, regn); return o
+def klumpen(p, d, L, w, regn, up=(0, 0, 1), bend=(0, 0, 0), spitzen=3, dick=.8):
+    """Fell-Klumpen mit Volumen: runder Grundkörper (Querschnitt fast rund) + 2–3 auslaufende Strähnen an der Spitze"""
+    d = Vector(d).normalized(); upv = Vector(up); side = d.cross(upv)
+    side = side.normalized() if side.length > 1e-4 else Vector((1, 0, 0)); B = Vector(bend)
+    P = [p - d * w * .3, p + d * L * .45 + B * .35, p + d * L * .8 + B * .8]
+    out = [loft('Klumpen', P, lambda t: w * math.sin(math.pi * (.08 + .8 * t)) ** .6 + .0006, lambda t: w * dick * math.sin(math.pi * (.08 + .8 * t)) ** .6 + .0006, ring=8, n=7, flat_up=up, cap1=True)]
+    for i in range(spitzen):
+        o = (i - (spitzen - 1) / 2) / max(1, spitzen - 1); q = p + d * L * .55 + B * .5 + side * o * w * .9
+        dd = (d + side * o * .5 + B.normalized() * .2 if B.length else d + side * o * .5).normalized()
+        out.append(loft('Straehne', [q, q + dd * L * .3, q + dd * L * .5 + B * .3], lambda t: w * .42 * (1 - t) ** 1.2 + .0004, lambda t: w * .3 * (1 - t) + .0004, ring=5, n=5, flat_up=up))
+    o = join(out, 'Klumpen'); set_region(o, regn); return o
 def auf_kopf(pts, off):
     """Punkte auf die Kopfoberfläche legen (+ Abstand off)"""
     return [hsurf(Vector(p) - C.HC, off)[0] for p in pts]
@@ -394,7 +405,7 @@ def male(objs, paint, fur_scale=1.0, nstr=.4, ao_k=.34):
         fur = st * .55 + fine * .2 + cl * .5
         col *= (1 + (fur[..., None] - .62) * .2 * furm[..., None]); hgt += furm * ((st - .5) * .9 + (cl - .5) * 1.3 + (fine - .5) * .4)
         P.fur = fur
-    for kname, freq, amp, elong in (('schuppe', 70, 1.0, 1.0), ('feder', 24, .5, 2.2), ('horn', 30, .4, 1.0), ('kristall', 18, .5, 1.0)):
+    for kname, freq, amp, elong in (('schuppe', 70, 1.0, 1.0), ('feder', 14, .3, 2.4), ('horn', 30, .4, 1.0), ('kristall', 18, .5, 1.0)):
         m = M(*kinds.get(kname, []))
         if not m.any(): continue
         Q = Pm * (freq * f)
@@ -819,7 +830,7 @@ def clips_vogel(gang=None):
         P['tail1'] = rx(.2 * math.sin(ph)); return P
     def idle(t):
         ph = 2 * math.pi * t; br = math.sin(ph * 3); look = ss(.3, .45, t) * (1 - ss(.62, .78, t)) - .6 * ss(.75, .82, t) * (1 - ss(.9, 1, t))
-        P = {'hips:loc': V(0, 0, .003 * H * br), 'chest': rx(.02 * br), 'head': qmul(rz(.45 * look), ry(.25 * math.sin(ph * 2) * ss(.05, .2, t) * (1 - ss(.25, .3, t)))), 'tail1': rx(.06 * math.sin(ph * 4))}
+        P = {'hips:loc': V(.01 * H * math.sin(ph), 0, .004 * H * br), 'hips': ry(.08 * math.sin(ph)), 'chest': qmul(rx(.03 * br), ry(-.05 * math.sin(ph))), 'head': qmul(rz(.45 * look), ry(.3 * math.sin(ph * 2) * ss(.05, .2, t) * (1 - ss(.25, .3, t)) + .1 * math.sin(ph))), 'tail1': qmul(rx(.08 * math.sin(ph * 4)), rz(.15 * math.sin(ph * 2)))}
         rf = env01(t, .5, .53, .6, .65); wings(P, .8 - .3 * rf, .2 * rf * math.sin(ph * 30)); ears_pose(P, .05 * math.sin(ph * 2)); return P
     def fly(t):
         ph = 2 * math.pi * t; P = {'hips:loc': V(0, 0, .03 * H * math.sin(ph)), 'chest': rx(-.15), 'head': rx(.15), 'tail1': rx(-.1)}; wings(P, 0, .9 * math.sin(ph), .1 * math.cos(ph))

@@ -54,13 +54,6 @@ if (has('dev')) {   // schneller Arbeitsbogen: Noa vorn/schräg/Gesicht + Idle-P
     out.push({ img: STU.shot([h * 3.1, h * .6, 0], [0, h * .52, 0], 26, 400, 900), label: 'seite' }); out.push({ img: STU.shot([.1 * h, h * .93, h * .5], [0, h * .9, 0], 26, 400, 900), label: 'Gesicht' }); return out; }, process.argv[3] || 'fig_noa');
   await sheet(P, d, 'dev.webp', { cols: 4, cw: 400, ch: 900 });
 }
-if (has('r2')) {   // Runde 2: Noa Gesicht vorher (r1) / nachher, frontal + Dreiviertel
-  await P.evaluate(async () => { FIG_MODELS.fig_noa_r1 = Object.assign({}, FIG_MODELS.fig_noa); PILOT.fix.fig_noa_r1 = Object.assign({}, PILOT.fix.fig_noa); PILOT.src.fig_noa_r1 = 'models/figuren/fig_noa_r1.glb'; await pilotLoad('fig_noa_r1'); });
-  const r = await P.evaluate(() => { const out = []; for (const id of ['fig_noa_r1', 'fig_noa']) { STU.clear(); const o = STU.fig(id); STU.add(o, 0, 0, 0); STU.tick(o, 1.3); o.userData.blink.next = 1e12; const U = o.userData; U.eye.next = 1e12; U.eye.tx = U.eye.ty = 0; pilotExpr(o, 'laecheln'); STU.tick(o, .6);
-      out.push({ img: STU.shot([0, 1.17, .62], [0, 1.15, 0], 26, 400, 450), label: id === 'fig_noa' ? 'nachher' : 'vorher' }); out.push({ img: STU.shot([.42, 1.19, .52], [0, 1.15, 0], 26, 400, 450), label: '' });
-      out.push({ img: STU.shot([0, .78, 4.0], [0, .68, 0], 26, 400, 450), label: '' }); out.push({ img: STU.shot([1.8, .9, 3.2], [0, .68, 0], 26, 400, 450), label: '' }); } return out; });
-  await sheet(P, r, 'r2_noa_gesicht_vorher_nachher.webp', { cols: 4, cw: 400, ch: 450 });
-}
 if (has('noa')) {
   const pair = async (view) => P.evaluate(([view, FIGC]) => { const imgs = []; for (const k of ['pilot', 'neu']) { STU.clear(); const o = k === 'pilot' ? pilotMake('noa', 1.32) : STU.fig('fig_noa'); STU.add(o, 0, 0, 0); STU.tick(o, 1.3);
     const V = { vorn: [[0, .8, 4.3], [0, .68, 0], 26], schraeg: [[2.5, 1.0, 3.5], [0, .68, 0], 26], gesicht: [[.16, 1.2, .78], [0, 1.16, 0], 26] }[view]; imgs.push(STU.shot(V[0], V[1], V[2], 800, 900)); } return imgs; }, [view, FIG_CODE('held')]);

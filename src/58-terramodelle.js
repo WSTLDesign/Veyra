@@ -36,7 +36,7 @@ let TM_GLOWT=null;function tmGlowTex(){if(TM_GLOWT)return TM_GLOWT;const c=docum
 // Instanz: Klon mit Skelett, Toon-Pro + Umriss, Höhe h, Füße auf y=0, Mixer mit allen Clips, LOD-Netze, Leuchtpunkte
 function tmMake(id,h,opts){opts=opts||{};const k=tmKey(id),g=TMOD.gltf[k];if(!g||!THREE.SkeletonUtils)return null;const F=TMOD.fix[k]||{};
  const root=new THREE.Group(),body=new THREE.Group(),inner=THREE.SkeletonUtils.clone(g.scene);root.add(body);body.add(inner);inner.rotation.y=Math.PI;
- toonProApply(inner,{outline:opts.outline||'terra',mat:Object.assign({glow:F.glow||1.4},opts.mat||{})});
+ toonProApply(inner,{outline:opts.outline||'terra',mat:Object.assign({glow:F.glow||1.4,rimStr:.42,rim:'#fff3e2'},opts.mat||{})});
  const lod0=[],lod1=[],mats=[];inner.traverse(m=>{if(m.isMesh&&!m.userData.outline){(/LOD1/.test(m.name)?lod1:lod0).push(m);if(m.material&&m.material.uniforms)mats.push(m.material);}});
  lod1.forEach(m=>m.visible=false);
  if(opts.shiny&&TMOD.tint[id])mats.forEach(m=>{if(!m.uniforms.uEye.value)m.uniforms.uTint.value.set(TMOD.tint[id]);});

@@ -69,6 +69,7 @@ h1 small{display:block;font-size:14px;font-weight:400;color:var(--ink2);letter-s
 .frame:not(.fs) #fsExit{display:none}
 .mods{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2);min-height:36px}
 .mods input{width:18px;height:18px;accent-color:var(--sig)}
+.mods select{font:inherit;font-size:14px;min-height:32px;padding:2px 8px;border-radius:8px;border:1px solid var(--line2);background:transparent;color:var(--ink)}
 .shots{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
 .shots figure{margin:0;min-width:0;display:grid;gap:6px;align-content:start}
 .shots img{width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--panel2);display:block;cursor:zoom-in}
@@ -282,8 +283,9 @@ form{display:grid;gap:8px}
       <div class="row">
         <button type="button" class="btn" id="stopGame" hidden>Spiel beenden</button>
         <button type="button" class="btn pri" id="fullGame" hidden>Vollbild</button>
-        <a class="btn" id="tabGame" href="spiel/index.html?modelle3d=1" target="_blank" rel="noopener">In eigenem Tab öffnen</a>
+        <a class="btn" id="tabGame" href="spiel/index.html?modelle3d=1&ws=1" target="_blank" rel="noopener">In eigenem Tab öffnen</a>
         <label class="mods"><input type="checkbox" id="mods3d" checked> Neue 3D-Modelle (Pilot)</label>
+        <label class="mods">Qualität <select id="gfxSel"><option value="auto">Auto</option><option value="hoch">Hoch</option><option value="mittel">Mittel</option><option value="niedrig">Niedrig</option></select></label>
         <span class="hint" id="wbLabel" style="margin:0"></span>
       </div>
     </section>
@@ -432,18 +434,46 @@ const clockT = clock;
 // Spiel im Rahmen starten/beenden (WebGL nur, solange gespielt wird)
 const frame = $('#frame');
 const touch = matchMedia('(pointer: coarse)').matches;
-const gameUrl = () => 'spiel/index.html?' + ($('#mods3d').checked ? 'modelle3d=1&' : '') + 't=' + Date.now();
-$('#mods3d').addEventListener('change', () => { $('#tabGame').href = 'spiel/index.html' + ($('#mods3d').checked ? '?modelle3d=1' : ''); const f = frame.querySelector('iframe'); if (f) f.src = gameUrl(); });
+// Qualität (Auto/Hoch/Mittel/Niedrig → ?gfx=…), ws=1 = Werkstatt (am PC Start auf „mittel“, Wachhund regelt)
+const gfxSel = $('#gfxSel'); try { const v = localStorage.getItem('ls_gfx'); if (v && [...gfxSel.options].some(o => o.value === v)) gfxSel.value = v; } catch (e) {}
+const gameQ = () => ($('#mods3d').checked ? 'modelle3d=1&' : '') + 'gfx=' + gfxSel.value + '&ws=1';
+const gameUrl = () => 'spiel/index.html?' + gameQ() + '&t=' + Date.now();
+const tabHref = () => { $('#tabGame').href = 'spiel/index.html?' + gameQ(); }; tabHref();
+const restartGame = () => { tabHref(); if (frame.querySelector('iframe')) stopFrame(() => $('#startGame').onclick()); };
+$('#mods3d').addEventListener('change', restartGame);
+gfxSel.addEventListener('change', () => { try { localStorage.setItem('ls_gfx', gfxSel.value); } catch (e) {} restartGame(); });
+// Beenden: erst das Spiel bitten (speichern, Schleifen + WebGL aus), höchstens 300 ms warten, dann den Rahmen entfernen
+let stopping = null;
+function stopFrame(after) { const f = frame.querySelector('iframe');
+  const done = () => { const g = frame.querySelector('iframe'); if (g) { try { g.src = 'about:blank'; } catch (e) {} g.remove(); }
+    stopping = null; pseudoFs(false); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {}
+    frame.classList.remove('on'); $('#stopGame').hidden = true; $('#fullGame').hidden = true; if (after) after(); };
+  if (!f) { done(); return; } if (stopping) return;
+  let fin = false; const end = () => { if (fin) return; fin = true; removeEventListener('message', onMsg); clearTimeout(to); done(); };
+  const onMsg = e => { if (e.source === f.contentWindow && e.data && e.data.veyra === 'stopped') end(); };
+  addEventListener('message', onMsg); const to = setTimeout(end, 300); stopping = end;
+  try { f.contentWindow.postMessage({ veyra: 'stop', why: 'leitstand' }, '*'); } catch (e) { end(); } }
+// Meldung aus dem Spiel: „Speichern & schließen“ (Strg+Q / Chronik) → Rahmen kurz danach entfernen
+addEventListener('message', e => { const f = frame.querySelector('iframe'); if (!f || e.source !== f.contentWindow || !e.data) return;
+  if (e.data.veyra === 'quit') setTimeout(() => stopFrame(), 900); });
+// Tasten mit Fokus auf der Außenseite an das Spiel weiterleiten: Strg+Q (speichern & schließen), Esc (Chronik → „Speichern & schließen“)
+addEventListener('keydown', e => { const f = frame.querySelector('iframe'); if (!f || document.activeElement === f) return;
+  const k = (e.key || '').toLowerCase(), q = k === 'q' && (e.ctrlKey || e.metaKey);
+  if (!q && !(e.key === 'Escape' && $('#lb').hidden && frame.offsetParent)) return; if (q) e.preventDefault();
+  let ack = false; const onAck = m => { if (m.source === f.contentWindow && m.data && m.data.veyra === 'ack') { ack = true; removeEventListener('message', onAck); } };
+  addEventListener('message', onAck);
+  try { f.contentWindow.postMessage({ veyra: 'key', key: q ? 'q' : 'Escape', code: q ? 'KeyQ' : 'Escape', ctrl: q }, '*'); } catch (err) {}
+  setTimeout(() => { removeEventListener('message', onAck); if (q && !ack) stopFrame(); else if (!q) try { f.focus(); } catch (err) {} }, 300); }, { capture: true });
 // Seiten-Vollbild: füllt den ganzen Bildschirm, auch wo das Gerät kein echtes Vollbild erlaubt (iPhone, App-Ansicht)
 const pseudoFs = on => { frame.classList.toggle('fs', on); document.documentElement.style.overflow = on ? 'hidden' : ''; };
 const goFull = () => { const req = frame.requestFullscreen || frame.webkitRequestFullscreen; let r = null;
   try { r = req ? req.call(frame) : null; } catch (e) { r = null; }
   if (r && r.then) r.then(() => {}, () => pseudoFs(true)); else if (!document.fullscreenElement && !document.webkitFullscreenElement) pseudoFs(true); };
-$('#fsExit').onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} pseudoFs(false); };
+$('#fsExit').onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} pseudoFs(false); stopFrame(); };
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) pseudoFs(false); });
 $('#startGame').onclick = () => { if (frame.querySelector('iframe')) return; const f = document.createElement('iframe'); f.src = gameUrl(); f.title = 'Veyra Werkstatt-Build'; f.allow = 'fullscreen; autoplay'; f.setAttribute('allowfullscreen', '');
   frame.appendChild(f); frame.classList.add('on'); $('#stopGame').hidden = false; $('#fullGame').hidden = false; if (touch) goFull(); setTimeout(() => { try { f.focus(); } catch (e) {} }, 300); };
-$('#stopGame').onclick = () => { const f = frame.querySelector('iframe'); if (f) { f.src = 'about:blank'; f.remove(); } pseudoFs(false); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} frame.classList.remove('on'); $('#stopGame').hidden = true; $('#fullGame').hidden = true; };
+$('#stopGame').onclick = () => stopFrame();
 $('#fullGame').onclick = goFull;
 // Bilder groß
 const lb = $('#lb');

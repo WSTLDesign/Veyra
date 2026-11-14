@@ -1,0 +1,151 @@
+{
+ "tag": "vorher_m2",
+ "thr": 4,
+ "zeit": "2026-11-14T07:27:02.426Z",
+ "mess": {
+  "iphone15pm_route1_mittel": {
+   "n": 2,
+   "calls": 113,
+   "tris": 267.1,
+   "trisMax": 267,
+   "js": 19.9,
+   "jsP95": 31.3,
+   "ohneRender": 7,
+   "stufen": "mid",
+   "px": "1864×860",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": true,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 0
+   },
+   "budget": null,
+   "errs": [],
+   "kat": {
+    "welt": [
+     25820,
+     19,
+     188
+    ],
+    "instanzen": [
+     116696,
+     29,
+     25840
+    ],
+    "welt-umriss": [
+     12814,
+     6,
+     7654
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "heldin-umriss": [
+     11771,
+     1,
+     0
+    ],
+    "figur": [
+     7420,
+     4,
+     0
+    ],
+    "terra": [
+     22029,
+     16,
+     7815
+    ],
+    "terra-umriss": [
+     7815,
+     3,
+     0
+    ]
+   }
+  },
+  "iphone15pm_kupferhain_mittel": {
+   "n": 2,
+   "calls": 142,
+   "tris": 267,
+   "trisMax": 267,
+   "js": 27.4,
+   "jsP95": 37.6,
+   "ohneRender": 15,
+   "stufen": "mid",
+   "px": "1864×860",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": true,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 0
+   },
+   "budget": null,
+   "errs": [],
+   "kat": {
+    "welt": [
+     26078,
+     11,
+     56
+    ],
+    "instanzen": [
+     64236,
+     46,
+     17616
+    ],
+    "haus-umriss": [
+     7904,
+     12,
+     3952
+    ],
+    "welt-umriss": [
+     16616,
+     6,
+     8308
+    ],
+    "figur": [
+     43000,
+     20,
+     0
+    ],
+    "figur-umriss": [
+     16199,
+     3,
+     3178
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "heldin-umriss": [
+     11771,
+     1,
+     0
+    ],
+    "terra": [
+     8455,
+     4,
+     7815
+    ],
+    "terra-umriss": [
+     7815,
+     3,
+     0
+    ]
+   }
+  }
+ }
+}

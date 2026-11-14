@@ -40,11 +40,22 @@
   function persist() { try { if (typeof save === 'function') save(); } catch (e) {} }
 
   var fps = 0;
-  (function loop() { var n = 0, t0 = performance.now(); function f(t) { n++; if (t - t0 >= 1000) { fps = Math.round(n * 1000 / (t - t0)); n = 0; t0 = t; upd(); } requestAnimationFrame(f); } requestAnimationFrame(f); })();
+  // Anzeige 1×/s. Eigene rAF-Zählung nur, wenn das Spiel keine Kennzahlen liefert (ältere Version) – sonst zählte sie Bildschirm-Takte statt Spielbilder
+  setInterval(function () { if (stab() || document.hidden) { upd(); return; } }, 1000);
+  setTimeout(function () { if (stab()) return; var n = 0, t0 = performance.now(); function f(t) { n++; if (t - t0 >= 1000) { fps = Math.round(n * 1000 / (t - t0)); n = 0; t0 = t; upd(); } requestAnimationFrame(f); } requestAnimationFrame(f); }, 1500);
 
+  // Spiel-Kennzahlen (61-stabil: window.VSTAB bleibt auch im geschützten Build erreichbar): gezeichnete Spielbilder/s, Qualitätsstufe, Dreiecke je Bild
+  var TL = { high: 'hoch', mid: 'mittel', low: 'niedrig' };
+  function stab() { try { return window.VSTAB && window.VSTAB.info ? window.VSTAB.info() : null; } catch (e) { return null; } }
+  function badgeText() { var i = stab(); if (!i) return '– ' + fps + ' fps';
+    var f = i.parked || i.off ? 'Pause' : (i.fps || 0) + ' fps', tr = i.tris ? ' · ' + Math.round(i.tris / 1000) + ' k' : '';
+    return '– ' + f + ' · ' + (TL[i.tier] || i.tier) + tr + (i.emerg ? ' (Notbremse)' : ''); }
   function upd() {
     var b = document.getElementById('stgBadge'); if (!b) return;
-    b.querySelector('.f').textContent = fps + ' fps';
+    b.querySelector('.f').textContent = badgeText();
+    var gi = document.getElementById('stgGfxInfo'), i = gi && !gi.closest('[hidden]') ? stab() : null;
+    if (gi && i) gi.textContent = 'GPU ' + (i.gpu || '?').slice(0, 40) + ' (' + i.cls + ') · Stufe ' + (TL[i.tier] || i.tier) + ' · ' + i.fps + ' fps (Deckel ' + i.cap + ') · Skala ' + Math.round(i.scale * 100) + ' % · ' +
+      Math.round((i.tris || 0) / 1000) + ' k Dreiecke · ' + (i.calls || 0) + ' Draw-Calls' + (i.emerg ? ' · Notbremse' : '') + (i.modelle ? ' · Modelle an' : '');
     var e = b.querySelector('.e'); e.style.display = errors.length ? 'inline' : 'none'; e.textContent = errors.length + ' Fehler';
     var p = document.getElementById('stgErr'); if (p) p.textContent = errors.length ? errors.slice(-30).join('\n') : 'Keine Fehler seit dem Laden.';
   }
@@ -72,6 +83,9 @@
       '<button data-a="items">10× alle Items</button><button data-a="day">Tag/Nacht wechseln</button></div>' +
       '<h3>Spielstand (nur Staging)</h3><div class="row">' +
       '<button data-a="copy">Spielstand kopieren</button><button data-a="paste">Spielstand einfügen</button><button data-a="wipe">Staging-Stand löschen</button></div>' +
+      '<h3>Grafik</h3><div class="row"><label style="display:flex;gap:8px;align-items:center;min-height:40px"><input type="checkbox" id="stgM3d" style="width:22px;height:22px"> Neue 3D-Modelle</label>' +
+      '<select id="stgQ" aria-label="Qualität"><option value="auto">Qualität: Auto</option><option value="hoch">Hoch</option><option value="mittel">Mittel</option><option value="niedrig">Niedrig</option></select></div>' +
+      '<div class="meta" id="stgGfxInfo"></div><div class="meta">Gespeichert im Staging-Speicher (auch für die Home-Bildschirm-Verknüpfung). Änderung lädt das Spiel neu.</div>' +
       '<h3>Fehlerprotokoll</h3><pre id="stgErr"></pre>' +
       '<div class="row"><button data-a="reload">Neu laden</button><button data-a="update">Auf neue Version prüfen</button><button data-a="close">Schließen</button></div>';
     var A = {
@@ -122,6 +136,15 @@
       b.addEventListener('click', safe(b.textContent, A[a]));
     });
     ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) { p.addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
+    // Schalter „Neue 3D-Modelle“ + Qualität: dauerhaft in SET (Staging-Speicher veyra_stg_set) statt URL-Zusatz – Home-Bildschirm-Verknüpfungen verlieren ?modelle3d=1
+    var m3 = p.querySelector('#stgM3d'), q = p.querySelector('#stgQ'), url = /[?&]modelle3d=1/.test(location.search);
+    function setOk() { try { return typeof SET === 'object' && !!SET; } catch (e) { return false; } }
+    function store() { try { if (typeof saveSet === 'function') saveSet(); else localStorage.setItem(SETKEY, JSON.stringify(SET)); } catch (e) { try { localStorage.setItem(SETKEY, JSON.stringify(SET)); } catch (x) { } } persist(); }
+    if (!setOk()) { m3.disabled = q.disabled = true; } else {
+      m3.checked = SET.modelle3d === true || url; if (url) { m3.disabled = true; m3.parentNode.appendChild(document.createTextNode(' (über Link an)')); }
+      try { q.value = PRESET[SET.quality] && SET.quality !== 'ultra' ? SET.quality : 'auto'; } catch (e) { }
+      m3.addEventListener('change', safe('3D-Modelle', function () { SET.modelle3d = !!m3.checked; store(); toast(m3.checked ? 'Neue 3D-Modelle an – lade neu' : 'Neue 3D-Modelle aus – lade neu'); setTimeout(function () { location.reload(); }, 500); }));
+      q.addEventListener('change', safe('Qualität', function () { var v = q.value; try { Object.assign(SET, PRESET[v]); } catch (e) { } SET.quality = v; store(); toast('Qualität ' + v + ' – lade neu'); setTimeout(function () { location.reload(); }, 500); })); }
     return p;
   }
 
@@ -129,7 +152,7 @@
 
   function mount() {
     document.head.appendChild(el('style', {}, css));
-    var b = el('div', { id: 'stgBadge', role: 'button', 'aria-label': 'Staging-Menü öffnen' }, 'STAGING ' + (INFO.version || '') + ' <span class="f">– fps</span><span class="e"></span>');
+    var b = el('div', { id: 'stgBadge', role: 'button', 'aria-label': 'Staging-Menü öffnen' }, 'STAGING ' + (INFO.version || '') + ' <span class="f stab">– fps</span><span class="e"></span>');
     b.addEventListener('click', function (e) { e.stopPropagation(); togglePanel(); });
     ['pointerdown', 'touchstart'].forEach(function (ev) { b.addEventListener(ev, function (e) { e.stopPropagation(); }, { passive: true }); });
     document.body.appendChild(b); document.body.appendChild(buildPanel()); document.body.appendChild(el('div', { id: 'stgToast' }));

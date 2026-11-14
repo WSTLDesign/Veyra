@@ -1,0 +1,160 @@
+{
+ "tag": "nachher_m",
+ "thr": 4,
+ "zeit": "2026-11-14T08:16:01.386Z",
+ "mess": {
+  "iphone15pm_morgenau_mittel": {
+   "n": 4,
+   "calls": 53,
+   "tris": 102.8,
+   "trisMax": 111,
+   "js": 17.6,
+   "jsP95": 26.8,
+   "ohneRender": 9.5,
+   "stufen": "mid",
+   "px": "1398×645",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 1
+   },
+   "budget": {
+    "lvl": 5,
+    "dev": "touch",
+    "ups": 3
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     19360,
+     7,
+     0
+    ],
+    "instanzen": [
+     36924,
+     29,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "terra": [
+     8454,
+     4,
+     7814
+    ]
+   }
+  },
+  "iphone15pm_route1_mittel": {
+   "n": 3,
+   "calls": 58,
+   "tris": 104.6,
+   "trisMax": 105,
+   "js": 23.1,
+   "jsP95": 29.8,
+   "ohneRender": 13.7,
+   "stufen": "mid",
+   "px": "1398×645",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 1
+   },
+   "budget": {
+    "lvl": 5,
+    "dev": "touch",
+    "ups": 2
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     25820,
+     19,
+     0
+    ],
+    "instanzen": [
+     38188,
+     23,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "terra": [
+     8454,
+     4,
+     7814
+    ]
+   }
+  },
+  "iphone15pm_kupferhain_mittel": {
+   "n": 3,
+   "calls": 55,
+   "tris": 95.1,
+   "trisMax": 95,
+   "js": 23.4,
+   "jsP95": 36.5,
+   "ohneRender": 14.3,
+   "stufen": "mid",
+   "px": "1398×645",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 1
+   },
+   "budget": {
+    "lvl": 4,
+    "dev": "touch",
+    "ups": 4
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     26078,
+     11,
+     0
+    ],
+    "instanzen": [
+     34988,
+     36,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "terra": [
+     8454,
+     4,
+     7814
+    ]
+   }
+  }
+ }
+}

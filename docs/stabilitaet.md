@@ -65,34 +65,99 @@ Hauptthread-Budget (neu, Regel 2b): Ist die Stufe schon „niedrig“ und kostet
 `stabil_qa` 25 ✓ / 0 ✗ · `smoke` „Keine Fehler.“ · `uebergaenge_qa` 97 ✓ / 0 ✗ (28/28). Während der Läufe arbeitete parallel Blender (Figuren-Agent) → SwiftShader-Werte schwanken stark; Grenzen deshalb auf Hauptthread-Anteil/rAF-Folge statt Einzelwerte.
 Bilder: `test/stabil_vorher_route1.png`, `test/stabil_leitstand.png`, `test/stabil_nach_stop.png`.
 
-## Runde 2 (13.11., 21:40–) – Ruckeln, Wackeln, „Laden anderer Gebiete“ (Nutzer am iPhone, Home-Bildschirm-Verknüpfung)
+## Runde 2 (13.11. 21:40 begonnen, 14.11. abgeschlossen) – Handy: Lag/fps, Wackeln, „Laden im Dorf“, Modell-Schalter
 
-### Ursachen
-| Befund | Bewertung |
+Agent „Stabilität PC/Handy“ (Opus 5.5 · hoch). Anlass: Spieltest Christoph 13.11. 21:37–21:45 **am iPhone**, Staging (Netlify, geschützter Build), als Home-Bildschirm-Verknüpfung (standalone), neue Modelle an:
+„Das Wackeln beim Laufen muss weg. Das Laden anderer Gebiete, obwohl ich in einem Dorf bin, ist nicht notwendig. Aktuell ist das Spiel sehr krass am Laggen und die fps sind sehr niedrig.“
+Ein Vorgänger hatte Runde 2 begonnen (Fokus-Drosselung, Deckel, Hausmodelle halten, Schalter in 61); das ist hier geprüft, teils umgebaut und vervollständigt.
+
+### Ursachen (bestätigt / widerlegt)
+| Verdacht | Ergebnis |
 |---|---|
-| **5-fps-Drosselung „ohne Fokus“** aus Runde 1 fragte `document.hasFocus()` alle 0,7 s ab. In iOS-Standalone (Home-Bildschirm) und in Iframes meldet das „kein Fokus“, obwohl gespielt wird → Spiel lief mit **5 Bildern/s**, der Wachhund maß in diesem Zustand nicht. Erklärt „sehr krass am laggen“ und das ruckartige „Wackeln“ (große Bewegungssprünge je Bild). | **Hauptursache, behoben**: nur noch ein echtes `blur`-Ereignis des obersten Fensters am PC (nicht Touch, nicht Standalone, nicht Iframe) drosselt, nach 1,5 s; jede Eingabe hebt es auf. |
-| IntersectionObserver auf `<html>` als Oberfenster | riskant in iOS-Standalone (Fläche 0 → „außerhalb“ → Pause) → nur noch im Iframe (Leitstand). |
-| **30-fps-Deckel** für integrierte Grafik + 43-perf regelte gegen SET.fps = 60 → hielt jedes 33-ms-Bild für „zu langsam“ und senkte Auflösung/Stufe grundlos (Canvas-Größenwechsel = Ruckler) | behoben: 43 regelt gegen den tatsächlichen Deckel; Deckel startet bei 60 und geht nur auf gleichmäßige 30, wenn 60 nicht gehalten wird (Ø > 21 ms), zurück nach 10 s < 12 ms. |
-| Renderskala pendelte (43 hoch/runter, jede Änderung = neue Canvas-Größe) | 8 s Sperre nach jeder Absenkung. |
-| Halbzeit-Budget griff schon ab 30 ms Bildkosten | nur noch ab 60 ms auf „niedrig“ (echter Notfall). |
-| **Wackeln**: draw3d (Kamera-Feder, Gangphase, Drehung) rechnete mit `performance.now()`-Abständen, die Bewegung (17) mit rAF-Abständen → bei schwankender JS-Zeit laufen Figur und Kamera auseinander, die Gang-Mischung (57 pilotTick: Tempo = Weg/Zeit) springt | draw3d bekommt jetzt genau den Zeitschritt der Bewegung (Hülle in 61, kein Eingriff in 09/17). |
-| Ferne NPC-Skelette jedes Bild | ab 5 Feldern 20 Hz, ab 10 Feldern 10 Hz (Zeitschritt aufsummiert). |
-| **„Laden anderer Gebiete“**: (a) 45-hybrid dekodierte beim Betreten jedes Orts die Ortsbilder aller Nachbarkarten (`hyPlacePreload`); (b) fertig geladene Hausmodelle lassen 09 die **ganze Kartenszene neu bauen** – mitten im Dorf sichtbar als „Neuladen“ | (a) abgeschaltet (Ladebildschirm lädt sein Bild selbst); (b) Hausmodelle warten, wenn schon eine Szene läuft, bis zum nächsten Kartenwechsel/Tür (verdeckt). Modelle anderer Gebiete lädt die Warteschlange nicht (nur Team + Arten der aktuellen Karte + Figuren der Szene). |
-| Handy-Startstufe: iOS meldet nur „Apple GPU“ → 59 wertete das als stark → **hoch** (Bloom mit Bildkopie, Schatten 2048) | mit neuen Modellen startet Touch höchstens auf **mittel**; Wachhund darf nach 10 s stabil höher. |
-| Budget: Welt-Umrisse, Laub, Modelle | 59: Welt-Umrisshüllen auf „niedrig“ und am Handy unter „hoch“ aus (≈ 25 k Dreiecke); Modelle nach Entfernung zur Spielfigur sortiert: höchstens 14/10/6 (Handy 8/6/4), Schattenwurf nur die nächsten 3/2/0 (Handy 2/1/0), Umriss nur nah, LOD1 früher; Laub/Gras am Handy 70/55/35 %. |
-| Modell-Schalter nur über `?modelle3d=1` (geht in Home-Bildschirm-Verknüpfungen verloren) | Staging-Menü (orange Plakette) → „Grafik“ → **Neue 3D-Modelle** (in SET gespeichert, Neustart), mit Infozeile GPU/Stufe/fps/Deckel/Skala. |
+| **„5 fps ohne Fokus“** (Runde 1 fragte `document.hasFocus()` alle 0,7 s ab) | **bestätigt, Hauptursache Lag + Ruckeln.** Mit iPhone-Emulation (standalone, `hasFocus() = false`) stand der 21:37-Stand dauerhaft auf `blur: true` → 5 Bilder/s, Figur springt je Bild 0,4 Feld (Gehen) bzw. 1 Feld (Rennen). Jetzt drosselt nur noch ein echtes `blur` des obersten Fensters am PC (nicht Touch, nicht standalone, nicht im Rahmen), nach 1,5 s; jede Eingabe hebt es auf. |
+| „Pause bei unsichtbar“ | nur bei `document.hidden` (richtig). Zusätzlich abgesichert: iOS meldet die Rückkehr nicht immer → `pageshow`/Fokus/Berührung/1-s-Takt stoßen eine pausierte Schleife wieder an. IntersectionObserver nur im Rahmen (Leitstand). |
+| 30-fps-Deckel | Deckel 30 war nicht die Ursache, aber 43 regelte gegen 60 und hielt jedes 33-ms-Bild für „zu langsam“ (Vorgänger behoben). Handy: startet ohne Deckel, geht gleichmäßig auf 30, wenn 60 nicht haltbar. |
+| **Halbierung der Zeichenzeit** | bestätigt als Risiko: griff auch am Handy (ab Stufe niedrig, > 60 ms je Bild) und halbierte die fps nochmals. Jetzt **nicht mehr am Handy/Tablet** (Touch); am PC und im Leitstand-Rahmen bleibt sie (Eingaben/Außenseite behalten Luft). |
+| **Wachhund-Pendeln** | bestätigt möglich: drei Regler (43 Skala/Stufe, 59 Mindestskala, 61 Wachhund) – jede Skalenänderung = neue Canvas-Größe, jede Stufe = Schatten/Pflanzen neu. Jetzt: 43 darf die Skala nur senken (≥ 0,05), anheben nur der Wachhund (≥ 0,1, frühestens 20 s nach einer Absenkung); nach „hoch → gleich wieder runter“ wartet die nächste Anhebung 30 s, nach zweimal nie mehr. Touch bei „Auto“ höchstens „mittel“ (kein Bloom mit Vollbild-Kopie, Schatten 1024). |
+| Modell-Warteschlange im Hauptthread beim Laufen | **bestätigt (Ruckler bei jedem fertigen Modell: Textur-Upload + Shader).** Jetzt lädt die Warteschlange nichts, während die Heldin läuft (+ 0,7 s), außer der Spielfigur; Ladebildschirm/Kartenwechsel laden sofort. |
+| **Dreiecke/Draw-Calls** | **bestätigt, zweite Hauptursache.** 21:37-Stand am Handy (mittel, Modelle an): Morgenau 232 k Dreiecke / 100 Draw-Calls je Bild, Route 1 267 k / 113, Kupferhain 267 k / 142 (Ziel Handy ≤ 100 k / ≤ 60). `GFX.mlod` (Runde 5) wirkte nur auf Figuren; der große Posten waren Instanzen (Bäume/Kronen/Büsche/Felsen/Blumen: 55–90 k) und der Schattenpass. |
+| Bewegung nicht dt-basiert / Positionssprünge | **widerlegt:** 17-move rechnet mit dt, Heldin läuft exakt geradeaus (Querabweichung 0,0000 Feld), Tempo-Schwankung < 2 %. 17-move.js unverändert. |
+| Hüft-Wippen im Gang-Clip | **widerlegt:** Hüft-Translation im GLB 1,8 cm (Gehen) / 3,6 cm (Joggen) / 5 cm (Rennen) – normal. |
+| **Kamera-Nachführung** | **bestätigt, Ursache „Wackeln“ (bei ruhiger Bildfolge):** beim Gehen durch Morgenau pumpte die Kamera in Höhe (σ 0,90 Feld) und Abstand (σ 0,29) – Hindernis-Ausweichen (Draufsicht über Häuser/Bäume, Näherrücken) schaltete an jeder Lücke hin und her, Kamera-Tempo schwankte um 55 %. |
+| „Laden anderer Gebiete“ | Nachbarkarten-Ortsbilder (45 `hyPlacePreload`) und Haus-Neubau mitten im Dorf: vom Vorgänger behoben. **Neu gefunden:** 26 `preloadArt()` lädt beim Start alle ≈ 105 Kreaturen-Kartenbilder (4 parallel, Dekodieren + Prüfbild) – am Handy über Netlify läuft das weit ins Dorf hinein. Jetzt: während des Laufens kein neues Bild, sonst höchstens 2 parallel. Keine Modelle anderer Gebiete (Log unten). |
 
-### Messwerte (SwiftShader 640×360, CPU ×4, Iris-Xe-Kennung; `node test/stabil2_mess.mjs <tag> [dist]`, Ergebnis `test/stabil2/mess_<tag>.json`)
-SwiftShader schafft hier ≈ 1 Bild/s – Bildfolge/Wackeln sind damit **nicht** aussagekräftig messbar (Wackel-Werte vorher wie nachher < 1 px). Aussagekräftig: Dreiecke/Draw-Calls und JS-Zeit.
+### Änderungen
+- **src/61-stabil.js:** Halbierung nicht am Handy · Touch-Startstufe ≤ mittel, Deckel „mittel“ (außer Optionen/`?gfx`) · Pendel-Sperren (Skala, Stufe) · `stabKick` (Schleife neu anstoßen) · Warteschlange hält während des Laufens (`vmqMoving`) · Kreaturenbilder-Drossel (`artPump`-Hülle) · ferne Figuren (gaitTick) und Terras/Modelle (animModel) ab 5/6 Feldern mit 15 Hz · `stabInfo()` liefert Dreiecke/Draw-Calls/Modelle · Badge/Schalter aus 61 entfernt (jetzt im Overlay).
+- **src/59-grafik.js – Budget durchsetzen:** `GFX.budget` Handy 100 k / 60 Calls, PC integriert 150 k / 110, dediziert 250 k / 150 (je Bild inkl. Schattenpass). Regelstufe `GFX.bud.lvl` 0–5 (strenger sofort: 4 von 6 Bildern drüber, weit drüber 2–3 Stufen; lockerer nur beim Kartenwechsel, eine Stufe unter der zuletzt nötigen). Stufen senken Modell-Anzahl/-Entfernungen, Schattenwurf, Umriss (ab 3 keine Figuren-/Terra-Umrisse, ab 4 keiner an der Heldin), Laub-/Gras-Dichte, Laub-Schatten.
+  **Instanz-Ausdünnung** `gfxCullTick`: alle Instanz-Meshes aus 09 (`userData.n0`, ohne eigene Instanz-Attribute) werden je 0,4 Feld/6°/0,5 s nach vorn umsortiert – hinter der Kamera (4 Felder Rand) und jenseits der Budget-Entfernung (Handy 40→10, PC 60→16 Felder) fallen weg, leere Meshes werden nicht gezeichnet. Nur Matrizen, kein Neubau.
+  **Schatten:** am Handy werfen nur Heldin + die 2 nächsten Figuren (bis 4,5 Felder; Stufe 4: 1, Stufe 5: nur die Heldin) Sonnenschatten, Welt-Meshes nicht (am PC erst ab Stufe 3). Handy-Tabelle `GFX.mlodT`: Umriss nur bis 2,2 Felder, LOD1 ab 2,8, höchstens 6 Modelle (mittel). Heldin zählt nicht zum Modell-Kontingent.
+- **src/09-three3d.js (nur Kamera):** Ausweich-Ziele (Abstand, Höhe, Seitversatz) 1,1 s (seitlich 2 s) halten statt pumpen, weicher nachführen (Höhe 0,6 s, Abstand raus 0,75 s, Seite 0,9 s, max. 0,7 Feld); schnelles Heranrücken nur an Wänden/Häusern oder > 0,5 Feld; Schulterseite wechselt erst nach 0,8 s; Rollen aus der Drehrate (dt-basiert, schwächer).
+- **tools/staging-overlay.js:** Abschnitt **Grafik** im Debug-Menü: Schalter **Neue 3D-Modelle** und **Qualität** (Auto/Hoch/Mittel/Niedrig), gespeichert in `SET` → Staging-Speicher `veyra_stg_set` (bleibt in der Home-Bildschirm-App), Neustart; Infozeile GPU/Klasse/Stufe/fps/Deckel/Skala/Dreiecke/Draw-Calls. Badge: **„– 30 fps · mittel · 92 k“** (gezeichnete Spielbilder aus `VSTAB.info()`, nicht Bildschirm-Takte). Eigene rAF-Zählung nur noch als Rückfall.
+- **Tests:** `test/stabil2_handy.mjs` (neu: Mobil-Emulation, mess/wackel/laden/profil), `test/stabil_wackel.mjs` (neu: Messreihe Wackeln), `test/stabil_qa.mjs` (Handy-Fälle ergänzt, Staging-Schalter).
+- Nicht angefasst: 17-move (nicht nötig), 58, 51, 60, Leitstand, GLBs.
 
-| Szene (Stufe) | vorher | nachher |
-|---|---|---|
-| Morgenau, mittel → niedrig: Dreiecke / Calls / JS Ø | 169 k / 76 / 27 ms | 127 k / 53 / 15 ms |
-| Route 1, mittel → niedrig | 183 k / 78 / 25 ms | 177 k / 76 / 23 ms (Laub dominiert; am Handy −35–65 %) |
-| Posten Morgenau (vorher) | Laub-Instanzen 61 k, Figuren 30 k, Spielfigur 13 k + Umriss 12 k, Welt-Umrisse 26 k, Terra 8 k | Welt-Umrisse 0, Figuren 7 k (Budget) |
+### Messwerte
+Alle Werte SwiftShader (Software-GL, 2 Kerne) – absolute fps/ms sind **nicht** aussagekräftig, Dreiecke/Draw-Calls/Bildfolge/Kamera schon.
+„vorher“ = Stand 21:37 (Commit cde9ab6, den Christoph getestet hat), „nachher“ = dieser Stand. Werkzeug `node test/stabil2_handy.mjs <tag> [dist]` (TEIL=mess|wackel|laden|profil, DEV=iphone14|iphone15pm|laptop, STUFE), Ergebnisse `test/stabil2/handy_<tag>.json`.
 
-### Für die Modell-Agenten
-Die Spielfigur kostet 13 k Dreiecke + 12 k Umrisshülle, jede Figur ≈ 7 k (LOD1 ≈ 50 %), Terras 8–14 k. Fürs Handy-Budget (≤ 80–100 k) wäre eine leichtere LOD1 je Figur/Terra (≈ 2–3 k) und eine Umrisshülle nur auf LOD0 sinnvoll.
+**Handy** – iPhone 15 Pro Max quer (932×430, DPR 3, Touch, „Apple GPU“, standalone, `hasFocus() = false`, Modelle über gespeicherten Schalter), Stufe „mittel“ festgehalten, CPU-Drosselung ×4 (CDP), 6 s Laufen. Dreiecke/Draw-Calls je Bild inkl. Schattenpass; „JS“ = Spielschleife je Bild (inkl. Abgabe an WebGL), in Klammern ohne `render()`.
 
-### Am Handy prüfen
-Staging-Plakette antippen → „Grafik“: Infozeile zeigt fps/Stufe/Deckel. Laufen in Morgenau: gleichmäßig, Kamera ruhig; Häuser „springen“ nicht mehr mitten im Spiel um.
+| Szene | vorher: Dreiecke / Calls / JS | nachher (Laufen) | nachher (Abnahme, stehend, stabil_qa) | Budget-Stufe |
+|---|---|---|---|---|
+| Morgenau | 231,7 k / 100 / 61,6 ms (12,3) – **5 Bilder/s gedrosselt** | 102,8 k (max 111) / 53 / 17,6 ms (9,5) ¹ | **93,5 k / 52** | 5 |
+| Route 1 | 267,1 k / 113 / 19,9 ms (7,0) – 5 Bilder/s | 104,6 k / 58 / 23,1 ms (13,7) ¹ | **94,4 k / 56** | 5 |
+| Kupferhain | 267,0 k / 142 / 27,4 ms (15,0) – 5 Bilder/s | **95,1 k / 55** / 23,4 ms (14,3) | **91,1 k / 51** | 4 |
+| Morgenau, iPhone 14 (844×390) | – | 102,8 k / 53 / 21,3 ms ¹ | **93,5 k / 52** | 5 |
+
+¹ gemessen vor der letzten Verschärfung von Stufe 5 (Begleiter-Schatten aus, Ausdünnung 10 statt 12 Felder); danach die Abnahme-Werte (≤ 100 k / ≤ 60 ✓).
+Aufschlüsselung Morgenau vorher: Instanzen 76 k (Bäume/Kronen/Büsche/Felsen), Figuren 30 k, Heldin 13 k + Hülle 12 k + Schatten 12 k, Welt-/Haus-Umrisse 26 k, Terra 8 k + Hülle 8 k. Nachher: Instanzen 37 k, Heldin 13 k + Schatten 12 k (Hülle ab Stufe 4 aus), Terra 8 k, Welt 19 k.
+
+**Laptop** (Iris-Xe-Kennung, 1536×695 @ 1,25, mittel, CPU ×4): Morgenau 137,8 k (max 149) / 65, Route 1 134,6 k / 73, Kupferhain 136,3 k / 71 – Budget 150 k / 110 ✓. Vorher (Messung des Vorgängers 13.11. 22:00, mittel): Morgenau 169 k / 76, Route 1 183 k / 78; Welt-Agent (hoch): Morgenau 239 k / 98, Kupferhain 327 k / 141.
+
+**Bildfolge am Handy:** vorher 200 ms je Bild (5 fps, Fokus-Drossel), nachher 33,3 ms (Deckel 30) bzw. 16,7 ms (60) – ohne Drosselung, ohne Pause, auch bei `hasFocus() = false` + `blur`.
+
+**Wackeln** (`test/stabil_wackel.mjs`: simulierter 60-Hz-Takt, Deckel 30, längste gerade Strecke, 3 s Gehen bei voller Geschwindigkeit; Felder bzw. Pixel):
+
+| Morgenau, Gehen | vorher (21:37) | Zwischenstand Vorgänger (ohne Fokus-Drossel) | nachher |
+|---|---|---|---|
+| Bildabstand | 200 ms | 33,3 ms | 33,3 ms |
+| Figur springt auf dem Bildschirm (senkrecht, px je Bild ggü. Nachbarbildern) | **12,95 px** | 0,09 | 0,02 |
+| Heldin quer zur Geraden / Tempo-Schwankung | 0 / 0,3 % | 0 / 0,1 % | 0 / 0,1 % |
+| Kamera-Höhe σ | 0,38 | **0,90** | **0,16** |
+| Kamera-Abstand σ | 0,15 | 0,29 | 0,10 |
+| Kamera-Tempo-Schwankung | 125 % | 56 % | **7 %** |
+| Rollwinkel max | 6,1° | 0,05° | 0° |
+
+Route 1 Gehen: Kamera-Höhe σ 0,83 → 0,09, Abstand σ 0,64 → 0,20, Kamera-Tempo-Schwankung 47 % → 28 % (vorher bei 5 fps: Figur-Sprung 14,7 px). Rennen Morgenau: Höhe σ 0,07 → 0,04, Abstand σ 0,48 → 0,01, Kamera-Tempo 47 % → 4 %.
+
+**Laden in Morgenau** (60 s: 20 s stehen, 25 s im Kreis laufen, 15 s stehen; alle Netz-Abrufe ab Ankunft):
+- vorher: alle 105 Kreaturen-Kartenbilder bis **43,5 s** nach der Ankunft, **`place_route1.webp` (Nachbarort) nach 6,2 s**, `haus.glb` nach 58 s (→ Neubau der Dorfszene), Figur `fig_buerger_a` wartete 42 s in der Warteschlange.
+- nachher: nur, was das Dorf braucht – `fig_buerger_a`, `fig_mama` (Dorfbewohner), `t001`/`t004` (eigenes Team), Himmel/Horizont/Kampfhintergrund der Lichtlande (`_lo`), Weltkarte; Kreaturenbilder fertig nach 16,8 s (im Stehen), **während des Laufens kein einziger Abruf** (`t004` erst nach dem Stehenbleiben, 50 s). Keine Nachbarorte, kein Kartenwechsel, kein Neubau. Hausmodelle warten bis zum nächsten Kartenwechsel (verdeckt vom Lade-/Türbild).
+
+**CPU-Profil** (Morgenau laufen, CPU ×4): 93 % „(program)“ = Grafik/Software-GL; eigene JS-Funktionen je < 0,3 % (Eingabe-Takt, HUD, draw3d). Die Spiel-Logik ist nicht der Engpass, das Zeichnen ist es → Budget war der richtige Hebel.
+
+**Tests (14.11., Endstand):** `node build.mjs` ✓ · `stabil_qa` 44 ✓ / 0 ✗ (neu: Handy 844×390 + 932×430, Budget Morgenau/Route 1/Kupferhain, Wackeln, Staging-Schalter + Badge) · `smoke` „Keine Fehler.“ · `uebergaenge_qa` 97 ✓ / 0 ✗.
+
+### Für die Figuren-/Terras-Agenten (GLB)
+Gemessen je Bild (Handy, mittel): Heldin 13,3 k (Körper 11,8 k + Gesicht) **+ 11,8 k Umrisshülle + 11,8 k im Schattenpass** = 37 k für eine Figur; jede Stadt-Figur 11,8 k (LOD1 ≈ 5,9 k); Terra t001 8,5 k + 7,8 k Hülle.
+Das Budget hält damit nur, weil ab Regelstufe 3–4 die Umrisse wegfallen und höchstens 2 Figuren Schatten werfen. Für mehr Spielraum (Umriss am Handy behalten):
+- **Figuren:** LOD1 ≈ 2,5–3 k (statt 50 % ≈ 5,9 k), zusätzlich LOD2 ≈ 1 k für > 8 Felder; Umrisshülle aus LOD1 (eigenes Netz ≈ 3 k statt Kopie des 11,8-k-Körpers); eigenes Schatten-Netz ≈ 2–3 k (nur castShadow), damit der Schattenpass nicht den vollen Körper zeichnet.
+- **Terras:** LOD1 ≈ 2 k, Umrisshülle aus LOD1, Schatten-Netz ≈ 1,5 k.
+- Clips: unverändert ok (Hüfte 1,8–5 cm); 7 Clips im Mixer sind für ferne Figuren durch die 15-Hz-Drossel tragbar.
+
+### Offen / Grenzen (ehrlich)
+- Kein echtes iPhone/Iris Xe im Container: alles mit Emulation + SwiftShader. Echte fps am Gerät sind nicht belegt – Dreiecke/Calls/Bildfolge/Kamera schon.
+- Dass iOS-Standalone `hasFocus()` = false liefert, ist eine Annahme (Auftrag/Vorgänger); die Änderung ist in beiden Fällen richtig (Drossel nur noch über echtes `blur` am PC).
+- Morgenau und Route 1 halten das Handy-Budget nur auf Regelstufe 5 (keine Umrisse, nur die Heldin wirft Schatten, Instanzen bis 10 Felder) – sichtbar weniger Details. Abhilfe: leichtere GLB-LODs (oben).
+- Ausdünnung nach Entfernung: am Rand (10–13 Felder) können Bäume/Büsche beim Laufen auftauchen (im Nebel gedämpft); hinter der Kamera unsichtbar.
+- Kamera Route 1 beim Gehen: Abstand schwankt noch etwas (σ 0,2 Feld, Tempo 28 %); der Faktor `INP.camF` in 36-input (Auszieh-Prüfung je Bild, nicht dt-basiert) ist nicht meine Datei und unverändert.
+- Figuren-/Terra-Modelle tauschen erst, wenn die Heldin stehen bleibt → beim Ankommen und sofort Losrennen kurz die prozedurale Figur. Hausmodelle im ersten Ort erst nach dem ersten Kartenwechsel (Regel des Vorgängers).
+- `test/stabil2_mess.mjs` (Vorgänger, 640×360) bleibt als PC-Messung; die Handy-Messung ist `test/stabil2_handy.mjs`.
+
+### Am Handy prüfen (Christoph)
+1. Staging neu laden (Plakette → „Auf neue Version prüfen“). Plakette zeigt jetzt **„– 30 fps · mittel · 92 k“** (gezeichnete Bilder/s · Stufe · Dreiecke je Bild). Erwartung am iPhone: 30–60 fps, Stufe mittel, Dreiecke ≤ 100 k.
+2. Plakette antippen → **Grafik → „Neue 3D-Modelle“** einschalten (lädt neu, bleibt in der Home-Bildschirm-App gespeichert – kein `?modelle3d=1` mehr nötig). Infozeile darunter: GPU, Stufe, fps, Deckel, Skala, Dreiecke, Draw-Calls.
+3. Morgenau: 1 Minute geradeaus gehen und rennen, an den Häusern entlang → Kamera ruhig (kein Auf-/Abpumpen, kein seitliches Schwanken), Figur gleitet gleichmäßig.
+4. Morgenau: keine Pop-ins/Ruckler, während man läuft (Figuren-Modelle tauschen nur, wenn man kurz stehen bleibt); kein Ladebildschirm/Neuaufbau im Dorf.
+5. Nach Route 1 und Kupferhain wechseln (Ladebildschirm), dort wieder laufen. App in den Hintergrund und zurück → Spiel läuft sofort weiter (keine 5 fps, kein Standbild).
+6. Falls es noch ruckelt: Grafik → Qualität „Niedrig“ probieren und melden, was die Plakette dabei zeigt (fps/Stufe/k).

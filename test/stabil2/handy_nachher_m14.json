@@ -1,0 +1,58 @@
+{
+ "tag": "nachher_m14",
+ "thr": 4,
+ "zeit": "2026-11-14T08:31:12.787Z",
+ "mess": {
+  "iphone14_morgenau_mittel": {
+   "n": 4,
+   "calls": 53,
+   "tris": 102.8,
+   "trisMax": 111,
+   "js": 21.3,
+   "jsP95": 39.2,
+   "ohneRender": 14.5,
+   "stufen": "mid",
+   "px": "1266×585",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 1
+   },
+   "budget": {
+    "lvl": 5,
+    "dev": "touch",
+    "ups": 3
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     19360,
+     7,
+     0
+    ],
+    "instanzen": [
+     36924,
+     29,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "terra": [
+     8454,
+     4,
+     7814
+    ]
+   }
+  }
+ }
+}

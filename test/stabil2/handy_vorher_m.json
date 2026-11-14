@@ -1,0 +1,78 @@
+{
+ "tag": "vorher_m",
+ "hinweis": "aus dem Lauf-Log \u00fcbernommen (Lauf vor dem Schreiben abgebrochen)",
+ "mess": {
+  "iphone15pm_morgenau_mittel": {
+   "n": 2,
+   "calls": 100,
+   "tris": 231.7,
+   "trisMax": 236,
+   "js": 61.6,
+   "jsP95": 100.7,
+   "ohneRender": 12.3,
+   "stufen": "mid",
+   "px": "1864\u00d7860",
+   "stab": {
+    "cls": "mobil",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.75,
+    "blur": true,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 0
+   },
+   "budget": null,
+   "errs": [],
+   "kat": {
+    "welt": [
+     19360,
+     7,
+     0
+    ],
+    "instanzen": [
+     76280,
+     30,
+     18672
+    ],
+    "haus-umriss": [
+     12096,
+     8,
+     6048
+    ],
+    "welt-umriss": [
+     14300,
+     4,
+     7150
+    ],
+    "figur": [
+     29680,
+     16,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "heldin-umriss": [
+     11771,
+     1,
+     0
+    ],
+    "terra": [
+     8455,
+     4,
+     0
+    ],
+    "terra-umriss": [
+     7815,
+     3,
+     0
+    ]
+   }
+  }
+ }
+}

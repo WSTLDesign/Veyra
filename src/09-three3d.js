@@ -817,7 +817,7 @@ function draw3d(){if(!R3)init3d();if(!R3)return draw();if(worldCovered())return;
  syncW3(S,t);syncPeople(S,t,dt);guide3d(S,t);
  if(U_.mm)for(const o of U_.mm.values()){o.position.y=terrainY(o.position.x,o.position.z);if(!o.userData.blob)blobShadow(o,.42);}
  if(U_.guide&&U_.guide.visible){const g=U_.guide;g.position.y=terrainY(g.position.x,g.position.z);}
- const turn=R3.yaw-(R3.pyaw??R3.yaw);R3.pyaw=R3.yaw;R3.roll=(R3.roll||0)*.85+turn*.45;
+ const turn=R3.yaw-(R3.pyaw??R3.yaw);R3.pyaw=R3.yaw;R3.roll=(R3.roll||0)+(Math.max(-.25,Math.min(.25,turn/Math.max(.008,dt)*.035))-(R3.roll||0))*ez(7);// Stabilität R2: Rollen aus der Drehrate (dt-basiert, schwächer) statt je Bild
  atmo3d(S,t,px,pz,day,cave,inside,dt);
  // Kamera
  const f=_cf.set(-Math.sin(R3.yaw),0,-Math.cos(R3.yaw)),rt=_cr.set(-f.z,0,f.x),base=R3.gy,cm=camMode();let rc=cam;
@@ -828,7 +828,7 @@ function draw3d(){if(!R3)init3d();if(!R3)return draw();if(worldCovered())return;
   cam.fov+=((P.run&&mv?76:72)-cam.fov)*ez(3);cam.position.set(px-f.x*.2+rt.x*swy,base+1.22+bob,pz-f.z*.2+rt.z*swy);cam.lookAt(px+f.x*4,base+1.1+bob*.4,pz+f.z*4);cam.rotateZ(-R3.roll*.25);}
  else if(cm==='explore'){player.visible=true;cam.fov+=((P.run&&mv?64:59)-cam.fov)*ez(3);const dist=inside?2.4:3.6,hgt=inside?2.2:1.85;
   // Schulter-Seite: dorthin, wo mehr Platz ist (weich umschalten)
-  {const fr=sg=>{let n=0;for(let s=1.2;s<3.3;s+=1)if(!camBlock(px-f.x*s+rt.x*sg*.9,pz-f.z*s+rt.z*sg*.9,base+1.8))n++;return n;},a=fr(1),b=fr(-1);R3.side=R3.side||1;if(b>a)R3.side=-1;else if(a>b)R3.side=1;R3.sh=R3.sh==null||R3.snap?.3*R3.side:sdamp(R3.sh,.3*R3.side,V,'sh',.45,dt);}
+  {const fr=sg=>{let n=0;for(let s=1.2;s<3.3;s+=1)if(!camBlock(px-f.x*s+rt.x*sg*.9,pz-f.z*s+rt.z*sg*.9,base+1.8))n++;return n;},a=fr(1),b=fr(-1);R3.side=R3.side||1;{const w=b>a?-1:a>b?1:R3.side;R3.sideT=w!==R3.side&&!R3.snap?(R3.sideT||0)+dt:0;if(R3.sideT>.8||R3.snap||Math.abs(a-b)>=3){R3.side=w;R3.sideT=0;}}/* Stabilität R2: Schulterseite erst nach 0,8 s anderem Platzbedarf wechseln */R3.sh=R3.sh==null||R3.snap?.3*R3.side:sdamp(R3.sh,.3*R3.side,V,'sh',.45,dt);}
   const sh=R3.sh;
   // Wandkollision: Strecke Kopf→Wunschposition abtasten, bei Hindernis näher heran (schnell rein, langsam raus)
   let kind=0;const scan=hg=>{for(let s=.35;s<=dist;s+=.12){const q=s/dist,k=camBlock(px-f.x*s+rt.x*sh*q,pz-f.z*s+rt.z*sh*q,base+1.3+(hg-1.3)*q);if(k){kind=k;return Math.max(.3,s-.28);}}return dist;};
@@ -844,9 +844,13 @@ function draw3d(){if(!R3)init3d();if(!R3)return draw();if(worldCovered())return;
    const wl=wd(-1,lim,0),wr=wd(1,lim,0),wm=Math.min(wl,wr);if(wm<1.3){const g=wl<wr?1:-1,oth=g>0?wr:wl;spT=g*Math.max(0,Math.min(1,1.3-wm,oth-.9));}
    if(lim>2.25){const ca=Math.cos(.85),sa=Math.sin(.85),edge=s=>{const q2=s/dist,cx=px-f.x*s+rt.x*(sh+spT)*q2,cz=pz-f.z*s+rt.z*(sh+spT)*q2;for(let g=-1;g<=1;g+=2){const dx=f.x*ca+rt.x*g*sa,dz=f.z*ca+rt.z*g*sa;for(let e=.45;e<=2;e+=.4)if(camB1(cx+dx*e,cz+dz*e,yy)===1)return true;}return false;};
     let s2=lim;while(s2>2.2&&edge(s2))s2-=.2;if(s2<lim)lim=Math.max(2.2,s2);}}
-  R3.sp=R3.snap||R3.sp==null?spT:sdamp(R3.sp,spT,V,'sp',.5,dt);
-  R3.ch=R3.snap||R3.ch==null?hw:sdamp(R3.ch,hw,V,'ch',.4,dt);
-  R3.cd=R3.snap?lim:lim<R3.cd?R3.cd+(lim-R3.cd)*ez(16):sdamp(R3.cd,lim,V,'cd',.55,dt);const q=R3.cd/dist;
+  // Stabilität R2 (Wackeln beim Laufen): Ausweich-Ziele halten (beim Laufen: nah 2 s, hoch 3,2 s, seitlich 3,6 s; im Stand 1,1 s) statt an jeder Lücke zwischen Häusern/Bäumen auf- und abzupumpen; weicher nachführen
+  {const H=R3.camHold||(R3.camHold={lim,hw,sp:spT,tl:0,th:0,ts:0}),HM=P.walk?2000:1100,HH=P.walk?3200:1100,now=(R3.ck=(R3.ck||0)+dt*1000);if(R3.snap){H.lim=lim;H.hw=hw;H.sp=spT;H.tl=H.th=H.ts=now;}
+   else{if(lim<=H.lim)H.tl=now;if(lim<=H.lim||now-H.tl>HM)H.lim=lim;if(hw>=H.hw)H.th=now;if(hw>=H.hw||now-H.th>HH)H.hw=hw;if(Math.abs(spT)>=Math.abs(H.sp)-.02&&Math.sign(spT)!==-Math.sign(H.sp))H.ts=now;if(Math.abs(spT)>=Math.abs(H.sp)-.02&&Math.sign(spT)!==-Math.sign(H.sp)||now-H.ts>HM*1.8)H.sp=spT;}
+   if(H.lim<lim)lim=H.lim;hw=Math.max(hw,H.hw);spT=H.sp;}
+  R3.sp=R3.snap||R3.sp==null?spT:sdamp(R3.sp,Math.max(-.7,Math.min(.7,spT)),V,'sp',.9,dt);
+  R3.ch=R3.snap||R3.ch==null?hw:sdamp(R3.ch,hw,V,'ch',.6,dt);
+  R3.cd=R3.snap?lim:lim<R3.cd-(kind===1?.04:.5)?R3.cd+(lim-R3.cd)*ez(14):sdamp(R3.cd,lim,V,'cd',lim<R3.cd?.3:.75,dt);const q=R3.cd/dist;
   const shp=sh+R3.sp,want=_cw.set(px-f.x*R3.cd+rt.x*shp*q,base+1.3+(R3.ch-1.3)*(.35+.65*Math.max(q,Math.min(1,(R3.ch-hgt)/(4-hgt)))),pz-f.z*R3.cd+rt.z*shp*q);
   if(R3.snap){cam.position.copy(want);V.cpx=V.cpy=V.cpz=0;}else sdampV(cam.position,want,V,'cp',.16,dt);
   const la=P.walk&&P.run?2:1.3;R3.lk=R3.lk||new THREE.Vector3();const lt=_lt.set(px+f.x*la+rt.x*.15,base+1.12,pz+f.z*la+rt.z*.15);if(R3.snap){R3.lk.copy(lt);V.lkx=V.lky=V.lkz=0;}else sdampV(R3.lk,lt,V,'lk',.12,dt);

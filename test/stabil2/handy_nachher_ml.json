@@ -1,0 +1,180 @@
+{
+ "tag": "nachher_ml",
+ "thr": 4,
+ "zeit": "2026-11-14T08:35:09.584Z",
+ "mess": {
+  "laptop_morgenau_mittel": {
+   "n": 5,
+   "calls": 65,
+   "tris": 137.8,
+   "trisMax": 149,
+   "js": 19.4,
+   "jsP95": 28.7,
+   "ohneRender": 12.2,
+   "stufen": "mid",
+   "px": "961×435",
+   "stab": {
+    "cls": "igpu",
+    "tier": "mid",
+    "cap": 30,
+    "scale": 0.5,
+    "dpr": 1.25,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 1,
+    "downs": 0
+   },
+   "budget": {
+    "lvl": 5,
+    "dev": "igpu",
+    "ups": 3
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     19360,
+     7,
+     0
+    ],
+    "instanzen": [
+     40586,
+     29,
+     0
+    ],
+    "welt-umriss": [
+     29866,
+     10,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "figur": [
+     7420,
+     4,
+     0
+    ],
+    "terra": [
+     8454,
+     4,
+     7814
+    ]
+   }
+  },
+  "laptop_route1_mittel": {
+   "n": 2,
+   "calls": 73,
+   "tris": 134.6,
+   "trisMax": 137,
+   "js": 14.9,
+   "jsP95": 25.5,
+   "ohneRender": 5.3,
+   "stufen": "mid",
+   "px": "1920×869",
+   "stab": {
+    "cls": "igpu",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.25,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 1
+   },
+   "budget": {
+    "lvl": 5,
+    "dev": "igpu",
+    "ups": 3
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     25820,
+     19,
+     0
+    ],
+    "instanzen": [
+     52340,
+     28,
+     0
+    ],
+    "welt-umriss": [
+     12814,
+     6,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "terra": [
+     12987,
+     8,
+     7814
+    ]
+   }
+  },
+  "laptop_kupferhain_mittel": {
+   "n": 2,
+   "calls": 71,
+   "tris": 136.3,
+   "trisMax": 137,
+   "js": 33,
+   "jsP95": 41.1,
+   "ohneRender": 18,
+   "stufen": "mid",
+   "px": "1920×869",
+   "stab": {
+    "cls": "igpu",
+    "tier": "mid",
+    "cap": 60,
+    "scale": 1,
+    "dpr": 1.25,
+    "blur": false,
+    "parked": false,
+    "off": false,
+    "emerg": 0,
+    "downs": 1
+   },
+   "budget": {
+    "lvl": 5,
+    "dev": "igpu",
+    "ups": 3
+   },
+   "errs": [],
+   "kat": {
+    "welt": [
+     26078,
+     11,
+     0
+    ],
+    "instanzen": [
+     39210,
+     37,
+     0
+    ],
+    "welt-umriss": [
+     42641,
+     16,
+     0
+    ],
+    "heldin": [
+     13319,
+     4,
+     11771
+    ],
+    "terra": [
+     8454,
+     4,
+     7814
+    ]
+   }
+  }
+ }
+}

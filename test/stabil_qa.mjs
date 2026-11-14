@@ -133,11 +133,21 @@ const M_INIT = ([m3d, key]) => { for (const C of [window.WebGLRenderingContext, 
   if (!sessionStorage.getItem('__init')) { sessionStorage.setItem('__init', '1'); try { localStorage.clear(); if (m3d) localStorage.setItem(key, JSON.stringify({ modelle3d: true })); } catch (e) { } } };
 const M_UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1';
 const mCtx = async (w, h, m3d, key) => { const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: M_UA });
-  await ctx.addInitScript(M_INIT, [m3d, key]); const mp = await ctx.newPage(); mp.errs = []; mp.on('pageerror', e => mp.errs.push(e.message.slice(0, 120)));
+  await ctx.route(/cdnjs\.cloudflare\.com\/.*three\.min\.js/, r => r.fulfill({ path: join(ROOT, 'public/three.min.js'), contentType: 'text/javascript' })); await ctx.addInitScript(M_INIT, [m3d, key]); const mp = await ctx.newPage(); mp.errs = []; mp.on('pageerror', e => mp.errs.push(e.message.slice(0, 120)));
   await mp.route(/fonts\.googleapis|fonts\.gstatic/, r => r.fulfill({ body: '', contentType: 'text/css' })); await mp.route(/sw\.js$/, r => r.fulfill({ status: 404, body: '' })); mp.setDefaultTimeout(30000); return { ctx, mp }; };
 const mStart = async (mp, map, x, y) => { await mp.evaluate(() => { const i = document.getElementById('intro'); if (i) i.hidden = true; beginGame({}); });
   await mp.waitForFunction(() => { if (typeof TW === 'object' && TW && TW.finish) TW.finish(); if (mode === 'dialog') advDlg(); return !!G && !!R3; }, null, { timeout: 60000, polling: 300 });
   await mp.evaluate(([m, x, y]) => { for (let i = 0; i < 40 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); } G.team = [mk(1, 12)]; setView('third'); loadMap(m, x, y); mode = 'world'; dispatchEvent(new Event('blur')); }, [map, x, y]); };
+// R3: Häuser sichtbar? Bild zeichnen, dann dasselbe Bild ohne Häuser (Kasten-Häuser = town-Mesh, Modell-Häuser = userData.haus) – Anteil geänderter Pixel.
+// Gezeichnet über r.render (also mit Budget/Ausdünnung aus 59, genau wie im Spiel).
+const HAEUSER = async () => { P.x = P.fx = 9; P.y = P.fy = 12; P.px = 9; P.py = 12; P.dir = 'up'; P.ang = YAW.up; R3.yaw = P.ang; R3.snap = 1; mode = 'world';
+  for (let i = 0; i < 3; i++) { draw3d(); await new Promise(r => setTimeout(r, 30)); }
+  const cv = R3.r.domElement, w = 160, h = Math.round(160 * cv.height / cv.width), c2 = document.createElement('canvas'); c2.width = w; c2.height = h; const x2 = c2.getContext('2d');
+  const shot = () => { R3.r.render(R3.scene, R3.activeCam || R3.cam); x2.clearRect(0, 0, w, h); x2.drawImage(cv, 0, 0, w, h); return x2.getImageData(0, 0, w, h).data; };
+  const a = shot(), hs = []; R3.scene.traverse(o => { if ((o === R3.scene.userData.town || (o.userData && o.userData.haus)) && o.visible) { o.visible = false; hs.push(o); } });
+  const b = shot(); hs.forEach(o => o.visible = true); let n = 0; for (let i = 0; i < a.length; i += 4) if (Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]) > 40) n++;
+  let modell = 0; R3.scene.traverse(o => { if (o.userData && o.userData.haus) modell++; });
+  return { anteil: +(n / (w * h)).toFixed(3), kasten: !!R3.scene.userData.town, modell, hausSt: W3HAUS.st }; };
 // Budget: Stufe „mittel“ festhalten (SwiftShader würde den Wachhund sonst auf „niedrig“ zwingen), 30 Bilder direkt zeichnen → Regelung (59) eingeschwungen → Höchstwert der letzten 6 Bilder
 const BUDGET = async () => { SET.gfx = 'mid'; GFX.force = 'mid'; STAB.lim = STAB.ceil = 'mid'; STAB.lastBad = -1e9; perfSet('mid'); STAB.grace = 1e9; stabDown = () => { }; stabEmergency = () => { }; const r = [];
   for (let i = 0; i < 30; i++) { R3.r.render(R3.scene, R3.activeCam || R3.cam); r.push([GFX.stat.tris, GFX.stat.calls]); await new Promise(q => setTimeout(q, 0)); }
@@ -151,7 +161,11 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
   t(`M ${w}×${h} Handy: Apple GPU → mobil, mit Modellen Start ≤ „mittel“, kein Deckel unter 30, DPR ≤ 2`, mi.cls === 'mobil' && mi.touch && mi.base !== 'high' && mi.tier !== 'high' && mi.cap >= 30 && mi.dpr <= 2 && mi.models, mi);
   t(`M ${w}×${h} Handy: hasFocus() = false + blur-Ereignis → KEINE Drosselung, keine Pause`, !mi.blur && !mi.off && mi.frames > 0, mi);
   t(`M ${w}×${h} Handy: Modelle über gespeicherten Schalter an (ohne ?modelle3d), keine Halbierung der Bildzeit am Handy`, mi.models && !/modelle3d/.test(mi.url) && mi.ws === false, { models: mi.models, url: mi.url, ws: mi.ws });
+  { const hz = await mp.evaluate(HAEUSER); R.mess['haeuser_sofort_' + w] = hz;
+    t(`M ${w}×${h} Häuser in Morgenau sofort nach Spielstart sichtbar (Kasten oder Modell, ≥ 15 % des Bildes)`, hz.anteil >= .15, hz); }
   await qIdle(mp, 60000);
+  { const hz = await mp.evaluate(HAEUSER); R.mess['haeuser_modell_' + w] = hz;
+    t(`M ${w}×${h} Häuser nach dem Laden der Modelle sichtbar (Hausmodelle geladen, ≥ 15 % des Bildes)`, hz.anteil >= .15 && hz.hausSt >= 2, hz); }
   const bu = await mp.evaluate(BUDGET); R.mess['budget_morgenau_' + w] = bu;
   t(`M ${w}×${h} Budget Handy Morgenau (mittel, Modelle an): ≤ 100 k Dreiecke und ≤ 60 Draw-Calls je Bild (inkl. Schattenpass)`, bu.dev === 'touch' && bu.tris <= 100000 && bu.calls <= 60 && bu.modelle >= 2, bu);
   if (w === 932) { // Kupferhain (größter Ort) und Route 1
@@ -164,12 +178,26 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
     for (const k of ['gehen', 'rennen']) { const q = wk[k] || {};
       t(`M Wackeln ${k}: Heldin auf der Geraden, Tempo gleichmäßig (CV < 5 %), Kamera ruhig (Höhe σ < 0,3, Abstand σ < 0,2, Tempo-CV < 20 %)`, q.n >= 20 && q.heldinQuer < .01 && q.tempoCV < .05 && q.kameraHoeheSd < .3 && q.kamAbstandSd < .2 && q.kameraTempoCV < .2, q); } }
   t(`M ${w}×${h} keine Seitenfehler`, !me.length, me.slice(0, 3)); R.mess['mobil_' + w] = mi; await ctx.close(); }
+// ---------- W) Werkstatt-Build am Handy (wie im Leitstand-Vollbild: ?ws=1, Modelle als nachgeladene Skripte), Häuser + keine Halbierung + Ursachen langer Bilder ----------
+if (!process.env.STAB_SKIP_M) {
+  const { ctx, mp } = await mCtx(932, 430, true, 'veyra_stg_set');
+  await mp.goto(URL0 + 'ls/spiel/index.html?ws=1', { waitUntil: 'load', timeout: 240000 });
+  await mp.waitForFunction(() => { try { void mmFor; return typeof beginGame === 'function' && typeof R3 !== 'undefined'; } catch (e) { return false; } }, null, { timeout: 120000, polling: 500 }); await mp.waitForTimeout(1500);
+  await mStart(mp, 'morgenau', 9, 8); await mp.waitForTimeout(6000);
+  const hz = await mp.evaluate(HAEUSER); R.mess.werkstatt_haeuser = hz;
+  t('W Werkstatt am Handy: Häuser in Morgenau sichtbar', hz.anteil >= .15, hz);
+  await qIdle(mp, 90000); await mp.evaluate(() => { P.state = 'walk'; STICK.y = -1; STICK.x = .5; }); await mp.waitForTimeout(8000); await mp.evaluate(() => { STICK.x = STICK.y = 0; });
+  const wi = await mp.evaluate(() => { const i = stabInfo(); return { ws: i.ws, cls: i.cls, tier: i.tier, emerg: i.emerg, oneoff: i.oneoff, halb: STAB.work > 60 && PERF.tier === 'low' && !PERF.touch, long: i.long.slice(0, 6), log: i.log.slice(-5) }; }); R.mess.werkstatt_handy = wi;
+  t('W Werkstatt am Handy: als Werkstatt erkannt, keine Halbierung der Zeichenzeit', wi.ws && wi.cls === 'mobil' && !wi.halb, wi);
+  note('W längste Bilder (SwiftShader): ' + JSON.stringify(wi.long).slice(0, 900));
+  t('W keine Seitenfehler (Werkstatt)', !mp.errs.length, mp.errs.slice(0, 3)); await ctx.close(); }
 // ---------- S) Staging-Build am Handy (Home-Bildschirm): Schalter „Neue 3D-Modelle“ im Debug-Menü, gespeichert; Badge „fps · Stufe · Dreiecke“ ----------
 if (!process.env.STAB_SKIP_M) {
   const { ctx, mp } = await mCtx(932, 430, false, 'veyra_stg_set');
   await mp.goto(URL0 + 'stg/index.html', { waitUntil: 'load', timeout: 180000 }); await mp.waitForTimeout(1500);
   const s0 = await mp.evaluate(() => ({ on: pilotOn(), set: localStorage.getItem('veyra_stg_set') }));
   await mStart(mp, 'morgenau', 9, 8); await mp.waitForTimeout(5000);
+  { const hz = await mp.evaluate(HAEUSER); R.mess.haeuser_ohne_modelle = hz; t('S Häuser in Morgenau sichtbar mit „Neue 3D-Modelle“ AUS (Kasten-Häuser)', hz.anteil >= .15 && hz.modell === 0, hz); }
   const s1 = await mp.evaluate(async () => { document.getElementById('stgBadge').click(); await new Promise(r => setTimeout(r, 1200)); const c = document.getElementById('stgM3d'), gi = document.getElementById('stgGfxInfo');
     return { da: !!c, an: c && c.checked, info: gi && gi.textContent, badge: document.querySelector('#stgBadge .stab').textContent }; });
   t('S Staging: Debug-Menü hat Schalter „Neue 3D-Modelle“ (aus), Grafik-Infozeile mit Stufe/Dreiecken', s1.da && s1.an === false && !s0.on && /Stufe/.test(s1.info || '') && /Dreiecke/.test(s1.info || ''), { s0, s1 });

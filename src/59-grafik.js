@@ -113,7 +113,7 @@ GFX.mlod={high:{sh:4.5,ol:7,hide:24,lod:5,max:14,nsh:3},mid:{sh:3.5,ol:5,hide:18
 GFX.mlodT={high:{sh:5,ol:3,hide:16,lod:3.5,max:8,nsh:2},mid:{sh:4.5,ol:2.2,hide:14,lod:2.8,max:6,nsh:2},low:{sh:0,ol:1.8,hide:12,lod:2.5,max:4,nsh:0}};
 const _gM={roots:[],t:0,undo:[],v:new THREE.Vector3()};
 function gfxModelRoots(S){const out=[];for(const o of S.children){const U=o.userData||{};if(U.pilot||U.lod0||U.lod1){out.push(o);continue;}for(const c of o.children){const V=c.userData||{};if(V.pilot||V.lod0||V.lod1)out.push(c);}}return out;}
-function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);const w=_gM.wol=[];for(const o of S.children){if(o.isMesh&&o.userData&&o.userData.outline)w.push(o);else for(const q of o.children)if(q.isMesh&&q.userData&&q.userData.outline)w.push(q);}}if(!c)return;
+function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);const w=_gM.wol=[];for(const o of S.children){if(o.isMesh&&o.userData&&o.userData.outline===1)w.push(o);else for(const q of o.children)if(q.isMesh&&q.userData&&q.userData.outline===1)w.push(q);}}if(!c)return;
  const tn=perfTier().name,touch=typeof PERF==='object'&&PERF.touch,L=gfxBudL(touch,tn),cp=c.getWorldPosition(_gM.v),u=_gM.undo;gfxBudPre(S,u,c);
  // Umrisshüllen der Welt (Häuser, Bäume): auf „niedrig“ und am Handy unter „hoch“ aus (≈ 25 k Dreiecke in Morgenau)
  if(tn==='low'||(touch&&tn!=='high'))for(const m of _gM.wol)if(m.visible){m.visible=false;u.push([m,'visible',true]);}
@@ -128,7 +128,7 @@ function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==
   const shOk=si<(L.nsh??9)&&d<=L.sh;if(shOk)si++;
   {const lo=r.userData.lod;if(lo&&lo[0]&&lo[1]&&d>L.lod&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}}// Figuren-LOD1 (57) schon ab lod Feldern
   if(!shOk||d>L.ol){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
-   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
+   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
 function gfxModelPost(){const u=_gM.undo;for(let i=u.length-1;i>=0;i--){const[o,k,v]=u[i];o[k]=v;}u.length=0;}
 if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=function(){_gs();const r=R3.r,rr=r.render;r.render=function(s,c){const w=s===R3.scene&&r.getRenderTarget()===null;if(w)try{gfxModelPre(s,c);}catch(e){}try{rr.call(r,s,c);}finally{if(w){gfxModelPost();try{gfxBudTick();}catch(e){}}}};};gfxSetup._m=1;}
 // ---------- Stabilität R2: Budget DURCHSETZEN (Dreiecke + Draw-Calls je Bild inkl. Schattenpass) ----------
@@ -139,7 +139,7 @@ if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=funct
 GFX.budget={touch:[100000,60],igpu:[150000,110],dgpu:[250000,150]};
 // je Stufe: m = Anteil Modelle, d = Entfernungen, v = Laub-/Gras-Dichte, vsh = Laub wirft Schatten, nsh = max. Figuren mit Schatten (außer Heldin)
 // wsh0 = Welt wirft keinen Sonnenschatten, ol0 = kein Umriss an Figuren/Terras, po = kein Umriss an der Heldin (die Hülle kostet so viel wie der Körper), pl = Heldin als LOD1 (50 %, derzeit keine Stufe)
-const GFX_BL=[{m:1,d:1,v:1,vsh:1},{m:.75,d:.85,v:.8,vsh:1},{m:.6,d:.72,v:.62,vsh:1},{m:.5,d:.62,v:.5,vsh:0,nsh:2,ol0:1,wsh0:1},{m:.38,d:.52,v:.4,vsh:0,nsh:1,ol0:1,po:1,wsh0:1},{m:.25,d:.42,v:.3,vsh:0,nsh:0,ol0:1,po:1,wsh0:1}];
+const GFX_BL=[{m:1,d:1,v:1,vsh:1},{m:.75,d:.85,v:.8,vsh:1},{m:.6,d:.72,v:.62,vsh:1},{m:.5,d:.62,v:.5,vsh:0,nsh:2,ol0:1,wsh0:1},{m:.38,d:.52,v:.4,vsh:0,nsh:1,ol0:1,po:1,wsh0:1},{m:.2,d:.42,v:.22,vsh:0,nsh:0,ol0:1,po:1,wsh0:1}];
 GFX.bud={lvl:0,map:null,memo:{},hist:[],cool:0,ups:0,dev:null,t:0,c:0};
 function gfxBudDev(){const B=GFX.bud;if(B.dev)return B.dev;let d='igpu';try{if(typeof PERF==='object'&&PERF.touch)d='touch';else if(typeof STAB==='object'&&STAB.cls==='dgpu')d='dgpu';}catch(e){}return B.dev=d;}
 function gfxBudL(touch,tn){const L0=((touch?GFX.mlodT:GFX.mlod)[tn])||GFX.mlod.high,b=GFX_BL[GFX.bud.lvl]||GFX_BL[0];if(!GFX.bud.lvl)return L0;
@@ -147,7 +147,7 @@ function gfxBudL(touch,tn){const L0=((touch?GFX.mlodT:GFX.mlod)[tn])||GFX.mlod.h
 // Instanzen (Bäume/Kronen/Büsche/Felsen/Blumen/Gras aus 09 inst(), erkannt an userData.n0) je Instanz ausdünnen: hinter der Kamera (4 Felder Rand für Schatten)
 // und jenseits der Budget-Entfernung fallen weg. Die Instanzen werden nach vorn umsortiert (Original bleibt in _M0), count = sichtbare – nur Matrizen, kein Neubau.
 // Nur Meshes ohne eigene Instanz-Attribute (Wasser u. ä. bleiben unberührt). Neu berechnet bei 0,4 Feld Weg, 6° Drehung oder alle 0,5 s.
-GFX.cullR={touch:[40,30,24,18,13,10],igpu:[60,42,32,26,20,16],dgpu:[1e9,60,42,32,26,20]};
+GFX.cullR={touch:[40,30,24,18,13,9],igpu:[60,42,32,26,20,16],dgpu:[1e9,60,42,32,26,20]};
 const _gC={S:null,L:[],t:0,x:1e9,z:1e9,a:0,f:new THREE.Vector3(),n:0};
 function gfxCullList(S){const L=[];S.traverse(o=>{if(!o.isInstancedMesh||o.userData.n0==null)return;const g=o.geometry;for(const k in g.attributes)if(g.attributes[k].isInstancedBufferAttribute)return;
   const n0=o.userData.n0,M=o.instanceMatrix.array,P=new Float32Array(n0*2);for(let i=0;i<n0;i++){P[i*2]=M[i*16+12];P[i*2+1]=M[i*16+14];}
@@ -168,7 +168,7 @@ function gfxBudPre(S,u,c){const b=GFX_BL[GFX.bud.lvl]||GFX_BL[0];try{if(c)gfxCul
    S.traverse(o=>{if(o.isMesh&&o.castShadow&&!skip(o))W.l.push(o);});}
   for(const m of W.l)if(m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}}
  if((b.po||b.pl)&&R3.player){const pl=R3.player,now=performance.now();let C=_gM.pc;if(!C||C.o!==pl||now-C.t>500){C=_gM.pc={o:pl,t:now,ms:[],lod:null};pl.traverse(m=>{if(m.isMesh)C.ms.push(m);if(!C.lod&&m.userData&&m.userData.lod)C.lod=m.userData.lod;});}
-  if(b.po)for(const m of C.ms)if(m.userData.outline&&m.visible){m.visible=false;u.push([m,'visible',true]);}
+  if(b.po)for(const m of C.ms)if(m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}
   const lo=b.pl&&C.lod;if(lo&&lo[0]&&lo[1]&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}}
  if(b.v>=1&&b.vsh)return;const V=S.userData&&S.userData.veg;if(!V)return;
  for(const im of V){if(b.v<1){const n=Math.max(1,Math.round(im.count*b.v));if(n<im.count){u.push([im,'count',im.count]);im.count=n;}}if(!b.vsh&&im.castShadow){im.castShadow=false;u.push([im,'castShadow',true]);}}}

@@ -52,8 +52,8 @@ if(typeof perfStart==='function'&&!perfStart._stab){const _pst=perfStart;perfSta
   if(!GFX.force&&SET.gfx==='auto'&&(STAB.cls!=='mobil'||STAB_RK[STAB.base]<STAB_RK[PERF.tier]))PERF.tier=STAB.base;
   if(STAB_RK[PERF.tier]>STAB_RK[STAB.lim])PERF.tier=STAB.lim;PERF.scale=Math.min(PERF.scale,STAB.smax);};perfStart._stab=1;perfStart();}
 if(typeof perfSet==='function'&&!perfSet._stab){const _pse=perfSet;perfSet=function(t){if(!PERF.TIERS[t])return;
-  if(STAB_RK[t]>STAB_RK[STAB.lim])t=STAB.lim;if(STAB_RK[t]>STAB_RK[PERF.tier]&&performance.now()-STAB.lastBad<10000)return;if(t!==PERF.tier)STAB.grace=Math.max(STAB.grace,5);return _pse(t);};perfSet._stab=1;}// Stufenwechsel baut Pflanzen/Schatten neu → erwartbar langes Bild
-function stabScale(k){k=Math.max(.5,Math.min(1,Math.round(k*100)/100));PERF.scale=k;PERF.changed=performance.now();try{if(R3&&R3.fit)R3.fit();}catch(e){}}
+  if(STAB_RK[t]>STAB_RK[STAB.lim])t=STAB.lim;if(STAB_RK[t]>STAB_RK[PERF.tier]&&performance.now()-STAB.lastBad<10000)return;if(t!==PERF.tier){STAB.grace=Math.max(STAB.grace,5);stabEv('Stufe '+t);}return _pse(t);};perfSet._stab=1;}// Stufenwechsel baut Pflanzen/Schatten neu → erwartbar langes Bild
+function stabScale(k){k=Math.max(.5,Math.min(1,Math.round(k*100)/100));stabEv('Skala '+k);PERF.scale=k;PERF.changed=performance.now();try{if(R3&&R3.fit)R3.fit();}catch(e){}}
 if(typeof perfScale==='function'&&!perfScale._stab){const _psc=perfScale;perfScale=function(k){k=Math.min(k,STAB.smax);
   // R2: Renderskala nicht pendeln lassen (jede Änderung = neue Canvas-Größe = Ruckler): nur Schritte ≥ 0,05 runter / ≥ 0,1 hoch, nach einer Absenkung 20 s nicht wieder anheben
   {const nw=performance.now();if(k>PERF.scale+.001&&(nw-(STAB.scDownT||-1e9)<20000||k-PERF.scale<.099))return;if(k<PERF.scale-.001){if(PERF.scale-k<.049)return;STAB.scDownT=nw;}}const mn=perfTier().smin||.6;
@@ -63,10 +63,15 @@ if(typeof resH3==='function'&&!resH3._stab){const _rh3=resH3;resH3=function(){co
 if(typeof dprCap==='function'&&!dprCap._stab){const _dc=dprCap;dprCap=function(){return Math.min(_dc(),STAB.dpr);};dprCap._stab=1;}
 // ---------- 2) Wachhund ----------
 function stabDown(why){const now=performance.now();if(now-STAB.lastUp<25000)STAB.pend=(STAB.pend||0)+1;STAB.lastBad=now;STAB.downs++;
- if(PERF.tier!=='low'){const t=STAB_TN[STAB_RK[PERF.tier]-1];STAB.lim=t;perfSet(t);stabLog('runter → '+t+' ('+why+')');}
+ // R3 Handy: erst Renderskala (bis 0,7: nur neue Canvas-Größe), dann Stufe – ein Stufenwechsel kompiliert alle Shader neu (Schatten an/aus) = langes Bild
+ if(PERF.touch&&STAB.smax>.7){STAB.smax=Math.max(.7,Math.min(STAB.smax,PERF.scale)-.15);stabScale(STAB.smax);stabLog('Skala → '+STAB.smax+' ('+why+')');}
+ else if(PERF.tier!=='low'){const t=STAB_TN[STAB_RK[PERF.tier]-1];STAB.lim=t;perfSet(t);stabLog('runter → '+t+' ('+why+')');}
  else if(STAB.smax>.5){STAB.smax=Math.max(.5,Math.min(STAB.smax,PERF.scale)-.15);stabScale(STAB.smax);stabLog('Skala → '+STAB.smax+' ('+why+')');}
  STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;}
-function stabEmergency(why){const now=performance.now();STAB.lastBad=now;STAB.emerg++;STAB.lim='low';perfSet('low');STAB.smax=.5;stabScale(.5);
+function stabEmergency(why){const now=performance.now();STAB.lastBad=now;STAB.emerg++;
+ // R3 Handy: erste Notbremse ohne Stufenwechsel (kein Shader-Neubau): Skala 0,6 + 30 fps; erst die zweite stellt auf „niedrig“
+ if(PERF.touch&&STAB.emerg===1&&PERF.tier!=='low'){STAB.smax=.6;stabScale(.6);STAB.cap=30;stabLog('NOTBREMSE 1 Handy: Skala 0,6 ('+why+')');STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;STAB.spikes.length=0;return;}
+ STAB.lim='low';perfSet('low');STAB.smax=.5;stabScale(.5);
  try{GFX.post=false;}catch(e){}try{if(R3&&R3.sun)R3.sun.castShadow=false;}catch(e){}
  STAB.cap=30;if(STAB.emerg===1||STAB.emerg%20===0)stabLog('NOTBREMSE '+STAB.emerg+' ('+why+')');
  if(STAB.emerg===1)try{toast('Grafik auf „niedrig“ gestellt, damit es flüssig bleibt');}catch(e){}
@@ -82,6 +87,9 @@ function stabCount(t){STAB.frames++;STAB.fpsN++;if(t-STAB.fpsT>=1000){STAB.fps=M
 function stabMeasure(dt,t){const W=STAB.win;
  if(!dt)return;if(STAB.blur)return;// gedrosselt: nicht bewerten
  if(STAB.grace>0){STAB.grace--;if(dt>100)return;}// Kartenwechsel, Kampfstart, Modell fertig: ein langes Bild ist erwartet
+ // R3: Bilder mit einmaliger Ursache (neue Shader-Programme, Textur-Upload, Szene/Modell/Karte/Stufe) zählen nie als Ausreißer – sonst löste das Kompilieren
+ // eines Modells beim ersten Erscheinen die Notbremse aus und die Notbremse selbst (Stufe niedrig = alle Shader neu) gleich die nächste
+ {const r=STAB.lastRec;if(r&&(r.prog>0||r.tex>0||r.geo>4||r.ev.length)&&dt>60){STAB.oneoff=(STAB.oneoff||0)+1;return;}}
  const now=performance.now();
  if(dt>250){STAB.spikes=STAB.spikes.filter(x=>now-x<4000);STAB.spikes.push(now);if(STAB.spikes.length>=2){stabEmergency('2 Bilder > 250 ms');return;}}
  if(!W.t0)W.t0=t;W.n++;W.sum+=dt;if(t-W.t0<1500||W.n<3)return;
@@ -95,10 +103,18 @@ function stabMeasure(dt,t){const W=STAB.win;
  if(avg<tgt*1.2+4){if(!STAB.stableT)STAB.stableT=now;const hold=10000*(1+(STAB.pend||0)*2);if(now-STAB.stableT>=hold&&now-STAB.lastBad>=hold&&now-STAB.lastUp>=10000){stabUp();STAB.stableT=now;}}else STAB.stableT=0;}
 // Ereignisse mit erwartbar langem Bild
 function stabGrace(n){STAB.grace=Math.max(STAB.grace,n||3);}
-if(typeof loadMap==='function'&&!loadMap._stab){const _lm=loadMap;loadMap=function(){stabGrace(4);try{if(VMODEL_QUEUE.held)vmqRelease();}catch(e){}return _lm.apply(this,arguments);};loadMap._stab=1;}
+// R3: Ursachen langer Bilder – Ereignisse seit dem letzten Bild (Modell fertig, Karte, Ansicht, Kampf, Stufe), neue Shader-Programme, neue Texturen/Geometrien, JS-Zeit des Bildes.
+// STAB.long = die 10 teuersten Bilder seit dem Laden (VSTAB.info().long). Kosten = Abstand bis zum nächsten rAF (inkl. Warten auf GPU).
+STAB.ev=[];STAB.long=[];
+function stabEv(s){STAB.ev.push(String(s).slice(0,40));if(STAB.ev.length>8)STAB.ev.shift();}
+function stabGpuInfo(){try{const i=R3&&R3.r&&R3.r.info;return i?[i.programs?i.programs.length:0,i.memory.textures,i.memory.geometries]:null;}catch(e){return null;}}
+function stabFrameRec(fa,fi){const f=stabGpuInfo();STAB.fr={js:Math.round(performance.now()-fa),ev:STAB.ev.splice(0),prog:f&&fi?f[0]-fi[0]:0,tex:f&&fi?f[1]-fi[1]:0,geo:f&&fi?f[2]-fi[2]:0,
+ map:typeof cur==='object'&&cur?cur.id:'',mode:typeof mode!=='undefined'?mode:'',tier:PERF.tier,t:Math.round(performance.now()/100)/10};}
+function stabLong(cost){const r=STAB.fr;STAB.fr=null;STAB.lastRec=r;if(!r||cost<60)return;r.ms=Math.round(cost);const L=STAB.long;if(L.length<10||cost>L[L.length-1].ms){L.push(r);L.sort((a,b)=>b.ms-a.ms);if(L.length>10)L.length=10;}}
+if(typeof loadMap==='function'&&!loadMap._stab){const _lm=loadMap;loadMap=function(){stabGrace(4);stabEv('Karte '+arguments[0]);try{if(VMODEL_QUEUE.held)vmqRelease();}catch(e){}return _lm.apply(this,arguments);};loadMap._stab=1;}
 if(typeof transit==='function'&&!transit._stab){const _tr=transit;transit=function(){try{if(VMODEL_QUEUE.held)vmqRelease(4000);}catch(e){}return _tr.apply(this,arguments);};transit._stab=1;}
-if(typeof startBattle==='function'&&!startBattle._stab){const _sb=startBattle;startBattle=function(){stabGrace(4);return _sb.apply(this,arguments);};startBattle._stab=1;}
-if(typeof setView==='function'&&!setView._stab){const _sv=setView;setView=function(){stabGrace(3);return _sv.apply(this,arguments);};setView._stab=1;}
+if(typeof startBattle==='function'&&!startBattle._stab){const _sb=startBattle;startBattle=function(){stabGrace(4);stabEv('Kampf');return _sb.apply(this,arguments);};startBattle._stab=1;}
+if(typeof setView==='function'&&!setView._stab){const _sv=setView;setView=function(){stabGrace(3);stabEv('Ansicht');return _sv.apply(this,arguments);};setView._stab=1;}
 // Test: künstliche Last je gezeichnetem Bild (ms Rechenzeit auf dem Hauptthread)
 function stabLoad(ms){STAB.load=+ms||0;}
 // ---------- Schleife: Deckel, Drosselung, Pause, Messung (äußerste Hülle um 15/43/54) ----------
@@ -106,14 +122,14 @@ function stabHold(){return STAB.off;}
 if(typeof loop==='function'&&!loop._stab){const _lS=loop;loop=function(t){if(STAB.stopped||window.__quit)return;
   if(t===STAB.lt)return;STAB.lt=t;// zweite Kette im selben Bild verwerfen
   // Kosten des letzten gezeichneten Bildes = Abstand bis zum nächsten rAF (enthält GPU-/Compositor-Wartezeit, nicht nur JS)
-  if(STAB.pc){STAB.pc=0;const cost=t-STAB.lr;if(cost<5000){const w=Math.max(0,cost-17);STAB.work+=(w-STAB.work)*(w>STAB.work?.6:.25);stabMeasure(cost,t);}}
+  if(STAB.pc){STAB.pc=0;const cost=t-STAB.lr;stabLong(cost);if(cost<5000){const w=Math.max(0,cost-17);STAB.work+=(w-STAB.work)*(w>STAB.work?.6:.25);stabMeasure(cost,t);}}
   if(stabHold()){STAB.parked=true;STAB.prev=0;STAB.pc=0;return;}
   // Hauptthread-Budget (erst wenn schon „niedrig“): kostet ein Bild > 60 ms (JS + Warten auf GPU), höchstens die Hälfte der Zeit zeichnen (Leitstand/Eingaben behalten Luft).
-  // R2: NICHT am Handy/Tablet (Touch, außer im Leitstand-Rahmen) – dort hieße Halbieren nur weniger Bilder; am PC bleibt es (Strg+Q/Eingaben behalten Luft)
-  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>60&&PERF.tier==='low'&&(STAB.ws||!PERF.touch)?Math.min(2*STAB.work,5000):0);
+  // R2/R3: NICHT am Handy/Tablet (auch nicht in der Werkstatt am Handy) – dort hieße Halbieren nur weniger Bilder; am PC bleibt es (Strg+Q/Eingaben/Leitstand behalten Luft)
+  const c=stabCap(),iv=Math.max(STAB.blur?200:c?1000/c:0,STAB.work>60&&PERF.tier==='low'&&!PERF.touch?Math.min(2*STAB.work,5000):0);
   if(iv&&STAB.lr&&t-STAB.lr<iv-3){requestAnimationFrame(loop);return;}
-  const lf=lastFrame;STAB.inLoop=1;try{_lS(t);}finally{STAB.inLoop=0;}
-  if(lastFrame!==lf){STAB.lr=t;STAB.pc=1;stabCount(t);if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}}};loop._stab=1;}
+  const lf=lastFrame,fa=performance.now(),fi=stabGpuInfo();STAB.inLoop=1;try{_lS(t);}finally{STAB.inLoop=0;}
+  if(lastFrame!==lf){stabFrameRec(fa,fi);STAB.lr=t;STAB.pc=1;stabCount(t);if(STAB.load){const e=performance.now()+STAB.load;while(performance.now()<e){}}}};loop._stab=1;}
 function stabResume(){if(STAB.stopped||window.__quit)return;STAB.prev=0;STAB.pc=0;STAB.win.n=STAB.win.sum=0;STAB.win.t0=0;
  if(STAB.parked&&!stabHold()){STAB.parked=false;try{LOOP.paused=false;}catch(e){}lastT=0;requestAnimationFrame(loop);}}
 // Sichtbarkeit: außerhalb des Bildes (Iframe weggescrollt/ausgeblendet) → Pause; ohne Fokus → 5 Bilder/s
@@ -141,13 +157,23 @@ function vmqPlaying(){try{return typeof R3==='object'&&R3&&R3.mapId&&typeof mode
 function vmqMoving(){try{const m=typeof P==='object'&&P&&P.walk&&Math.abs(P.v||0)>.3;const nw=performance.now();if(m)STAB.mvT=nw;return nw-(STAB.mvT||-1e9)<700;}catch(e){return false;}}
 function vmqRelease(ms){const Q=VMODEL_QUEUE;Q.open=true;clearTimeout(Q.openT);Q.openT=setTimeout(()=>{Q.open=false;},ms||2500);vmqNext();}
 function vmqNext(){const Q=VMODEL_QUEUE;if(Q.busy||!Q.q.length||STAB.stopped)return;if(STAB.off||document.hidden){setTimeout(vmqNext,500);return;}
- if(Q.q[0].welt&&vmqPlaying()){const i=Q.q.findIndex(x=>!x.welt);if(i<0){Q.held=Q.q.length;return;}Q.q.unshift(Q.q.splice(i,1)[0]);}
+ // R3: Hausmodelle werden NICHT mehr bis zum Kartenwechsel zurückgehalten (Startdorf blieb sonst dauerhaft ohne Modell). Sie laden früh (Spielstart/Kartenwechsel, s. unten);
+ // bis sie da sind, steht der prozedurale Kasten (09 w3HausFor). Während des Laufens wartet auch dieser Ladevorgang (vmqMoving).
  // R2: während die Heldin läuft (und 0,7 s danach) nichts parsen/hochladen/kompilieren – jedes fertige Modell kostet ein langes Bild (Textur-Upload, Shader).
  // Ausnahme: Spielfigur (Prio 0). Im Ladebildschirm/Kartenwechsel lädt alles sofort.
  if(vmqPlaying()&&Q.q[0].prio>0&&vmqMoving()){clearTimeout(Q.mvT);Q.mvT=setTimeout(vmqNext,350);Q.waitMove=(Q.waitMove||0)+1;return;}
  Q.busy=true;const it=Q.q.shift();stabIdle(()=>{const t0=performance.now();let fin=false;
-  const end=ok=>{if(fin)return;fin=true;Q.busy=false;ok?Q.done++:Q.fail++;Q.ms.push([it.name,Math.round(performance.now()-t0)]);stabGrace(2);setTimeout(()=>stabIdle(vmqNext),Q.gap);};
+  const end=ok=>{if(fin)return;fin=true;Q.busy=false;ok?Q.done++:Q.fail++;Q.ms.push([it.name,Math.round(performance.now()-t0)]);stabGrace(2);stabEv('Modell '+it.name);setTimeout(()=>stabIdle(vmqNext),Q.gap);};
   try{it.job(end);}catch(e){end(false);}});}
+// Modell kommt in die laufende Szene (Figuren-Tausch 57, Terra-Auffrischung 58, Häuser 09) → als Ereignis vermerken, langes Bild erwartet
+if(typeof figSwapScene==='function'&&!figSwapScene._stab){const _fs=figSwapScene;figSwapScene=function(){stabEv('Figuren-Tausch');stabGrace(2);return _fs.apply(this,arguments);};figSwapScene._stab=1;}
+if(typeof tmRefresh==='function'&&!tmRefresh._stab){const _tr2=tmRefresh;tmRefresh=function(k){stabEv('Terra '+k);stabGrace(2);return _tr2.apply(this,arguments);};tmRefresh._stab=1;}
+if(typeof build3d==='function'&&!build3d._stab){const _b3=build3d;build3d=function(){stabEv('Szene bauen');stabGrace(3);return _b3.apply(this,arguments);};build3d._stab=1;}
+// R3: Hausmodelle früh anstoßen – beim Spielstart (die Heldin startet im Haus, das Dorf wird erst danach gebaut) und bei jedem Kartenwechsel nach draußen.
+function stabHausKick(){try{if(typeof w3HausLoad==='function'&&typeof w3HausOn==='function'&&w3HausOn()&&!W3HAUS.st){w3HausLoad();vmqRelease(6000);}}catch(e){}}
+if(typeof beginGame==='function'&&!beginGame._stabH){const _bgH=beginGame;beginGame=function(){const r=_bgH.apply(this,arguments);setTimeout(stabHausKick,0);return r;};beginGame._stabH=1;}
+if(typeof cont==='function'&&!cont._stabH){const _ctH=cont;cont=function(){const r=_ctH.apply(this,arguments);setTimeout(stabHausKick,0);return r;};cont._stabH=1;}
+if(typeof loadMap==='function'&&!loadMap._stabH){const _lmH=loadMap;loadMap=function(){const r=_lmH.apply(this,arguments);try{if(cur&&!cur.inside)stabHausKick();}catch(e){}return r;};loadMap._stabH=1;}
 // Reihenfolge: Spielfigur zuerst, dann Häuser der Karte, Figuren, Terras, zuletzt der alte Pilot
 function vmqPrio(u){u=String(u);return/fig_noa/.test(u)?0:/welt\//.test(u)?1:/figuren\//.test(u)?2:/terras\//.test(u)?3:/pilot\//.test(u)?8:5;}
 function vmqName(u){u=String(u);if(u.startsWith('data:'))return'data';const m=/([\w-]+)\.glb/.exec(u);return m?m[1]:u.slice(-30);}
@@ -199,8 +225,8 @@ if(typeof animModel==='function'&&!animModel._stab){const _am=animModel;animMode
 // Anzeige (Staging-Badge „fps · Stufe · Dreiecke“, Grafik-Schalter) steckt in tools/staging-overlay.js und liest window.VSTAB.info()
 const STAB_TL={high:'hoch',mid:'mittel',low:'niedrig'};
 function stabInfo(){return{cls:STAB.cls,gpu:STAB.gpu,base:STAB.base,ceil:STAB.ceil,lim:STAB.lim,tier:PERF.tier,scale:PERF.scale,smax:STAB.smax,dpr:dprCap(),cap:stabCap(),fps:STAB.fps,avg:STAB.avg,
- tris:(GFX.stat&&GFX.stat.tris)||0,calls:(GFX.stat&&GFX.stat.calls)||0,modelle:typeof pilotOn==='function'&&pilotOn(),frames:STAB.frames,work:+STAB.work.toFixed(1),emerg:STAB.emerg,downs:STAB.downs,ups:STAB.ups,off:STAB.off,blur:STAB.blur,parked:STAB.parked,stopped:STAB.stopped,ws:STAB.ws,gls:STAB.gls.length,
- q:{wait:VMODEL_QUEUE.q.length,done:VMODEL_QUEUE.done,fail:VMODEL_QUEUE.fail,max:VMODEL_QUEUE.max,busy:VMODEL_QUEUE.busy},log:STAB.log.slice(-12)};}
+ tris:(GFX.stat&&GFX.stat.tris)||0,calls:(GFX.stat&&GFX.stat.calls)||0,modelle:typeof pilotOn==='function'&&pilotOn(),oneoff:STAB.oneoff||0,frames:STAB.frames,work:+STAB.work.toFixed(1),emerg:STAB.emerg,downs:STAB.downs,ups:STAB.ups,off:STAB.off,blur:STAB.blur,parked:STAB.parked,stopped:STAB.stopped,ws:STAB.ws,gls:STAB.gls.length,
+ long:STAB.long.slice(),q:{wait:VMODEL_QUEUE.q.length,done:VMODEL_QUEUE.done,fail:VMODEL_QUEUE.fail,max:VMODEL_QUEUE.max,busy:VMODEL_QUEUE.busy},log:STAB.log.slice(-12)};}
 // Für Werkstatt/Konsole auch im geschützten Build erreichbar (Namen werden dort gekürzt): VSTAB.info(), VSTAB.stop()
 try{window.VSTAB={info:()=>stabInfo(),stop:w=>stabStop(w||'konsole')};}catch(e){}
 

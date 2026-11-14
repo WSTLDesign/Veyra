@@ -539,6 +539,11 @@ Grundlage `docs/qa-mechanik.md` (Status je Mangel dort im Abschnitt „Nachbesse
 - **src/59-grafik.js:** Budget durchsetzen (Handy ≤ 100 k / ≤ 60, Iris Xe ≤ 150 k / ≤ 110) mit Regelstufe 0–5 ohne Pendeln, Instanz-Ausdünnung hinter der Kamera/nach Entfernung (`gfxCullTick`), Sonnenschatten am Handy nur Heldin + 2 nächste Figuren, Umrisse nur nah. **src/61-stabil.js:** Halbieren nicht am Handy, Touch ≤ „mittel“, Pendel-Sperren, Schleife nach iOS-Rückkehr anstoßen, kein Laden während des Laufens, ferne Figuren/Terras 15 Hz. **src/09 (Kamera):** Ausweich-Ziele halten, weicher, Schulterwechsel verzögert, Rollen dt-basiert. **tools/staging-overlay.js:** Schalter „Neue 3D-Modelle“ + Qualität gespeichert (Home-Bildschirm-fest), Badge „fps · Stufe · Dreiecke“.
 - Messwerte, Tests, offene Punkte: docs/stabilitaet.md › Runde 2. Tests `node test/stabil2_handy.mjs`, `node test/stabil_qa.mjs`.
 
+## Stabilität Runde 3 – Häuser fehlten, Notbremse (Opus 5.5 · hoch) – 14.11.
+- Ursache „Häuser fehlen“: Runde-2-Budget (59) hielt Meshes mit `userData.outline` (09/38 setzen das am Original auf die Hülle) für Umrisshüllen und blendete Häuser, Laternen und Figurenkörper aus → jetzt `=== 1`. Hausmodelle laden früh (Spielstart/Kartenwechsel), Kasten bis dahin.
+- Notbremse: lange Einzelbilder kamen von Kartenaufbau, Stufenwechsel (alle Shader neu) und neu erscheinenden Modellen → solche Bilder zählen nicht mehr; Handy senkt erst die Renderskala, erste Notbremse ohne Stufenwechsel; Ursachen-Protokoll `VSTAB.info().long`. Keine Halbierung bei Touch (auch Werkstatt).
+- Werkstatt am Handy ist strukturell langsamer → am Handy die Netlify-App nutzen. Details: docs/stabilitaet.md › Runde 3.
+
 ## UI-Design Runde 2 – App-Icon, Startablauf, Tasche, Fangkarte (Opus 5.5 · hoch) – 13.11.
 - Eigenes App-Icon „V mit Kristall-Funke“ (public/icons/*, Quelle icon.svg, Erzeuger tools/icon/icon_svg.py), Manifest-Farben #141a30.
 - Alter Titel auf dem iPhone: Service Worker lieferte index.html cache-first unter festem Cache-Namen → jetzt Seite/Manifest/Icons zuerst aus dem Netz (public/sw.js); Startbildschirm und Opening-Endbild tragen die neue Wortmarke; Film-Standbild nicht mehr hinter dem Titel.

@@ -1,0 +1,158 @@
+{
+ "tag": "budget2",
+ "stufe": "mid",
+ "zeit": "2026-11-15T21:34:21.209Z",
+ "budget": {
+  "morgenau": {
+   "kat": {
+    "welt": 9,
+    "inst": 20,
+    "haus": 4,
+    "punkte": 4,
+    "heldin": 4,
+    "heldin-umriss": 1,
+    "figur": 4,
+    "figur-umriss": 1,
+    "terra": 6,
+    "terra-umriss": 2,
+    "schatten": 1
+   },
+   "tris": 76039,
+   "calls": 56,
+   "lvl": 6,
+   "erstes": [
+    80455,
+    54,
+    5
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 2,
+     "sichtbar": 1,
+     "tris": 2800
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 0.6,
+      "lod4": 2,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 2,
+      "tris": 2000
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 4.5,
+      "lod4": 1,
+      "lod1": false,
+      "n": 2,
+      "sichtbar": 1,
+      "tris": 2799
+     }
+    ]
+   },
+   "tier": "mid"
+  },
+  "route1": {
+   "kat": {
+    "welt": 21,
+    "inst": 16,
+    "punkte": 3,
+    "heldin": 4,
+    "heldin-umriss": 1,
+    "terra": 10,
+    "terra-umriss": 4,
+    "schatten": 1
+   },
+   "tris": 74101,
+   "calls": 60,
+   "lvl": 6,
+   "erstes": [
+    74099,
+    59,
+    6
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 2,
+     "sichtbar": 1,
+     "tris": 2800
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 1,
+      "lod4": 2,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 2,
+      "tris": 2000
+     },
+     {
+      "k": "t112",
+      "d": 3.2,
+      "lod4": 2,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 2,
+      "tris": 2000
+     }
+    ]
+   },
+   "tier": "mid"
+  },
+  "kupferhain": {
+   "kat": {
+    "welt": 14,
+    "inst": 18,
+    "haus": 6,
+    "punkte": 4,
+    "figur": 1,
+    "figur-umriss": 1,
+    "heldin": 4,
+    "heldin-umriss": 1,
+    "terra": 6,
+    "terra-umriss": 2,
+    "schatten": 1
+   },
+   "tris": 84452,
+   "calls": 57,
+   "lvl": 6,
+   "erstes": [
+    140240,
+    89,
+    0
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 2,
+     "sichtbar": 1,
+     "tris": 2800
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 1,
+      "lod4": 2,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 2,
+      "tris": 2000
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 1.4,
+      "lod4": 1,
+      "lod1": false,
+      "n": 1,
+      "sichtbar": 1,
+      "tris": 1249
+     }
+    ]
+   },
+   "tier": "mid"
+  }
+ },
+ "errs": []
+}

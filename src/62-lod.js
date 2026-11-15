@@ -115,9 +115,12 @@ function lodPrep(g){if(!LOD4.on||!g||!g.scene||!window.THREE)return Promise.reso
  const ter=L.filter(m=>m.isSkinnedMesh&&/_(Koerper|Kopf)$/.test(m.name)&&has(m.name));
  if(ter.length){const tot=ter.reduce((s,m)=>s+lodTris(m.geometry),0);for(const m of ter)jobs.push([m,Math.max(150,Math.round(LOD4.T.terra*lodTris(m.geometry)/tot))]);}
  return Promise.all(jobs.map(([m,t])=>lodJob(m.geometry,t)));}
-// Lader-Hülle (außen um 61 vmqWrap): Modell erst als „fertig“ melden, wenn die leichten Netze da sind (läuft im Worker, Hauptthread frei)
+// Lader-Hülle (außen um 61 vmqWrap): Modell sofort als „fertig“ melden (keine Verzögerung für Kampf/Figuren-Tausch), leichte Netze im Worker erzeugen
+// und danach auf alle schon gebauten Exemplare nachrüsten (lodRetro). Der Ladebildschirm wartet auf beides (pcBusy zählt LOD4.pend).
 function lodWrapL(L){if(!L||L._lod4)return L;L._lod4=1;const ld=L.load.bind(L);
- L.load=function(url,onL,onP,onE){return ld(url,g=>{let p;try{p=lodPrep(g);}catch(e){p=Promise.resolve();}p.then(()=>{onL&&onL(g);},e=>{console.warn('LOD',e);onL&&onL(g);});},onP,onE);};return L;}
+ L.load=function(url,onL,onP,onE){return ld(url,g=>{try{lodPrep(g).then(lodRetro,e=>console.warn('LOD',e));}catch(e){}if(onL)onL(g);},onP,onE);};return L;}
+function lodRetro(){try{const seen=new Set(),fix=S=>{if(!S||seen.has(S))return;seen.add(S);S.traverse(o=>{const U=o.userData;if(U&&U.inner&&(U.pilot||U.tm)&&!U.lod4){lodApply(o);if(U.lod4)U._gm=null;}});};
+  if(typeof R3==='object'&&R3){fix(R3.scene);if(R3.player)fix(R3.player);}if(typeof scenes==='object')for(const k in scenes)fix(scenes[k]);if(typeof BT==='object'&&BT&&BT.s)fix(BT.s);}catch(e){console.warn('LOD nachrüsten',e);}}
 if(typeof modelLoaders==='function'&&!modelLoaders._lod4){const _ml4=modelLoaders;modelLoaders=function(){return _ml4().then(lodWrapL);};modelLoaders._lod4=1;}
 // ---------- 1c) Exemplare: LOD1, Umriss, Schattennetz aus dem leichten Netz ----------
 const LOD_SK0=function(r,s,c,g){g.drawRange.count=0;},LOD_SK1=function(r,s,c,g){g.drawRange.count=Infinity;};// Hauptpass: kein Draw-Call; Schattenpass ruft das nicht auf
@@ -133,7 +136,7 @@ function lodApply(root){const U=root&&root.userData;if(!U||!U.inner||U.lod4||!LO
   for(const c of m.children)if(c.userData&&c.userData.outline===1)c.geometry=G;// Umriss des Hauptnetzes aus dem leichten Netz
   lodShadow(m,G);}
  if(!n)return;if(U.tm)for(const m of ms)if(/Augen/.test(m.name))m.castShadow=false;// Terra-Augenpartie: der Kopf-Schatten deckt sie ab
- U.lod4=n;}
+ U.lod4=n;U._gm=null;}
 if(typeof pilotMake==='function'&&!pilotMake._lod4){const _pm4=pilotMake;pilotMake=function(){const o=_pm4.apply(this,arguments);try{if(o)lodApply(o);}catch(e){console.warn('LOD Figur',e);}return o;};pilotMake._lod4=1;}
 if(typeof tmMake==='function'&&!tmMake._lod4){const _tm4=tmMake;tmMake=function(){const o=_tm4.apply(this,arguments);try{if(o)lodApply(o);}catch(e){console.warn('LOD Terra',e);}return o;};tmMake._lod4=1;}
 // ---------- 1d) Shape Keys nur nah: Mimik/Blinzeln ab 8 Feldern eingefroren (Welt; Kampf/Ansichten nie) ----------
@@ -146,9 +149,11 @@ if(typeof pilotFace==='function'&&!pilotFace._lod4){const _pf4=pilotFace;pilotFa
 if(typeof tmFace==='function'&&!tmFace._lod4){const _tf4=tmFace;tmFace=function(U){if(U&&U._far){LOD4.frz=(LOD4.frz||0)+1;return;}return _tf4.apply(this,arguments);};tmFace._lod4=1;}
 // ---------- 2) Vorkompilieren ----------
 // Vorübergehende Exemplare der Terras des Gebiets (Team + Begegnungen), die noch nicht in der Szene stehen → Programme/Texturen/Knochen-Texturen vorab
-function pcTemps(S){const out=[];try{if(typeof tmOn!=='function'||!tmOn()||typeof tmMake!=='function')return out;const ids=new Set();(G&&G.team||[]).forEach(m=>ids.add(m.s));const e=cur&&cur.enc;if(e)[...(e.day||[]),...(e.night||[])].forEach(x=>ids.add(x[0]));
-  const inS=new Set();S.traverse(o=>{if(o.userData&&o.userData.tm)inS.add(o.userData.tm);});
-  for(const id of ids){if(!tmReady(id))continue;const k=tmKey(id);if(inS.has(k)||PC4.warmed&&PC4.warmed.has(k)&&PC4.warmed.get(k)===R3.r)continue;const o=tmMake(id,1);if(!o)continue;o.position.copy(R3.player.position);S.add(o);out.push([o,k]);}}catch(e){}return out;}
+function pcTemps(S){const out=[];try{if(typeof monObj!=='function'||!cur||!R3.player)return out;const ids=new Set();(G&&G.team||[]).forEach(m=>ids.add(m.s));const e=cur.enc;if(e)[...(e.day||[]),...(e.night||[])].forEach(x=>ids.add(x[0]));
+  const inS=new Set();S.traverse(o=>{const U=o.userData;if(U&&U.tm)inS.add(U.tm);});const W=PC4.warmed||(PC4.warmed=new Map());
+  for(const id of ids){if(!MONS[id])continue;const kind=typeof monRender==='function'?monRender(id):'?',k='m'+id+'|'+kind+(typeof tmReady==='function'&&tmReady(id)?'|tm':'');
+   if(typeof tmKey==='function'&&tmReady(id)&&inS.has(tmKey(id))||W.get(k)===R3.r)continue;
+   const o=monObj(id,typeof worldScale==='function'?worldScale(id):1,{},S);if(!o)continue;if(!o.parent)S.add(o);o.position.copy(R3.player.position);out.push([o,k]);}}catch(e){console.warn('Vorkompilieren: Terras',e);}return out;}
 function pcWarm(why){if(typeof R3!=='object'||!R3||!R3.r||!R3.scene||!GFX.r0)return null;const r=R3.r,S=R3.scene,cam=R3.activeCam||R3.cam,t0=performance.now(),inf=r.info,p0=pcLinks(),x0=inf.memory.textures;
  const temps=pcTemps(S),U=[];let err=null;
  const sc=R3.sun.castShadow;R3.sun.castShadow=true;// für den Renderer wirft die Sonne immer Schatten (Abschnitt 3) – genau diesen Licht-Schlüssel kompilieren
@@ -160,14 +165,15 @@ function pcWarm(why){if(typeof R3!=='object'||!R3||!R3.r||!R3.scene||!GFX.r0)ret
   try{r.setRenderTarget(PC4.rt);GFX.r0(S,cam);}finally{r.setRenderTarget(prev);r.shadowMap.autoUpdate=au;r.shadowMap.needsUpdate=true;PC4.clr=1;}}
  catch(e){err=String(e&&e.message||e);}
  finally{R3.sun.castShadow=sc;for(let i=U.length-1;i>=0;i--){const[o,k,v]=U[i];o[k]=v;}
-  for(const[o,k]of temps){S.remove(o);try{BLOB.delete(o);}catch(e){}try{const sk=new Set();o.traverse(m=>{if(m.isSkinnedMesh&&m.skeleton)sk.add(m.skeleton);});sk.forEach(s=>s.dispose());}catch(e){}(PC4.warmed||(PC4.warmed=new Map())).set(k,r);}}
+  for(const[o,k]of temps){S.remove(o);try{if(o.userData&&o.userData.L)o.userData.L.items.delete(o);}catch(e){}try{BLOB.delete(o);}catch(e){}try{const sk=new Set();o.traverse(m=>{if(m.isSkinnedMesh&&m.skeleton)sk.add(m.skeleton);});sk.forEach(s=>s.dispose());}catch(e){}(PC4.warmed||(PC4.warmed=new Map())).set(k,r);}}
  const rec={why,ms:Math.round(performance.now()-t0),prog:pcLinks()-p0,tex:inf.memory.textures-x0,temps:temps.length,map:cur&&cur.id,err};PC4.n++;PC4.log.push(rec);if(PC4.log.length>20)PC4.log.shift();
  try{stabEv('Vorkompilieren '+why);}catch(e){}return rec;}
 // Szene neu gebaut → im selben (ohnehin langen, meist verdeckten) Bild alles vorkompilieren; im Ladebildschirm erst nach den Modellen (ldHold)
 if(typeof build3d==='function'&&!build3d._pc4){const _b34=build3d;build3d=function(){const S=_b34.apply(this,arguments);PC4.need=1;return S;};build3d._pc4=1;}
 // Ladebildschirm (Haken in 55 ldRun): Modelle des Ortes abwarten (Warteschlange + LOD-Netze), höchstens bis LD_MS.min + 1,5 s, dann Szene auffrischen + vorkompilieren
 function pcBusy(){try{const Q=VMODEL_QUEUE;return Q.busy||Q.q.some(x=>x.prio<=3)||LOD4.pend>0;}catch(e){return false;}}
-async function ldHold(tok,tShow){const t0=performance.now(),dl=(tShow||t0)+((typeof LD_MS==='object'&&LD_MS.min)||650)+LOD4.holdMax,Q=VMODEL_QUEUE,gap=Q.gap;let busy0=pcBusy();
+async function ldHold(tok,tShow){const t0=performance.now(),dl=Math.max(t0,(tShow||t0)+((typeof LD_MS==='object'&&LD_MS.min)||650))+LOD4.holdMax,// höchstens +1,5 s über die sonstige Ladezeit
+ Q=VMODEL_QUEUE,gap=Q.gap;let busy0=pcBusy();
  Q.gap=20;try{while(pcBusy()&&performance.now()<dl&&tok===LADEN.tok)await new Promise(r=>setTimeout(r,50));}finally{Q.gap=gap;}
  if(tok!==LADEN.tok)return;const wait=Math.round(performance.now()-t0),left=pcBusy();
  try{LADEN.own=true;draw3d();}catch(e){console.warn('Laden: Aufbau',e);}finally{LADEN.own=false;}
@@ -193,7 +199,7 @@ if(typeof init3d==='function'&&!init3d._pc4){const _i34=init3d;init3d=function()
 try{if(typeof R3==='object'&&R3)pcSetup();}catch(e){}
 // Protokoll: die ersten 15 s nach dem Ausblenden des Ladebildschirms (je gezeichnetes Bild: Kosten, JS, neue Programme/Texturen, Ereignisse) → VSTAB.info().nach
 if(typeof stabLong==='function'&&!stabLong._pc4){const _sl4=stabLong;stabLong=function(cost){try{const ld=typeof LADEN==='object'&&LADEN.active,now=performance.now();
-   if(PC4.wasLd&&!ld){PC4.tEnd=now;PC4.nach=[];}PC4.wasLd=ld;const r=STAB.fr;
+   if(!ld&&(LADEN.count||0)!==(PC4.ldN||0)){PC4.ldN=LADEN.count;PC4.tEnd=now;PC4.nach=[];}// neuer Ladebildschirm beendet (auch wenn währenddessen kein Bild der Schleife lief)const r=STAB.fr;
    if(r&&!ld&&PC4.tEnd&&now-PC4.tEnd<15000&&PC4.nach.length<120)PC4.nach.push({at:Math.round(now-PC4.tEnd),ms:Math.round(cost),js:r.js,prog:r.prog,tex:r.tex,geo:r.geo,ev:r.ev.slice(0,3)});}catch(e){}
   return _sl4.apply(this,arguments);};stabLong._pc4=1;}
 function lodInfo(){const N=PC4.nach;return{lod:{on:LOD4.on,done:LOD4.done,pend:LOD4.pend,err:LOD4.err,worker:LOD4.w?'ja':LOD4.w===false?'nein':'–',ms:LOD4.ms.slice(-12),frz:LOD4.frz||0},

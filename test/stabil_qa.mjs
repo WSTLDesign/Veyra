@@ -198,15 +198,20 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
       R.mess.r4_stufe = sw; t('R4 Stufenwechsel mittel ↔ niedrig (Schatten an/aus): keine neu kompilierten Shader-Programme', sw.wechsel === 0, sw); }
     // R4: Ladebildschirm → Route 1 → Kupferhain: Modelle des Ortes + Vorkompilieren hinter dem Ladebildschirm, danach keine neuen Programme, kein Bild mit JS > 100 ms
     for (const [id, x, y] of [['route1', 9, 20], ['kupferhain', 4, 11]]) {
-      await mp.evaluate(([id, x, y]) => { transit(() => loadMap(id, x, y), id); }, [id, x, y]);
+      // Emulation: SwiftShader lädt ein Modell in 0,1–20 s (echtes Handy ≈ 0,2–0,5 s) → Haltefrist hier 90 s statt 1,5 s, damit geprüft wird, was das Handy in 1,5 s schafft
+      await mp.evaluate(([id, x, y]) => { LOD4.holdMax = 90000; transit(() => loadMap(id, x, y), id); }, [id, x, y]);
       await mp.waitForFunction(() => !LADEN.active, null, { timeout: 180000, polling: 100 }); await mp.waitForTimeout(8000);
       const n = await mp.evaluate(() => { const i = stabInfo(); return { nach: i.nach, hold: i.pc.hold[i.pc.hold.length - 1], lade: LADEN.log[LADEN.log.length - 1] }; }); R.mess['r4_laden_' + id] = n;
       t(`R4 nach dem Ladebildschirm (${id}): kein neues Shader-Programm, kein Bild mit JS > 100 ms (Emulation; SwiftShader-Bildkosten selbst ≈ 1–2 s)`, n.nach.bilder >= 2 && n.nach.prog === 0 && n.nach.jsMax <= 100, n); }
+    await mp.evaluate(() => { LOD4.holdMax = 1500; });
     // Wackeln: 3 s Gehen / 2 s Rennen geradeaus bei simuliertem 60-Hz-Takt mit Deckel 30 – Kamera ruhig, Heldin auf der Geraden, gleichmäßiges Tempo
     await mp.evaluate(() => { loadMap('morgenau', 9, 8); mode = 'world'; }); await mp.waitForTimeout(4000);
-    const wk = await mp.evaluate(WACKEL, [30, 0, w, h]); R.mess.wackel = wk;
+    // Dorfbewohner wandern und blockieren Felder (villAt) – für die Messung der Kamera-/Gangruhe auf freier Strecke kurz aus der Liste nehmen
+    await mp.evaluate(() => { window.__vill = VILL.list.splice(0); });
+    const wk = await mp.evaluate(WACKEL, [30, 0, w, h]); R.mess.wackel = wk; await mp.evaluate(() => { VILL.list.push(...(window.__vill || [])); });
     for (const k of ['gehen', 'rennen']) { const q = wk[k] || {};
-      t(`M Wackeln ${k}: Heldin auf der Geraden, Tempo gleichmäßig (CV < 5 %), Kamera ruhig (Höhe σ < 0,3, Abstand σ < 0,2, Tempo-CV < 20 %)`, q.n >= 20 && q.heldinQuer < .01 && q.tempoCV < .05 && q.kameraHoeheSd < .3 && q.kamAbstandSd < .2 && q.kameraTempoCV < .2, q); } }
+      t(`M Wackeln ${k}: Heldin auf der Geraden, Tempo gleichmäßig (CV < 5 %), Kamera ruhig (Höhe σ < 0,3, Abstand σ < 0,2, Tempo-CV < 20 %)`, q.n >= 20 && q.heldinQuer < .01 && q.tempoCV < .05 && q.kameraHoeheSd < .3 && q.kamAbstandSd < .2 && q.kameraTempoCV < .2, q); }
+ }
   t(`M ${w}×${h} keine Seitenfehler`, !me.length, me.slice(0, 3)); R.mess['mobil_' + w] = mi; await ctx.close(); }
 // ---------- W) Werkstatt-Build am Handy (wie im Leitstand-Vollbild: ?ws=1, Modelle als nachgeladene Skripte), Häuser + keine Halbierung + Ursachen langer Bilder ----------
 if (!process.env.STAB_SKIP_M) {

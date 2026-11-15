@@ -191,3 +191,70 @@ Der Werkstatt-Pfad ist am Handy **strukturell langsamer** als die Netlify-App: C
 - Echte Bildzeiten auf dem iPhone sind weiter nicht messbar (SwiftShader); die Ursachen-Protokolle zeigen Art und Reihenfolge, nicht die echten Millisekunden. Am Gerät: Plakette → Grafik-Infozeile, bzw. `VSTAB.info().long` in der Konsole.
 
 **Tests (14.11., Endstand Runde 3):** `node build.mjs` ✓ · `stabil_qa` 52 ✓ / 0 ✗ (neu: Häuser sofort/nach Modellen/ohne Modelle/Werkstatt am Handy) · `smoke` „Keine Fehler.“ · `uebergaenge_qa` 97 ✓ / 0 ✗.
+
+## Runde 4 (15.11.) – Shader-Vorkompilierung hinter dem Ladebildschirm, leichte LOD-Netze (Umrisse am Handy)
+
+Agent „Stabilität R4“ (Opus 5.5 · hoch). Auftrag: (1) nach dem Ladebildschirm kein Bild > 100 ms mehr durch neue Shader/Modelle, Stufenwechsel ohne Neukompilieren; (2) Figuren-LOD1 ≈ 2,5–3 k, Umrisshülle aus LOD1, Schattennetz 2–3 k, Terras LOD1 ≈ 2 k – ohne Blender (GLBs unverändert); Handy-Budget ≤ 100 k / ≤ 60 mit sichtbaren Umrissen an Heldin + 2 nächsten Figuren; Shape Keys nur nah.
+
+### Befunde vorher (Messung `test/stabil4_mess.mjs`, iPhone-15-Pro-Max-Emulation, Stufe mittel festgehalten)
+| Befund | Ergebnis |
+|---|---|
+| Lange Bilder nach dem Ladebildschirm | **bestätigt:** Route 1 – erstes Bild nach dem Ausblenden 134 ms JS mit 2 neuen Programmen, 10 Texturen, 19 Geometrien; Kupferhain 13 Texturen nachgeladen. |
+| Modelle des Ortes vor dem Ausblenden fertig? | **nein:** Runde 3 stößt sie an, wartet aber nicht – nach dem Ladebildschirm warteten noch 5–8 Modelle (Figuren, Terras, Häuser) in der Warteschlange; jedes kam später mitten ins Spiel (Figuren-Tausch, Terra-Auffrischung, Haus-Neubau der Szene). |
+| Stufenwechsel kompiliert alles neu | **bestätigt, Messung war bisher blind:** `r.info.programs` zählt netto – beim Wechsel werden die alten Programme freigegeben, während die neuen entstehen, die Differenz blieb 0. Ursache: `sun.castShadow` an/aus ändert den Licht-Schlüssel (numDirLightShadows) aller beleuchteten Materialien. Jetzt zählt das Protokoll echte `linkProgram`-Aufrufe. |
+| Umrisse am Handy | **keine:** Budget-Stufe 5 (in allen drei Orten erreicht) blendet Umrisse an Figuren, Terras und der Heldin aus; höchstens 1 Modell neben der Heldin. |
+
+### Änderungen
+- **Neu `src/62-lod.js`** (Bereich Stabilität):
+  1. **LOD zur Laufzeit:** Beim Laden eines Figuren-/Terra-GLB wird das Körpernetz einmal im **Web Worker** (Blob; Rückfall Leerlauf im Hauptthread) vereinfacht und je Geometrie gecacht. Eigener Halbkanten-Kollaps mit Quadrik-Fehler (Garland/Heckbert): es entstehen keine neuen Positionen, jede Ecke übernimmt Position + Normale + **Skinning** eines Original-Knotens, UV/Farbe/Masken bleiben die der Original-Ecke → Skinning und Texturen bleiben gültig. Nähte (UV-Inseln) bleiben erhalten; kommt das Netz damit nicht auf das Ziel (Terras: fast jede Ecke liegt auf einer UV-Naht), darf eine Ecke über die Naht wandern und behält ihre eigene UV. Rand-/Nahtkanten bekommen Zusatzebenen, Umklappen/Nicht-Mannigfaltigkeit wird abgewiesen. Statt SimplifyModifier (r128 verwirft alle Attribute außer der Position → kein Skinning) und ohne Blender.
+     Ergebnis: **Figur-Körper 11,7 k → 2,8 k** (mittlere Abweichung 1,6 mm, größte 14 mm an Finger-/Haarspitzen bei 1,45 m Figur), **Terra Körper + Kopf ≈ 7 k → 2,0 k** (Ø 1,7–4 mm). Das leichte Netz ist zugleich:
+     - **LOD1** (ersetzt `Koerper_LOD1` aus dem GLB: Figur 5,8 k → 2,8 k, Terra 3,6 k → 2,0 k), Figuren-LOD1 bekommt jetzt einen eigenen Umriss;
+     - **Umrisshülle des Hauptnetzes** (vorher Kopie des vollen Körpers, 11,7 k);
+     - **Schattennetz**: eigenes SkinnedMesh am selben Skelett, nur im Schattenpass gezeichnet (im Hauptpass setzt `onBeforeRender` den Zeichenbereich auf 0 → kein Draw-Call); der volle Körper wirft keinen Schatten mehr. Terra-Augenpartie wirft keinen Schatten (Kopf-Schattennetz deckt sie).
+     Gesicht/Augen (Shape Keys) bleiben unverändert. **Shape-Key-Updates** (Mimik, Blinzeln, Sprechen) nur für Figuren/Terras bis **8 Felder** (Hysterese 0,5), ferne bleiben eingefroren; Kampf und Ansichten nie.
+  2. **Vorkompilieren:** nach jedem Szenenaufbau (im selben, ohnehin verdeckten bzw. langen Bild) und **hinter dem Ladebildschirm** (`ldHold`, Haken in 55): `renderer.compile(scene, camera)` + ein **Aufwärm-Bild** in ein 4×4-Ziel mit allem sichtbar und schattenwerfend (alle Programme inkl. Schatten-Varianten, Texturen, Knochen-Texturen, Puffer), dazu **vorübergehende Exemplare aller Terras des Gebiets** (Team + Begegnungen, Modell oder Ersatz), die noch nicht in der Szene stehen.
+  3. **Ladebildschirm hält, bis die Modelle des Ortes da sind** (Warteschlange + LOD-Aufbereitung leer), **höchstens +1,5 s** über die sonstige Ladezeit; währenddessen lädt die Warteschlange ohne 100-ms-Pausen. Danach Szene einmal auffrischen (Figuren-Tausch/Terra-Auffrischung), dann Vorkompilieren, dann Ausblenden.
+  4. **Schatten an/aus ohne Neukompilieren:** Für den Renderer wirft die Sonne immer Schatten (gleicher Licht-Schlüssel ⇒ gleiche Programme). „Aus“ (Stufe niedrig, Notbremse, Option) = Schattenkarte einmal geleert und nicht mehr gezeichnet, Empfänger je Bild mit `receiveShadow=false` (Uniform, kein Programm-Merkmal) – auch kein Abtasten der Karte.
+  5. **Protokoll:** neue Programme = echte `linkProgram`-Aufrufe (statt Netto-Zahl); `VSTAB.info().nach` = alle Bilder der ersten 15 s nach dem Ladebildschirm (Kosten, JS, neue Programme/Texturen, Ereignisse), `…lod` (Netze, Worker, eingefrorene Mimik), `…pc` (Vorkompilieren, Warten). `?lod=0` schaltet die LOD-Netze ab (Vergleich).
+- **src/59-grafik.js:** Umriss für **Heldin + 2 nächste Modelle bis 8 Felder** (Handy; PC 10–12) auf **jeder** Budget-Stufe (`nol`/`olN`); Heldin behält den Umriss, sobald sie die leichte Hülle hat; Terras schalten ab der Budget-LOD-Entfernung (Handy 2,8 Felder) auf das leichte Netz; Stufe 4/5 zeigen wieder ≥ 2 Modelle; **neue Stufe 6** als Reserve (Instanzen bis 7 Felder, Laub 14 %, ohne Umriss der Terra-Augenpartie).
+- **src/55-laden.js:** ein Haken (`ldHold`) vor dem Ausblenden. Sonst unverändert.
+- Nicht angefasst: GLBs (Blender-Sperre), 57/58 (nur von außen umhüllt), 09.
+
+### Messwerte (SwiftShader, 2 Kerne, iPhone-15-Pro-Max-Emulation 932×430 @ DPR 3, „Apple GPU“, Stufe mittel) – vorher = Stand 037d704
+SwiftShader zeichnet ein Weltbild in ≈ 1–10 s (Software-GL, parallel liefen fremde Chromium-Tests) – **die Bildkosten selbst sind nicht aussagekräftig.** Gemessen wird die JS-Zeit je Bild (enthält das synchrone Linken der Shader: three prüft `LINK_STATUS` sofort, und Textur-Uploads) und die Ursachen (neue Programme/Texturen/Geometrien).
+In der Emulation lädt ein Modell 0,1–20 s (echtes Handy: Draco im Worker ≈ 0,2–0,5 s); damit geprüft wird, was das Handy in 1,5 s schafft, ist die Haltefrist dort auf 90 s gesetzt („nachher“). Ohne diese Anpassung kamen in der Emulation die Modelle wie vorher erst nach dem Ladebildschirm (Haus-Modell in Kupferhain → Szenen-Neubau 266 ms).
+
+| nach dem Ladebildschirm (je 10 s stehen + 6 s laufen) | vorher | nachher |
+|---|---|---|
+| Route 1: neu kompilierte Programme / längstes Bild (JS) | 2 / **134 ms** (+10 Texturen, 19 Geometrien) | **0 / 11 ms** |
+| Kupferhain | 0 / 38 ms (13 Texturen) | **0 / 15 ms** (≤ 10 kleine Texturen ohne Ereignis) |
+| Morgenau | 0 / 32 ms | **0 / 43 ms** |
+| Modelle des Ortes beim Ausblenden fertig | nein (5–8 warten) | ja (Warten 3,1 s in der Emulation, Vorkompilieren 3,8 s SwiftShader; danach 0 offen) |
+| Stufenwechsel mittel ↔ niedrig (Schatten an/aus) | alle beleuchteten Materialien neu (Licht-Schlüssel) – bisher als „0“ gemessen | **0 neu kompiliert** (4 Wechsel) |
+
+| Handy-Budget (stehend, Budget eingeschwungen) | vorher: Dreiecke / Calls / Stufe / Umrisse | nachher |
+|---|---|---|
+| Morgenau | 88 k / 54 / 5 / **keine** (1 Modell sichtbar) | 76 k / 56 / 6 / **Heldin + Terra + Bürgerin** |
+| Route 1 | 82 k / 52 / 5 / keine | 74 k / 60 / 6 / Heldin + 2 Terras |
+| Kupferhain | 86 k / 55 / 5 / keine | 84 k / 57 / 6 / Heldin + Terra + Figur |
+| Spielfigur (Noa): Körper + Hülle + Schatten | 11,7 k + 11,7 k + 11,7 k (Hülle ab Stufe 4 aus) | 11,7 k + **2,8 k + 2,8 k** (das während der Runde neu gebaute Heldin-GLB, Körper 7,6 k, läuft durch dasselbe Verfahren) |
+| Figur LOD1 / Terra LOD1 | 5,8 k ohne Umriss / 3,6 k + 3,6 k Umriss | **2,8 k** mit Umriss / **2,0 k** + 2,0 k Umriss |
+
+Weitere Werte und Rohdaten: `test/stabil4/mess_vorher.json`, `mess_nachher.json` (Haltefrist 1,5 s), `mess_nachher_hold.json` (Haltefrist 90 s), `mess_budget2.json`; Sichtvergleich `test/stabil4/zoom_nah.png` (links Original-Hülle, rechts Hülle aus dem leichten Netz).
+
+### Offen / Grenzen (ehrlich)
+- **Alles nur in Emulation belegt** (Playwright 1.63, Chromium SwiftShader, 2 Kerne; zeitweise liefen fremde Chromium-Tests und Blender parallel, Last 5–6). Echte Bildzeiten am iPhone sind nicht gemessen. Belegt sind: keine neu kompilierten Shader und keine JS-Zeit > 100 ms im Bild nach dem Ladebildschirm, Dreiecke/Draw-Calls, sichtbare Umrisse, Stufenwechsel ohne Kompilieren. „Kein Bild > 100 ms“ als echte Bildzeit kann SwiftShader nicht zeigen (jedes Weltbild ≈ 1–10 s).
+- **Haltefrist 1,5 s:** In der Emulation dauert ein Modell 0,1–20 s – mit der echten Frist kamen dort Modelle nach dem Ladebildschirm (Haus-Modell → Szenen-Neubau 266 ms JS, vorkompiliert im selben Bild). Die „nachher“-Werte gelten für den Fall, dass das Handy die Modelle des Ortes in ≤ 1,5 s lädt (Draco im Worker, ≈ 0,2–0,5 s je Modell, Warteschlange ohne Pausen); am Gerät mit der Plakette/`VSTAB.info().pc.hold` (Feld `offen`) prüfen.
+- **Kommt ein Modell trotzdem erst im Spiel an** (langsames Netz), kostet es weiter ein langes Bild (Textur-Upload, Szenen-Neubau bei Häusern); Shader-Programme sind dann meist schon vorhanden (gleiche Programmtypen wie Heldin/Terras).
+- Nach dem Ladebildschirm tauchen noch bis zu ≈ 10 kleine Texturen ohne Ereignis auf (≤ 15 ms JS) – vermutlich Himmels-/Ortsbilder oder Beschriftungen (44/45), nicht weiter verfolgt.
+- **Route 1 liegt mit 60 Draw-Calls genau an der Grenze** (Stufe 6, Welt-Meshes 21 Calls); Reserve nur noch über weniger Instanzen. Größter Rest-Posten: Instanz-Meshes (16–20 Calls) und Welt-Meshes (9–21).
+- Umriss aus dem leichten Netz: Sichtvergleich nur in SwiftShader (640×480, nah) – gleichwertig; an Fingerspitzen/Haarsträhnen weicht das leichte Netz bis 14 mm ab (Hülle dort minimal dünner). Am Handy prüfen.
+- Terra-LOD1 über Nähte: Ecken dürfen über UV-Nähte wandern und behalten ihre UV → leicht gedehnte Textur an Inselrändern, aus der LOD-Entfernung (≥ 2,8 Felder) nicht sichtbar geprüft.
+- Eine Figur in Kupferhain zeigte in der Messung eine einzelne 1,25-k-Hülle statt Körper-Hülle + LOD1-Hülle (zählt als Figur mit Modell-Kennung, sichtbare Meshes wie eine Prozedural-Figur) – Ursache nicht geklärt, Umriss ist sichtbar.
+- Kampf-Renderer (eigener Kontext) wird nicht vorkompiliert (Kampfstart bleibt ein erwartetes langes Bild, Wachhund ignoriert es).
+
+### Am Handy prüfen (Christoph)
+1. Staging neu laden, „Neue 3D-Modelle“ an. Morgenau → Route 1 → Kupferhain über die Ladebildschirme: nach dem Ausblenden **kein Ruckler** beim ersten Umsehen/Losgehen; Figuren und Terras sind beim Ausblenden schon Modelle (kein späterer Tausch).
+2. Plakette: Dreiecke ≤ 100 k; **Umrisse an der Heldin und an den 2 nächsten Figuren/Terras** sichtbar (vorher am Handy keine).
+3. Qualität Mittel ↔ Niedrig umschalten: kein langes Standbild beim Umschalten.
+4. Konsole/Werkstatt: `VSTAB.info().nach` (Bilder nach dem letzten Ladebildschirm: `prog` = neu kompiliert, `jsMax`), `VSTAB.info().pc.hold` (Wartezeit, `offen` = Modelle, die nicht rechtzeitig fertig waren).

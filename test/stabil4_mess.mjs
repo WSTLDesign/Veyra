@@ -28,7 +28,7 @@ const INIT = () => {
   window.__links = 0; for (const C of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) { if (!C) continue; const lp = C.prototype.linkProgram; C.prototype.linkProgram = function (p) { window.__links++; return lp.call(this, p); }; }
 };
 const ctx = await browser.newContext({ viewport: { width: 932, height: 430 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: devices['iPhone 15 Pro Max'].userAgent });
-await ctx.addInitScript(INIT); const p = await ctx.newPage(); p.errs = []; p.on('pageerror', e => p.errs.push(e.message.slice(0, 160)));
+await ctx.addInitScript(INIT); if (process.env.HOLD) await ctx.addInitScript(h => { window.__hold = h; }, +process.env.HOLD); const p = await ctx.newPage(); p.errs = []; p.on('pageerror', e => p.errs.push(e.message.slice(0, 160)));
 await p.route(/fonts\.googleapis|fonts\.gstatic/, r => r.fulfill({ body: '', contentType: 'text/css' })); await p.route(/sw\.js$/, r => r.fulfill({ status: 404, body: '' })); p.setDefaultTimeout(60000);
 const log = s => console.log(`[${TAG}] ` + s); const OUT = { tag: TAG, stufe: STUFE, zeit: new Date().toISOString() };
 await p.goto(URL0 + 'index.html', { waitUntil: 'load', timeout: 240000 }); await p.waitForTimeout(1200);
@@ -39,6 +39,7 @@ await p.evaluate(t => { for (let i = 0; i < 40 && mode === 'dialog'; i++) { TW &
   G.flags.starter = 1; G.flags.firstcatch = 1; SET.skipBattleIntro = 1; G.team = [mk(1, 12), mk(4, 10)];
   SET.gfx = t; GFX.force = t; STAB.lim = STAB.ceil = t; STAB.grace = 1e9; STAB.lastBad = -1e9; stabDown = () => { }; stabEmergency = () => { }; perfSet(t);
   window.__R = []; window.__on = false; const sl = stabLong; stabLong = function (cost) { const r = STAB.fr; if (r && window.__on) window.__R.push(Object.assign({}, r, { lk: window.__links - (window.__lk0 || 0), ms: Math.round(cost), at: Math.round(performance.now() - window.__t0), ld: !!(LADEN && LADEN.active), tris: GFX.stat.tris, calls: GFX.stat.calls })); window.__lk0 = window.__links; return sl.apply(this, arguments); };
+  if (window.__hold && typeof LOD4 === 'object') LOD4.holdMax = window.__hold;
   setView('third'); loadMap('morgenau', 9, 8); mode = 'world'; dispatchEvent(new Event('blur')); }, STUFE);
 const qIdle = async cap => { const t0 = Date.now(); while (Date.now() - t0 < cap) { const s = await p.evaluate(() => VMODEL_QUEUE.q.length + (VMODEL_QUEUE.busy ? 1 : 0)); if (!s) return Math.round((Date.now() - t0) / 100) / 10; await p.waitForTimeout(400); } return 'timeout'; };
 log('Start Morgenau, Warteschlange leer nach ' + await qIdle(+(process.env.QSTART || 240000)) + ' s'); await p.waitForTimeout(3000);
@@ -73,11 +74,15 @@ if (TEIL.includes('budget')) { OUT.budget = {};
       for (let i = 0; i < 30; i++) { R3.r.render(R3.scene, R3.activeCam || R3.cam); r.push([GFX.stat.tris, GFX.stat.calls, GFX.bud.lvl]); await new Promise(q => setTimeout(q, 0)); }
       // Sichtbarkeit wie im letzten Bild: Umrisshüllen der Heldin und der nächsten Figuren/Terras (mit Budget aus 59 vor dem Zeichnen gesetzt)
       const cam = R3.activeCam || R3.cam; let ol = null; try { gfxModelPre(R3.scene, cam); const vis = o => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
-        const pp = R3.player.position, roots = []; R3.scene.traverse(o => { const U = o.userData || {}; if ((U.pilot || U.tm) && o !== R3.player) roots.push(o); });
+        const pp = R3.player.position, roots = []; R3.scene.traverse(o => { const U = o.userData || {}; if ((U.pilot || U.tm) && o !== R3.player && vis(o)) roots.push(o); });
         const hull = o => { let n = 0, t = 0, b = 0, tr = 0; o.traverse(m => { if (m.isMesh && m.userData.outline === 1) { n++; if (vis(m)) { b++; const g = m.geometry; tr += (g.index ? g.index.count : g.attributes.position.count) / 3; } } }); return { n, sichtbar: b, tris: Math.round(tr) }; };
         const near = roots.map(o => [o, o.getWorldPosition(new THREE.Vector3()).distanceTo(pp)]).sort((a, b) => a[1] - b[1]).slice(0, 3);
-        ol = { heldin: hull(R3.player), naechste: near.map(([o, d]) => Object.assign({ k: o.userData.pilot || o.userData.tm, d: +d.toFixed(1), lod1: !!(o.userData.lodOn || o.userData.lod === 1) }, hull(o))) }; } catch (e) { ol = { err: String(e) }; } finally { try { gfxModelPost(); } catch (e) { } }
-      const last = r.slice(-6); return { tris: Math.max(...last.map(x => x[0])), calls: Math.max(...last.map(x => x[1])), lvl: last[5][2], erstes: r[0], umriss: ol, tier: PERF.tier }; });
+        ol = { heldin: hull(R3.player), naechste: near.map(([o, d]) => Object.assign({ k: o.userData.pilot || o.userData.tm, d: +d.toFixed(1), lod4: o.userData.lod4 || 0, lod1: !!(o.userData.lodOn || o.userData.lod === 1) }, hull(o))) }; } catch (e) { ol = { err: String(e) }; } finally { try { gfxModelPost(); } catch (e) { } }
+      const kat = {}; try { gfxModelPre(R3.scene, cam); const vis = o => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
+        const cat = o => { for (let q = o; q; q = q.parent) { const U = q.userData || {}; if (q === R3.player) return 'heldin'; if (U.pilot) return 'figur'; if (U.tm) return 'terra'; if (U.haus) return 'haus'; if (q.parent === R3.scene) return o.isInstancedMesh ? 'inst' : o.isPoints ? 'punkte' : o.isSprite ? 'sprite' : 'welt'; } return '?'; };
+        R3.scene.traverse(o => { if (!(o.isMesh || o.isPoints || o.isSprite) || !vis(o) || o.userData.shadowOnly) return; if (o.isInstancedMesh && !o.count) return; const k = cat(o) + (o.userData.outline === 1 ? '-umriss' : ''); kat[k] = (kat[k] || 0) + 1; if (o.castShadow && R3.sun.castShadow) kat.schatten = (kat.schatten || 0) + 1; });
+        R3.scene.traverse(o => { if (o.userData && o.userData.shadowOnly && vis(o) && o.castShadow && R3.sun.castShadow) kat.schatten = (kat.schatten || 0) + 1; }); } catch (e) { kat.err = String(e); } finally { try { gfxModelPost(); } catch (e) { } }
+      const last = r.slice(-6); return { kat, tris: Math.max(...last.map(x => x[0])), calls: Math.max(...last.map(x => x[1])), lvl: last[5][2], erstes: r[0], umriss: ol, tier: PERF.tier }; });
     OUT.budget[id] = b; log(`Budget ${id}: ${JSON.stringify(b).slice(0, 900)}`); } }
 OUT.errs = p.errs; mkdirSync(join(ROOT, 'test/stabil4'), { recursive: true }); writeFileSync(join(ROOT, 'test/stabil4/mess_' + TAG + '.json'), JSON.stringify(OUT, null, 1));
 log('Fehler: ' + JSON.stringify(p.errs.slice(0, 5))); await browser.close(); srv.close();

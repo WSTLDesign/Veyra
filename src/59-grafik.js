@@ -131,7 +131,9 @@ function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==
    // R4: Terras (58 schaltet erst ab 7 Feldern zur Kamera) ebenfalls ab lod Feldern auf das leichte Netz (Augenpartie bleibt)
    else if(r.userData.tm&&!lo&&d>L.lod&&r.userData.lod1&&r.userData.lod1.length&&r.userData.lod4){for(const m of r.userData.lod0)if(m.visible&&!/Augen/.test(m.name)){m.visible=false;u.push([m,'visible',true]);}for(const m of r.userData.lod1)if(!m.visible){m.visible=true;u.push([m,'visible',false]);}}}
   if(!shOk||!olOk){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
-   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(!olOk&&m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
+   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(!olOk&&m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}
+  // R4 Stufe 6: Umriss der Terra-Augenpartie (eigenes Netz mit Shape Keys) weglassen – spart je Terra einen Draw-Call, Kopf/Körper behalten ihren Umriss
+  if(olOk&&r.userData.tm&&(GFX_BL[GFX.bud.lvl]||{}).ta){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}for(const m of ms)if(m.userData.outline===1&&m.visible&&m.parent&&/Augen/.test(m.parent.name)){m.visible=false;u.push([m,'visible',true]);}}}}
 function gfxModelPost(){const u=_gM.undo;for(let i=u.length-1;i>=0;i--){const[o,k,v]=u[i];o[k]=v;}u.length=0;}
 if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=function(){_gs();const r=R3.r,rr=r.render;r.render=function(s,c){const w=s===R3.scene&&r.getRenderTarget()===null;if(w)try{gfxModelPre(s,c);}catch(e){}try{rr.call(r,s,c);}finally{if(w){gfxModelPost();try{gfxBudTick();}catch(e){}}}};};gfxSetup._m=1;}
 // ---------- Stabilität R2: Budget DURCHSETZEN (Dreiecke + Draw-Calls je Bild inkl. Schattenpass) ----------
@@ -142,7 +144,9 @@ if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=funct
 GFX.budget={touch:[100000,60],igpu:[150000,110],dgpu:[250000,150]};
 // je Stufe: m = Anteil Modelle, d = Entfernungen, v = Laub-/Gras-Dichte, vsh = Laub wirft Schatten, nsh = max. Figuren mit Schatten (außer Heldin)
 // wsh0 = Welt wirft keinen Sonnenschatten, ol0 = kein Umriss an Figuren/Terras, po = kein Umriss an der Heldin (die Hülle kostet so viel wie der Körper), pl = Heldin als LOD1 (50 %, derzeit keine Stufe)
-const GFX_BL=[{m:1,d:1,v:1,vsh:1},{m:.75,d:.85,v:.8,vsh:1},{m:.6,d:.72,v:.62,vsh:1},{m:.5,d:.62,v:.5,vsh:0,nsh:2,ol0:1,wsh0:1},{m:.38,d:.52,v:.4,vsh:0,nsh:1,ol0:1,po:1,wsh0:1},{m:.2,d:.42,v:.22,vsh:0,nsh:0,ol0:1,po:1,wsh0:1}];
+const GFX_BL=[{m:1,d:1,v:1,vsh:1},{m:.75,d:.85,v:.8,vsh:1},{m:.6,d:.72,v:.62,vsh:1},{m:.5,d:.62,v:.5,vsh:0,nsh:2,ol0:1,wsh0:1},{m:.5,d:.52,v:.4,vsh:0,nsh:1,ol0:1,po:1,wsh0:1},{m:.35,d:.42,v:.22,vsh:0,nsh:0,ol0:1,po:1,wsh0:1},{m:.35,d:.36,v:.14,vsh:0,nsh:0,ol0:1,po:1,wsh0:1,ta:1}];
+// R4: neue Stufe 6 (Reserve, weil Umrisse jetzt bleiben): Instanzen bis 7 Felder, Laub 14 %, ohne Umriss der Terra-Augenpartie (ta)
+// R4: Stufe 4/5 zeigen wieder mindestens die 2 nächsten Modelle (Handy mittel: 6 × 0,5 = 3 bzw. 6 × 0,35 = 2) – mit Umriss (nol); die leichten LOD-Netze (62) machen das bezahlbar
 GFX.bud={lvl:0,map:null,memo:{},hist:[],cool:0,ups:0,dev:null,t:0,c:0};
 function gfxBudDev(){const B=GFX.bud;if(B.dev)return B.dev;let d='igpu';try{if(typeof PERF==='object'&&PERF.touch)d='touch';else if(typeof STAB==='object'&&STAB.cls==='dgpu')d='dgpu';}catch(e){}return B.dev=d;}
 function gfxBudL(touch,tn){const L0=((touch?GFX.mlodT:GFX.mlod)[tn])||GFX.mlod.high,b=GFX_BL[GFX.bud.lvl]||GFX_BL[0];if(!GFX.bud.lvl)return L0;
@@ -150,7 +154,7 @@ function gfxBudL(touch,tn){const L0=((touch?GFX.mlodT:GFX.mlod)[tn])||GFX.mlod.h
 // Instanzen (Bäume/Kronen/Büsche/Felsen/Blumen/Gras aus 09 inst(), erkannt an userData.n0) je Instanz ausdünnen: hinter der Kamera (4 Felder Rand für Schatten)
 // und jenseits der Budget-Entfernung fallen weg. Die Instanzen werden nach vorn umsortiert (Original bleibt in _M0), count = sichtbare – nur Matrizen, kein Neubau.
 // Nur Meshes ohne eigene Instanz-Attribute (Wasser u. ä. bleiben unberührt). Neu berechnet bei 0,4 Feld Weg, 6° Drehung oder alle 0,5 s.
-GFX.cullR={touch:[40,30,24,18,13,9],igpu:[60,42,32,26,20,16],dgpu:[1e9,60,42,32,26,20]};
+GFX.cullR={touch:[40,30,24,18,13,9,7],igpu:[60,42,32,26,20,16,13],dgpu:[1e9,60,42,32,26,20,16]};
 const _gC={S:null,L:[],t:0,x:1e9,z:1e9,a:0,f:new THREE.Vector3(),n:0};
 function gfxCullList(S){const L=[];S.traverse(o=>{if(!o.isInstancedMesh||o.userData.n0==null)return;const g=o.geometry;for(const k in g.attributes)if(g.attributes[k].isInstancedBufferAttribute)return;
   const n0=o.userData.n0,M=o.instanceMatrix.array,P=new Float32Array(n0*2);for(let i=0;i<n0;i++){P[i*2]=M[i*16+12];P[i*2+1]=M[i*16+14];}

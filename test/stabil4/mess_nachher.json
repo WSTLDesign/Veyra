@@ -1,0 +1,678 @@
+{
+ "tag": "nachher",
+ "stufe": {
+  "low": [
+   {
+    "bilder": 4,
+    "kompiliert": 0,
+    "neueProgramme": 0,
+    "neueTexturen": 1,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 11,
+    "jsUeber100": 0,
+    "kostenMax": 1600,
+    "trisMax": 67873,
+    "callsMax": 44,
+    "ursachen": [
+     "1487ms js11 k0 p0 t1 g0 Stufe low"
+    ]
+   },
+   {
+    "bilder": 4,
+    "kompiliert": 0,
+    "neueProgramme": 0,
+    "neueTexturen": 1,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 10,
+    "jsUeber100": 0,
+    "kostenMax": 1533,
+    "trisMax": 73403,
+    "callsMax": 47,
+    "ursachen": [
+     "1375ms js10 k0 p0 t1 g0 Stufe low"
+    ]
+   }
+  ],
+  "mid": [
+   {
+    "bilder": 4,
+    "kompiliert": 1,
+    "neueProgramme": 1,
+    "neueTexturen": 11,
+    "neueGeo": 8,
+    "bilderMitProgramm": 1,
+    "jsMax": 57,
+    "jsUeber100": 0,
+    "kostenMax": 1800,
+    "trisMax": 73403,
+    "callsMax": 47,
+    "ursachen": [
+     "2ms js57 k1 p1 t10 g8 Terra t001",
+     "1643ms js5 k0 p0 t1 g0 Stufe mid"
+    ]
+   },
+   {
+    "bilder": 4,
+    "kompiliert": 0,
+    "neueProgramme": 0,
+    "neueTexturen": 1,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 5,
+    "jsUeber100": 0,
+    "kostenMax": 1567,
+    "trisMax": 73403,
+    "callsMax": 47,
+    "ursachen": [
+     "1533ms js4 k0 p0 t1 g0 Stufe mid"
+    ]
+   }
+  ]
+ },
+ "zeit": "2026-11-15T20:35:21.415Z",
+ "laden": {
+  "route1": {
+   "ladeMs": 88957,
+   "ldEnd": 94487,
+   "imLaden": {
+    "bilder": 9,
+    "kompiliert": 2,
+    "jsMax": 43
+   },
+   "danach": {
+    "bilder": 4,
+    "kompiliert": 1,
+    "neueProgramme": 1,
+    "neueTexturen": -13,
+    "neueGeo": 1,
+    "bilderMitProgramm": 1,
+    "jsMax": 37,
+    "jsUeber100": 0,
+    "kostenMax": 9116,
+    "trisMax": 180972,
+    "callsMax": 79,
+    "ursachen": [
+     "102924ms js33 k0 p0 t1 g0 ",
+     "108960ms js37 k1 p1 t1 g1 "
+    ]
+   },
+   "modelleFertig": [
+    [
+     "labor",
+     89028
+    ]
+   ],
+   "wartend": [
+    "laden",
+    "fig_mama",
+    "t001",
+    "t004",
+    "t112",
+    "t061",
+    "t059"
+   ],
+   "programmeGesamt": 45,
+   "links": 50,
+   "r4": {
+    "hold": [
+     {
+      "map": "route1",
+      "wait": 0,
+      "busy0": true,
+      "offen": [
+       "laden",
+       "fig_mama",
+       "t001",
+       "t004",
+       "t112",
+       "t061",
+       "t059",
+       "(läuft)"
+      ],
+      "warm": 152,
+      "prog": 0,
+      "tex": 35
+     }
+    ],
+    "warm": [
+     {
+      "why": "bau",
+      "ms": 353,
+      "prog": 12,
+      "tex": 2,
+      "temps": 0,
+      "map": "haus_spieler",
+      "err": null
+     },
+     {
+      "why": "bau",
+      "ms": 84,
+      "prog": 3,
+      "tex": 2,
+      "temps": 0,
+      "map": "morgenau",
+      "err": null
+     },
+     {
+      "why": "laden",
+      "ms": 152,
+      "prog": 0,
+      "tex": 35,
+      "temps": 0,
+      "map": "route1",
+      "err": null
+     }
+    ],
+    "lod": {
+     "on": true,
+     "done": 2,
+     "pend": 0,
+     "err": 0,
+     "worker": "ja",
+     "ms": [
+      [
+       "?",
+       11771,
+       2800,
+       14471
+      ],
+      [
+       "?",
+       11772,
+       2799,
+       4727
+      ]
+     ],
+     "frz": 37
+    },
+    "nach": {
+     "bilder": 3,
+     "prog": 0,
+     "tex": -14,
+     "jsMax": 33,
+     "msMax": 9116,
+     "lang": [
+      {
+       "at": 13888,
+       "ms": 8416,
+       "js": 33,
+       "prog": 0,
+       "tex": 1,
+       "geo": 0,
+       "ev": []
+      }
+     ]
+    }
+   }
+  },
+  "kupferhain": {
+   "ladeMs": 26353,
+   "ldEnd": 34420,
+   "imLaden": {
+    "bilder": 7,
+    "kompiliert": 1,
+    "jsMax": 15
+   },
+   "danach": {
+    "bilder": 10,
+    "kompiliert": 2,
+    "neueProgramme": 2,
+    "neueTexturen": 58,
+    "neueGeo": 54,
+    "bilderMitProgramm": 1,
+    "jsMax": 266,
+    "jsUeber100": 1,
+    "kostenMax": 3817,
+    "trisMax": 136452,
+    "callsMax": 85,
+    "ursachen": [
+     "28872ms js27 k0 p0 t15 g0 ",
+     "38262ms js266 k2 p2 t43 g54 Modell laden/Szene bauen/Vorkompilieren bau"
+    ]
+   },
+   "modelleFertig": [
+    [
+     "laden",
+     31142
+    ]
+   ],
+   "wartend": [
+    "t001",
+    "t004",
+    "t112",
+    "t061",
+    "t059"
+   ],
+   "programmeGesamt": 48,
+   "links": 53,
+   "r4": {
+    "hold": [
+     {
+      "map": "route1",
+      "wait": 0,
+      "busy0": true,
+      "offen": [
+       "laden",
+       "fig_mama",
+       "t001",
+       "t004",
+       "t112",
+       "t061",
+       "t059",
+       "(läuft)"
+      ],
+      "warm": 152,
+      "prog": 0,
+      "tex": 35
+     },
+     {
+      "map": "kupferhain",
+      "wait": 0,
+      "busy0": true,
+      "offen": [
+       "fig_mama",
+       "t001",
+       "t004",
+       "t112",
+       "t061",
+       "t059",
+       "(läuft)"
+      ],
+      "warm": 12,
+      "prog": 0,
+      "tex": 3
+     }
+    ],
+    "warm": [
+     {
+      "why": "laden",
+      "ms": 152,
+      "prog": 0,
+      "tex": 35,
+      "temps": 0,
+      "map": "route1",
+      "err": null
+     },
+     {
+      "why": "laden",
+      "ms": 12,
+      "prog": 0,
+      "tex": 3,
+      "temps": 0,
+      "map": "kupferhain",
+      "err": null
+     },
+     {
+      "why": "bau",
+      "ms": 95,
+      "prog": 1,
+      "tex": 16,
+      "temps": 0,
+      "map": "kupferhain",
+      "err": null
+     }
+    ],
+    "lod": {
+     "on": true,
+     "done": 2,
+     "pend": 0,
+     "err": 0,
+     "worker": "ja",
+     "ms": [
+      [
+       "?",
+       11771,
+       2800,
+       14471
+      ],
+      [
+       "?",
+       11772,
+       2799,
+       4727
+      ]
+     ],
+     "frz": 69
+    },
+    "nach": {
+     "bilder": 6,
+     "prog": 2,
+     "tex": 58,
+     "jsMax": 266,
+     "msMax": 3817,
+     "lang": [
+      {
+       "at": 2493,
+       "ms": 2517,
+       "js": 27,
+       "prog": 0,
+       "tex": 15,
+       "geo": 0,
+       "ev": []
+      },
+      {
+       "at": 11883,
+       "ms": 3817,
+       "js": 266,
+       "prog": 2,
+       "tex": 43,
+       "geo": 54,
+       "ev": [
+        "Modell laden",
+        "Szene bauen",
+        "Vorkompilieren bau"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "morgenau": {
+   "ladeMs": 22701,
+   "ldEnd": 29932,
+   "imLaden": {
+    "bilder": 7,
+    "kompiliert": 0,
+    "jsMax": 28
+   },
+   "danach": {
+    "bilder": 12,
+    "kompiliert": 0,
+    "neueProgramme": 0,
+    "neueTexturen": -4,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 22,
+    "jsUeber100": 0,
+    "kostenMax": 2517,
+    "trisMax": 131275,
+    "callsMax": 68,
+    "ursachen": [
+     "32430ms js14 k0 p0 t2 g0 ",
+     "39636ms js9 k0 p0 t1 g0 "
+    ]
+   },
+   "modelleFertig": [
+    [
+     "fig_mama",
+     26113
+    ]
+   ],
+   "wartend": [
+    "t004",
+    "t112",
+    "t061",
+    "t059"
+   ],
+   "programmeGesamt": 48,
+   "links": 53,
+   "r4": {
+    "hold": [
+     {
+      "map": "route1",
+      "wait": 0,
+      "busy0": true,
+      "offen": [
+       "laden",
+       "fig_mama",
+       "t001",
+       "t004",
+       "t112",
+       "t061",
+       "t059",
+       "(läuft)"
+      ],
+      "warm": 152,
+      "prog": 0,
+      "tex": 35
+     },
+     {
+      "map": "kupferhain",
+      "wait": 0,
+      "busy0": true,
+      "offen": [
+       "fig_mama",
+       "t001",
+       "t004",
+       "t112",
+       "t061",
+       "t059",
+       "(läuft)"
+      ],
+      "warm": 12,
+      "prog": 0,
+      "tex": 3
+     },
+     {
+      "map": "morgenau",
+      "wait": 0,
+      "busy0": true,
+      "offen": [
+       "t001",
+       "t004",
+       "t112",
+       "t061",
+       "t059",
+       "(läuft)"
+      ],
+      "warm": 71,
+      "prog": 0,
+      "tex": 19
+     }
+    ],
+    "warm": [
+     {
+      "why": "laden",
+      "ms": 12,
+      "prog": 0,
+      "tex": 3,
+      "temps": 0,
+      "map": "kupferhain",
+      "err": null
+     },
+     {
+      "why": "bau",
+      "ms": 95,
+      "prog": 1,
+      "tex": 16,
+      "temps": 0,
+      "map": "kupferhain",
+      "err": null
+     },
+     {
+      "why": "laden",
+      "ms": 71,
+      "prog": 0,
+      "tex": 19,
+      "temps": 0,
+      "map": "morgenau",
+      "err": null
+     }
+    ],
+    "lod": {
+     "on": true,
+     "done": 3,
+     "pend": 0,
+     "err": 0,
+     "worker": "ja",
+     "ms": [
+      [
+       "?",
+       11771,
+       2800,
+       14471
+      ],
+      [
+       "?",
+       11772,
+       2799,
+       4727
+      ],
+      [
+       "?",
+       11772,
+       2800,
+       5481
+      ]
+     ],
+     "frz": 83
+    },
+    "nach": {
+     "bilder": 7,
+     "prog": 0,
+     "tex": -5,
+     "jsMax": 22,
+     "msMax": 2517,
+     "lang": [
+      {
+       "at": 9725,
+       "ms": 2467,
+       "js": 14,
+       "prog": 0,
+       "tex": 2,
+       "geo": 0,
+       "ev": []
+      }
+     ]
+    }
+   }
+  }
+ },
+ "budget": {
+  "morgenau": {
+   "tris": 73487,
+   "calls": 50,
+   "lvl": 5,
+   "erstes": [
+    73487,
+    50,
+    5
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 2,
+     "sichtbar": 1,
+     "tris": 2800
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 0.9,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 3,
+      "tris": 2616
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 2.2,
+      "lod1": false,
+      "n": 2,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 4.5,
+      "lod1": false,
+      "n": 2,
+      "sichtbar": 0,
+      "tris": 0
+     }
+    ]
+   },
+   "tier": "mid"
+  },
+  "route1": {
+   "tris": 78137,
+   "calls": 56,
+   "lvl": 5,
+   "erstes": [
+    181262,
+    84,
+    0
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 2,
+     "sichtbar": 1,
+     "tris": 2800
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 1,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 3,
+      "tris": 2616
+     },
+     {
+      "k": "t112",
+      "d": 8.2,
+      "lod1": true,
+      "n": 5,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "t112",
+      "d": 9.9,
+      "lod1": true,
+      "n": 5,
+      "sichtbar": 0,
+      "tris": 0
+     }
+    ]
+   },
+   "tier": "mid"
+  },
+  "kupferhain": {
+   "tris": 82945,
+   "calls": 59,
+   "lvl": 5,
+   "erstes": [
+    134403,
+    85,
+    1
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 2,
+     "sichtbar": 1,
+     "tris": 2800
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 1,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 3,
+      "tris": 2616
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 1.4,
+      "lod1": false,
+      "n": 1,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 8.1,
+      "lod1": true,
+      "n": 2,
+      "sichtbar": 0,
+      "tris": 0
+     }
+    ]
+   },
+   "tier": "mid"
+  }
+ },
+ "errs": []
+}

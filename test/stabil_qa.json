@@ -23,8 +23,8 @@
     "calls": 0,
     "modelle": true,
     "oneoff": 0,
-    "frames": 4,
-    "work": 106.3,
+    "frames": 2,
+    "work": 219.7,
     "emerg": 0,
     "downs": 0,
     "ups": 0,
@@ -44,32 +44,8 @@
       "map": "",
       "mode": "title",
       "tier": "mid",
-      "t": 0.3,
-      "ms": 183
-     },
-     {
-      "js": 0,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "",
-      "mode": "title",
-      "tier": "mid",
       "t": 0.5,
-      "ms": 150
-     },
-     {
-      "js": 0,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "",
-      "mode": "title",
-      "tier": "mid",
-      "t": 0.6,
-      "ms": 83
+      "ms": 383
      }
     ],
     "q": {
@@ -80,32 +56,56 @@
      "busy": true
     },
     "log": [
-     "227 GPU igpu · Start mid · Deckel mid · ∞ fps"
-    ]
+     "329 GPU igpu · Start mid · Deckel mid · ∞ fps"
+    ],
+    "lod": {
+     "on": true,
+     "done": 0,
+     "pend": 0,
+     "err": 0,
+     "worker": "–",
+     "ms": [],
+     "frz": 0
+    },
+    "pc": {
+     "n": 0,
+     "log": [],
+     "hold": [],
+     "off": false,
+     "clears": 0
+    },
+    "nach": {
+     "bilder": 0,
+     "prog": 0,
+     "tex": 0,
+     "jsMax": 0,
+     "msMax": 0,
+     "lang": []
+    }
    }
   },
   "morgenau": {
-   "loadS": "21.8",
+   "loadS": "18.2",
    "queue": {
     "w": 0,
     "b": false,
     "d": 9
    },
    "laden": {
-    "ltMax": 3643,
-    "ltN": 5,
-    "ltSum": 10905
+    "ltMax": 4726,
+    "ltN": 3,
+    "ltSum": 7416
    },
    "danach": {
     "ms": 15000,
-    "rafN": 482,
-    "rafAvg": 31.6,
-    "rafMax": 2200,
+    "rafN": 678,
+    "rafAvg": 22.1,
+    "rafMax": 967,
     "slow": 0.01,
-    "ltMax": 2200,
+    "ltMax": 970,
     "ltN": 4,
-    "ltSum": 7289,
-    "lag": 2164,
+    "ltSum": 3711,
+    "lag": 960,
     "frames": 4,
     "tier": "low",
     "scale": 0.5,
@@ -114,8 +114,8 @@
      "lim": "low",
      "smax": 0.5,
      "fps": 0,
-     "emerg": 1,
-     "downs": 1,
+     "emerg": 2,
+     "downs": 0,
      "q": {
       "wait": 0,
       "done": 9,
@@ -124,41 +124,41 @@
       "busy": false
      }
     },
-    "occ": 0.49
+    "occ": 0.25
    }
   },
   "route1": {
-   "loadS": "11.1",
+   "loadS": "6.0",
    "queue": {
     "w": 0,
     "b": false,
-    "d": 12
+    "d": 9
    },
    "laden": {
-    "ltMax": 1496,
-    "ltN": 3,
-    "ltSum": 3272
+    "ltMax": 3841,
+    "ltN": 1,
+    "ltSum": 3841
    },
    "danach": {
     "ms": 15000,
-    "rafN": 549,
-    "rafAvg": 27.5,
-    "rafMax": 883,
-    "slow": 0.01,
-    "ltMax": 897,
-    "ltN": 7,
-    "ltSum": 6109,
-    "lag": 856,
-    "frames": 7,
+    "rafN": 689,
+    "rafAvg": 21.8,
+    "rafMax": 1167,
+    "slow": 0,
+    "ltMax": 1173,
+    "ltN": 4,
+    "ltSum": 3516,
+    "lag": 1147,
+    "frames": 3,
     "tier": "low",
     "scale": 0.5,
     "stab": {
      "tier": "low",
      "lim": "low",
      "smax": 0.5,
-     "fps": 1,
-     "emerg": 3,
-     "downs": 1,
+     "fps": 0,
+     "emerg": 2,
+     "downs": 0,
      "q": {
       "wait": 0,
       "done": 12,
@@ -167,7 +167,7 @@
       "busy": false
      }
     },
-    "occ": 0.41
+    "occ": 0.23
    }
   },
   "models": {
@@ -187,7 +187,11 @@
    "q": [
     [
      "fig_noa",
-     491
+     1067
+    ],
+    [
+     "fig_buerger_a",
+     224
     ],
     [
      "haus",
@@ -195,43 +199,39 @@
     ],
     [
      "station",
-     161
+     67
     ],
     [
      "labor",
-     68
+     97
     ],
     [
      "laden",
-     369
-    ],
-    [
-     "fig_buerger_a",
-     2554
+     262
     ],
     [
      "fig_mama",
-     933
+     148
     ],
     [
      "t001",
-     210
+     359
     ],
     [
      "t004",
-     349
+     242
     ],
     [
      "t059",
-     179
+     228
     ],
     [
      "t112",
-     268
+     215
     ],
     [
      "t061",
-     1943
+     733
     ]
    ]
   },
@@ -244,7 +244,7 @@
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 3,
+   "lag": 0,
    "frames": 0,
    "tier": "low",
    "scale": 0.5,
@@ -253,7 +253,7 @@
     "lim": "low",
     "smax": 0.5,
     "fps": 0,
-    "emerg": 3,
+    "emerg": 2,
     "downs": 3,
     "q": {
      "wait": 0,
@@ -266,13 +266,13 @@
   }
  },
  "haeuser_sofort_844": {
-  "anteil": 0.419,
+  "anteil": 0.41,
   "kasten": true,
   "modell": 0,
   "hausSt": 1
  },
  "haeuser_modell_844": {
-  "anteil": 0.367,
+  "anteil": 0.369,
   "kasten": true,
   "modell": 4,
   "hausSt": 2
@@ -281,13 +281,30 @@
   "dev": "touch",
   "lvl": 5,
   "vorher": [
-   83623,
-   53
+   102705,
+   57
   ],
-  "tris": 95436,
-  "calls": 57,
+  "tris": 79475,
+  "calls": 55,
   "tier": "mid",
-  "modelle": 4
+  "modelle": 4,
+  "umriss": {
+   "heldin": {
+    "lod4": true,
+    "n": 2,
+    "sichtbar": 1,
+    "tris": 2800
+   },
+   "naechste": [
+    {
+     "k": "t001",
+     "d": 0.6,
+     "n": 5,
+     "sichtbar": 3,
+     "tris": 2616
+    }
+   ]
+  }
  },
  "mobil_844": {
   "cls": "mobil",
@@ -295,7 +312,7 @@
   "base": "mid",
   "blur": false,
   "off": false,
-  "cap": 60,
+  "cap": 30,
   "dpr": 1.75,
   "models": true,
   "frames": 3,
@@ -304,7 +321,7 @@
   "url": ""
  },
  "haeuser_sofort_932": {
-  "anteil": 0.411,
+  "anteil": 0.408,
   "kasten": true,
   "modell": 0,
   "hausSt": 1
@@ -317,39 +334,104 @@
  },
  "budget_morgenau_932": {
   "dev": "touch",
-  "lvl": 5,
+  "lvl": 6,
   "vorher": [
-   104709,
-   57
+   84165,
+   53
   ],
-  "tris": 83030,
-  "calls": 51,
+  "tris": 86203,
+  "calls": 56,
   "tier": "mid",
-  "modelle": 4
+  "modelle": 4,
+  "umriss": {
+   "heldin": {
+    "lod4": true,
+    "n": 2,
+    "sichtbar": 1,
+    "tris": 2800
+   },
+   "naechste": [
+    {
+     "k": "t001",
+     "d": 0.6,
+     "n": 5,
+     "sichtbar": 2,
+     "tris": 2000
+    }
+   ]
+  }
  },
  "budget_kupferhain_932": {
   "dev": "touch",
-  "lvl": 5,
+  "lvl": 6,
   "vorher": [
-   197768,
-   89
+   138850,
+   87
   ],
-  "tris": 86244,
-  "calls": 55,
+  "tris": 84452,
+  "calls": 57,
   "tier": "mid",
-  "modelle": 4
+  "modelle": 4,
+  "umriss": {
+   "heldin": {
+    "lod4": true,
+    "n": 2,
+    "sichtbar": 1,
+    "tris": 2800
+   },
+   "naechste": [
+    {
+     "k": "t001",
+     "d": 1,
+     "n": 5,
+     "sichtbar": 2,
+     "tris": 2000
+    },
+    {
+     "k": "fig_buerger_a",
+     "d": 1.4,
+     "n": 1,
+     "sichtbar": 1,
+     "tris": 1249
+    }
+   ]
+  }
  },
  "budget_route1_932": {
   "dev": "touch",
-  "lvl": 5,
+  "lvl": 6,
   "vorher": [
-   81434,
-   52
+   74073,
+   59
   ],
-  "tris": 81432,
-  "calls": 52,
+  "tris": 74075,
+  "calls": 60,
   "tier": "mid",
-  "modelle": 7
+  "modelle": 7,
+  "umriss": {
+   "heldin": {
+    "lod4": true,
+    "n": 2,
+    "sichtbar": 1,
+    "tris": 2800
+   },
+   "naechste": [
+    {
+     "k": "t001",
+     "d": 1,
+     "n": 5,
+     "sichtbar": 2,
+     "tris": 2000
+    },
+    {
+     "k": "t059",
+     "d": 3.2,
+     "n": 5,
+     "sichtbar": 2,
+     "tris": 2010
+    }
+   ]
+  }
  },
  "wackel": {
   "gehen": {
@@ -360,37 +442,177 @@
    "abstandSd": 0.2,
    "heldinQuer": 0,
    "heldinQuerMax": 0,
-   "kameraQuer": 0.0876,
-   "kameraQuerMax": 0.1577,
-   "kameraHoeheSd": 0.1628,
+   "kameraQuer": 0.0863,
+   "kameraQuerMax": 0.1554,
+   "kameraHoeheSd": 0.1653,
    "rollMaxGrad": 0,
    "tempoCV": 0.001,
-   "kameraTempoCV": 0.069,
+   "kameraTempoCV": 0.071,
    "figurRuckelPx": 0.01,
    "figurRuckelPxY": 0.02,
    "schulterWechsel": 1,
-   "kamAbstandSd": 0.096,
-   "seitSd": 0.216
+   "kamAbstandSd": 0.097,
+   "seitSd": 0.22
   },
   "rennen": {
-   "strecke": "18 Felder left",
-   "deckel": 30,
-   "n": 40,
-   "bilderAbstand": 33.4,
-   "abstandSd": 0.2,
-   "heldinQuer": 0,
-   "heldinQuerMax": 0,
-   "kameraQuer": 0.0009,
-   "kameraQuerMax": 0.0024,
-   "kameraHoeheSd": 0.0443,
-   "rollMaxGrad": 0,
-   "tempoCV": 0.015,
-   "kameraTempoCV": 0.039,
-   "figurRuckelPx": 0,
-   "figurRuckelPxY": 0.12,
-   "schulterWechsel": 0,
-   "kamAbstandSd": 0.007,
-   "seitSd": 0.002
+   "n": 0,
+   "roh": 40,
+   "mode": "world",
+   "vmax": 0.6072093618611896,
+   "stab": [
+    "798 GPU mobil · Start mid · Deckel mid · ∞ fps",
+    "2406 Skala → 0.85 (Ø 64 ms)",
+    "20176 NOTBREMSE 1 Handy: Skala 0,6 (Ø 173 ms)",
+    "74000 NOTBREMSE 20 (2 Bilder > 250 ms)"
+   ],
+   "lade": false
+  }
+ },
+ "r4_lod": {
+  "info": {
+   "on": true,
+   "done": 11,
+   "pend": 0,
+   "err": 0,
+   "worker": "ja",
+   "ms": [
+    [
+     "?",
+     11771,
+     2800,
+     431
+    ],
+    [
+     "?",
+     11772,
+     2799,
+     787
+    ],
+    [
+     "?",
+     11772,
+     2800,
+     729
+    ],
+    [
+     "?",
+     2999,
+     833,
+     1439
+    ],
+    [
+     "?",
+     4199,
+     1167,
+     1438
+    ],
+    [
+     "?",
+     3200,
+     984,
+     835
+    ],
+    [
+     "?",
+     3304,
+     1016,
+     837
+    ],
+    [
+     "?",
+     4599,
+     1132,
+     680
+    ],
+    [
+     "?",
+     3600,
+     878,
+     686
+    ],
+    [
+     "?",
+     2954,
+     901,
+     630
+    ],
+    [
+     "?",
+     3600,
+     1099,
+     631
+    ]
+   ],
+   "frz": 610
+  },
+  "heldin": {
+   "koerper": 11771,
+   "huelle": 2800,
+   "lod1": 2800,
+   "schatten": 2800
+  },
+  "terra": {
+   "voll": 7198,
+   "lod1": 2000,
+   "schatten": 2000
+  }
+ },
+ "r4_stufe": {
+  "vorher": 0,
+  "wechsel": 0,
+  "tier": "mid",
+  "schattenAus": 5
+ },
+ "r4_laden_route1": {
+  "nach": {
+   "bilder": 0,
+   "prog": 0,
+   "tex": 0,
+   "jsMax": 0,
+   "msMax": 0,
+   "lang": []
+  },
+  "hold": {
+   "map": "route1",
+   "wait": 0,
+   "busy0": false,
+   "offen": [],
+   "warm": 273,
+   "prog": 0,
+   "tex": 65
+  },
+  "lade": {
+   "from": "morgenau",
+   "to": "route1",
+   "t0": 369293,
+   "shown": 1278,
+   "ms": 8620
+  }
+ },
+ "r4_laden_kupferhain": {
+  "nach": {
+   "bilder": 0,
+   "prog": 0,
+   "tex": 0,
+   "jsMax": 0,
+   "msMax": 0,
+   "lang": []
+  },
+  "hold": {
+   "map": "kupferhain",
+   "wait": 0,
+   "busy0": false,
+   "offen": [],
+   "warm": 3,
+   "prog": 0,
+   "tex": 0
+  },
+  "lade": {
+   "from": "route1",
+   "to": "kupferhain",
+   "t0": 387845,
+   "shown": 1691,
+   "ms": 8838
   }
  },
  "mobil_932": {
@@ -399,7 +621,7 @@
   "base": "mid",
   "blur": false,
   "off": false,
-  "cap": 30,
+  "cap": 60,
   "dpr": 1.75,
   "models": true,
   "frames": 2,
@@ -408,7 +630,7 @@
   "url": ""
  },
  "werkstatt_haeuser": {
-  "anteil": 0.411,
+  "anteil": 0.417,
   "kasten": true,
   "modell": 0,
   "hausSt": 1
@@ -417,82 +639,70 @@
   "ws": true,
   "cls": "mobil",
   "tier": "low",
-  "emerg": 35,
-  "oneoff": 33,
+  "emerg": 33,
+  "oneoff": 30,
   "halb": false,
   "long": [
    {
-    "js": 9,
-    "ev": [],
-    "prog": 0,
-    "tex": 1,
-    "geo": 0,
-    "map": "morgenau",
-    "mode": "world",
-    "tier": "mid",
-    "t": 14.9,
-    "ms": 4750
-   },
-   {
-    "js": 217,
-    "ev": [
-     "Skala 0.6"
-    ],
-    "prog": 5,
-    "tex": 1,
-    "geo": 14,
-    "map": "morgenau",
-    "mode": "world",
-    "tier": "mid",
-    "t": 22.3,
-    "ms": 4150
-   },
-   {
-    "js": 663,
+    "js": 745,
     "ev": [
      "Ansicht",
      "Karte morgenau",
-     "Szene bauen"
+     "Szene bauen",
+     "Vorkompilieren bau"
     ],
-    "prog": 13,
+    "prog": 18,
     "tex": 11,
-    "geo": 42,
+    "geo": 44,
     "map": "morgenau",
     "mode": "world",
     "tier": "mid",
-    "t": 8.9,
-    "ms": 3867
+    "t": 9.1,
+    "ms": 5183
    },
    {
-    "js": 10,
+    "js": 16,
+    "ev": [],
+    "prog": 2,
+    "tex": 1,
+    "geo": 11,
+    "map": "morgenau",
+    "mode": "world",
+    "tier": "mid",
+    "t": 22.1,
+    "ms": 5050
+   },
+   {
+    "js": 5,
     "ev": [],
     "prog": 0,
-    "tex": 0,
+    "tex": 1,
     "geo": 0,
     "map": "morgenau",
     "mode": "world",
     "tier": "mid",
-    "t": 12.2,
-    "ms": 2750
+    "t": 15.6,
+    "ms": 4333
    },
    {
-    "js": 582,
+    "js": 751,
     "ev": [
      "Karte haus_spieler",
      "Ansicht",
-     "Szene bauen"
+     "Szene bauen",
+     "Vorkompilieren bau"
     ],
-    "prog": 15,
-    "tex": 17,
-    "geo": 18,
+    "prog": 29,
+    "tex": 21,
+    "geo": 32,
     "map": "haus_spieler",
     "mode": "dialog",
     "tier": "mid",
-    "t": 4.3,
-    "ms": 2683
+    "t": 4.1,
+    "ms": 4083
    },
    {
-    "js": 9,
+    "js": 5,
     "ev": [],
     "prog": 0,
     "tex": 0,
@@ -500,15 +710,27 @@
     "map": "morgenau",
     "mode": "world",
     "tier": "mid",
-    "t": 19.6,
-    "ms": 2417
+    "t": 27.2,
+    "ms": 3983
+   },
+   {
+    "js": 7,
+    "ev": [],
+    "prog": 0,
+    "tex": 0,
+    "geo": 0,
+    "map": "morgenau",
+    "mode": "world",
+    "tier": "mid",
+    "t": 34.7,
+    "ms": 3300
    }
   ],
   "log": [
-   "1705 GPU mobil · Start mid · Deckel mid · ∞ fps",
-   "3399 Deckel → 30 (Ø 38 ms)",
-   "22095 NOTBREMSE 1 Handy: Skala 0,6 (Ø 417 ms)",
-   "65567 NOTBREMSE 20 (2 Bilder > 250 ms)"
+   "1080 GPU mobil · Start mid · Deckel mid · ∞ fps",
+   "2776 Skala → 0.85 (Ø 45 ms)",
+   "31155 NOTBREMSE 1 Handy: Skala 0,6 (Ø 465 ms)",
+   "80605 NOTBREMSE 20 (2 Bilder > 250 ms)"
   ]
  },
  "haeuser_ohne_modelle": {
@@ -527,7 +749,7 @@
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 0,
+   "lag": 1,
    "frames": 0,
    "tier": "?",
    "scale": "?",
@@ -536,13 +758,13 @@
   "laden": {
    "ms": 3000,
    "rafN": 2,
-   "rafAvg": 1766.6,
-   "rafMax": 1767,
+   "rafAvg": 2166.6,
+   "rafMax": 2167,
    "slow": 1,
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 4186,
+   "lag": 4418,
    "frames": 0,
    "tier": "?",
    "scale": "?",
@@ -555,14 +777,14 @@
   },
   "lauf": {
    "ms": 20000,
-   "rafN": 746,
-   "rafAvg": 26.9,
-   "rafMax": 717,
-   "slow": 0.02,
+   "rafN": 788,
+   "rafAvg": 25.4,
+   "rafMax": 933,
+   "slow": 0.01,
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 695,
+   "lag": 936,
    "frames": 0,
    "tier": "?",
    "scale": "?",
@@ -570,7 +792,7 @@
   },
   "innen": {
    "tier": "low",
-   "frames": 28,
+   "frames": 35,
    "stab": {
     "cls": "igpu",
     "gpu": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics (0x00009A49) Direct3D11 vs_5_0 ps_5_0, D3D11)",
@@ -583,13 +805,14 @@
     "dpr": 1.25,
     "cap": 30,
     "fps": 1,
-    "tris": 137218,
-    "calls": 67,
+    "avg": 216.7,
+    "tris": 146954,
+    "calls": 76,
     "modelle": true,
-    "oneoff": 5,
-    "frames": 28,
-    "work": 657,
-    "emerg": 5,
+    "oneoff": 3,
+    "frames": 35,
+    "work": 961.2,
+    "emerg": 3,
     "downs": 0,
     "ups": 0,
     "off": false,
@@ -600,51 +823,74 @@
     "gls": 1,
     "long": [
      {
-      "js": 691,
+      "js": 837,
       "ev": [
        "Ansicht",
        "Karte morgenau",
-       "Szene bauen"
+       "Szene bauen",
+       "Vorkompilieren bau"
       ],
-      "prog": 16,
+      "prog": 18,
       "tex": 11,
-      "geo": 45,
+      "geo": 44,
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 6.8,
-      "ms": 3800
+      "t": 8.9,
+      "ms": 5583
      },
      {
-      "js": 506,
+      "js": 671,
       "ev": [
        "Karte haus_spieler",
        "Ansicht",
-       "Szene bauen"
+       "Szene bauen",
+       "Vorkompilieren bau"
       ],
-      "prog": 14,
-      "tex": 10,
-      "geo": 16,
+      "prog": 25,
+      "tex": 12,
+      "geo": 28,
       "map": "haus_spieler",
       "mode": "dialog",
       "tier": "mid",
-      "t": 1.8,
-      "ms": 3183
+      "t": 2.5,
+      "ms": 4233
      },
      {
-      "js": 151,
+      "js": 18,
       "ev": [],
-      "prog": 5,
+      "prog": 2,
       "tex": 1,
-      "geo": 14,
+      "geo": 11,
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 16.4,
-      "ms": 2700
+      "t": 20.4,
+      "ms": 2883
      },
      {
-      "js": 9,
+      "js": 232,
+      "ev": [
+       "Modell fig_buerger_a",
+       "Figuren-Tausch",
+       "Figuren-Tausch",
+       "Figuren-Tausch",
+       "Figuren-Tausch",
+       "Figuren-Tausch",
+       "Szene bauen",
+       "Vorkompilieren bau"
+      ],
+      "prog": 3,
+      "tex": 38,
+      "geo": 42,
+      "map": "morgenau",
+      "mode": "world",
+      "tier": "low",
+      "t": 32.8,
+      "ms": 2667
+     },
+     {
+      "js": 10,
       "ev": [],
       "prog": 0,
       "tex": 0,
@@ -652,8 +898,8 @@
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 10,
-      "ms": 2517
+      "t": 13.6,
+      "ms": 2400
      },
      {
       "js": 6,
@@ -664,11 +910,52 @@
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 14.2,
-      "ms": 2067
+      "t": 23.2,
+      "ms": 2233
      },
      {
-      "js": 415,
+      "js": 15,
+      "ev": [],
+      "prog": 0,
+      "tex": 0,
+      "geo": 0,
+      "map": "morgenau",
+      "mode": "world",
+      "tier": "mid",
+      "t": 18.2,
+      "ms": 2183
+     },
+     {
+      "js": 8,
+      "ev": [],
+      "prog": 0,
+      "tex": 0,
+      "geo": 0,
+      "map": "morgenau",
+      "mode": "world",
+      "tier": "mid",
+      "t": 16,
+      "ms": 2167
+     },
+     {
+      "js": 105,
+      "ev": [
+       "Modell fig_mama",
+       "Figuren-Tausch",
+       "Modell t001",
+       "Terra t001"
+      ],
+      "prog": 2,
+      "tex": 11,
+      "geo": 9,
+      "map": "morgenau",
+      "mode": "world",
+      "tier": "low",
+      "t": 37.7,
+      "ms": 1417
+     },
+     {
+      "js": 128,
       "ev": [
        "Stufe low",
        "Skala 0.5",
@@ -676,66 +963,14 @@
        "Modell haus",
        "Modell station"
       ],
-      "prog": 14,
-      "tex": 7,
-      "geo": 4,
+      "prog": 3,
+      "tex": 8,
+      "geo": 6,
       "map": "morgenau",
       "mode": "world",
       "tier": "low",
-      "t": 25.8,
-      "ms": 1950
-     },
-     {
-      "js": 3,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "morgenau",
-      "mode": "world",
-      "tier": "mid",
-      "t": 20.9,
-      "ms": 1900
-     },
-     {
-      "js": 12,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "morgenau",
-      "mode": "world",
-      "tier": "mid",
-      "t": 19,
-      "ms": 1883
-     },
-     {
-      "js": 4,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "morgenau",
-      "mode": "world",
-      "tier": "mid",
-      "t": 12.5,
-      "ms": 1767
-     },
-     {
-      "js": 188,
-      "ev": [
-       "Modell labor",
-       "Modell laden",
-       "Szene bauen"
-      ],
-      "prog": 8,
-      "tex": 9,
-      "geo": 31,
-      "map": "morgenau",
-      "mode": "world",
-      "tier": "low",
-      "t": 29.9,
-      "ms": 1283
+      "t": 28.3,
+      "ms": 1333
      }
     ],
     "q": {
@@ -746,12 +981,107 @@
      "busy": false
     },
     "log": [
-     "690 GPU igpu · Start mid · Deckel mid · ∞ fps",
-     "22820 NOTBREMSE 1 (2 Bilder > 250 ms)"
-    ]
+     "621 GPU igpu · Start mid · Deckel mid · ∞ fps",
+     "25508 NOTBREMSE 1 (Ø 217 ms)"
+    ],
+    "lod": {
+     "on": true,
+     "done": 7,
+     "pend": 0,
+     "err": 0,
+     "worker": "ja",
+     "ms": [
+      [
+       "?",
+       11771,
+       2800,
+       391
+      ],
+      [
+       "?",
+       11772,
+       2799,
+       249
+      ],
+      [
+       "?",
+       11772,
+       2800,
+       242
+      ],
+      [
+       "?",
+       2999,
+       833,
+       152
+      ],
+      [
+       "?",
+       4199,
+       1167,
+       270
+      ],
+      [
+       "?",
+       2800,
+       800,
+       29
+      ],
+      [
+       "?",
+       4200,
+       1200,
+       59
+      ]
+     ],
+     "frz": 0
+    },
+    "pc": {
+     "n": 3,
+     "log": [
+      {
+       "why": "bau",
+       "ms": 35,
+       "prog": 10,
+       "tex": 2,
+       "temps": 0,
+       "map": "haus_spieler",
+       "err": null
+      },
+      {
+       "why": "bau",
+       "ms": 81,
+       "prog": 3,
+       "tex": 1,
+       "temps": 2,
+       "map": "morgenau",
+       "err": null
+      },
+      {
+       "why": "bau",
+       "ms": 92,
+       "prog": 2,
+       "tex": 10,
+       "temps": 0,
+       "map": "morgenau",
+       "err": null
+      }
+     ],
+     "hold": [],
+     "off": true,
+     "clears": 2
+    },
+    "nach": {
+     "bilder": 0,
+     "prog": 0,
+     "tex": 0,
+     "jsMax": 0,
+     "msMax": 0,
+     "lang": []
+    }
    }
   },
-  "beendenMs": 904,
+  "beendenMs": 145,
   "nach": {
    "ms": 3000,
    "rafN": 180,

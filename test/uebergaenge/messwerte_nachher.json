@@ -270,9 +270,9 @@
     "log": {
      "from": "morgenau",
      "to": "route1",
-     "t0": 38033,
-     "shown": 472,
-     "ms": 2861
+     "t0": 45272,
+     "shown": 245,
+     "ms": 4616
     }
    },
    "expLd": true
@@ -307,9 +307,9 @@
     "log": {
      "from": "morgenau",
      "to": "route1",
-     "t0": 44586,
-     "shown": 305,
-     "ms": 2161
+     "t0": 54559,
+     "shown": 246,
+     "ms": 3751
     }
    },
    "expLd": true
@@ -344,9 +344,9 @@
     "log": {
      "from": "route1",
      "to": "morgenau",
-     "t0": 49866,
-     "shown": 477,
-     "ms": 1936
+     "t0": 62082,
+     "shown": 574,
+     "ms": 2852
     }
    },
    "expLd": true
@@ -381,9 +381,9 @@
     "log": {
      "from": "route1",
      "to": "morgenau",
-     "t0": 54439,
-     "shown": 418,
-     "ms": 1844
+     "t0": 68071,
+     "shown": 245,
+     "ms": 3005
     }
    },
    "expLd": true
@@ -418,9 +418,9 @@
     "log": {
      "from": "route1",
      "to": "kupferhain",
-     "t0": 59970,
+     "t0": 75297,
      "shown": 243,
-     "ms": 1629
+     "ms": 3579
     }
    },
    "expLd": true
@@ -455,9 +455,9 @@
     "log": {
      "from": "route1",
      "to": "kupferhain",
-     "t0": 65020,
-     "shown": 467,
-     "ms": 2010
+     "t0": 84208,
+     "shown": 246,
+     "ms": 3143
     }
    },
    "expLd": true
@@ -492,9 +492,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 70840,
-     "shown": 443,
-     "ms": 1623
+     "t0": 90120,
+     "shown": 244,
+     "ms": 3762
     }
    },
    "expLd": true
@@ -529,9 +529,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 76200,
-     "shown": 242,
-     "ms": 1952
+     "t0": 96968,
+     "shown": 244,
+     "ms": 3602
     }
    },
    "expLd": true
@@ -566,9 +566,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 76200,
-     "shown": 242,
-     "ms": 1952
+     "t0": 96968,
+     "shown": 244,
+     "ms": 3602
     }
    },
    "expLd": false
@@ -603,9 +603,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 76200,
-     "shown": 242,
-     "ms": 1952
+     "t0": 96968,
+     "shown": 244,
+     "ms": 3602
     }
    },
    "expLd": false
@@ -640,9 +640,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 76200,
-     "shown": 242,
-     "ms": 1952
+     "t0": 96968,
+     "shown": 244,
+     "ms": 3602
     }
    },
    "expLd": false
@@ -677,9 +677,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 76200,
-     "shown": 242,
-     "ms": 1952
+     "t0": 96968,
+     "shown": 244,
+     "ms": 3602
     }
    },
    "expLd": false
@@ -714,9 +714,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route2",
-     "t0": 94872,
-     "shown": 484,
-     "ms": 2184
+     "t0": 118849,
+     "shown": 688,
+     "ms": 4129
     }
    },
    "expLd": true
@@ -751,9 +751,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route2",
-     "t0": 100299,
-     "shown": 248,
-     "ms": 1405
+     "t0": 125617,
+     "shown": 243,
+     "ms": 3301
     }
    },
    "expLd": true
@@ -788,9 +788,9 @@
     "log": {
      "from": "route2",
      "to": "nebelgrotte",
-     "t0": 105018,
-     "shown": 495,
-     "ms": 2859
+     "t0": 131937,
+     "shown": 243,
+     "ms": 4291
     }
    },
    "expLd": true
@@ -825,9 +825,9 @@
     "log": {
      "from": "route2",
      "to": "nebelgrotte",
-     "t0": 111197,
-     "shown": 498,
-     "ms": 2127
+     "t0": 139748,
+     "shown": 630,
+     "ms": 2965
     }
    },
    "expLd": true
@@ -862,9 +862,9 @@
     "log": {
      "from": "nebelgrotte",
      "to": "route2",
-     "t0": 116423,
-     "shown": 508,
-     "ms": 1784
+     "t0": 146692,
+     "shown": 244,
+     "ms": 2650
     }
    },
    "expLd": true
@@ -899,9 +899,9 @@
     "log": {
      "from": "nebelgrotte",
      "to": "route2",
-     "t0": 120801,
-     "shown": 432,
-     "ms": 1866
+     "t0": 152576,
+     "shown": 249,
+     "ms": 3184
     }
    },
    "expLd": true
@@ -936,9 +936,9 @@
     "log": {
      "from": "route2",
      "to": "kupferhain",
-     "t0": 126220,
-     "shown": 463,
-     "ms": 1658
+     "t0": 158459,
+     "shown": 245,
+     "ms": 3360
     }
    },
    "expLd": true
@@ -973,9 +973,9 @@
     "log": {
      "from": "route2",
      "to": "kupferhain",
-     "t0": 131034,
-     "shown": 467,
-     "ms": 2196
+     "t0": 164702,
+     "shown": 247,
+     "ms": 3779
     }
    },
    "expLd": true
@@ -1033,8 +1033,8 @@
    "kameraFigurWinkelEnde": 3.14
   },
   "kamerafolge25": {
-   "kameraDrehungRad": 1.05,
-   "figurDrehungRad": 1.39
+   "kameraDrehungRad": 0.83,
+   "figurDrehungRad": 1.19
   },
   "totzonePx": 12,
   "wand45": {
@@ -1053,83 +1053,83 @@
  "laden": [
   {
    "to": "route1",
-   "ms": 2861,
-   "shown": 472
+   "ms": 4616,
+   "shown": 245
   },
   {
    "to": "route1",
-   "ms": 2161,
-   "shown": 305
+   "ms": 3751,
+   "shown": 246
   },
   {
    "to": "morgenau",
-   "ms": 1936,
-   "shown": 477
+   "ms": 2852,
+   "shown": 574
   },
   {
    "to": "morgenau",
-   "ms": 1844,
-   "shown": 418
+   "ms": 3005,
+   "shown": 245
   },
   {
    "to": "kupferhain",
-   "ms": 1629,
+   "ms": 3579,
    "shown": 243
   },
   {
    "to": "kupferhain",
-   "ms": 2010,
-   "shown": 467
+   "ms": 3143,
+   "shown": 246
   },
   {
    "to": "route1",
-   "ms": 1623,
-   "shown": 443
+   "ms": 3762,
+   "shown": 244
   },
   {
    "to": "route1",
-   "ms": 1952,
-   "shown": 242
+   "ms": 3602,
+   "shown": 244
   },
   {
    "to": "route2",
-   "ms": 2184,
-   "shown": 484
+   "ms": 4129,
+   "shown": 688
   },
   {
    "to": "route2",
-   "ms": 1405,
-   "shown": 248
+   "ms": 3301,
+   "shown": 243
   },
   {
    "to": "nebelgrotte",
-   "ms": 2859,
-   "shown": 495
+   "ms": 4291,
+   "shown": 243
   },
   {
    "to": "nebelgrotte",
-   "ms": 2127,
-   "shown": 498
+   "ms": 2965,
+   "shown": 630
   },
   {
    "to": "route2",
-   "ms": 1784,
-   "shown": 508
+   "ms": 2650,
+   "shown": 244
   },
   {
    "to": "route2",
-   "ms": 1866,
-   "shown": 432
+   "ms": 3184,
+   "shown": 249
   },
   {
    "to": "kupferhain",
-   "ms": 1658,
-   "shown": 463
+   "ms": 3360,
+   "shown": 245
   },
   {
    "to": "kupferhain",
-   "ms": 2196,
-   "shown": 467
+   "ms": 3779,
+   "shown": 247
   }
  ]
 }

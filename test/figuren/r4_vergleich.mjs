@@ -69,7 +69,11 @@ res.fehlerStudio = P.errs; await P.ctx.close();
 if (has('welt')) {   // echtes Spielbild, Spielkamera (third), Heldin als Spielerfigur – einmal mit R3-, einmal mit R4-Modell
   const p = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } }); await newGame(p, { team: [[1, 12]], view: 'third' }); p.setDefaultTimeout(180000);
   await setupR3(p);
-  await p.evaluate(() => { G.outfit = Object.assign(G.outfit || {}, { body: 'heldin' }); VILL.list = []; G.time = 10.5 * 60; mode = 'world'; loadMap('morgenau', 9, 9); P.dir = 'up'; P.ang = 0; setView('third', true); R3.ofk = null; });
+  // freie Stelle mit Blick nach vorn suchen (wie figuren2/vorschau.mjs), Heldin dort hinstellen
+  await p.evaluate(() => { G.outfit = Object.assign(G.outfit || {}, { body: 'heldin' }); VILL.list = []; G.time = 10.5 * 60; mode = 'world'; loadMap('morgenau', 5, 5);
+    const M = cur, ok = (x, y) => x > 1 && y > 1 && x < M.w - 2 && y < M.h - 2 && !blocked(x, y); let best = null, bs = -1;
+    for (let y = 7; y < M.h - 3; y++)for (let x = 4; x < M.w - 4; x++) { let n = 0; for (let dy = -6; dy <= 3; dy++)for (let dx = -3; dx <= 3; dx++)if (ok(x + dx, y + dy)) n++; if (n > bs) { bs = n; best = [x, y]; } }
+    loadMap('route1', 9, 12); R3.mapId = null; loadMap('morgenau', best[0], best[1]); P.dir = 'up'; P.ang = 0; setView('third', true); R3.ofk = null; });
   await p.waitForTimeout(5000);
   const shots = [];
   for (const [id, label] of ROWS) {

@@ -30,6 +30,11 @@ if SPEC.get('r4'):
     except Exception: _base = [Vector(_me.vertices[l.vertex_index].normal) for l in _me.loops]
     _HE_C = D.HC + Vector((0, .04 * D.hd, -.12 * D.hh)); _HE_R = (D.hw * 1.22, D.hd * 1.2, D.hh * 1.3); _PN = [Vector(q) for q in D.PONY]
     def _ell(p, c, r): return Vector(((p.x - c.x) / (r[0] * r[0]), (p.y - c.y) / (r[1] * r[1]), (p.z - c.z) / (r[2] * r[2]))).normalized()
+    _sg = BODY.vertex_groups.get('v_schale'); _sch = set()
+    if _sg:
+        for v in _me.vertices:
+            for g in v.groups:
+                if g.group == _sg.index and g.weight > .5: _sch.add(v.index)
     _out = []
     for li, l in enumerate(_me.loops):
         p = _me.vertices[l.vertex_index].co; rg = _vr.get(l.vertex_index, ''); n0 = _base[li]
@@ -38,12 +43,13 @@ if SPEC.get('r4'):
             for a_, b_ in zip(_PN, _PN[1:]):
                 d_, t_ = seg_dist(p, a_, b_)
                 if d_ < dmin: dmin, qb = d_, a_.lerp(b_, t_)
-            if dmin < .045 * kk and p.y > D.HC.y + .07 * D.hd: e = (p - qb).normalized(); w = .55
-            else: e = _ell(p, _HE_C, _HE_R); w = .5
+            if dmin < .045 * kk and p.y > D.HC.y + .07 * D.hd: e = (p - qb).normalized(); w = .4
+            else: e = _ell(p, _HE_C, _HE_R); w = .5 if l.vertex_index in _sch else .28   # Strähnen behalten ihre Rundung
         elif rg == 'muetze': e = _ell(p, D.HC + Vector((0, 0, -.05 * D.hh)), (D.hw * 1.15, D.hd * 1.1, D.hh * 1.1)); w = .35
         else: e = _ell(p, ELL_C, ELL_R); w = face_w_body(p)
         _out.append(tuple((n0 * (1 - w) + e * w).normalized()))
     _me.normals_split_custom_set(_out)
+    if _sg: BODY.vertex_groups.remove(_sg)
 else: ellipsoid_normals(BODY, ELL_C, ELL_R, lambda p: face_w_body(p) if True else 0)
 
 # ---------------- Rig: 32 Knochen ----------------

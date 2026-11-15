@@ -438,6 +438,7 @@ def hair_r4():
         for j in range(V_):
             j1 = (j + 1) % V_; CF.append((i * V_ + j, i * V_ + j1, (i + 1) * V_ + j1, (i + 1) * V_ + j))
     o = obj_data('Haarschale', CV, CF); orient_out(o, D.HC); smooth(o); set_region(o, 'haar'); out.append(o)
+    vg = o.vertex_groups.new(name='v_schale'); vg.add(list(range(len(o.data.vertices))), 1, 'REPLACE')   # für die Normalen (Schale ruhiger als Strähnen)
     # Pony: 5 volle Strähnen, unter dem Kronenrand hervor, zur Seite geschwungen (eigene Volumen, überlappend)
     PONY = [(-.62, .07, 1.40, .036), (-.34, .09, 1.50, .041), (-.06, .10, 1.53, .043), (.22, .10, 1.49, .041), (.50, .08, 1.40, .036)]
     for ph0, sw, th1, w in PONY:
@@ -452,7 +453,7 @@ def hair_r4():
         ph = s * 1.22; P = [head_dir_point(sdir(E(ph) - .2, ph), .009 * k), head_dir_point(sdir(E(ph) + .06, ph * 1.02), .016 * k), head_dir_point(sdir(1.82, ph * 1.04), .016 * k)]
         p2 = P[-1]; ins = Vector((-s, -.25, 0)).normalized()
         P += [p2 + Vector((0, 0, -.045 * k)) + ins * .004 * k, p2 + Vector((0, 0, -.085 * k)) + ins * .011 * k]
-        out.append(strand(P, .031 * k, .025 * k, ring=8, n=9, tip=.08, puff=.1))
+        out.append(strand(P, .034 * k, .022 * k, ring=8, n=9, tip=.08, puff=.1, up=(s * .4, -1, 0)))
         ph = s * 1.95; P = [head_dir_point(sdir(E(ph) - .18, ph), .010 * k), head_dir_point(sdir(E(ph) + .05, ph), .017 * k), head_dir_point(sdir(2.0, ph * 1.02), .016 * k)]
         p2 = P[-1]; P += [p2 + Vector((s * .002, .004, -.045)) * k]
         out.append(strand(P, .030 * k, .022 * k, ring=8, n=7, tip=.08, puff=.08))

@@ -149,7 +149,7 @@ if(typeof tmFace==='function'&&!tmFace._lod4){const _tf4=tmFace;tmFace=function(
 function pcTemps(S){const out=[];try{if(typeof tmOn!=='function'||!tmOn()||typeof tmMake!=='function')return out;const ids=new Set();(G&&G.team||[]).forEach(m=>ids.add(m.s));const e=cur&&cur.enc;if(e)[...(e.day||[]),...(e.night||[])].forEach(x=>ids.add(x[0]));
   const inS=new Set();S.traverse(o=>{if(o.userData&&o.userData.tm)inS.add(o.userData.tm);});
   for(const id of ids){if(!tmReady(id))continue;const k=tmKey(id);if(inS.has(k)||PC4.warmed&&PC4.warmed.has(k)&&PC4.warmed.get(k)===R3.r)continue;const o=tmMake(id,1);if(!o)continue;o.position.copy(R3.player.position);S.add(o);out.push([o,k]);}}catch(e){}return out;}
-function pcWarm(why){if(typeof R3!=='object'||!R3||!R3.r||!R3.scene||!GFX.r0)return null;const r=R3.r,S=R3.scene,cam=R3.activeCam||R3.cam,t0=performance.now(),inf=r.info,p0=inf.programs?inf.programs.length:0,x0=inf.memory.textures;
+function pcWarm(why){if(typeof R3!=='object'||!R3||!R3.r||!R3.scene||!GFX.r0)return null;const r=R3.r,S=R3.scene,cam=R3.activeCam||R3.cam,t0=performance.now(),inf=r.info,p0=pcLinks(),x0=inf.memory.textures;
  const temps=pcTemps(S),U=[];let err=null;
  const sc=R3.sun.castShadow;R3.sun.castShadow=true;// für den Renderer wirft die Sonne immer Schatten (Abschnitt 3) – genau diesen Licht-Schlüssel kompilieren
  try{try{r.compile(S,cam);}catch(e){err='compile '+(e&&e.message);}
@@ -161,7 +161,7 @@ function pcWarm(why){if(typeof R3!=='object'||!R3||!R3.r||!R3.scene||!GFX.r0)ret
  catch(e){err=String(e&&e.message||e);}
  finally{R3.sun.castShadow=sc;for(let i=U.length-1;i>=0;i--){const[o,k,v]=U[i];o[k]=v;}
   for(const[o,k]of temps){S.remove(o);try{BLOB.delete(o);}catch(e){}try{const sk=new Set();o.traverse(m=>{if(m.isSkinnedMesh&&m.skeleton)sk.add(m.skeleton);});sk.forEach(s=>s.dispose());}catch(e){}(PC4.warmed||(PC4.warmed=new Map())).set(k,r);}}
- const rec={why,ms:Math.round(performance.now()-t0),prog:(inf.programs?inf.programs.length:0)-p0,tex:inf.memory.textures-x0,temps:temps.length,map:cur&&cur.id,err};PC4.n++;PC4.log.push(rec);if(PC4.log.length>20)PC4.log.shift();
+ const rec={why,ms:Math.round(performance.now()-t0),prog:pcLinks()-p0,tex:inf.memory.textures-x0,temps:temps.length,map:cur&&cur.id,err};PC4.n++;PC4.log.push(rec);if(PC4.log.length>20)PC4.log.shift();
  try{stabEv('Vorkompilieren '+why);}catch(e){}return rec;}
 // Szene neu gebaut → im selben (ohnehin langen, meist verdeckten) Bild alles vorkompilieren; im Ladebildschirm erst nach den Modellen (ldHold)
 if(typeof build3d==='function'&&!build3d._pc4){const _b34=build3d;build3d=function(){const S=_b34.apply(this,arguments);PC4.need=1;return S;};build3d._pc4=1;}
@@ -201,3 +201,7 @@ function lodInfo(){const N=PC4.nach;return{lod:{on:LOD4.on,done:LOD4.done,pend:L
  nach:{bilder:N.length,prog:N.reduce((s,f)=>s+(f.prog||0),0),tex:N.reduce((s,f)=>s+(f.tex||0),0),jsMax:N.reduce((s,f)=>Math.max(s,f.js||0),0),msMax:N.reduce((s,f)=>Math.max(s,f.ms||0),0),lang:N.filter(f=>f.prog>0||f.tex>0||f.js>100).slice(0,6)}};}
 if(typeof stabInfo==='function'&&!stabInfo._lod4){const _si4=stabInfo;stabInfo=function(){const o=_si4.apply(this,arguments);try{Object.assign(o,lodInfo());}catch(e){}return o;};stabInfo._lod4=1;}
 if(typeof stabStop==='function'&&!stabStop._lod4){const _ss4=stabStop;stabStop=function(){try{if(LOD4.w)LOD4.w.terminate();LOD4.w=false;}catch(e){}return _ss4.apply(this,arguments);};stabStop._lod4=1;}
+// Ursachen-Protokoll (61): neue Programme = tatsächliche linkProgram-Aufrufe (r.info.programs zählt netto – beim Stufenwechsel werden alte Programme
+// freigegeben, während neue entstehen, die Differenz blieb 0, obwohl neu kompiliert wurde)
+function pcLinks(){try{const gl=R3&&R3.r&&R3.r.getContext();if(!gl)return 0;if(!gl._pc4){gl._pc4=1;gl._links=0;const lp=gl.linkProgram.bind(gl);gl.linkProgram=function(p){gl._links++;return lp(p);};}return gl._links;}catch(e){return 0;}}
+if(typeof stabGpuInfo==='function'&&!stabGpuInfo._pc4){stabGpuInfo=function(){try{const i=R3&&R3.r&&R3.r.info;return i?[pcLinks(),i.memory.textures,i.memory.geometries]:null;}catch(e){return null;}};stabGpuInfo._pc4=1;}

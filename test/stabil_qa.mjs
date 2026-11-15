@@ -151,7 +151,16 @@ const HAEUSER = async () => { P.x = P.fx = 9; P.y = P.fy = 12; P.px = 9; P.py = 
 // Budget: Stufe „mittel“ festhalten (SwiftShader würde den Wachhund sonst auf „niedrig“ zwingen), 30 Bilder direkt zeichnen → Regelung (59) eingeschwungen → Höchstwert der letzten 6 Bilder
 const BUDGET = async () => { SET.gfx = 'mid'; GFX.force = 'mid'; STAB.lim = STAB.ceil = 'mid'; STAB.lastBad = -1e9; perfSet('mid'); STAB.grace = 1e9; stabDown = () => { }; stabEmergency = () => { }; const r = [];
   for (let i = 0; i < 30; i++) { R3.r.render(R3.scene, R3.activeCam || R3.cam); r.push([GFX.stat.tris, GFX.stat.calls]); await new Promise(q => setTimeout(q, 0)); }
-  const last = r.slice(-6); return { dev: GFX.bud.dev, lvl: GFX.bud.lvl, vorher: r[0], tris: Math.max(...last.map(x => x[0])), calls: Math.max(...last.map(x => x[1])), tier: PERF.tier, modelle: Object.keys(PILOT.gltf || {}).length + Object.keys(TMOD.gltf || {}).length }; };
+  const last = r.slice(-6);
+  // R4: Umrisse wie im letzten Bild (Budget aus 59 vor dem Zeichnen gesetzt): Heldin + nächste Modelle (Figuren/Terras) bis 8 Felder
+  let ol = null; try { gfxModelPre(R3.scene, R3.activeCam || R3.cam); const vis = o => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
+    const hull = o => { let n = 0, b = 0, tr = 0; o.traverse(m => { if (m.isMesh && m.userData.outline === 1) { n++; if (vis(m)) { b++; tr += (m.geometry.index ? m.geometry.index.count : m.geometry.attributes.position.count) / 3; } } }); return { n, sichtbar: b, tris: Math.round(tr) }; };
+    const pp = R3.player.position, roots = []; R3.scene.traverse(o => { const U = o.userData || {}; if ((U.pilot || U.tm) && o !== R3.player && vis(o)) roots.push(o); });
+    const near = roots.map(o => [o, Math.hypot(o.position.x - pp.x, o.position.z - pp.z)]).sort((a, b) => a[1] - b[1]).slice(0, 2);
+    ol = { heldin: Object.assign({ lod4: !!R3.player.userData.lod4 }, hull(R3.player)), naechste: near.map(([o, d]) => Object.assign({ k: o.userData.pilot || o.userData.tm, d: +d.toFixed(1) }, hull(o))) }; } catch (e) { ol = { err: String(e) }; } finally { try { gfxModelPost(); } catch (e) { } }
+  return { dev: GFX.bud.dev, lvl: GFX.bud.lvl, vorher: r[0], tris: Math.max(...last.map(x => x[0])), calls: Math.max(...last.map(x => x[1])), tier: PERF.tier, modelle: Object.keys(PILOT.gltf || {}).length + Object.keys(TMOD.gltf || {}).length, umriss: ol }; };
+// R4: Umrisse sichtbar = Heldin (leichte Hülle) + jedes der 2 nächsten Modelle bis 8 Felder mit sichtbarer Hülle
+const UMRISS_OK = b => { const u = b && b.umriss; if (!u || u.err || !u.heldin.lod4 || !u.heldin.sichtbar) return false; return u.naechste.filter(x => x.d <= 8).every(x => x.sichtbar > 0); };
 if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
   const { ctx, mp } = await mCtx(w, h, true, 'veyra_set'); const me = mp.errs;
   await mp.goto(URL0 + 'n/index.html', { waitUntil: 'load', timeout: 180000 }); await mp.waitForTimeout(1500);
@@ -168,10 +177,31 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
     t(`M ${w}×${h} Häuser nach dem Laden der Modelle sichtbar (Hausmodelle geladen, ≥ 15 % des Bildes)`, hz.anteil >= .15 && hz.hausSt >= 2, hz); }
   const bu = await mp.evaluate(BUDGET); R.mess['budget_morgenau_' + w] = bu;
   t(`M ${w}×${h} Budget Handy Morgenau (mittel, Modelle an): ≤ 100 k Dreiecke und ≤ 60 Draw-Calls je Bild (inkl. Schattenpass)`, bu.dev === 'touch' && bu.tris <= 100000 && bu.calls <= 60 && bu.modelle >= 2, bu);
+  t(`M ${w}×${h} R4 Budget Morgenau hält MIT sichtbaren Umrissen (Heldin + 2 nächste Modelle bis 8 Felder)`, bu.dev === 'touch' && bu.tris <= 100000 && bu.calls <= 60 && UMRISS_OK(bu), { tris: bu.tris, calls: bu.calls, lvl: bu.lvl, umriss: bu.umriss });
   if (w === 932) { // Kupferhain (größter Ort) und Route 1
     for (const [id, x, y] of [['kupferhain', 4, 11], ['route1', 9, 20]]) { await mp.evaluate(([id, x, y]) => { loadMap(id, x, y); mode = 'world'; }, [id, x, y]); await mp.waitForTimeout(3000); await qIdle(mp, 60000);
       const b2 = await mp.evaluate(BUDGET); R.mess['budget_' + id + '_' + w] = b2;
-      t(`M ${w}×${h} Budget Handy ${id} (mittel, Modelle an): ≤ 100 k Dreiecke und ≤ 60 Draw-Calls`, b2.dev === 'touch' && b2.tris <= 100000 && b2.calls <= 60, b2); }
+      t(`M ${w}×${h} Budget Handy ${id} (mittel, Modelle an): ≤ 100 k Dreiecke und ≤ 60 Draw-Calls`, b2.dev === 'touch' && b2.tris <= 100000 && b2.calls <= 60, b2);
+      t(`M ${w}×${h} R4 Budget ${id} hält MIT sichtbaren Umrissen (Heldin + 2 nächste Modelle bis 8 Felder)`, b2.tris <= 100000 && b2.calls <= 60 && UMRISS_OK(b2), { tris: b2.tris, calls: b2.calls, lvl: b2.lvl, umriss: b2.umriss }); }
+    // R4: leichte LOD-Netze (Laufzeit-Vereinfachung, 62-lod.js) – Heldin und ein Terra
+    { const lo = await mp.evaluate(() => { const tri = g => g ? (g.index ? g.index.count : g.attributes.position.count) / 3 : 0, o = { info: stabInfo().lod, heldin: {}, terra: null };
+        R3.player.traverse(m => { if (!m.isMesh) return; if (m.userData.outline === 1 && m.parent && m.parent.name === 'Koerper') o.heldin.huelle = tri(m.geometry); else if (/LOD1/.test(m.name) && m.userData.outline !== 1) o.heldin.lod1 = tri(m.geometry); else if (m.userData.shadowOnly) o.heldin.schatten = tri(m.geometry); else if (m.name === 'Koerper') o.heldin.koerper = tri(m.geometry); });
+        if (tmReady(1)) { const t = tmMake(1, .6); let l1 = 0, l0 = 0, sh = 0; t.traverse(m => { if (!m.isMesh || m.userData.outline === 1) return; if (/LOD1/.test(m.name)) l1 += tri(m.geometry); else if (m.userData.shadowOnly) sh += tri(m.geometry); else if (/_(Koerper|Kopf)$/.test(m.name)) l0 += tri(m.geometry); }); o.terra = { voll: l0, lod1: l1, schatten: sh }; }
+        return o; });
+      R.mess.r4_lod = lo;
+      t('R4 Figur: LOD1, Umrisshülle und Schattennetz aus leichtem Netz (2,5–3 k statt 11,7 k), Hauptnetz unverändert', lo.heldin.koerper > 10000 && lo.heldin.lod1 >= 2400 && lo.heldin.lod1 <= 3100 && lo.heldin.huelle === lo.heldin.lod1 && lo.heldin.schatten === lo.heldin.lod1, lo.heldin);
+      t('R4 Terra: LOD1 + Schattennetz ≈ 2 k (Körper+Kopf, vorher ≈ 3,6 k LOD1 / 7 k voll)', !lo.terra || (lo.terra.lod1 >= 1700 && lo.terra.lod1 <= 2400 && lo.terra.schatten === lo.terra.lod1), lo.terra);
+      t('R4 LOD-Netze im Hintergrund erzeugt (Worker), ohne Fehler', lo.info.done >= 2 && !lo.info.err, lo.info); }
+    // R4: Stufenwechsel mittel → niedrig → mittel (Sonnenschatten aus/an) kompiliert keine Programme neu
+    { const sw = await mp.evaluate(async () => { const gl = R3.r.getContext(), L = () => gl._links || 0, a = L(); const draw = async n => { for (let i = 0; i < n; i++) { R3.r.render(R3.scene, R3.activeCam || R3.cam); await new Promise(q => setTimeout(q, 0)); } };
+        await draw(2); const a1 = L(); for (const t of ['low', 'mid', 'low', 'mid']) { GFX.force = t; STAB.lim = STAB.ceil = t; perfSet(t); draw3d(); await draw(2); } return { vorher: a1 - a, wechsel: L() - a1, tier: PERF.tier, schattenAus: stabInfo().pc.clears }; });
+      R.mess.r4_stufe = sw; t('R4 Stufenwechsel mittel ↔ niedrig (Schatten an/aus): keine neu kompilierten Shader-Programme', sw.wechsel === 0, sw); }
+    // R4: Ladebildschirm → Route 1 → Kupferhain: Modelle des Ortes + Vorkompilieren hinter dem Ladebildschirm, danach keine neuen Programme, kein Bild mit JS > 100 ms
+    for (const [id, x, y] of [['route1', 9, 20], ['kupferhain', 4, 11]]) {
+      await mp.evaluate(([id, x, y]) => { transit(() => loadMap(id, x, y), id); }, [id, x, y]);
+      await mp.waitForFunction(() => !LADEN.active, null, { timeout: 180000, polling: 100 }); await mp.waitForTimeout(8000);
+      const n = await mp.evaluate(() => { const i = stabInfo(); return { nach: i.nach, hold: i.pc.hold[i.pc.hold.length - 1], lade: LADEN.log[LADEN.log.length - 1] }; }); R.mess['r4_laden_' + id] = n;
+      t(`R4 nach dem Ladebildschirm (${id}): kein neues Shader-Programm, kein Bild mit JS > 100 ms (Emulation; SwiftShader-Bildkosten selbst ≈ 1–2 s)`, n.nach.bilder >= 2 && n.nach.prog === 0 && n.nach.jsMax <= 100, n); }
     // Wackeln: 3 s Gehen / 2 s Rennen geradeaus bei simuliertem 60-Hz-Takt mit Deckel 30 – Kamera ruhig, Heldin auf der Geraden, gleichmäßiges Tempo
     await mp.evaluate(() => { loadMap('morgenau', 9, 8); mode = 'world'; }); await mp.waitForTimeout(4000);
     const wk = await mp.evaluate(WACKEL, [30, 0, w, h]); R.mess.wackel = wk;

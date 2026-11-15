@@ -15,7 +15,7 @@ SPECS = {
  # braune Shorts, lange dunkle Socken, braune Stiefel mit hellem Rand, Umhängetasche mit Sonne, Handgelenk-Gerät
  # Runde 4 (15.11.): echte Schirmmütze (runde Krone aus 5 Bahnen, Wulst, Knopf, Riegel hinten, gebogener Schirm, eigenes „V“-Logo mit Kristall-Funke),
  # Haar als weiche Volumen (Pony, Seitensträhnen, Nacken, Pferdeschwanz durch die Öffnung hinten), Verlauf Ansatz dunkel → Spitzen hell; Budget gesamt ≤ 9 k
- 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, gesamt=8900,
+ 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f6d3b3', haar='#a4532a', haar_spitze='#d27a3e', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#f1e9d6', muetze2='#4c8a3c', muetze3='#35583a',
                blume='#f2c94c', schuh='#7a5434', sohle='#3e2c22', leder='#7a4a2a', akzent='#d81b72', streifen='#efe6d2', emblem='#f2c94c', metall='#b08a48', dunkel='#3a3f4a', knopf='#f2c94c'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='kappe4'),

@@ -1,0 +1,120 @@
+{
+ "tag": "check",
+ "stufe": "mid",
+ "zeit": "2026-11-15T20:30:53.010Z",
+ "check": {
+  "info": {
+   "lod": {
+    "on": true,
+    "done": 1,
+    "pend": 1,
+    "err": 0,
+    "worker": "ja",
+    "ms": [
+     [
+      "?",
+      11771,
+      2800,
+      535
+     ]
+    ],
+    "frz": 0
+   },
+   "pc": {
+    "n": 2,
+    "log": [
+     {
+      "why": "bau",
+      "ms": 196,
+      "prog": 13,
+      "tex": 4,
+      "temps": 0,
+      "map": "haus_spieler",
+      "err": null
+     },
+     {
+      "why": "bau",
+      "ms": 60,
+      "prog": 2,
+      "tex": 0,
+      "temps": 0,
+      "map": "morgenau",
+      "err": null
+     }
+    ],
+    "hold": [],
+    "off": false,
+    "clears": 0
+   },
+   "nach": {
+    "bilder": 0,
+    "prog": 0,
+    "tex": 0,
+    "jsMax": 0,
+    "msMax": 0,
+    "lang": []
+   }
+  },
+  "heldin": [
+   [
+    "Augen",
+    504,
+    true,
+    false,
+    ""
+   ],
+   [
+    "Gesicht_1",
+    980,
+    true,
+    false,
+    ""
+   ],
+   [
+    "Gesicht_2",
+    64,
+    true,
+    false,
+    ""
+   ],
+   [
+    "Koerper",
+    11771,
+    true,
+    false,
+    ""
+   ],
+   [
+    "Hülle",
+    2800,
+    true,
+    false,
+    "H"
+   ],
+   [
+    "Koerper_LOD1",
+    2800,
+    false,
+    false,
+    ""
+   ],
+   [
+    "Hülle",
+    2800,
+    true,
+    false,
+    "H"
+   ],
+   [
+    "Koerper_Schatten",
+    2800,
+    true,
+    true,
+    "S"
+   ]
+  ],
+  "prog": 42,
+  "links": 47
+ },
+ "errs": []
+}

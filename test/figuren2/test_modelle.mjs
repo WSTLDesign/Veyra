@@ -8,7 +8,8 @@ const ids = await p.evaluate(() => Object.keys(FIG_MODELS));
 const ld = await p.evaluate(async (ids) => { const o = {}; for (const k of ids) { const g = await pilotLoad(k); o[k] = g ? PILOT['ms_' + k] : null; } return o; }, ids);
 R.t('alle Figuren geladen', Object.values(ld).every(v => v != null), ld);
 const chk = await p.evaluate((ids) => ids.map(id => { const o = figMake(id, null); if (!o) return { id, ok: false }; const U = o.userData; let tris = 0, lodTris = 0;
-  o.traverse(m => { if (m.isMesh && !m.userData.outline) { const n = (m.geometry.index ? m.geometry.index.count : m.geometry.attributes.position.count) / 3; if (/LOD1/.test(m.name)) lodTris += n; else tris += n; } });
+  o.traverse(m => { if (m.isMesh && !m.userData.outline && !m.userData.shadowOnly) {   // Schattennetz aus 62-lod (nur Schattenpass) nicht mitzählen
+ const n = (m.geometry.index ? m.geometry.index.count : m.geometry.attributes.position.count) / 3; if (/LOD1/.test(m.name)) lodTris += n; else tris += n; } });
   const keys = U.faces.length ? Object.keys(U.faces[0].morphTargetDictionary) : [];
   for (let i = 0; i < 30; i++) pilotTick(o, 1 / 30, {}); o.position.x += 0; return { id, ok: true, clips: Object.keys(U.acts).sort().join(','), keys: keys.length, tris, lodTris, lod: !!U.lod, h: +(new THREE.Box3().setFromObject(o).getSize(new THREE.Vector3()).y).toFixed(2) }; }), ids);
 for (const c of chk) {

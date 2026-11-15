@@ -429,7 +429,7 @@ def hair_r4():
     U_, V_ = 4, 28; CV = []; CF = []
     for i in range(U_ + 1):
         for j in range(V_):
-            ph = j / V_ * 2 * math.pi; th0 = max(.2, E(ph) - .32); th1 = hl(ph) + .05 * math.sin(ph * 9) ** 2 * ss(.2, -.8, math.cos(ph))
+            ph = j / V_ * 2 * math.pi; th0 = max(.2, E(ph) - .32); th1 = hl(ph) + .025 * math.sin(ph * 7) ** 2 * ss(.2, -.8, math.cos(ph))
             u = i / U_; th = lerp(th0, th1, u)
             vis = ss(E(ph) - .05, E(ph) + .12, th)
             off = (.0055 + .0075 * vis * math.sin(math.pi * min(1, u * 1.05)) ** .7 - .004 * ss(.8, 1, u)) * k
@@ -449,17 +449,17 @@ def hair_r4():
         out.append(strand(P, w * k, w * .40 * k, ring=8, n=8, tip=.1, puff=.12, root=.3))
     # Seitensträhnen vor den Ohren (lang, bis zum Kinn, Spitze leicht nach innen) + kürzere hinter den Ohren
     for s in (-1, 1):
-        ph = s * 1.22; P = [head_dir_point(sdir(E(ph) - .2, ph), .010 * k), head_dir_point(sdir(E(ph) + .06, ph * 1.02), .018 * k), head_dir_point(sdir(1.82, ph * 1.04), .019 * k)]
+        ph = s * 1.22; P = [head_dir_point(sdir(E(ph) - .2, ph), .009 * k), head_dir_point(sdir(E(ph) + .06, ph * 1.02), .016 * k), head_dir_point(sdir(1.82, ph * 1.04), .016 * k)]
         p2 = P[-1]; ins = Vector((-s, -.25, 0)).normalized()
         P += [p2 + Vector((0, 0, -.045 * k)) + ins * .004 * k, p2 + Vector((0, 0, -.085 * k)) + ins * .011 * k]
-        out.append(strand(P, .036 * k, .019 * k, ring=8, n=9, tip=.08, puff=.1))
+        out.append(strand(P, .031 * k, .025 * k, ring=8, n=9, tip=.08, puff=.1))
         ph = s * 1.95; P = [head_dir_point(sdir(E(ph) - .18, ph), .010 * k), head_dir_point(sdir(E(ph) + .05, ph), .017 * k), head_dir_point(sdir(2.0, ph * 1.02), .016 * k)]
         p2 = P[-1]; P += [p2 + Vector((s * .002, .004, -.045)) * k]
-        out.append(strand(P, .036 * k, .015 * k, ring=6, n=7, tip=.08, puff=.08))
+        out.append(strand(P, .030 * k, .022 * k, ring=8, n=7, tip=.08, puff=.08))
     # Nacken: kurze, weiche Spitzen unter dem Kronenrand
     for ph in (2.48, 3.80):
         P = [head_dir_point(sdir(E(ph) - .15, ph), .009 * k), head_dir_point(sdir(E(ph) + .1, ph), .014 * k), head_dir_point(sdir(hl(ph) + .1, ph), .011 * k)]
-        out.append(strand(P, .034 * k, .013 * k, ring=6, n=6, tip=.06))
+        out.append(strand(P, .030 * k, .019 * k, ring=6, n=6, tip=.06))
     # Pferdeschwanz: tritt aus der Öffnung hinten über dem Riegel aus, Haargummi, ein Hauptvolumen + zwei Nebenstränge mit getrennten Spitzen
     b = head_dir_point(sdir(1.6, math.pi), .02 * k); D.PONY = []
     def pt(y, z, x=0.): return b + Vector((x, y, z)) * k

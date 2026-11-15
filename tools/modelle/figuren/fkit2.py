@@ -271,7 +271,7 @@ if SPEC.get('r4'):
     dm = np.full(len(Ph), 9.0, np.float32)
     for q in rimP: dm = np.minimum(dm, np.sqrt(((Ph - q) ** 2).sum(-1)))
     tt = np.zeros(X.shape, np.float32); tt[hi] = ss(.004 * kk, .1 * kk, dm)
-    mix(hair, shade_of('haar', .66) if 'haar' in FC else dark, .55 * (1 - ss(0, .45, tt)) * hair)
+    mix(hair, shade_of('haar', .72) if 'haar' in FC else dark, .38 * (1 - ss(0, .4, tt)) * hair)
     mix(hair, FC.get('haar_spitze', lite), .5 * ss(.35, 1, tt) * hair)
     streak = vnoise(Pn * np.array([1, 1, .2]), 330); mix(hair, shade_of('haar', .86), .18 * ss(.55, .8, streak) * hair); hgt += hair * (streak - .5) * .02
 else:
@@ -419,7 +419,7 @@ mix(M('schirm'), '#e8ffff', .5 * ss(.3, .9, vnoise(Pn, 900)))
 mix(M('leder'), shade_of('leder', 1.2), .25 * ss(.5, .9, n2)); hgt += M('leder') * (n3 - .5) * .4
 # AO einrechnen (weich), Gesicht schwächer
 aoN = np.clip(ao, 0, 1); faceM = M('haut_kopf', 'lid', 'nase') & frontM
-col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), (.74 + .26 * aoN) if SPEC.get('r4') else (.88 + .12 * aoN), .6 + .4 * aoN))[..., None]
+col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), (.8 + .2 * aoN) if SPEC.get('r4') else (.88 + .12 * aoN), .6 + .4 * aoN))[..., None]
 col = np.clip(col, 0, 1); alb = dilate(col, COV, 6); alb = np.where(COV[..., None], col, alb); log('Malen fertig')
 IMG_ALB = to_image(alb, FID + '_Farbe'); IMG_ALB.colorspace_settings.name = 'sRGB'
 hg = dilate(np.repeat(hgt[..., None], 3, 2), COV, 4)[..., 0]

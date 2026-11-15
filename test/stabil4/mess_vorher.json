@@ -1,0 +1,319 @@
+{
+ "tag": "vorher",
+ "stufe": {
+  "low": [
+   {
+    "bilder": 1,
+    "neueProgramme": 0,
+    "neueTexturen": 0,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 11,
+    "jsUeber100": 0,
+    "kostenMax": 3950,
+    "trisMax": 112422,
+    "callsMax": 61,
+    "ursachen": []
+   },
+   {
+    "bilder": 2,
+    "neueProgramme": 0,
+    "neueTexturen": 0,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 25,
+    "jsUeber100": 0,
+    "kostenMax": 4816,
+    "trisMax": 77604,
+    "callsMax": 50,
+    "ursachen": []
+   }
+  ],
+  "mid": [
+   {
+    "bilder": 2,
+    "neueProgramme": 0,
+    "neueTexturen": 1,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 11,
+    "jsUeber100": 0,
+    "kostenMax": 5033,
+    "trisMax": 89051,
+    "callsMax": 54,
+    "ursachen": [
+     "4963ms js8 p0 t1 g0 Stufe mid"
+    ]
+   },
+   {
+    "bilder": 4,
+    "neueProgramme": 0,
+    "neueTexturen": 1,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 8,
+    "jsUeber100": 0,
+    "kostenMax": 2167,
+    "trisMax": 77604,
+    "callsMax": 50,
+    "ursachen": [
+     "1648ms js8 p0 t1 g0 Stufe mid"
+    ]
+   }
+  ]
+ },
+ "zeit": "2026-11-15T20:06:12.926Z",
+ "laden": {
+  "route1": {
+   "ladeMs": 19310,
+   "ldEnd": 27391,
+   "imLaden": {
+    "bilder": 9,
+    "prog": 0,
+    "jsMax": 16
+   },
+   "danach": {
+    "bilder": 6,
+    "neueProgramme": 2,
+    "neueTexturen": 10,
+    "neueGeo": 19,
+    "bilderMitProgramm": 1,
+    "jsMax": 134,
+    "jsUeber100": 1,
+    "kostenMax": 6400,
+    "trisMax": 198721,
+    "callsMax": 79,
+    "ursachen": [
+     "27446ms js134 p2 t10 g19 "
+    ]
+   },
+   "modelleFertig": [
+    [
+     "station",
+     20767
+    ]
+   ],
+   "wartend": [
+    "labor",
+    "laden",
+    "fig_mama",
+    "t001",
+    "t004",
+    "t112",
+    "t061",
+    "t059"
+   ],
+   "programmeGesamt": 37
+  },
+  "kupferhain": {
+   "ladeMs": 38885,
+   "ldEnd": 55901,
+   "imLaden": {
+    "bilder": 10,
+    "prog": 0,
+    "jsMax": 32
+   },
+   "danach": {
+    "bilder": 6,
+    "neueProgramme": 0,
+    "neueTexturen": 13,
+    "neueGeo": 1,
+    "bilderMitProgramm": 0,
+    "jsMax": 38,
+    "jsUeber100": 0,
+    "kostenMax": 10150,
+    "trisMax": 191874,
+    "callsMax": 81,
+    "ursachen": [
+     "42271ms js38 p0 t13 g1 "
+    ]
+   },
+   "modelleFertig": [
+    [
+     "labor",
+     17924
+    ]
+   ],
+   "wartend": [
+    "fig_mama",
+    "t001",
+    "t004",
+    "t112",
+    "t061",
+    "t059"
+   ],
+   "programmeGesamt": 38
+  },
+  "morgenau": {
+   "ladeMs": 65658,
+   "ldEnd": 75676,
+   "imLaden": {
+    "bilder": 5,
+    "prog": 0,
+    "jsMax": 7
+   },
+   "danach": {
+    "bilder": 6,
+    "neueProgramme": 0,
+    "neueTexturen": -4,
+    "neueGeo": 0,
+    "bilderMitProgramm": 0,
+    "jsMax": 32,
+    "jsUeber100": 0,
+    "kostenMax": 10033,
+    "trisMax": 180077,
+    "callsMax": 79,
+    "ursachen": []
+   },
+   "modelleFertig": [
+    [
+     "laden",
+     32935
+    ]
+   ],
+   "wartend": [
+    "t001",
+    "t004",
+    "t112",
+    "t061",
+    "t059"
+   ],
+   "programmeGesamt": 39
+  }
+ },
+ "budget": {
+  "morgenau": {
+   "tris": 87938,
+   "calls": 54,
+   "lvl": 5,
+   "erstes": [
+    87938,
+    54,
+    5
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 1,
+     "sichtbar": 0,
+     "tris": 0
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 0.6,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 1.7,
+      "lod1": false,
+      "n": 1,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 3.5,
+      "lod1": false,
+      "n": 1,
+      "sichtbar": 0,
+      "tris": 0
+     }
+    ]
+   },
+   "tier": "mid"
+  },
+  "route1": {
+   "tris": 81692,
+   "calls": 52,
+   "lvl": 5,
+   "erstes": [
+    146677,
+    66,
+    5
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 1,
+     "sichtbar": 0,
+     "tris": 0
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 1,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 11.7,
+      "lod1": true,
+      "n": 1,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "t112",
+      "d": 13,
+      "lod1": true,
+      "n": 5,
+      "sichtbar": 0,
+      "tris": 0
+     }
+    ]
+   },
+   "tier": "mid"
+  },
+  "kupferhain": {
+   "tris": 86244,
+   "calls": 55,
+   "lvl": 5,
+   "erstes": [
+    207752,
+    91,
+    0
+   ],
+   "umriss": {
+    "heldin": {
+     "n": 1,
+     "sichtbar": 0,
+     "tris": 0
+    },
+    "naechste": [
+     {
+      "k": "t001",
+      "d": 1,
+      "lod1": false,
+      "n": 5,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 1.4,
+      "lod1": false,
+      "n": 1,
+      "sichtbar": 0,
+      "tris": 0
+     },
+     {
+      "k": "fig_buerger_a",
+      "d": 2,
+      "lod1": false,
+      "n": 1,
+      "sichtbar": 0,
+      "tris": 0
+     }
+    ]
+   },
+   "tier": "mid"
+  }
+ },
+ "errs": []
+}

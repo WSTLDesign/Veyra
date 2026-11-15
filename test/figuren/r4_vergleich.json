@@ -1,0 +1,21 @@
+{
+ "laden": {
+  "r3": true,
+  "r4": true,
+  "ms": [
+   5154,
+   1178
+  ]
+ },
+ "dreiecke": {
+  "fig_heldin_r3": {
+   "haupt": 16067,
+   "lod1": 2799
+  },
+  "fig_heldin": {
+   "haupt": 11699,
+   "lod1": 2800
+  }
+ },
+ "fehlerStudio": []
+}

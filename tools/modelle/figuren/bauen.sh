@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 VENV=${VEYRA_BLENDER_VENV:-/home/claude/.venv-blender}; GTD=${VEYRA_GLTF_TOOLS:-/home/claude/gltf-tools}
-ALLE="noa rayan veyran mama mirael haendler buerger_a buerger_b buerger_c buerger_d"
+ALLE="noa heldin rayan veyran mama mirael haendler buerger_a buerger_b buerger_c buerger_d"
 L=${1:-alle}; [ "$L" = alle ] && L=$ALLE; L=${L//,/ }
 mkdir -p tools/modelle/build/figuren public/models/figuren
 LOCK=/home/claude/veyra/.blender.lock

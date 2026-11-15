@@ -48,7 +48,7 @@ async function studio(p) {
 const P = await page(env, { w: W, h: H, set: { quality: 'eigene', modelle3d: true } });
 await newGame(P, { team: [[1, 12]], view: 'third' });
 res.laden = await setupR3(P); console.log('Laden', JSON.stringify(res.laden));
-res.dreiecke = await P.evaluate(() => Object.fromEntries(['fig_heldin_r3', 'fig_heldin'].map(id => { const o = figMake(id, null); let t = 0, l = 0; o.traverse(m => { if (m.isMesh && !m.userData.outline) { const n = (m.geometry.index ? m.geometry.index.count : m.geometry.attributes.position.count) / 3; if (/LOD1/.test(m.name)) l += n; else t += n; } }); return [id, { haupt: t, lod1: l }]; })));
+res.dreiecke = await P.evaluate(() => Object.fromEntries(['fig_heldin_r3', 'fig_heldin'].map(id => { const o = figMake(id, null); let t = 0, l = 0; o.traverse(m => { if (m.isMesh && !m.userData.outline && !m.userData.shadowOnly) { const n = (m.geometry.index ? m.geometry.index.count : m.geometry.attributes.position.count) / 3; if (/LOD1/.test(m.name)) l += n; else t += n; } }); return [id, { haupt: t, lod1: l }]; })));
 console.log('Dreiecke', JSON.stringify(res.dreiecke));
 await studio(P);
 const ROWS = [['fig_heldin_r3', 'Vorher R3'], ['fig_heldin', 'Nachher R4']];

@@ -24,6 +24,8 @@ const INIT = () => {
   const mm = window.matchMedia.bind(window), fake = q => ({ matches: true, media: q, onchange: null, addListener() { }, removeListener() { }, addEventListener() { }, removeEventListener() { }, dispatchEvent() { return false; } });
   window.matchMedia = q => /display-mode:\s*standalone|pointer:\s*coarse|hover:\s*none/.test(q) ? fake(q) : mm(q);
   try { localStorage.clear(); localStorage.setItem('veyra_set', JSON.stringify({ modelle3d: true })); } catch (e) { }
+  // echte Programm-Kompilierungen zählen (r.info.programs ist netto: freigegebene alte Programme verdecken neue)
+  window.__links = 0; for (const C of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) { if (!C) continue; const lp = C.prototype.linkProgram; C.prototype.linkProgram = function (p) { window.__links++; return lp.call(this, p); }; }
 };
 const ctx = await browser.newContext({ viewport: { width: 932, height: 430 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: devices['iPhone 15 Pro Max'].userAgent });
 await ctx.addInitScript(INIT); const p = await ctx.newPage(); p.errs = []; p.on('pageerror', e => p.errs.push(e.message.slice(0, 160)));
@@ -36,13 +38,17 @@ await p.waitForFunction(() => { if (typeof TW === 'object' && TW && TW.finish) T
 await p.evaluate(t => { for (let i = 0; i < 40 && mode === 'dialog'; i++) { TW && TW.finish && TW.finish(); advDlg(); }
   G.flags.starter = 1; G.flags.firstcatch = 1; SET.skipBattleIntro = 1; G.team = [mk(1, 12), mk(4, 10)];
   SET.gfx = t; GFX.force = t; STAB.lim = STAB.ceil = t; STAB.grace = 1e9; STAB.lastBad = -1e9; stabDown = () => { }; stabEmergency = () => { }; perfSet(t);
-  window.__R = []; window.__on = false; const sl = stabLong; stabLong = function (cost) { const r = STAB.fr; if (r && window.__on) window.__R.push(Object.assign({}, r, { ms: Math.round(cost), at: Math.round(performance.now() - window.__t0), ld: !!(LADEN && LADEN.active), tris: GFX.stat.tris, calls: GFX.stat.calls })); return sl.apply(this, arguments); };
+  window.__R = []; window.__on = false; const sl = stabLong; stabLong = function (cost) { const r = STAB.fr; if (r && window.__on) window.__R.push(Object.assign({}, r, { lk: window.__links - (window.__lk0 || 0), ms: Math.round(cost), at: Math.round(performance.now() - window.__t0), ld: !!(LADEN && LADEN.active), tris: GFX.stat.tris, calls: GFX.stat.calls })); window.__lk0 = window.__links; return sl.apply(this, arguments); };
   setView('third'); loadMap('morgenau', 9, 8); mode = 'world'; dispatchEvent(new Event('blur')); }, STUFE);
 const qIdle = async cap => { const t0 = Date.now(); while (Date.now() - t0 < cap) { const s = await p.evaluate(() => VMODEL_QUEUE.q.length + (VMODEL_QUEUE.busy ? 1 : 0)); if (!s) return Math.round((Date.now() - t0) / 100) / 10; await p.waitForTimeout(400); } return 'timeout'; };
-log('Start Morgenau, Warteschlange leer nach ' + await qIdle(120000) + ' s'); await p.waitForTimeout(3000);
+log('Start Morgenau, Warteschlange leer nach ' + await qIdle(+(process.env.QSTART || 240000)) + ' s'); await p.waitForTimeout(3000);
 const SUMF = F => { const a = F.filter(f => !f.ld), sum = k => a.reduce((s, f) => s + (f[k] || 0), 0), mx = k => a.reduce((s, f) => Math.max(s, f[k] || 0), 0);
-  return { bilder: a.length, neueProgramme: sum('prog'), neueTexturen: sum('tex'), neueGeo: sum('geo'), bilderMitProgramm: a.filter(f => f.prog > 0).length, jsMax: mx('js'), jsUeber100: a.filter(f => f.js > 100).length, kostenMax: mx('ms'),
-    trisMax: mx('tris'), callsMax: mx('calls'), ursachen: a.filter(f => f.prog > 0 || f.tex > 0 || f.js > 100).slice(0, 8).map(f => `${f.at}ms js${f.js} p${f.prog} t${f.tex} g${f.geo} ${f.ev.join('/')}`) }; };
+  return { bilder: a.length, kompiliert: sum('lk'), neueProgramme: sum('prog'), neueTexturen: sum('tex'), neueGeo: sum('geo'), bilderMitProgramm: a.filter(f => f.prog > 0).length, jsMax: mx('js'), jsUeber100: a.filter(f => f.js > 100).length, kostenMax: mx('ms'),
+    trisMax: mx('tris'), callsMax: mx('calls'), ursachen: a.filter(f => f.lk > 0 || f.prog > 0 || f.tex > 0 || f.js > 100).slice(0, 8).map(f => `${f.at}ms js${f.js} k${f.lk} p${f.prog} t${f.tex} g${f.geo} ${f.ev.join('/')}`) }; };
+// ---------- check: LOD-Netze und Szene kurz prüfen ----------
+if (TEIL.includes('check')) { OUT.check = await p.evaluate(() => { const tri = g => g ? (g.index ? g.index.count : g.attributes.position.count) / 3 : 0; const o = { info: typeof lodInfo === 'function' ? lodInfo() : null, heldin: [] };
+  R3.player.traverse(m => { if (m.isMesh) o.heldin.push([m.name || (m.userData.outline === 1 ? 'Hülle' : '?'), tri(m.geometry), m.visible, m.castShadow, m.userData.outline === 1 ? 'H' : m.userData.shadowOnly ? 'S' : '']); });
+  o.prog = R3.r.info.programs.length; o.links = window.__links; return o; }); log('check: ' + JSON.stringify(OUT.check).slice(0, 2500)); }
 // ---------- laden: drei Ladebildschirme ----------
 if (TEIL.includes('laden')) { OUT.laden = {};
   for (const [id, x, y] of [['route1', 9, 20], ['kupferhain', 4, 11], ['morgenau', 9, 8]]) {
@@ -50,9 +56,9 @@ if (TEIL.includes('laden')) { OUT.laden = {};
     await p.evaluate(([id, x, y]) => { window.__R = []; window.__t0 = performance.now(); window.__on = true; window.__ldEnd = 0; transit(() => loadMap(id, x, y), id); }, [id, x, y]);
     await p.waitForFunction(() => !LADEN.active, null, { timeout: 120000, polling: 50 }); const ldEnd = await p.evaluate(() => (window.__ldEnd = Math.round(performance.now() - window.__t0)));
     await p.waitForTimeout(STEH); await p.evaluate(() => { P.state = 'walk'; STICK.y = -1; STICK.x = .35; }); await p.waitForTimeout(LAUF); await p.evaluate(() => { STICK.x = STICK.y = 0; window.__on = false; });
-    const r = await p.evaluate(q0 => ({ F: window.__R, lg: LADEN.log[LADEN.log.length - 1], q: VMODEL_QUEUE.ms.slice(q0), wait: VMODEL_QUEUE.q.map(x => x.name), prog: R3.r.info.programs.length, nach: STAB.nach || null }), q0);
+    const r = await p.evaluate(q0 => ({ F: window.__R, lg: LADEN.log[LADEN.log.length - 1], q: VMODEL_QUEUE.ms.slice(q0), wait: VMODEL_QUEUE.q.map(x => x.name), prog: R3.r.info.programs.length, links: window.__links, r4: typeof lodInfo === 'function' ? lodInfo() : null }), q0);
     const lad = r.F.filter(f => f.ld), s = SUMF(r.F);
-    OUT.laden[id] = { ladeMs: r.lg && r.lg.ms, ldEnd, imLaden: { bilder: lad.length, prog: lad.reduce((a, f) => a + f.prog, 0), jsMax: lad.reduce((a, f) => Math.max(a, f.js), 0) }, danach: s, modelleFertig: r.q, wartend: r.wait, programmeGesamt: r.prog };
+    OUT.laden[id] = { ladeMs: r.lg && r.lg.ms, ldEnd, imLaden: { bilder: lad.length, kompiliert: lad.reduce((a, f) => a + f.lk, 0), jsMax: lad.reduce((a, f) => Math.max(a, f.js), 0) }, danach: s, modelleFertig: r.q, wartend: r.wait, programmeGesamt: r.prog, links: r.links, r4: r.r4 && { hold: r.r4.pc.hold, warm: r.r4.pc.log.slice(-3), lod: r.r4.lod, nach: r.r4.nach } };
     log(`${id}: ${JSON.stringify(OUT.laden[id]).slice(0, 1600)}`); }
 }
 // ---------- stufe: Stufenwechsel mittel → niedrig → mittel (Schatten an/aus) ----------

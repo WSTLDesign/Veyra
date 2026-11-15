@@ -20,7 +20,31 @@ _vf = {}
 for p_ in BODY.data.polygons:
     if p_.material_index in _skin:
         for vi in p_.vertices: _vf[vi] = 1
-ellipsoid_normals(BODY, ELL_C, ELL_R, lambda p: face_w_body(p) if True else 0)
+if SPEC.get('r4'):
+    # Runde 4: Haar/Krone bekommen ruhige Stellvertreter-Normalen (großes Kopf-Ellipsoid bzw. Achse des Pferdeschwanzes) → weiche, runde Toon-Schattierung
+    # und ein sauberes Glanzband statt Facetten je Strähne; Gesicht wie bisher (Ellipsoid-Mischung)
+    _me = BODY.data; _ms = list(_me.materials); _vr = {}
+    for p_ in _me.polygons:
+        for vi in p_.vertices: _vr[vi] = _ms[p_.material_index].name
+    try: _base = [Vector(l.normal) for l in _me.corner_normals]
+    except Exception: _base = [Vector(_me.vertices[l.vertex_index].normal) for l in _me.loops]
+    _HE_C = D.HC + Vector((0, .04 * D.hd, -.12 * D.hh)); _HE_R = (D.hw * 1.22, D.hd * 1.2, D.hh * 1.3); _PN = [Vector(q) for q in D.PONY]
+    def _ell(p, c, r): return Vector(((p.x - c.x) / (r[0] * r[0]), (p.y - c.y) / (r[1] * r[1]), (p.z - c.z) / (r[2] * r[2]))).normalized()
+    _out = []
+    for li, l in enumerate(_me.loops):
+        p = _me.vertices[l.vertex_index].co; rg = _vr.get(l.vertex_index, ''); n0 = _base[li]
+        if rg == 'haar':
+            dmin, qb = 9, None
+            for a_, b_ in zip(_PN, _PN[1:]):
+                d_, t_ = seg_dist(p, a_, b_)
+                if d_ < dmin: dmin, qb = d_, a_.lerp(b_, t_)
+            if dmin < .045 * kk and p.y > D.HC.y + .07 * D.hd: e = (p - qb).normalized(); w = .55
+            else: e = _ell(p, _HE_C, _HE_R); w = .5
+        elif rg == 'muetze': e = _ell(p, D.HC + Vector((0, 0, -.05 * D.hh)), (D.hw * 1.15, D.hd * 1.1, D.hh * 1.1)); w = .35
+        else: e = _ell(p, ELL_C, ELL_R); w = face_w_body(p)
+        _out.append(tuple((n0 * (1 - w) + e * w).normalized()))
+    _me.normals_split_custom_set(_out)
+else: ellipsoid_normals(BODY, ELL_C, ELL_R, lambda p: face_w_body(p) if True else 0)
 
 # ---------------- Rig: 32 Knochen ----------------
 NZ = D.NECK0.z; HZ = D.HIP.z
@@ -45,7 +69,7 @@ ARMO = armature(FID + '_Rig', B); log('Knochen', len(B))
 for o in (BODY, FACE, EYE): bind(o, ARMO)
 weights_capsule(FACE, ARMO, lambda co, r: ['head'], fixed=lambda co, r: {'head': 1})
 weights_capsule(EYE, ARMO, lambda co, r: ['eye.L'], fixed=lambda co, r: {'eye.L' if co.x > 0 else 'eye.R': 1})
-HEADR = {'haar', 'bart', 'haut_kopf', 'glas', 'blume', 'muetze', 'lidlinie', 'braue'}
+HEADR = {'haar', 'bart', 'haut_kopf', 'glas', 'blume', 'muetze', 'muetze2', 'muetze3', 'lidlinie', 'braue'}
 def body_allowed(co, r):
     s = 'L' if co.x > 0 else 'R'
     if r in ('schuh', 'sohle'): return ['foot.' + s, 'toe.' + s, 'shin.' + s]
@@ -188,6 +212,8 @@ def M(*names): return np.isin(RID, [REG[n]['id'] for n in names if n in REG])
 def mix(mask, c, a=1.0):
     a = np.clip(a, 0, 1) * mask; col[:] = col * (1 - a[..., None]) + hexrgb(c) * a[..., None]
 FC = SPEC['farben']
+def shade_of(name, f):
+    c = hexrgb(FC[name] if name in FC else REG[name]['col']); return '#%02x%02x%02x' % tuple(int(min(255, max(0, x * 255 * f))) for x in c)
 # Körperzonen je Texel (Haut / Oberteil / Hose / Socke) aus der 3D-Position – wie body_cover, vektorisiert
 L_ = D.L_UA + D.L_FA; armT = np.full(X.shape, -1.0)
 for s_ in (-1, 1):
@@ -239,9 +265,19 @@ mix(skin_b & isArm, '#e9b89c', .2 * ss(L_ - .03 * H, L_ + .06 * H, armT))   # H�
 # --- Haare: dunkler zum Ansatz, Strähnen, Glanzband, Spitzen (haar_hi) ---
 hair = M('haar'); dist = np.sqrt((X - HC.x) ** 2 + (Y - HC.y) ** 2 + (Z - HC.z) ** 2)
 hc = hexrgb(FC['haar']); dark = '#%02x%02x%02x' % tuple(int(c * 255 * .72) for c in hc); lite = '#%02x%02x%02x' % tuple(min(255, int(c * 255 * 1.25 + 18)) for c in hc)
-mix(hair, dark, (.35 if hc.mean() < .6 else .08) * ss(hh * 1.18, hh * .98, dist))
-streak = vnoise(Pn * np.array([1, 1, .15]), 260); mix(hair, lite, .3 * ss(HC.z - .2 * hh, HC.z + 1.0 * hh, Z)); mix(hair, dark, .3 * ss(HC.z - .1 * hh, HC.z - .9 * hh, Z))
-hgt += hair * (streak - .5) * .03
+if SPEC.get('r4'):
+    # Runde 4: Verlauf vom Ansatz (unter dem Kronenrand: dunkler, warm) zu den Spitzen (heller, Spitzenfarbe), weich – Licht/Schatten macht der Toon-Shader
+    rimP = np.array([tuple(q) for q in D.CAP_RIM], np.float32); hi = np.nonzero(hair); Ph = Pm[hi]
+    dm = np.full(len(Ph), 9.0, np.float32)
+    for q in rimP: dm = np.minimum(dm, np.sqrt(((Ph - q) ** 2).sum(-1)))
+    tt = np.zeros(X.shape, np.float32); tt[hi] = ss(.004 * kk, .1 * kk, dm)
+    mix(hair, shade_of('haar', .66) if 'haar' in FC else dark, .55 * (1 - ss(0, .45, tt)) * hair)
+    mix(hair, FC.get('haar_spitze', lite), .5 * ss(.35, 1, tt) * hair)
+    streak = vnoise(Pn * np.array([1, 1, .2]), 330); mix(hair, shade_of('haar', .86), .18 * ss(.55, .8, streak) * hair); hgt += hair * (streak - .5) * .02
+else:
+    mix(hair, dark, (.35 if hc.mean() < .6 else .08) * ss(hh * 1.18, hh * .98, dist))
+    streak = vnoise(Pn * np.array([1, 1, .15]), 260); mix(hair, lite, .3 * ss(HC.z - .2 * hh, HC.z + 1.0 * hh, Z)); mix(hair, dark, .3 * ss(HC.z - .1 * hh, HC.z - .9 * hh, Z))
+    hgt += hair * (streak - .5) * .03
 if FC.get('haar_hi'): mix(hair, FC['haar_hi'], ss(hh * 1.32, hh * 1.55, dist) * .95)
 beard = M('bart')
 if beard.any():
@@ -254,8 +290,6 @@ col *= np.where(cloth, 1 + weave * .025 + (n2 - .5) * .07, 1.0)[..., None]
 hgt += cloth * (weave * .22 + (n2 - .5) * .25)
 def seam(mask, dist_field, w=.0016, c='#000000', a=.25, h=.6):
     sm = mask & (np.abs(dist_field) < w * kk); mix(sm, c, a); hgt[:] -= sm * h
-def shade_of(name, f):
-    c = hexrgb(FC[name] if name in FC else REG[name]['col']); return '#%02x%02x%02x' % tuple(int(min(255, max(0, x * 255 * f))) for x in c)
 # Nähte: Saum-Steppnaht, Seitennähte Hose, Schulternähte
 if TOP:
     seam(M('top'), Z - (TOP['saum'] * H + .012 * H), c=shade_of('top', .7), a=.5)
@@ -325,9 +359,45 @@ if 'kappe_blatt' in SPEC.get('extras', []) and 'muetze' in FC:
     lx2, lz2 = (X - (-.11 * H / 1.45 * 1.25)) / kk, (Z - (HZ + .01 * H)) / kk; sun = (lx2 ** 2 + lz2 ** 2) < .011 ** 2; ray = ((lx2 ** 2 + lz2 ** 2) < .018 ** 2) & (np.sin(np.arctan2(lz2, lx2) * 8) > .4)
     mix(M('leder') & (Y < 0), '#ffe08a', (sun | ray).astype(np.float32))
 # Mütze: Strick (Beanie) bzw. Naht (Schirmmütze)
-if 'muetze' in FC:
+if 'muetze' in FC and K_.get('muetze') == 'kappe4':
+    # Runde 4 Schirmmütze: 5 Bahnen mit Nähten, Steppnaht über dem Rand, Luftlöcher, Logo „V“ mit Kristall-Funke (eigenes Zeichen), Schirm mit Steppbögen
+    mk = M('muetze'); dX, dY, dZ = X - HC.x, Y - HC.y, Z - HC.z; dl = np.sqrt(dX ** 2 + dY ** 2 + dZ ** 2) + 1e-6
+    phT = np.arctan2(dX, -dY); thT = np.arccos(np.clip(dZ / dl, -1, 1)); rh = np.sqrt(dX ** 2 + dY ** 2)
+    rimA = sorted(((math.atan2(q.x - HC.x, -(q.y - HC.y)), math.acos(max(-1, min(1, (q.z - HC.z) / (q - HC).length)))) for q in D.CAP_RIM))
+    ra = np.array([a for a, _ in rimA]); rt = np.array([t for _, t in rimA]); thR = np.interp(phT, ra, rt, period=2 * math.pi)
+    def wrap(a): return (a + math.pi) % (2 * math.pi) - math.pi
+    for ps in (.72, -.72, 1.95, -1.95, math.pi):
+        arc = np.abs(wrap(phT - ps)) * rh; sm = mk & (arc < .0011 * kk) & (thT < thR - .03); mix(sm, shade_of('muetze', .72), .75); hgt -= sm * .7
+        for o_ in (-.0028, .0028):   # Steppstiche beidseits der Naht
+            st = mk & (np.abs(wrap(phT - ps) * rh - o_ * kk) < .0005 * kk) & (np.sin(thT * 260) > .1) & (thT < thR - .05) & (thT > .12); mix(st, shade_of('muetze', .8), .55)
+    band = mk & (np.abs(thT - (thR - .085)) < .0045) & (np.sin(phT * 110) > 0); mix(band, shade_of('muetze', .78), .55)
+    mix(mk, shade_of('muetze', .9), .35 * ss(thR - .05, thR - .005, thT))
+    for pc in (0, 1.33, -1.33, 2.55, -2.55):   # Luftlöcher je Bahn
+        ex_ = wrap(phT - pc) * rh; ez_ = (thT - .5) * dl; r_ = np.sqrt(ex_ ** 2 + ez_ ** 2)
+        if pc == 0: continue
+        mix(mk & (r_ < .0034 * kk), shade_of('muetze2', 1.0), 1.0); mix(mk & (r_ < .0018 * kk), '#2a2a26', 1.0)
+    if 'kappe_v' in SPEC.get('extras', []):
+        th0 = .66; C0 = Vector(cap_pt(th0, 0)); upv = Vector((0, math.cos(th0), math.sin(th0)))
+        lu = (X - C0.x) / kk; lv = ((Y - C0.y) * upv.y + (Z - C0.z) * upv.z) / kk; fr = mk & (Y < HC.y - .2 * hd)
+        def segd(ax, ay, bx, by):
+            px, py = lu - ax, lv - ay; vx, vy = bx - ax, by - ay; t_ = np.clip((px * vx + py * vy) / (vx * vx + vy * vy), 0, 1); return np.sqrt((px - vx * t_) ** 2 + (py - vy * t_) ** 2)
+        dv = np.minimum(segd(-.0155, .013, 0, -.0125), segd(.0155, .013, 0, -.0125))
+        mix(fr, shade_of('muetze2', .62), (dv < .0062).astype(np.float32)); mix(fr, FC['muetze2'], (dv < .0043).astype(np.float32)); hgt += fr * (dv < .0062) * .8
+        sx, sy = lu - .0205, lv - .0135; star = (np.abs(sx) ** .55 + np.abs(sy) ** .55) < .0052 ** .55 * 1.9
+        mix(fr, FC.get('knopf', '#f2c94c'), star.astype(np.float32))
+    br = M('muetze2') & (Z < HC.z + .55 * hh) & (Y < HC.y)   # Schirm-Oberseite: drei Steppbögen
+    if br.any() and D.BRIM:
+        ba = np.array([b_[0] for b_ in D.BRIM]); b0 = np.array([b_[1] for b_ in D.BRIM]); b1 = np.array([b_[2] for b_ in D.BRIM])
+        pr = np.clip(phT, ba.min(), ba.max()); r0 = np.interp(pr, ba, b0); r1 = np.interp(pr, ba, b1); tb_ = (rh - r0) / np.maximum(1e-4, r1 - r0)
+        for tl in (.5, .66, .82):
+            st = br & (np.abs(tb_ - tl) < .022) & (np.sin(phT * 150) > -.1) & (np.abs(phT) < ba.max() * .93); mix(st, shade_of('muetze2', .74), .7); hgt -= st * .4
+        mix(br, shade_of('muetze2', 1.12), .35 * ss(.15, .0, tb_))
+elif 'muetze' in FC:
     mk = M('muetze'); rib = np.sin(np.arctan2(Y - HC.y, X - HC.x) * 40) > 0; mix(mk, shade_of('muetze', .85), .35 * rib); hgt += mk * rib * .5
     mix(mk, shade_of('muetze', .82), ss(HC.z + .2 * hh, HC.z + .12 * hh, Z) * .8)
+if 'tasche_sonne' in SPEC.get('extras', []):
+    lx2, lz2 = (X - (-.11 * H / 1.45 * 1.25)) / kk, (Z - (HZ + .01 * H)) / kk; sun = (lx2 ** 2 + lz2 ** 2) < .011 ** 2; ray = ((lx2 ** 2 + lz2 ** 2) < .018 ** 2) & (np.sin(np.arctan2(lz2, lx2) * 8) > .4)
+    mix(M('leder') & (Y < 0), '#ffe08a', (sun | ray).astype(np.float32))
 if 'rucksack' in FC:
     seam(M('rucksack'), np.abs(X) - .05 * H, w=.0012, c=shade_of('rucksack', .7), a=.5)
 # Schuhe
@@ -349,7 +419,7 @@ mix(M('schirm'), '#e8ffff', .5 * ss(.3, .9, vnoise(Pn, 900)))
 mix(M('leder'), shade_of('leder', 1.2), .25 * ss(.5, .9, n2)); hgt += M('leder') * (n3 - .5) * .4
 # AO einrechnen (weich), Gesicht schwächer
 aoN = np.clip(ao, 0, 1); faceM = M('haut_kopf', 'lid', 'nase') & frontM
-col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), .88 + .12 * aoN, .6 + .4 * aoN))[..., None]
+col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), (.74 + .26 * aoN) if SPEC.get('r4') else (.88 + .12 * aoN), .6 + .4 * aoN))[..., None]
 col = np.clip(col, 0, 1); alb = dilate(col, COV, 6); alb = np.where(COV[..., None], col, alb); log('Malen fertig')
 IMG_ALB = to_image(alb, FID + '_Farbe'); IMG_ALB.colorspace_settings.name = 'sRGB'
 hg = dilate(np.repeat(hgt[..., None], 3, 2), COV, 4)[..., 0]

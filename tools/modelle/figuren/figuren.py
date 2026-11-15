@@ -13,11 +13,13 @@ SPECS = {
    extras=['schutzbrille', 'geraet', 'cargotaschen'], muster=['blatt'], groesse='kind'),
  # Heldin Noa (Stufe 0): helle Schirmkappe mit grünem Schirm + Blatt, Pferdeschwanz (gelbes Haargummi), grünes T-Shirt mit cremefarbenem Saum,
  # braune Shorts, lange dunkle Socken, braune Stiefel mit hellem Rand, Umhängetasche mit Sonne, Handgelenk-Gerät
- 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_muetze', gesicht=dict(mund_laune=.035, lid_o=40),
-   farben=dict(haut='#f6d3b3', haar='#a4532a', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#efe6d2', muetze2='#4c8a3c',
+ # Runde 4 (15.11.): echte Schirmmütze (runde Krone aus 5 Bahnen, Wulst, Knopf, Riegel hinten, gebogener Schirm, eigenes „V“-Logo mit Kristall-Funke),
+ # Haar als weiche Volumen (Pony, Seitensträhnen, Nacken, Pferdeschwanz durch die Öffnung hinten), Verlauf Ansatz dunkel → Spitzen hell; Budget gesamt ≤ 9 k
+ 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, gesamt=8900,
+   farben=dict(haut='#f6d3b3', haar='#a4532a', haar_spitze='#d27a3e', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#f1e9d6', muetze2='#4c8a3c', muetze3='#35583a',
                blume='#f2c94c', schuh='#7a5434', sohle='#3e2c22', leder='#7a4a2a', akzent='#d81b72', streifen='#efe6d2', emblem='#f2c94c', metall='#b08a48', dunkel='#3a3f4a', knopf='#f2c94c'),
-   kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='schirm'),
-   extras=['geraet', 'tasche', 'kappe_blatt'], muster=['blatt'], groesse='kind'),
+   kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='kappe4'),
+   extras=['geraet', 'tasche', 'kappe_v', 'tasche_sonne'], muster=['blatt'], groesse='kind'),
  # Rivale Rayan: schwarze Stacheln mit roten Spitzen, dunkle Zip-Jacke (rot abgesetzt) über grauem Shirt, dunkle Cargohose, Stiefel
  'rayan': dict(typ='kind', augen='#c0302a', haar='stachel', gesicht=dict(mund_laune=.0, braue_z=.27, lid_o=27),
    farben=dict(haut='#f1cfae', haar='#1e1a22', haar_hi='#d0303a', braue='#1e1a22', top='#7a7680', jacke='#2a2730', saum='#c0303a', hose='#2c2a32', saum2='#24222a',
@@ -226,6 +228,7 @@ def accessories(spec, bvb):
         rim = [head_dir_point(sdir(hl, ph), .022 * k) for ph in [(-1 + j / 10 * 2) * .95 for j in range(11)]]
         rings = [rim, [p + Vector((0, -.05 * k, -.012 * k)) * (1 - .55 * abs(j / 10 * 2 - 1) ** 2) for j, p in enumerate(rim)]]
         o = loft_rings('Schirm', rings, 'muetze2' if 'muetze2' in REG else 'muetze', closed=False); solidify(o, .004 * k, 1); out.append(o)
+    if K.get('muetze') == 'kappe4': out += cap4(spec)
     if K.get('muetze') == 'beanie':
         hl = 1.42; U_, V_ = 7, 26; CV = []; CF = []
         for i in range(U_ + 1):
@@ -243,21 +246,47 @@ def join_all(parts):
     for o in (BODY, FACE, EYE): smooth(o)
     return BODY, FACE, EYE
 
-def cull_hidden(BODY, region_names, dist=.06, dirs_fn=None):
-    """Flächen der Haut/des Körpers entfernen, die vollständig von Haaren/Kleidung verdeckt sind (Dreiecke sparen)"""
+def cull_hidden(BODY, region_names, dist=.06, dirs_fn=None, sel=None):
+    """Flächen der Haut/des Körpers entfernen, die vollständig von Haaren/Kleidung verdeckt sind (Dreiecke sparen); sel(Mitte) → Kandidat? (sonst: Kopf ohne Gesicht/Schläfen)"""
     bvc = BVHTree.FromObject(BODY, bpy.context.evaluated_depsgraph_get())
     bm = bmesh.new(); bm.from_mesh(BODY.data); bm.faces.ensure_lookup_table(); mats = list(BODY.data.materials)
     ids = {i for i, m in enumerate(mats) if m.name in region_names}; kill = []
     for f in bm.faces:
         if f.material_index not in ids: continue
         c0 = f.calc_center_median() - D.HC
-        if c0.z < -.15 * D.hh or (c0.y < -.35 * D.hd and c0.z < .45 * D.hh): continue   # Gesicht/Schläfen nie entfernen
+        if sel is not None:
+            if not sel(f.calc_center_median()): continue
+        elif c0.z < -.15 * D.hh or (c0.y < -.35 * D.hd and c0.z < .45 * D.hh): continue   # Gesicht/Schläfen nie entfernen
         n = f.normal.normalized(); ok = True
         for p in [f.calc_center_median()] + [v.co for v in f.verts]:
             hit = bvc.ray_cast(p + n * .0008, n, dist)
             if not hit[0] or hit[2] is None: ok = False; break
         if ok: kill.append(f)
     bmesh.ops.delete(bm, geom=kill, context='FACES'); bm.to_mesh(BODY.data); bm.free(); return len(kill)
+
+def _dir_of(c):
+    d = (c - D.HC); n = d.length or 1; return math.acos(max(-1, min(1, d.z / n))), math.atan2(d.x, -d.y)
+def reduce_r4(BODY, FACE, EYE):
+    """Runde 4: verdeckte Flächen weg (Füße im Stiefel, Haarschale unter der Krone), dann gewichtetes Reduzieren:
+    Haar, Kappe und Gesicht bleiben voll aufgelöst (Gruppe 'dez' = 0), Körper/Kleidung/Hände tragen die Reduktion. Ziel: Körper + Gesicht + Augen ≤ SPEC['gesamt']."""
+    H = D.H; k = H / 1.45
+    n1 = cull_hidden(BODY, {'haut', 'socke'}, .03 * k, sel=lambda c: c.z < D.ANK.z + .115 * k)
+    n2 = cull_hidden(BODY, {'haar'}, .03 * k, sel=lambda c: (lambda tp: tp[0] < cap_edge(tp[1]) - .06)(_dir_of(c)))
+    log('verdeckt entfernt (Füße, Haar unter Krone)', n1, n2)
+    PROT = {'haar', 'muetze', 'muetze2', 'muetze3', 'blume', 'lid', 'nase'}
+    mats = list(BODY.data.materials); prot = set()
+    for p in BODY.data.polygons:
+        nm = mats[p.material_index].name; c = p.center; d = c - D.HC
+        if nm in PROT or (nm == 'haut_kopf' and d.y < -.25 * D.hd and c.z > D.CHIN - .005 * H and d.z < .55 * D.hh): prot.update(p.vertices)
+    vg = BODY.vertex_groups.new(name='dez'); vg.add([v.index for v in BODY.data.vertices if v.index not in prot], 1.0, 'REPLACE')
+    if prot: vg.add(list(prot), 0.0, 'REPLACE')
+    tb = SPEC['gesamt'] - tris(FACE) - tris(EYE); t0 = tris(BODY)
+    if t0 > tb:
+        dm = BODY.modifiers.new('Dez', 'DECIMATE'); dm.ratio = tb / t0; dm.vertex_group = 'dez'; dm.vertex_group_factor = 200; dm.use_symmetry = True; dm.symmetry_axis = 'X'
+        apply_mods(BODY); smooth(BODY)
+    BODY.vertex_groups.remove(BODY.vertex_groups['dez'])
+    np_ = sum(1 for p in BODY.data.polygons if mats[p.material_index].name in PROT)
+    log('Reduktion R4', t0, '→', tris(BODY), 'Ziel', tb, 'geschützte Flächen', np_)
 
 if __name__ == '__main__':
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
@@ -267,9 +296,11 @@ if __name__ == '__main__':
     BODY, FACE, EYE = join_all(parts)
     nk = cull_hidden(BODY, {'haut_kopf'}, .05 * D.H / 1.45)
     log('verdeckt entfernt', nk)
-    tb = SPEC.get('budget', 11800)
-    if tris(BODY) > tb:   # Dreiecksbudget 8–14 k je Figur: Körper sanft reduzieren (Kollaps, Formen bleiben)
-        dm = BODY.modifiers.new('Dez', 'DECIMATE'); dm.ratio = tb / tris(BODY); apply_mods(BODY); smooth(BODY)
+    if SPEC.get('r4'): reduce_r4(BODY, FACE, EYE)
+    else:
+        tb = SPEC.get('budget', 11800)
+        if tris(BODY) > tb:   # Dreiecksbudget 8–14 k je Figur: Körper sanft reduzieren (Kollaps, Formen bleiben)
+            dm = BODY.modifiers.new('Dez', 'DECIMATE'); dm.ratio = tb / tris(BODY); apply_mods(BODY); smooth(BODY)
     log('Dreiecke Körper', tris(BODY), 'Gesicht', tris(FACE), 'Augen', tris(EYE), 'gesamt', tris(BODY) + tris(FACE) + tris(EYE))
     if ONLY_FORM:
         H = D.H; hz = D.HC.z

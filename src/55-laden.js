@@ -50,6 +50,8 @@ async function ldRun(fn,to,from){if(LADEN.active)ldAbort();const tok=++LADEN.tok
  const d3=view!=='2d'&&typeof draw3d==='function'&&!!window.THREE,own=()=>{LADEN.own=true;try{draw3d();}catch(e){console.error('Laden 3D',e);}LADEN.own=false;};
  if(d3)own();ldProg(.7);await ldFrame();if(tok!==LADEN.tok)return;
  if(d3)own();ldProg(.9);await ldFrame();if(tok!==LADEN.tok)return;
+ // Stabilität R4 (62-lod.js): Modelle des Ortes abwarten (höchstens +1,5 s) und alle Shader/Texturen vorkompilieren, solange der Ladebildschirm deckt
+ if(d3&&typeof ldHold==='function'){try{await ldHold(tok,tShow);}catch(e){console.warn('Laden: Vorlauf',e);}if(tok!==LADEN.tok)return;}
  if(src&&img.decode)try{await Promise.race([img.decode(),ldWait(150)]);}catch(e){}
  const rest=(red?LD_MS.minRed:LD_MS.min)-(performance.now()-tShow);if(rest>0){ldProg(1);await ldWait(rest);}else ldProg(1);if(tok!==LADEN.tok)return;
  // 3) Aufblende (ab hier rendert die Hauptschleife wieder jedes Bild)

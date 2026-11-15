@@ -108,9 +108,10 @@ if(typeof skyFrame==='function'&&!skyFrame._gfx){const _sf=skyFrame;skyFrame=fun
 // ---------- Runde 5: Entfernungs-Budget für Figuren-/Terra-Modelle (57/58, nur Schalter an) ----------
 // Je Bild vor dem Zeichnen (und danach zurückgesetzt, damit 57/58/09 ihre eigenen Zustände behalten):
 //  ab sh Feldern kein Schattenwurf · ab ol Feldern kein Umriss · ab hide Feldern ausgeblendet (Spielfigur nie). Die LOD-Stufen von 57/58 bleiben aktiv.
-GFX.mlod={high:{sh:4.5,ol:7,hide:24,lod:5,max:14,nsh:3},mid:{sh:3.5,ol:5,hide:18,lod:4,max:10,nsh:2},low:{sh:0,ol:4,hide:14,lod:3,max:6,nsh:0}};
+GFX.mlod={high:{sh:4.5,ol:7,hide:24,lod:5,max:14,nsh:3,nol:2,olN:12},mid:{sh:3.5,ol:5,hide:18,lod:4,max:10,nsh:2,nol:2,olN:10},low:{sh:0,ol:4,hide:14,lod:3,max:6,nsh:0,nol:2,olN:8}};
 // Stabilität R2: Handy/Tablet (Touch) strenger – Budget ≈ 80–100 k Dreiecke: Umriss nur nah, LOD1 früh, höchstens 4–8 Modelle, Schatten nur Spielfigur + nächste
-GFX.mlodT={high:{sh:5,ol:3,hide:16,lod:3.5,max:8,nsh:2},mid:{sh:4.5,ol:2.2,hide:14,lod:2.8,max:6,nsh:2},low:{sh:0,ol:1.8,hide:12,lod:2.5,max:4,nsh:0}};
+GFX.mlodT={high:{sh:5,ol:3,hide:16,lod:3.5,max:8,nsh:2,nol:2,olN:9},mid:{sh:4.5,ol:2.2,hide:14,lod:2.8,max:6,nsh:2,nol:2,olN:8},low:{sh:0,ol:1.8,hide:12,lod:2.5,max:4,nsh:0,nol:2,olN:8}};
+// Stabilität R4: Umriss zusätzlich für die nol nächsten Modelle bis olN Felder (Hülle jetzt aus dem leichten LOD-Netz, 62-lod.js: Figur 2,8 k statt 11,7 k) – auf jeder Budget-Stufe
 const _gM={roots:[],t:0,undo:[],v:new THREE.Vector3()};
 function gfxModelRoots(S){const out=[];for(const o of S.children){const U=o.userData||{};if(U.pilot||U.lod0||U.lod1){out.push(o);continue;}for(const c of o.children){const V=c.userData||{};if(V.pilot||V.lod0||V.lod1)out.push(c);}}return out;}
 function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==S){_gM.t=now;_gM.S=S;_gM.roots=gfxModelRoots(S);const w=_gM.wol=[];for(const o of S.children){if(o.isMesh&&o.userData&&o.userData.outline===1)w.push(o);else for(const q of o.children)if(q.isMesh&&q.userData&&q.userData.outline===1)w.push(q);}}if(!c)return;
@@ -125,10 +126,12 @@ function gfxModelPre(S,c){const now=performance.now();if(now-_gM.t>500||_gM.S!==
  list.sort((a,b)=>a.userData._gd-b.userData._gd);let ni=0,si=0;
  for(const r of list){const d=r.userData._gd;ni++;
   if((d>L.hide||ni>(L.max||99))&&!r.userData.held){r.visible=false;u.push([r,'visible',true]);continue;}
-  const shOk=si<(L.nsh??9)&&d<=L.sh;if(shOk)si++;
-  {const lo=r.userData.lod;if(lo&&lo[0]&&lo[1]&&d>L.lod&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}}// Figuren-LOD1 (57) schon ab lod Feldern
-  if(!shOk||d>L.ol){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
-   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(d>L.ol&&m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
+  const shOk=si<(L.nsh??9)&&d<=L.sh;if(shOk)si++;const olOk=d<=L.ol||(ni<=(L.nol||0)&&d<=(L.olN||0));
+  {const lo=r.userData.lod;if(lo&&lo[0]&&lo[1]&&d>L.lod&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}// Figuren-LOD1 (57) schon ab lod Feldern
+   // R4: Terras (58 schaltet erst ab 7 Feldern zur Kamera) ebenfalls ab lod Feldern auf das leichte Netz (Augenpartie bleibt)
+   else if(r.userData.tm&&!lo&&d>L.lod&&r.userData.lod1&&r.userData.lod1.length&&r.userData.lod4){for(const m of r.userData.lod0)if(m.visible&&!/Augen/.test(m.name)){m.visible=false;u.push([m,'visible',true]);}for(const m of r.userData.lod1)if(!m.visible){m.visible=true;u.push([m,'visible',false]);}}}
+  if(!shOk||!olOk){let ms=r.userData._gm;if(!ms){ms=[];r.traverse(m=>{if(m.isMesh)ms.push(m);});r.userData._gm=ms;}
+   for(const m of ms){if(!shOk&&m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}if(!olOk&&m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}}}}}
 function gfxModelPost(){const u=_gM.undo;for(let i=u.length-1;i>=0;i--){const[o,k,v]=u[i];o[k]=v;}u.length=0;}
 if(typeof gfxSetup==='function'&&!gfxSetup._m){const _gs=gfxSetup;gfxSetup=function(){_gs();const r=R3.r,rr=r.render;r.render=function(s,c){const w=s===R3.scene&&r.getRenderTarget()===null;if(w)try{gfxModelPre(s,c);}catch(e){}try{rr.call(r,s,c);}finally{if(w){gfxModelPost();try{gfxBudTick();}catch(e){}}}};};gfxSetup._m=1;}
 // ---------- Stabilität R2: Budget DURCHSETZEN (Dreiecke + Draw-Calls je Bild inkl. Schattenpass) ----------
@@ -143,7 +146,7 @@ const GFX_BL=[{m:1,d:1,v:1,vsh:1},{m:.75,d:.85,v:.8,vsh:1},{m:.6,d:.72,v:.62,vsh
 GFX.bud={lvl:0,map:null,memo:{},hist:[],cool:0,ups:0,dev:null,t:0,c:0};
 function gfxBudDev(){const B=GFX.bud;if(B.dev)return B.dev;let d='igpu';try{if(typeof PERF==='object'&&PERF.touch)d='touch';else if(typeof STAB==='object'&&STAB.cls==='dgpu')d='dgpu';}catch(e){}return B.dev=d;}
 function gfxBudL(touch,tn){const L0=((touch?GFX.mlodT:GFX.mlod)[tn])||GFX.mlod.high,b=GFX_BL[GFX.bud.lvl]||GFX_BL[0];if(!GFX.bud.lvl)return L0;
- const K=GFX.bud.L||(GFX.bud.L={});K.sh=L0.sh*b.d;K.ol=b.ol0?-1:L0.ol*b.d;K.hide=Math.max(6,L0.hide*b.d);K.lod=L0.lod*b.d;K.max=Math.max(1,Math.round((L0.max||8)*b.m));K.nsh=Math.min(L0.nsh??9,b.nsh??9);return K;}
+ const K=GFX.bud.L||(GFX.bud.L={});K.sh=L0.sh*b.d;K.ol=b.ol0?-1:L0.ol*b.d;K.hide=Math.max(6,L0.hide*b.d);K.lod=L0.lod*b.d;K.max=Math.max(1,Math.round((L0.max||8)*b.m));K.nsh=Math.min(L0.nsh??9,b.nsh??9);K.nol=Math.min(L0.nol||0,b.nol??9);K.olN=L0.olN||0;return K;}
 // Instanzen (Bäume/Kronen/Büsche/Felsen/Blumen/Gras aus 09 inst(), erkannt an userData.n0) je Instanz ausdünnen: hinter der Kamera (4 Felder Rand für Schatten)
 // und jenseits der Budget-Entfernung fallen weg. Die Instanzen werden nach vorn umsortiert (Original bleibt in _M0), count = sichtbare – nur Matrizen, kein Neubau.
 // Nur Meshes ohne eigene Instanz-Attribute (Wasser u. ä. bleiben unberührt). Neu berechnet bei 0,4 Feld Weg, 6° Drehung oder alle 0,5 s.
@@ -167,7 +170,7 @@ function gfxBudPre(S,u,c){const b=GFX_BL[GFX.bud.lvl]||GFX_BL[0];try{if(c)gfxCul
  if(b.wsh0||gfxBudDev()==='touch'){const now=performance.now();let W=_gC.wc;if(!W||W.S!==S||now-W.t>2000){W=_gC.wc={S,t:now,l:[]};const skip=o=>{for(let q=o;q&&q!==S;q=q.parent){const U=q.userData||{};if(q===R3.player||U.pilot||U.tm||U.lod0||U.lod1||U.held)return true;}return false;};
    S.traverse(o=>{if(o.isMesh&&o.castShadow&&!skip(o))W.l.push(o);});}
   for(const m of W.l)if(m.castShadow){m.castShadow=false;u.push([m,'castShadow',true]);}}
- if((b.po||b.pl)&&R3.player){const pl=R3.player,now=performance.now();let C=_gM.pc;if(!C||C.o!==pl||now-C.t>500){C=_gM.pc={o:pl,t:now,ms:[],lod:null};pl.traverse(m=>{if(m.isMesh)C.ms.push(m);if(!C.lod&&m.userData&&m.userData.lod)C.lod=m.userData.lod;});}
+ if((b.po&&!(R3.player&&R3.player.userData&&R3.player.userData.lod4)||b.pl)&&R3.player){// R4: Heldin mit leichter Hülle (62) behält den Umriss auf jeder Stufeconst pl=R3.player,now=performance.now();let C=_gM.pc;if(!C||C.o!==pl||now-C.t>500){C=_gM.pc={o:pl,t:now,ms:[],lod:null};pl.traverse(m=>{if(m.isMesh)C.ms.push(m);if(!C.lod&&m.userData&&m.userData.lod)C.lod=m.userData.lod;});}
   if(b.po)for(const m of C.ms)if(m.userData.outline===1&&m.visible){m.visible=false;u.push([m,'visible',true]);}
   const lo=b.pl&&C.lod;if(lo&&lo[0]&&lo[1]&&lo[0].visible){lo[0].visible=false;u.push([lo[0],'visible',true]);if(!lo[1].visible){lo[1].visible=true;u.push([lo[1],'visible',false]);}}}
  if(b.v>=1&&b.vsh)return;const V=S.userData&&S.userData.veg;if(!V)return;

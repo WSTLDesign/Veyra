@@ -48,6 +48,7 @@ def setup(spec):
     D.BALL = Vector((D.ANK.x * 1.03, D.ANK.y - fl * .62, .014 * H)); D.TOE = Vector((D.ANK.x * 1.04, D.ANK.y - fl * .9, .012 * H)); D.FL = fl
     D.NECK0 = Vector((0, .006 * H, t['shz'] * H + .022 * H)); D.CHIN = H - D.head
     D.kid = spec['typ'] == 'kind'; D.fem = bool(t['fem'])
+    D.kk4 = D.hh / .127; D.CAP_OPEN = .36; D.r4 = bool(spec.get('r4'))   # Runde 4 (Heldin): Maßstab Kopf, Öffnung hinten an der Kappe
     return D
 
 # ---------------- Regionen ----------------
@@ -58,7 +59,7 @@ def regions(spec):
     R('lidlinie', c.get('lidlinie', '#2a1c1e'), (0, 0, 0, 0)); R('braue', c.get('braue', c['haar']), (0, 0, 0, 0)); R('mundlinie', c.get('mund', '#8a4a40'), (0, 0, 0, 0))
     R('haar', c['haar'], (1, .15, .35, 0)); R('bart', c.get('bart', c['haar']), (1, .1, .3, 0))
     R('auge', '#ffffff', (0, 0, 1, 0)); R('mund_innen', '#5a2028', (0, 0, 0, 0))
-    for k in ('top', 'top2', 'jacke', 'kittel', 'hose', 'rock', 'schuerze', 'muetze', 'muetze2', 'rucksack', 'socke'):
+    for k in ('top', 'top2', 'jacke', 'kittel', 'hose', 'rock', 'schuerze', 'muetze', 'muetze2', 'muetze3', 'rucksack', 'socke'):
         if k in c: R(k, c[k], (1, .05, 0, 0))
     R('saum', c.get('saum', c.get('top', '#888888')), (1, .05, 0, 0)); R('saum2', c.get('saum2', c.get('saum', '#777777')), (1, .05, 0, 0))
     R('schuh', c.get('schuh', '#e8e2d6'), (1, 0, .15, 0)); R('sohle', c.get('sohle', '#b9b6b0'), (1, 0, .1, 0)); R('leder', c.get('leder', '#6a4a30'), (1, 0, .25, 0))
@@ -245,6 +246,9 @@ def build_head():
         def sp_(ph, th, R, C=C, fwd=fwd, r=r, u=u): a, b = math.radians(ph), math.radians(th); return C + (fwd * (math.cos(b) * math.cos(a)) + r * (math.cos(b) * math.sin(a)) + u * math.sin(b)) * R
         bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=14, v_segments=10, radius=RE)
         eo = obj_bm('Auge', bm); M = Matrix((r, u, fwd)).transposed().to_4x4(); M.translation = C; eo.data.transform(M); orient_out(eo, C); smooth(eo); set_region(eo, 'auge')
+        if D.r4:   # Runde 4: hintere Augapfel-Hälfte liegt immer im Kopf → weg (−≈ 250 Dreiecke)
+            bm = bmesh.new(); bm.from_mesh(eo.data); kill = [f for f in bm.faces if (f.calc_center_median() - C).dot(fwd) < -.12 * RE]
+            bmesh.ops.delete(bm, geom=kill, context='FACES'); bm.to_mesh(eo.data); bm.free(); smooth(eo)
         uv = eo.data.uv_layers.new(name='UVMap')
         for l in eo.data.loops:
             q = eo.data.vertices[l.vertex_index].co - C
@@ -349,8 +353,132 @@ def hairline_std(fr=1.0, side=1.6, back=2.05):
         c = math.cos(ph); return lerp(lerp(side, fr, ss(0, 1, c)), back, ss(-.1, -1, c))
     return f
 
+# =====================================================================
+# Runde 4 (15.11.): Schirmmütze mit Krone + Haar als weiche, gerundete Strähnen-Volumen (Heldin)
+# =====================================================================
+def cap_edge(ph):
+    """Polwinkel der Kronen-Unterkante: vorn tief auf der Stirn (Pony schaut darunter vor), seitlich über den Ohren, hinten im Nacken; hinten Öffnung (Bogen) für den Pferdeschwanz"""
+    c = math.cos(ph); th = lerp(lerp(1.47, 1.10, ss(0, 1, c)), 1.80, ss(-.1, -1, c))
+    dp = abs(((ph - math.pi) + math.pi) % (2 * math.pi) - math.pi); W = D.CAP_OPEN
+    if dp < W: th -= (1.80 - 1.43) * math.sqrt(max(0, 1 - (dp / W) ** 2)) ** .8
+    return th
+def cap_off(th, ph):
+    """Abstand der Krone über dem Schädel: sitzt am Rand auf dem Haar, oben/vorn voller (strukturierte Vorderteile)"""
+    u = min(1, th / max(.3, cap_edge(ph))); c = max(0, math.cos(ph))
+    return (.016 + .004 * (1 - u * u) + .009 * math.sin(math.pi * min(1, u * 1.1)) ** .8 + .006 * c * math.sin(math.pi * min(1, u * 1.15)) ** 1.2 - .006 * ss(.35, 0, u)) * D.kk4
+def cap_pt(th, ph, extra=0.): return head_dir_point(sdir(th, ph), cap_off(th, ph) + extra)
+
+def cap4(spec):
+    """Schirmmütze: runde Krone (sitzt auf dem Kopf, 5 Bahnen), Wulst am Rand, Knopf oben, Riegel über der Öffnung hinten, klarer gebogener Schirm (Oberseite/Unterseite)"""
+    out = []; k = D.kk4; U_, V_ = 7, 28
+    CV = [cap_pt(0, 0)]; CF = []
+    for i in range(1, U_ + 1):
+        for j in range(V_):
+            ph = j / V_ * 2 * math.pi; e = cap_edge(ph); th = e * (i / U_) ** .92; CV.append(cap_pt(th, ph))
+    for j in range(V_): CF.append((0, 1 + j, 1 + (j + 1) % V_))
+    for i in range(U_ - 1):
+        for j in range(V_):
+            a = 1 + i * V_; j1 = (j + 1) % V_; CF.append((a + j, a + V_ + j, a + V_ + j1, a + j1))
+    o = obj_data('Krone', CV, CF); orient_out(o, D.HC); smooth(o); set_region(o, 'muetze'); out.append(o)
+    D.CAP_RIM = [cap_pt(cap_edge(j / 48 * 2 * math.pi), j / 48 * 2 * math.pi) for j in range(48)]
+    # Wulst (eingefasster Rand) – macht die Kante rund und gibt der Krone sichtbare Stoffdicke
+    rim = [cap_pt(cap_edge(ph), ph, -.002 * k) for ph in [j / V_ * 2 * math.pi for j in range(V_ + 1)]]
+    o = loft('Kronenrand', rim, lambda t: .0042 * k, lambda t: .0042 * k, ring=4, n=V_ + 1, cap0=False, flat_up=(0, 0, 1)); set_region(o, 'muetze'); out.append(o)
+    # Knopf oben
+    c = cap_pt(0, 0, .002 * k); o = blob('Kappenknopf', c, (.0095 * k, .0095 * k, .0045 * k), 1); set_region(o, 'muetze2'); out.append(o)
+    # Riegel unten über der Öffnung (Pferdeschwanz geht darüber hinaus)
+    W = D.CAP_OPEN; P = [cap_pt(1.80 - .035, math.pi + a, .001 * k) for a in [(-1 + 2 * q / 8) * W * 1.02 for q in range(9)]]
+    o = loft('Riegel', P, lambda t: .0065 * k, lambda t: .0026 * k, ring=4, n=8, cap0=True, cap1=True, flat_up=(0, 1, -.2)); set_region(o, 'muetze2'); out.append(o)
+    # Schirm: D-förmig, an der Vorderkante der Krone angesetzt, vorgebogen (Seiten tiefer), leicht nach unten geneigt
+    R_, C_ = 4, 16; PA = 1.08; L = .086 * k; V2 = []; F2 = []; D.BRIM = []
+    for i in range(R_ + 1):
+        t = i / R_
+        for j in range(C_ + 1):
+            a = -1 + 2 * j / C_; ph = a * PA; p0 = cap_pt(cap_edge(ph), ph, -.001 * k)
+            rd = Vector((p0.x - D.HC.x, p0.y - D.HC.y, 0)).normalized(); fw = (rd * .78 + Vector((0, -1, 0)) * .22).normalized()
+            ln = L * (1 - abs(a) ** 2.4) ** .55 + .004 * k
+            q = p0 + fw * ln * t
+            q.z += -math.tan(math.radians(9)) * ln * t - .026 * k * (a * a) * t ** 1.2 + .0035 * k * math.sin(math.pi * t) * (1 - a * a)
+            V2.append(q)
+            if i == R_: D.BRIM.append((ph, (p0 - D.HC).xy.length, (q - D.HC).xy.length))
+    for i in range(R_):
+        for j in range(C_):
+            a = i * (C_ + 1) + j; F2.append((a, a + 1, a + C_ + 2, a + C_ + 1))
+    o = obj_data('Schirm', V2, F2); smooth(o)
+    if sum(p.normal.z for p in o.data.polygons) < 0: o.data.flip_normals()
+    mod(o, 'SOLIDIFY', thickness=.0062 * k, offset=-1, use_even_offset=True, use_rim=True); apply_mods(o)
+    mod(o, 'BEVEL', width=.0022 * k, segments=1, limit_method='ANGLE', angle_limit=math.radians(50)); apply_mods(o); smooth(o)
+    for nm in ('muetze2', 'muetze3'):
+        if REG[nm]['mat'].name not in o.data.materials: o.data.materials.append(REG[nm]['mat'])
+    for p in o.data.polygons: p.material_index = 1 if p.normal.z < -.35 else 0
+    out.append(o)
+    return out
+
+def strand(P, w, d, ring=8, n=10, tip=.12, up=None, region='haar', puff=0., root=.32):
+    """Weiche Strähne: elliptischer Querschnitt (rund, keine Kanten), voller Bauch, gerundet zulaufende Spitze"""
+    up = up or tuple((Vector(P[0]) - D.HC).normalized())
+    wf = lambda t: w * ((1 - t ** 2.4) ** .75 * (.7 + .3 * ss(0, root, t)) + puff * math.sin(math.pi * min(1, t * 1.6)) * (1 - t)) + w * tip * (1 - t) ** 2 + 1e-4
+    df = lambda t: d * ((1 - t ** 1.9) ** .7 * (.35 + .65 * ss(0, root, t))) + 1e-4
+    o = loft('Straehne', P, wf, df, ring=ring, n=n, flat_up=up, cap0=True); set_region(o, region); return o
+
+def hair_r4():
+    """Haar unter der Kappe: Haarschale (Seiten/Nacken), Pony aus 5 Volumen, Seitensträhnen vor/hinter den Ohren, Nackensträhnen, Pferdeschwanz durch die Öffnung"""
+    out = []; k = D.kk4; E = cap_edge
+    hl = hairline_std(1.05, 1.64, 2.08)
+    # Schale: beginnt unter der Krone, endet am Haaransatz (Nacken leicht gewellt), seitlich etwas Volumen
+    U_, V_ = 4, 28; CV = []; CF = []
+    for i in range(U_ + 1):
+        for j in range(V_):
+            ph = j / V_ * 2 * math.pi; th0 = max(.2, E(ph) - .32); th1 = hl(ph) + .05 * math.sin(ph * 9) ** 2 * ss(.2, -.8, math.cos(ph))
+            u = i / U_; th = lerp(th0, th1, u)
+            vis = ss(E(ph) - .05, E(ph) + .12, th)
+            off = (.0055 + .0075 * vis * math.sin(math.pi * min(1, u * 1.05)) ** .7 - .004 * ss(.8, 1, u)) * k
+            CV.append(head_dir_point(sdir(th, ph), off))
+    for i in range(U_):
+        for j in range(V_):
+            j1 = (j + 1) % V_; CF.append((i * V_ + j, i * V_ + j1, (i + 1) * V_ + j1, (i + 1) * V_ + j))
+    o = obj_data('Haarschale', CV, CF); orient_out(o, D.HC); smooth(o); set_region(o, 'haar'); out.append(o)
+    # Pony: 5 volle Strähnen, unter dem Kronenrand hervor, zur Seite geschwungen (eigene Volumen, überlappend)
+    PONY = [(-.62, .07, 1.40, .036), (-.34, .09, 1.50, .041), (-.06, .10, 1.53, .043), (.22, .10, 1.49, .041), (.50, .08, 1.40, .036)]
+    for ph0, sw, th1, w in PONY:
+        P = []
+        for q in range(7):
+            t = q / 6; ph = ph0 + sw * t ** 1.3 * -1; th = lerp(E(ph0) - .04, th1, t)
+            off = (.0085 + .008 * ss(0, .3, t) * (1 - .4 * ss(.4, 1, t)) + .003 * ss(.8, 1, t)) * k
+            P.append(head_dir_point(sdir(th, ph), off))
+        out.append(strand(P, w * k, w * .40 * k, ring=8, n=8, tip=.1, puff=.12, root=.3))
+    # Seitensträhnen vor den Ohren (lang, bis zum Kinn, Spitze leicht nach innen) + kürzere hinter den Ohren
+    for s in (-1, 1):
+        ph = s * 1.22; P = [head_dir_point(sdir(E(ph) - .2, ph), .010 * k), head_dir_point(sdir(E(ph) + .06, ph * 1.02), .018 * k), head_dir_point(sdir(1.82, ph * 1.04), .019 * k)]
+        p2 = P[-1]; ins = Vector((-s, -.25, 0)).normalized()
+        P += [p2 + Vector((0, 0, -.045 * k)) + ins * .004 * k, p2 + Vector((0, 0, -.085 * k)) + ins * .011 * k]
+        out.append(strand(P, .036 * k, .019 * k, ring=8, n=9, tip=.08, puff=.1))
+        ph = s * 1.95; P = [head_dir_point(sdir(E(ph) - .18, ph), .010 * k), head_dir_point(sdir(E(ph) + .05, ph), .017 * k), head_dir_point(sdir(2.0, ph * 1.02), .016 * k)]
+        p2 = P[-1]; P += [p2 + Vector((s * .002, .004, -.045)) * k]
+        out.append(strand(P, .036 * k, .015 * k, ring=6, n=7, tip=.08, puff=.08))
+    # Nacken: kurze, weiche Spitzen unter dem Kronenrand
+    for ph in (2.48, 3.80):
+        P = [head_dir_point(sdir(E(ph) - .15, ph), .009 * k), head_dir_point(sdir(E(ph) + .1, ph), .014 * k), head_dir_point(sdir(hl(ph) + .1, ph), .011 * k)]
+        out.append(strand(P, .034 * k, .013 * k, ring=6, n=6, tip=.06))
+    # Pferdeschwanz: tritt aus der Öffnung hinten über dem Riegel aus, Haargummi, ein Hauptvolumen + zwei Nebenstränge mit getrennten Spitzen
+    b = head_dir_point(sdir(1.6, math.pi), .02 * k); D.PONY = []
+    def pt(y, z, x=0.): return b + Vector((x, y, z)) * k
+    M = [pt(-.014, .0), pt(.022, .012), pt(.052, -.012), pt(.07, -.07), pt(.07, -.145), pt(.054, -.215), pt(.036, -.27)]
+    D.PONY = bezier(M, 24)
+    o = loft('Pferdeschwanz', M, lambda t: (.022 + .034 * ss(.0, .22, t) * (1 - ss(.45, 1, t))) * (1 - t ** 3) * k + .002 * k * (1 - t),
+             lambda t: (.02 + .028 * ss(.0, .22, t) * (1 - ss(.5, 1, t))) * (1 - t ** 2.6) * k + .0015 * k * (1 - t), ring=10, n=12, flat_up=(1, 0, 0), cap0=True)
+    set_region(o, 'haar'); out.append(o)
+    for s in (-1, 1):
+        P = [pt(.03, .0, s * .01), pt(.062, -.04, s * .018), pt(.074, -.11, s * .022), pt(.066, -.18, s * .026), pt(.05, -.235, s * .032)]
+        out.append(strand(P, .022 * k, .016 * k, ring=6, n=8, tip=.06, up=(0, 1, 0)))
+    tie = [b + (Vector((math.cos(a) * .026, .022, math.sin(a) * .024)) * k) for a in [q / 12 * 2 * math.pi for q in range(13)]]
+    o = loft('Haargummi', tie, lambda t: .0065 * k, lambda t: .0075 * k, ring=5, n=13, cap0=False, flat_up=(0, 1, 0)); set_region(o, 'blume'); out.append(o)
+    return out
+
 def build_hair(style):
     H = D.H; hw = D.hw; out = []; rnd = random.Random(7); k = D.hh / .127   # Maßstab relativ zum Kinderkopf
+    if style == 'pferd_kappe4':      # Heldin Runde 4: weiche Volumen + echte Schirmmütze (Krone separat in cap4)
+        return hair_r4()
     if style == 'pferd_muetze':      # Heldin: Haar unter der Kappe (Pony + Seiten) + Pferdeschwanz als Volumen durch die Kappe hinten
         out = build_hair('muetze'); b = head_dir_point(sdir(1.3, math.pi), .03 * k)
         for i in range(5):

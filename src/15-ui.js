@@ -166,7 +166,8 @@ function openShop(stock){mode='menu';sheetOpen($('#shop'));const el=$('#shopBody
 const KEYS={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
 function pressA(){if(mode==='dialog')return advDlg();if(mode==='world'&&!P.moving)interact();}
 function pressB(){if(mode==='world'&&!P.moving)return openMenu();if(mode==='menu')return closeMenu();if(mode==='dialog')advDlg();}
-document.addEventListener('keydown',e=>{if(mode==='battle'||mode==='title')return;const d=KEYS[e.code];if(d){if(held!==d){heldT=performance.now();if(view==='2d'&&!P.moving&&mode==='world')P.dir=d;}held=d;if(view!=='2d'){STICK.y=d==='up'?-1:0;STICK.x=d==='left'?-1:d==='right'?1:0;if(d==='down'&&!e.repeat&&mode==='world')P.ang=(P.ang??YAW[P.dir])+Math.PI;}e.preventDefault();return;}
+const inText=e=>/INPUT|TEXTAREA|SELECT/.test((e.target&&e.target.tagName)||'')||(e.target&&e.target.isContentEditable);
+document.addEventListener('keydown',e=>{if(mode==='battle'||mode==='title'||inText(e))return;const d=KEYS[e.code];if(d){if(held!==d){heldT=performance.now();if(view==='2d'&&!P.moving&&mode==='world')P.dir=d;}held=d;if(view!=='2d'){STICK.y=d==='up'?-1:0;STICK.x=d==='left'?-1:d==='right'?1:0;if(d==='down'&&!e.repeat&&mode==='world')P.ang=(P.ang??YAW[P.dir])+Math.PI;}e.preventDefault();return;}
  if(e.repeat)return;if(['Enter','Space','KeyE'].includes(e.code)){e.preventDefault();pressA();}if(['Escape','KeyX','KeyM'].includes(e.code))pressB();});
 document.addEventListener('keyup',e=>{if(KEYS[e.code]===held){held=null;STICK.x=STICK.y=0;}});
 const st=$('#stick'),kn=$('#knob');let sid=null;
@@ -188,7 +189,7 @@ dpd.addEventListener('pointerdown',e=>{e.preventDefault();dpid=e.pointerId;dpd.s
 dpd.addEventListener('pointermove',e=>{if(e.pointerId===dpid)dpApply(e);});
 ['pointerup','pointercancel','lostpointercapture'].forEach(t=>dpd.addEventListener(t,e=>{if(e.pointerId!==dpid)return;dpid=null;dpDir=null;dpAx=null;held=null;STICK.x=STICK.y=0;dpd.dataset.d='';dpd.dataset.x='';}));
 $('#runBtn').addEventListener('pointerdown',e=>{e.preventDefault();runLock=!runLock;P.run=runLock;$('#runBtn').setAttribute('aria-pressed',runLock);sfx('tap');});
-document.addEventListener('keydown',e=>{if(e.key==='Shift')P.run=true;});document.addEventListener('keyup',e=>{if(e.key==='Shift')P.run=runLock;});
+document.addEventListener('keydown',e=>{if(e.key==='Shift'&&!inText(e))P.run=true;});document.addEventListener('keyup',e=>{if(e.key==='Shift')P.run=runLock;});
 $('#btnA').addEventListener('pointerdown',e=>{e.preventDefault();pressA();});
 $('#btnB').addEventListener('pointerdown',e=>{e.preventDefault();pressB();});
 $('#dlg').addEventListener('pointerdown',e=>{if(e.target.tagName!=='BUTTON')advDlg();});

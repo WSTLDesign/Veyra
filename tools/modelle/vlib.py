@@ -111,14 +111,17 @@ def bezier(pts, n):
         p0, p1, p2, p3 = P[i], P[i + 1], P[i + 2], P[i + 3]
         out.append(.5 * ((2 * p1) + (-p0 + p2) * u + (2 * p0 - 5 * p1 + 4 * p2 - p3) * u * u + (-p0 + 3 * p1 - 3 * p2 + p3) * u ** 3))
     return out
-def loft(name, pts, wfn, dfn=None, ring=8, n=12, up=(0, 0, 1), cap0=True, cap1=False, twist=0.0, flat_up=None):
-    """Röhre/Strähne entlang einer Kurve; wfn(t) Breite, dfn(t) Dicke (Ellipse), Spitze bei Breite 0."""
+def loft(name, pts, wfn, dfn=None, ring=8, n=12, up=(0, 0, 1), cap0=True, cap1=False, twist=0.0, flat_up=None, sexp=None):
+    """Röhre/Strähne entlang einer Kurve; wfn(t) Breite, dfn(t) Dicke (Ellipse), Spitze bei Breite 0.
+    sexp (optional, Figuren R5): Superellipsen-Exponent des Querschnitts (2 = Ellipse, > 2 voller/runder Bauch, ohne Kanten)."""
     P = bezier(pts, n); F = frames_along(P, Vector(up) if flat_up is None else Vector(flat_up)); V = []; Fc = []
     dfn = dfn or wfn
     for i, (p, (Tt, N, B)) in enumerate(zip(P, F)):
         t = i / (n - 1); w = max(wfn(t), 1e-5); d = max(dfn(t), 1e-5); a0 = twist * t
         for j in range(ring):
-            a = j / ring * 2 * math.pi + a0; V.append(p + B * math.cos(a) * w + N * math.sin(a) * d)
+            a = j / ring * 2 * math.pi + a0; ca, sa = math.cos(a), math.sin(a)
+            if sexp: ca = math.copysign(abs(ca) ** (2 / sexp), ca); sa = math.copysign(abs(sa) ** (2 / sexp), sa)
+            V.append(p + B * ca * w + N * sa * d)
     for i in range(n - 1):
         for j in range(ring):
             j1 = (j + 1) % ring; Fc.append((i * ring + j, i * ring + j1, (i + 1) * ring + j1, (i + 1) * ring + j))
@@ -402,14 +405,15 @@ def shape_key(o, name, fn):
     return k
 
 # ---------------- Export ----------------
-def export_glb(path, objs, ao):
+def export_glb(path, objs, ao, attrs=False):
     for x in bpy.context.view_layer.objects: x.select_set(False)
     for o in objs + [ao]: o.select_set(True)
     bpy.ops.export_scene.gltf(filepath=path, export_format='GLB', use_selection=True, export_apply=False, export_animations=True,
                               export_animation_mode='NLA_TRACKS', export_force_sampling=True, export_frame_step=1, export_try_sparse_sk=False,
                               export_morph=True, export_morph_normal=False, export_skins=True, export_def_bones=True, export_vertex_color='ACTIVE',
                               export_all_vertex_colors=False, export_image_format='WEBP', export_image_quality=88, export_texcoords=True, export_normals=True,
-                              export_tangents=False, export_yup=True, export_extras=False, export_optimize_animation_size=True)
+                              export_tangents=False, export_yup=True, export_extras=False, export_optimize_animation_size=True,
+                              **({'export_attributes': True} if attrs else {}))   # attrs: eigene Attribute mit „_“ (Figuren R5: _LODW)
     log('GLB', path, os.path.getsize(path), 'B')
 
 def workbench(path, objs, cams, size=(800, 800)):

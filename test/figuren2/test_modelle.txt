@@ -1,13 +1,13 @@
 # Figuren Runde 2 – Modelle (Schalter an)
-✓ alle Figuren geladen → {"fig_noa":1312,"fig_heldin":7335,"fig_rayan":904,"fig_veyran":1107,"fig_mama":13593,"fig_mirael":957,"fig_haendler":910,"fig_buerger_a":7573,"fig_buerger_b":952,"fig_buerger_c":1007,"fig_buerger_d":920}
-✓ fig_noa gebaut → {"id":"fig_noa","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13319,"lodTris":2800,"lod":true,"h":1.38}
+✓ alle Figuren geladen → {"fig_noa":976,"fig_heldin":8531,"fig_rayan":926,"fig_veyran":968,"fig_mama":16351,"fig_mirael":1078,"fig_haendler":906,"fig_buerger_a":843,"fig_buerger_b":9871,"fig_buerger_c":937,"fig_buerger_d":939}
+✓ fig_noa gebaut → {"id":"fig_noa","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":8898,"lodTris":3200,"lod":true,"h":1.34}
 ✓ fig_noa Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_noa 9 Shape Keys → 9
-✓ fig_noa Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13319,"lod":2800}
-✓ fig_heldin gebaut → {"id":"fig_heldin","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":8900,"lodTris":3802,"lod":true,"h":1.34}
+✓ fig_noa Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":8898,"lod":3200}
+✓ fig_heldin gebaut → {"id":"fig_heldin","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":8897,"lodTris":3799,"lod":true,"h":1.34}
 ✓ fig_heldin Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_heldin 9 Shape Keys → 9
-✓ fig_heldin Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":8900,"lod":3802}
+✓ fig_heldin Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":8897,"lod":3799}
 ✓ fig_rayan gebaut → {"id":"fig_rayan","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13320,"lodTris":5871,"lod":true,"h":1.49}
 ✓ fig_rayan Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_rayan 9 Shape Keys → 9
@@ -24,10 +24,10 @@
 ✓ fig_mirael Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_mirael 9 Shape Keys → 9
 ✓ fig_mirael Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13320,"lod":5872}
-✓ fig_haendler gebaut → {"id":"fig_haendler","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13268,"lodTris":5820,"lod":true,"h":1.74}
+✓ fig_haendler gebaut → {"id":"fig_haendler","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":8900,"lodTris":3802,"lod":true,"h":1.72}
 ✓ fig_haendler Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_haendler 9 Shape Keys → 9
-✓ fig_haendler Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13268,"lod":5820}
+✓ fig_haendler Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":8900,"lod":3802}
 ✓ fig_buerger_a gebaut → {"id":"fig_buerger_a","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13320,"lodTris":5872,"lod":true,"h":1.61}
 ✓ fig_buerger_a Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_buerger_a 9 Shape Keys → 9
@@ -40,11 +40,28 @@
 ✓ fig_buerger_c Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_buerger_c 9 Shape Keys → 9
 ✓ fig_buerger_c Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13320,"lod":5872}
-✓ fig_buerger_d gebaut → {"id":"fig_buerger_d","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":13294,"lodTris":5845,"lod":true,"h":1.58}
+✓ fig_buerger_d gebaut → {"id":"fig_buerger_d","ok":true,"clips":"idle,jog,jubeln,run,walk,werfen,winken","keys":9,"tris":8897,"lodTris":3799,"lod":true,"h":1.55}
 ✓ fig_buerger_d Clips idle/walk/jog/run/winken/jubeln/werfen → idle,jog,jubeln,run,walk,werfen,winken
 ✓ fig_buerger_d 9 Shape Keys → 9
-✓ fig_buerger_d Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":13294,"lod":5845}
-✓ Zuordnung Typ → Modell → {"held":"fig_noa","heldin":"fig_heldin","veyran":"fig_veyran","mirael":"fig_mirael","shop":"fig_haendler","buerger":"fig_buerger_a","tarek":null}
+✓ fig_buerger_d Dreiecke 8–14 k, LOD ≈ 50 % → {"tris":8897,"lod":3799}
+✓ fig_heldin R5-Budget: Hauptnetz ≤ 9 000, GLB-LOD1 ≤ 4 000 → {"haupt":8897,"lod1Glb":3799}
+✓ fig_heldin Schutzgewicht _LODW im GLB, Laufzeit-Hülle/LOD1 ≈ 3,2 k (≤ 3 300) → {"schutz":true,"huelle":3199}
+✓ fig_heldin Haar-/Kappen-Silhouette der Hülle: Ø XOR < 1,8 % und ≤ 60 % des R4-Verfahrens → {"r5":0.88,"r4Verfahren":2.8,"je":{"r5":{"vorn":1.03,"links":1.16,"oben":0.45},"r4":{"vorn":3.05,"links":3.84,"oben":1.52}}}
+✓ fig_noa R5-Budget: Hauptnetz ≤ 9 000, GLB-LOD1 ≤ 4 000 → {"haupt":8898,"lod1Glb":3800}
+✓ fig_noa Schutzgewicht _LODW im GLB, Laufzeit-Hülle/LOD1 ≈ 3,2 k (≤ 3 300) → {"schutz":true,"huelle":3200}
+✓ fig_noa Haar-/Kappen-Silhouette der Hülle: Ø XOR < 1,8 % und ≤ 60 % des R4-Verfahrens → {"r5":1.15,"r4Verfahren":3.98,"je":{"r5":{"vorn":1.28,"links":1,"oben":1.17},"r4":{"vorn":3.58,"links":3.83,"oben":4.52}}}
+✓ fig_haendler R5-Budget: Hauptnetz ≤ 9 000, GLB-LOD1 ≤ 4 000 → {"haupt":8900,"lod1Glb":3802}
+✓ fig_haendler Schutzgewicht _LODW im GLB, Laufzeit-Hülle/LOD1 ≈ 3,2 k (≤ 3 300) → {"schutz":true,"huelle":3200}
+✓ fig_haendler Haar-/Kappen-Silhouette der Hülle: Ø XOR < 1,8 % und ≤ 60 % des R4-Verfahrens → {"r5":1.31,"r4Verfahren":4.5,"je":{"r5":{"vorn":1.89,"links":1.51,"oben":0.53},"r4":{"vorn":4.1,"links":6.51,"oben":2.89}}}
+✓ fig_buerger_d R5-Budget: Hauptnetz ≤ 9 000, GLB-LOD1 ≤ 4 000 → {"haupt":8897,"lod1Glb":3799}
+✓ fig_buerger_d Schutzgewicht _LODW im GLB, Laufzeit-Hülle/LOD1 ≈ 3,2 k (≤ 3 300) → {"schutz":true,"huelle":3199}
+✓ fig_buerger_d Haar-/Kappen-Silhouette der Hülle: Ø XOR < 1,8 % und ≤ 60 % des R4-Verfahrens → {"r5":0.78,"r4Verfahren":3.4,"je":{"r5":{"vorn":0.52,"links":1.09,"oben":0.74},"r4":{"vorn":2.88,"links":4.25,"oben":3.08}}}
+✓ fig_heldin Umrisshülle verdeckt keine Haarteile (Bildanteil verändert < 8 % je Ansicht hinten/seitlich/schräg) → [0.3,0.6,0.36]
+✓ fig_noa Umrisshülle verdeckt keine Haarteile (Bildanteil verändert < 8 % je Ansicht hinten/seitlich/schräg) → [1.25,2.24,1.36]
+✓ fig_haendler Umrisshülle verdeckt keine Haarteile (Bildanteil verändert < 8 % je Ansicht hinten/seitlich/schräg) → [5.11,1.26,1.34]
+✓ fig_buerger_d Umrisshülle verdeckt keine Haarteile (Bildanteil verändert < 8 % je Ansicht hinten/seitlich/schräg) → [1.14,3.03,1.33]
+  R5 Silhouette (Ø XOR %, R5 / R4-Verfahren): fig_heldin 0.88 / 2.8 · fig_noa 1.15 / 3.98 · fig_haendler 1.31 / 4.5 · fig_buerger_d 0.78 / 3.4
+✓ Zuordnung Typ → Modell → {"held":"fig_noa","heldin":"fig_heldin","veyran":"fig_veyran","mirael":"fig_mirael","shop":"fig_haendler","buerger":"fig_buerger_d","tarek":null}
 ✓ Gang: 1,9 → Gehen (walk), 5 → Rennen (run) → {"0":{"idle":1,"walk":0,"jog":0,"run":0},"5":{"idle":0,"walk":0,"jog":0,"run":1},"1.9":{"idle":0,"walk":1,"jog":0,"run":0},"2.8":{"idle":0,"walk":0,"jog":0.87,"run":0.13}}
-✓ Morgenau: Held + NPCs als Modelle → {"modelle":7,"held":true,"calls":270}
+✓ Morgenau: Held + NPCs als Modelle → {"modelle":7,"held":true,"calls":297}
 ✓ keine Konsolenfehler → []

@@ -189,7 +189,8 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
         if (tmReady(1)) { const t = tmMake(1, .6); let l1 = 0, l0 = 0, sh = 0; t.traverse(m => { if (!m.isMesh || m.userData.outline === 1) return; if (/LOD1/.test(m.name)) l1 += tri(m.geometry); else if (m.userData.shadowOnly) sh += tri(m.geometry); else if (/_(Koerper|Kopf)$/.test(m.name)) l0 += tri(m.geometry); }); o.terra = { voll: l0, lod1: l1, schatten: sh }; }
         return o; });
       R.mess.r4_lod = lo;
-      t('R4 Figur: LOD1, Umrisshülle und Schattennetz aus leichtem Netz (2,5–3 k statt 11,7 k), Hauptnetz unverändert', lo.heldin.koerper > 10000 && lo.heldin.lod1 >= 2400 && lo.heldin.lod1 <= 3100 && lo.heldin.huelle === lo.heldin.lod1 && lo.heldin.schatten === lo.heldin.lod1, lo.heldin);
+      // Figuren R5: Spielfigur-Körper jetzt 7,6 k (vorher 11,7 k), Figuren mit Schutzgewicht _LODW bekommen 3,2 k statt 2,8 k
+      t('R4 Figur: LOD1, Umrisshülle und Schattennetz aus leichtem Netz (2,5–3,3 k statt 7,6–11,7 k), Hauptnetz unverändert', lo.heldin.koerper > lo.heldin.lod1 * 2 && lo.heldin.lod1 >= 2400 && lo.heldin.lod1 <= 3300 && lo.heldin.huelle === lo.heldin.lod1 && lo.heldin.schatten === lo.heldin.lod1, lo.heldin);
       t('R4 Terra: LOD1 + Schattennetz ≈ 2 k (Körper+Kopf, vorher ≈ 3,6 k LOD1 / 7 k voll)', !lo.terra || (lo.terra.lod1 >= 1700 && lo.terra.lod1 <= 2400 && lo.terra.schatten === lo.terra.lod1), lo.terra);
       t('R4 LOD-Netze im Hintergrund erzeugt (Worker), ohne Fehler', lo.info.done >= 2 && !lo.info.err, lo.info); }
     // R4: Stufenwechsel mittel → niedrig → mittel (Sonnenschatten aus/an) kompiliert keine Programme neu

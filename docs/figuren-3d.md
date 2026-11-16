@@ -80,3 +80,63 @@ Anlass (Kritik R3): Haar wirkte blockig (kantige Klötze), die Kappe sah aus wie
 - **Unverändert kompatibel**: 32 Knochen (gleiche Namen/Lage), Gewichte nach demselben Verfahren (Kappe/Schirm/Riegel → `head`, Haar mit `hair_vorn`/`hair_hinten`-Anteil), alle 7 Clips (Gehen 1,9 / Rennen 5 / idle …), 9 Shape Keys.
 - Vergleichsbilder (Vorher R3 aus `test/fixtures/figuren/fig_heldin_r3.glb` neben Nachher R4, gleicher Shader/Licht): `test/figuren/r4_vergleich_studio.webp` (vorne/seitlich/nah/Spielkamera-Winkel), `r4_vergleich_nah.webp` (Kopf vorn/schräg/seitlich/hinten), `r4_vergleich_welt.webp` (echtes Spielbild Morgenau, Ausschnitt), `r4_welt_ganz.webp`. Skript: `node test/figuren/r4_vergleich.mjs [studio|nah|welt|alle]` (Chromium-Sperre!).
 - Test `test/figuren2/test_modelle.mjs`: zählt das Schattennetz aus 62-lod (`userData.shadowOnly`) nicht mehr als Hauptnetz mit (vorher 10 Fehlschläge „16 k“ bei allen Figuren durch die Laufzeit-LOD-Netze, nicht durch die Modelle).
+
+## 10. Runde 5 (16.11.) – Haar-Volumen, Haarmaske, Schutz-Markierung für 62-lod, weitere Figuren auf R4-Technik, Block-Hände
+Agent „Figuren R5“ (Opus 5.5 · hoch). Maßstab weiterhin nur Technik/Qualität (Pokémon Legends), alle Formen/Zeichen eigen. Rig (32 Knochen, Namen und Lage bitgenau gleich), 7 Clips und 9 Shape Keys aller vier Figuren unverändert (geprüft gegen die R4-Stände; Gehen 1,9 / Rennen 5 bleiben).
+
+### Was und warum
+1. **Heldin-Haar (Punkt 1).** `strand()` hat neue Parameter: `rnd` (Dicke am Ansatz – R4 0,35 = flach wie ein Paddel), `sexp` (Superellipsen-Querschnitt über `loft(…, sexp)` in vlib.py, voller Bauch ohne Kanten), `bend` (`bend_out`: Spitze nach außen + leicht nach oben), `tp` (Zuspitz-Profil: früher spitz → Büschel statt Lappen). Hintere Seitensträhnen: Tiefe 0,022 → 0,027, Ansatz 0,75, Superellipse 2,6, zusätzlicher Stützpunkt, Spitze 11 mm nach außen; Nackenspitzen: 4 Stützpunkte, Querschnitt 0,029 × 0,025 (R4 0,030 × 0,019), Ring 8 statt 6, Spitze nach außen; vordere Seitensträhnen: etwas tiefer, rahmen weiter das Gesicht, Spitze zuletzt leicht nach außen.
+2. **Pferdeschwanz-Schattenseite (Punkt 2).** Zwei Ursachen:
+   - **Hauptursache (gefunden in R5): der Pferdeschwanz war nach innen gewickelt** (geschlossene Röhre mit Volumen −1 220 cm³; Wicklung und Normalen beide innen, daher fiel es keiner Normalenprüfung auf). Man sah von hinten die Innenseite der *fernen* Wand – sie ist vom Licht abgewandt → wirkte wie eine fast schwarze Schattenseite – und die BackSide-Umrisshülle lag vor dem Zopf (Hülle an/aus: 16,3 % der Figur verändert). Neu `fix_inside_out()` (fkit.py): jede geschlossene Strähne/Röhre der R5-Figuren mit negativem Volumen wird umgedreht (Log „nach innen gewickelt → umgedreht“). Nur der Pferdeschwanz war betroffen.
+   - **Haarmaske im Shader** (`src/56-toonpro.js`, additiv): nur für Haar-Ecken (Figuren `uFig` + Glanz-Maske 0,25–0,45 = Haar/Bart; Haut, Stoff, Terras unverändert) mehr Licht-Umgriff (`uHairWrap` 0,4), weicherer Toon-Übergang (`uHairSoft` 1,8 × Weichheit) und angehobener Schattenton Richtung Eigenfarbe (`uHairSh` 0,6, Sättigung bleibt). Werte per `toonProMat(map,{hairSh,hairSoft,hairWrap})` überschreibbar; ohne `fig` 0 = alter Shader.
+3. **62-lod ↔ Figuren (Punkt 3).** Schutz-Markierung je Ecke als GLB-Attribut **`_LODW`** (Blender: `BODY.data.attributes['_LODW']`, Export `export_attributes`, übersteht Draco; three liest es als `_lodw`): Haar 1, Schirm-Unterseite 1, Schirm/Knopf/Riegel/Umschlag 0,9, Krone/Mütze 0,8, Haargummi/Bart 0,6, sonst 0. `lodSimplify(P,I,ziel,{w,wK})` multipliziert die Kosten, eine Ecke zu verschieben, mit `1 + wK·w` (wK = 12). Für Körper mit `_lodw` ist das Ziel **3 200 statt 2 800** Dreiecke (Abwägung aus der Messung unten: Haar-/Kappen-Umriss −60 … −73 %, Körper-Umriss wie bisher). Modelle ohne `_LODW` (alle übrigen Figuren, Terras) laufen exakt wie vorher; `?lodschutz=0` schaltet den Schutz zum Vergleich ab, `VSTAB.info().lod.schutz` zählt die geschützten Netze. Änderungen in 62-lod: 1 Zeile Gewicht im Quadrik-Kollaps, Weitergabe an Worker/Rückfall, Ziel je Netz.
+4. **Noa, Ladenbesitzer, Jugendlicher (Punkt 4)** auf R4-Technik (`r5=True` im Steckbrief: Haarschale `shell5` + runde Volumen-Strähnen `st5/strand`, Stellvertreter-Normalen wie die Heldin, Haarfarbe Ansatz → Spitze, gewichtetes Reduzieren auf ≤ 9 k, hintere Augapfel-Hälfte weg, Budget `gesamt=8900`):
+   - **Noa** (`wuschel5`): Wirbel-Krone aus 7 flach anliegenden Büscheln, schräg gekämmter Pony (6), Seiten (3 je Seite), Nacken in zwei Lagen mit wechselnden Längen, fächerförmig, spitz (kein geschlossener „Helm“); Schutzbrillen-Band liegt jetzt auf dem Haar (Abstand 0,031 statt 0,04).
+   - **Ladenbesitzer**: Schirmmütze **`kappe4`** (Krone, Wulst, Knopf, Riegel, gebogener Schirm, 5 Bahnen mit Nähten/Luftlöchern; Öffnung hinten 0,30) in Grün mit **eigenem Zeichen „Laden-Häuschen“** (Dach + Tür + Fenster auf hellem Rund, leicht erhaben, Extra `kappe_laden`); kurzes Haar unter der Kappe (`kurz_kappe5`: Schale, Koteletten, anliegende Strähnen über/hinter dem Ohr, Nacken), **runder Schnurrbart** als Volumen-Strähne.
+   - **Jugendlicher** (`fig_buerger_d`, Typ teen – die einzige jugendliche Figur in figuren.py; Rayan ist ein Kind): Mütze **`beanie5`** (runde Krone mit leichtem Hängen nach hinten, dicker abgerundeter Umschlag, Rippenstrick fein/kräftig, Naht hinten) mit **eigenem Etikett „Berg mit Sonne“** am Umschlag (Extra `muetze_etikett`), Haar unter der Mütze (`beanie5_haar`: Pony-Spitzen, Seiten, Nacken).
+   - Nebenbei gefunden und behoben (src/57-modelle.js, 1 Zeile): `figModelFor` hat **jede** Bürgerfarbe auf `fig_buerger_a` abgebildet (Produkt im Hash > 2⁵³ → untere Bits weg). Mit `Math.imul` verteilen sich die Bewohner jetzt gleichmäßig auf a/b/c/d (5 000 Farben: 1 248/1 270/1 208/1 274) – erst dadurch ist der Jugendliche im Spiel überhaupt zu sehen.
+5. **Hände (Punkt 5).** Für R5-Figuren statt 4 Finger à 3 Glieder ein **Fingerblock** im Skin-Graph (4 Knoten, flache Ellipsen-Querschnitte, leicht gekrümmt, abgerundetes Ende) + Daumen; Finger nur angedeutet (3 weiche Trennlinien in Farbe + Normalkarte, Knöchel leicht rosig). Die Knochen bleiben, wo sie waren (Fingerspitzen werden weiter nach der alten Formel berechnet, nur nicht mehr gebaut). Hände sind beim Reduzieren jetzt geschützt (vorher trugen sie die Reduktion → kantig) und brauchen trotzdem weniger Dreiecke als die alten Finger.
+
+### Messwerte
+Dreiecke aus den geladenen GLBs (three, nach Draco; Blender-Werte in `tools/modelle/build/figuren/<id>.json`), „Hülle“ = leichtes Netz aus 62-lod (= LOD1, Umrisshülle des Hauptnetzes und Schattennetz):
+
+| Figur | Hauptnetz R4 → R5 | GLB-LOD1 R4 → R5 | Hülle/LOD1/Schatten zur Laufzeit R4 → R5 | Datei R4 → R5 |
+|---|---|---|---|---|
+| Heldin | 8 900 → **8 897** | 3 802 → **3 799** | 2 799 → **3 199** (mit Schutz) | 658 → 651 KB |
+| Noa | 13 319 → **8 898** | 5 871 → **3 800** | 2 800 → **3 200** (mit Schutz) | 678 → 644 KB |
+| Ladenbesitzer | 13 268 → **8 900** | 5 820 → **3 802** | 2 800 → **3 200** (mit Schutz) | 675 → 637 KB |
+| Jugendlicher | 13 294 → **8 897** | 5 845 → **3 799** | 2 800 → **3 199** (mit Schutz) | 681 → 641 KB |
+
+Je Bild nah (Hauptnetz + Hülle + Schatten): Heldin 14,5 k → 15,3 k (+0,8 k), Noa/Ladenbesitzer/Jugendlicher 18,9 k → 15,3 k (−3,6 k je Figur). Fern (LOD1 + Hülle): +0,8 k je R5-Figur.
+
+**Silhouette der vereinfachten Hülle** (Test `test_modelle.mjs`: orthografische Masken der Haar-/Kappen-Dreiecke vorn/seitlich/oben, 256², Ø Anteil XOR zum Original; „R4-Verfahren“ = 2,8 k ohne Schutz auf demselben Netz):
+
+| Figur | R4-Verfahren | R5 (Schutz, 3,2 k) | vorn / seitlich / oben (R5) |
+|---|---|---|---|
+| Heldin | 2,80 % | **0,88 %** | 1,03 / 1,16 / 0,45 |
+| Noa | 4,32 % | **1,34 %** | 1,13 / 1,65 / 1,26 |
+| Ladenbesitzer | 4,50 % | **1,31 %** | 1,89 / 1,51 / 0,53 (Schirm von oben: 2,89 → 0,53) |
+| Jugendlicher | 3,33 % | **1,09 %** | 0,88 / 1,56 / 0,83 |
+
+Ganzkörper-Umriss (512², offline mit derselben Maske): Heldin vorn/seitlich 1,66/1,91 % → 2,15/1,48 %, Noa 1,91/1,98 → 2,92/2,25, Ladenbesitzer 0,96/1,17 → 0,88/0,95, Jugendlicher 1,69/1,76 → 1,68/1,57 – der Körper gibt etwas ab (v. a. Noa, viel geschütztes Haar), dafür sind Strähnen und Schirm vollständig. Bild `r5_lod_huelle.webp`: Kopf seitlich „Hülle schneidet ab“ 2,68 % → 1,48 %, vorn 3,08 % → 0,78 %. Hülle an/aus (Bildanteil verändert, hinten/seitlich/schräg): Heldin R4 16,3/5,3/6,1 % → R5 1,7/2,3/1,5 %.
+
+**Tests angepasst:** `test/stabil_qa.mjs` – die R4-Prüfung „leichtes Netz“ erwartete den alten Spielfigur-Körper (> 10 k) und 2,4–3,1 k; jetzt Hauptnetz > 2 × leichtes Netz und 2,4–3,3 k (R5: Körper 7,6 k, geschützte Hülle 3,2 k). Alle übrigen stabil_qa-Prüfungen (Handy-Budget ≤ 100 k / ≤ 60 Calls mit Umrissen, Häuser, Vorkompilieren …) liefen schon im ersten Lauf unverändert grün.
+
+### Bilder (test/figuren/, `node test/figuren/r5_vergleich.mjs [studio|nah|heldin|huelle|welt|alle]`, Chromium-Sperre)
+R4-Stände: `test/fixtures/figuren/fig_{heldin,noa,haendler,buerger_d}_r4.glb`; R4-Zeilen werden mit dem Shader-Stand R4 (ohne Haarmaske) gerendert.
+| Datei | Inhalt |
+|---|---|
+| r5_vergleich_studio.webp | alle 4 Figuren ganz, R4 oben / R5 unten, Umrisshülle an |
+| r5_vergleich_nah.webp | Heldin seitlich, Heldin hinten (Pferdeschwanz), Hand, Köpfe Noa/Ladenbesitzer/Jugendlicher |
+| r5_heldin_studio.webp | Heldin vorne/seitlich/hinten/Spielkamera |
+| r5_lod_huelle.webp | vereinfachte Hülle der Heldin (Drahtgitter vorn/seitlich/hinten) + Umriss-Vergleich (blau = Hülle schneidet ab, rot = steht über) |
+| r5_vergleich_welt.webp, r5_welt_ganz.webp | echtes Spielbild Morgenau (Spielkamera, Umrisshülle an): Heldin, Ladenbesitzer, Jugendlicher |
+| r5_vergleich.json | Dreiecke, Hüllen-Werte, Laden, Fehler |
+
+### Offen / ehrlich
+- Strähnen zeigen aus nächster Nähe noch Facetten (Ring 8); der Toon-Shader glättet viel, aber Nahaufnahmen im Dialog würden von Ring 10–12 an Pony/Seitensträhnen profitieren (+≈ 400 Dreiecke).
+- Noa: Krone oben noch etwas massig, das Schutzbrillen-Band liegt hinten knapp über dem Haar. Ladenbesitzer: Haarspitzen unter der Kappe wirken von hinten wie ein kleiner Kranz. Jugendlicher: Naht des Umschlags hinten sichtbar.
+- Fingerblock: in Faust-/Wurfposen biegt sich der Block als Ganzes (keine einzelnen Finger) – stilistisch gewollt, aber weniger ausdrucksstark als echte Finger. Die Hände sind in 62-lod nicht geschützt (LOD1 aus der Ferne ok).
+- Haarmaske wirkt auf alle Figuren mit Haar-/Bart-Maske, auch auf die noch nicht überarbeiteten (gewollt, dort aber nicht einzeln geprüft).
+- Übrige Figuren (Rayan, Prof. Veyran, Mama, Mirael, Bürger a–c) sind noch Stand R2 (13,3 k, ohne `_LODW`). Durch die korrigierte Bürger-Verteilung erscheinen jetzt auch Bürger b/c/d im Spiel (gleiche Dreiecke je Figur wie a, aber bis zu 3 GLBs mehr zu laden/vorzukompilieren).
+- Weltvergleich: der Himmel unterscheidet sich zwischen den beiden Aufnahmen (Himmelsbild lädt nach), unabhängig von den Figuren.

@@ -6,7 +6,8 @@ from fkit import *
 
 SPECS = {
  # Held Noa (Stufe 0 „Startkleidung“): grünes T-Shirt mit Blatt, braune Cargohose, helle Turnschuhe mit Signatur-Schnürsenkeln, Schutzbrille auf der Stirn, Handgelenk-Gerät
- 'noa': dict(typ='kind', augen='#4a9a3a', haar='wuschel', gesicht=dict(mund_laune=.03),
+ # Runde 5 (16.11.): Haar als runde Volumen-Strähnen (Technik der Heldin R4), Block-Hände, Budget gesamt ≤ 9 k (Rig/Clips/Shape Keys unverändert)
+ 'noa': dict(typ='kind', augen='#4a9a3a', haar='wuschel5', gesicht=dict(mund_laune=.03), r5=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f6d3b3', haar='#7a4a26', braue='#5a3418', top='#3f7a3a', saum='#2e5a2c', hose='#6a4a30', saum2='#5a3e28', schuh='#ece6da', sohle='#b9b6b0',
                leder='#4d5236', metall='#b08a48', glas='#6fcde4', dunkel='#3a3f4a', akzent='#d81b72', streifen='#8fbf4a', emblem='#e9d27a'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.27, weit=.008), unten=dict(art='cargo', bund=.575, bis=0, weit=.009), schuhe='sneaker'),
@@ -15,7 +16,8 @@ SPECS = {
  # braune Shorts, lange dunkle Socken, braune Stiefel mit hellem Rand, Umhängetasche mit Sonne, Handgelenk-Gerät
  # Runde 4 (15.11.): echte Schirmmütze (runde Krone aus 5 Bahnen, Wulst, Knopf, Riegel hinten, gebogener Schirm, eigenes „V“-Logo mit Kristall-Funke),
  # Haar als weiche Volumen (Pony, Seitensträhnen, Nacken, Pferdeschwanz durch die Öffnung hinten), Verlauf Ansatz dunkel → Spitzen hell; Budget gesamt ≤ 9 k
- 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, gesamt=8900, ao_samples=28,
+ # Runde 5 (16.11.): Seiten-/Nackensträhnen mit vollem Querschnitt + nach außen gebogenen Spitzen, Block-Hände, Schutzgewicht _LODW für 62-lod
+ 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, r5=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f6d3b3', haar='#a4532a', haar_spitze='#d27a3e', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#f1e9d6', muetze2='#4c8a3c', muetze3='#35583a',
                blume='#f2c94c', schuh='#7a5434', sohle='#3e2c22', leder='#7a4a2a', akzent='#d81b72', streifen='#efe6d2', emblem='#f2c94c', metall='#b08a48', dunkel='#3a3f4a', knopf='#f2c94c'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='kappe4'),
@@ -43,10 +45,13 @@ SPECS = {
    kleidung=dict(top=dict(art='hemd', saum=.555, arm=.86, weit=.006), kittel=dict(saum=.56, arm=.86, offen=.03, bis=.33, abstand=.012), rock=dict(oben=.565, bis=.36, weite=.03), unten=dict(art='beine', bund=.5, bis=0), schuhe='stiefel', socken=.07),
    extras=['blume', 'kragen', 'kreuz_blatt'], muster=[], groesse='frau'),
  # Ladenbesitzer (eigener Entwurf): kräftig, Schnurrbart, hellblaues Hemd mit hochgekrempelten Ärmeln, grüne Schürze, Schirmmütze
- 'haendler': dict(typ='kraeftig', augen='#6a4a2a', haar='muetze', bart='schnurr', gesicht=dict(mund_laune=.04, auge_r=.19),
-   farben=dict(haut='#efc9a4', haar='#5a3a24', bart='#4a2e1c', braue='#4a2e1c', top='#7aa6d8', saum='#5a86b8', schuerze='#3e6a4a', saum2='#2e5a3a', hose='#4a4038', muetze='#3e6a4a', schuh='#5a3a26', sohle='#2e2420', knopf='#efe6d2'),
-   kleidung=dict(top=dict(art='hemd', saum=.55, arm=.5, weit=.008), schuerze=dict(oben=.74, bis=.30), unten=dict(art='hose', bund=.56, bis=0, weit=.01), schuhe='halbschuh', muetze='schirm'),
-   extras=['kragen', 'aufschlag'], muster=[], groesse='kraeftig'),
+ # Runde 5 (16.11.): Schirmmütze „kappe4“ (Krone, Wulst, Knopf, Riegel, gebogener Schirm) mit EIGENEM Logo (Laden-Häuschen auf hellem Rund), kurzes Haar
+ # als Volumen-Strähnen, runder Schnurrbart, Block-Hände, Budget ≤ 9 k
+ 'haendler': dict(typ='kraeftig', augen='#6a4a2a', haar='kurz_kappe5', bart='schnurr', gesicht=dict(mund_laune=.04, auge_r=.19), r5=True, gesamt=8900, ao_samples=28, kappe_offen=.3,
+   farben=dict(haut='#efc9a4', haar='#5a3a24', haar_spitze='#7a5236', bart='#4a2e1c', braue='#4a2e1c', top='#7aa6d8', saum='#5a86b8', schuerze='#3e6a4a', saum2='#2e5a3a', hose='#4a4038',
+               muetze='#3e6a4a', muetze2='#2f563b', muetze3='#22402b', logo='#efe6d2', schuh='#5a3a26', sohle='#2e2420', knopf='#efe6d2'),
+   kleidung=dict(top=dict(art='hemd', saum=.55, arm=.5, weit=.008), schuerze=dict(oben=.74, bis=.30), unten=dict(art='hose', bund=.56, bis=0, weit=.01), schuhe='halbschuh', muetze='kappe4'),
+   extras=['kragen', 'aufschlag', 'kappe_laden'], muster=[], groesse='kraeftig'),
  # Stadtbewohnerin (jung): blonder Pferdeschwanz, rostrote kurze Jacke über weißem Shirt, Jeans, Turnschuhe
  'buerger_a': dict(typ='frau', augen='#3a6aa8', haar='pferd', gesicht=dict(mund_laune=.03),
    farben=dict(haut='#f3cfae', haar='#c8a050', braue='#8a6a3a', top='#f2f0ea', jacke='#c8603a', saum='#a84a2a', hose='#3a4a6a', saum2='#2e3c58', schuh='#f2f0ea', sohle='#c8c4bc', knopf='#e0d0a0', akzent='#c8603a'),
@@ -63,10 +68,12 @@ SPECS = {
    kleidung=dict(top=dict(art='hemd', saum=.555, arm=.5, weit=.008), unten=dict(art='hose', bund=.56, bis=0, weit=.009), schuhe='stiefel'),
    extras=['kragen', 'aufschlag', 'tasche'], muster=[], groesse='mann'),
  # Stadtbewohner (jugendlich): gelbe Mütze, blauer Kapuzenpulli, graue Hose, Turnschuhe, Rucksack
- 'buerger_d': dict(typ='teen', augen='#4a6a3a', haar='muetze', gesicht=dict(mund_laune=.035),
-   farben=dict(haut='#c98f62', haar='#2a1d16', braue='#2a1d16', top='#3a7ac8', saum='#2e62a8', hose='#5a5a62', saum2='#4a4a52', muetze='#e0b030', schuh='#f2f0ea', sohle='#3a7ac8', rucksack='#d05a3a', leder='#8a3a2a', metall='#c9c9c9', akzent='#e0b030'),
-   kleidung=dict(top=dict(art='pulli', saum=.55, arm=.95, weit=.011), unten=dict(art='hose', bund=.555, bis=0, weit=.009), schuhe='sneaker', muetze='beanie'),
-   extras=['rucksack', 'kapuze'], muster=[], groesse='teen'),
+ # Runde 5 (16.11.): Mütze „beanie5“ (runde Krone, dicker Umschlag, Rippenstrick, eigenes kleines Etikett: Berg mit Sonne), Haar als Volumen-Strähnen, Block-Hände, ≤ 9 k
+ 'buerger_d': dict(typ='teen', augen='#4a6a3a', haar='beanie5_haar', gesicht=dict(mund_laune=.035), r5=True, gesamt=8900, ao_samples=28,
+   farben=dict(haut='#c98f62', haar='#2a1d16', haar_spitze='#4a3426', braue='#2a1d16', top='#3a7ac8', saum='#2e62a8', hose='#5a5a62', saum2='#4a4a52', muetze='#e0b030', muetze2='#d29e22', logo='#2e62a8',
+               schuh='#f2f0ea', sohle='#3a7ac8', rucksack='#d05a3a', leder='#8a3a2a', metall='#c9c9c9', akzent='#e0b030'),
+   kleidung=dict(top=dict(art='pulli', saum=.55, arm=.95, weit=.011), unten=dict(art='hose', bund=.555, bis=0, weit=.009), schuhe='sneaker', muetze='beanie5'),
+   extras=['rucksack', 'kapuze', 'muetze_etikett'], muster=[], groesse='teen'),
 }
 
 def assemble(spec):
@@ -140,7 +147,7 @@ def accessories(spec, bvb):
     if 'schutzbrille' in ex:
         rp = []
         for j in range(29):
-            ph = j / 28 * 2 * math.pi; th = .74 + .1 * ss(-.2, -1, math.cos(ph)); rp.append(head_dir_point(sdir(th, ph), .04 * k))
+            ph = j / 28 * 2 * math.pi; th = .74 + .1 * ss(-.2, -1, math.cos(ph)); rp.append(head_dir_point(sdir(th, ph), (.031 if D.r5 else .04) * k))   # R5: Band liegt auf dem Haar
         o = loft('Band', rp, lambda t: .0045 * k, lambda t: .0018 * k, ring=4, n=34, flat_up=(0, 0, 1), cap0=False); set_region(o, 'leder'); out.append(o)
         for s in (-1, 1):
             d = Vector((s * .3, -math.cos(.58), math.sin(.85))).normalized(); c = head_dir_point(d, .048 * k)
@@ -229,6 +236,7 @@ def accessories(spec, bvb):
         rings = [rim, [p + Vector((0, -.05 * k, -.012 * k)) * (1 - .55 * abs(j / 10 * 2 - 1) ** 2) for j, p in enumerate(rim)]]
         o = loft_rings('Schirm', rings, 'muetze2' if 'muetze2' in REG else 'muetze', closed=False); solidify(o, .004 * k, 1); out.append(o)
     if K.get('muetze') == 'kappe4': out += cap4(spec)
+    if K.get('muetze') == 'beanie5': out += beanie5(spec)
     if K.get('muetze') == 'beanie':
         hl = 1.42; U_, V_ = 7, 26; CV = []; CF = []
         for i in range(U_ + 1):
@@ -271,13 +279,15 @@ def reduce_r4(BODY, FACE, EYE):
     Haar, Kappe und Gesicht bleiben voll aufgelöst (Gruppe 'dez' = 0), Körper/Kleidung/Hände tragen die Reduktion. Ziel: Körper + Gesicht + Augen ≤ SPEC['gesamt']."""
     H = D.H; k = H / 1.45
     n1 = cull_hidden(BODY, {'haut', 'socke'}, .03 * k, sel=lambda c: c.z < D.ANK.z + .115 * k)
-    n2 = cull_hidden(BODY, {'haar'}, .03 * k, sel=lambda c: (lambda tp: tp[0] < cap_edge(tp[1]) - .06)(_dir_of(c)))
+    n2 = cull_hidden(BODY, {'haar'}, .03 * k, sel=lambda c: (lambda tp: tp[0] < D.COVER(tp[1]) - .06)(_dir_of(c))) if D.COVER else 0
     log('verdeckt entfernt (Füße, Haar unter Krone)', n1, n2)
-    PROT = {'haar', 'muetze', 'muetze2', 'muetze3', 'blume', 'lid', 'nase'}
+    PROT = {'haar', 'muetze', 'muetze2', 'muetze3', 'blume', 'lid', 'nase'} | ({'bart'} if D.r5 else set())
+    LH = D.L_UA + D.L_FA - .004 * H   # Runde 5: Hände (Block-Hände, schon sparsam gebaut) bleiben voll aufgelöst, ebenso Brille/Schutzbrille am Kopf
     mats = list(BODY.data.materials); prot = set()
     for p in BODY.data.polygons:
         nm = mats[p.material_index].name; c = p.center; d = c - D.HC
         if nm in PROT or (nm == 'haut_kopf' and d.y < -.25 * D.hd and c.z > D.CHIN - .005 * H and d.z < .55 * D.hh): prot.update(p.vertices)
+        elif D.r5 and ((lambda ac: ac is not None and ac[1] > LH)(arm_coord(c)) or (nm in ('glas', 'metall', 'leder') and d.length < 1.7 * D.hh and c.z > D.CHIN)): prot.update(p.vertices)
     vg = BODY.vertex_groups.new(name='dez'); vg.add([v.index for v in BODY.data.vertices if v.index not in prot], 1.0, 'REPLACE')
     if prot: vg.add(list(prot), 0.0, 'REPLACE')
     tb = SPEC['gesamt'] - tris(FACE) - tris(EYE); t0 = tris(BODY)
@@ -296,7 +306,7 @@ if __name__ == '__main__':
     BODY, FACE, EYE = join_all(parts)
     nk = cull_hidden(BODY, {'haut_kopf'}, .05 * D.H / 1.45)
     log('verdeckt entfernt', nk)
-    if SPEC.get('r4'): reduce_r4(BODY, FACE, EYE)
+    if SPEC.get('r4') or SPEC.get('r5'): reduce_r4(BODY, FACE, EYE)
     else:
         tb = SPEC.get('budget', 11800)
         if tris(BODY) > tb:   # Dreiecksbudget 8–14 k je Figur: Körper sanft reduzieren (Kollaps, Formen bleiben)

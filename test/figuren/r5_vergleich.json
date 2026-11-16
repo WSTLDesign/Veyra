@@ -1,0 +1,176 @@
+{
+ "laden": {
+  "laden": {
+   "fig_heldin": {
+    "r4": true,
+    "r5": true
+   },
+   "fig_noa": {
+    "r4": true,
+    "r5": true
+   },
+   "fig_haendler": {
+    "r4": true,
+    "r5": true
+   },
+   "fig_buerger_d": {
+    "r4": true,
+    "r5": true
+   }
+  },
+  "lodPend": 0,
+  "lodMs": [
+   [
+    "?",
+    7601,
+    3199,
+    5991
+   ],
+   [
+    "?",
+    2999,
+    833,
+    5031
+   ],
+   [
+    "?",
+    4199,
+    1167,
+    5064
+   ],
+   [
+    "?",
+    11771,
+    2800,
+    4006
+   ],
+   [
+    "?",
+    11720,
+    2800,
+    3545
+   ],
+   [
+    "?",
+    7604,
+    3200,
+    2548
+   ],
+   [
+    "?",
+    11746,
+    2800,
+    2188
+   ],
+   [
+    "?",
+    7601,
+    3199,
+    1696
+   ]
+  ]
+ },
+ "dreiecke": {
+  "fig_heldin_r4": {
+   "haupt": 8900,
+   "lod1Glb": 3802,
+   "huelle": 2799,
+   "schutz": false
+  },
+  "fig_heldin": {
+   "haupt": 8897,
+   "lod1Glb": 3799,
+   "huelle": 3199,
+   "schutz": true
+  },
+  "fig_noa_r4": {
+   "haupt": 13319,
+   "lod1Glb": 5871,
+   "huelle": 2800,
+   "schutz": false
+  },
+  "fig_noa": {
+   "haupt": 8898,
+   "lod1Glb": 3800,
+   "huelle": 3200,
+   "schutz": true
+  },
+  "fig_haendler_r4": {
+   "haupt": 13268,
+   "lod1Glb": 5820,
+   "huelle": 2800,
+   "schutz": false
+  },
+  "fig_haendler": {
+   "haupt": 8900,
+   "lod1Glb": 3802,
+   "huelle": 3200,
+   "schutz": true
+  },
+  "fig_buerger_d_r4": {
+   "haupt": 13294,
+   "lod1Glb": 5845,
+   "huelle": 2800,
+   "schutz": false
+  },
+  "fig_buerger_d": {
+   "haupt": 8897,
+   "lod1Glb": 3799,
+   "huelle": 3199,
+   "schutz": true
+  }
+ },
+ "huelle": {
+  "Vorher R4": {
+   "tris": 2799,
+   "schutz": false,
+   "silhouetteKopf_prozent": [
+    {
+     "abgeschnitten": 2.68,
+     "uebersteht": 0.06
+    },
+    {
+     "abgeschnitten": 3.08,
+     "uebersteht": 0.04
+    }
+   ]
+  },
+  "Nachher R5": {
+   "tris": 3199,
+   "schutz": true,
+   "silhouetteKopf_prozent": [
+    {
+     "abgeschnitten": 1.48,
+     "uebersteht": 0.08
+    },
+    {
+     "abgeschnitten": 0.78,
+     "uebersteht": 0
+    }
+   ]
+  }
+ },
+ "fehlerStudio": [],
+ "weltSetup": {
+  "best": [
+   14,
+   8
+  ],
+  "cD": "#914206"
+ },
+ "welt": [
+  {
+   "label": "Vorher R4",
+   "held": true,
+   "modelle": 3,
+   "umrisse": 17
+  },
+  {
+   "label": "Nachher R5",
+   "held": true,
+   "modelle": 3,
+   "umrisse": 17
+  }
+ ],
+ "fehlerWelt": []
+}

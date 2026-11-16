@@ -12,20 +12,25 @@
 //    Terras des Gebiets, die noch nicht in der Szene stehen, als vorübergehende Exemplare.
 // 3) Schatten an/aus ohne Neukompilieren: die Sonne wirft für den Renderer immer Schatten (gleicher Licht-Schlüssel ⇒ gleiche Programme);
 //    „aus“ = Schattenkarte einmal geleert, nicht mehr aktualisiert, Empfänger je Bild ohne Schatten (Uniform, kein Programmwechsel).
+// Figuren R5 (16.11.): Schutz-Markierung je Ecke (GLB-Attribut _LODW aus dem Blender-Bau: Haar 1, Schirm 1, Krone 0,8 …) → der Vereinfacher verteuert das Verschieben
+//    geschützter Ecken (Faktor 1 + 12·w) und nimmt für solche Figuren 3,2 k statt 2,8 k; Modelle ohne _LODW wie bisher. ?lodschutz=0 schaltet den Schutz ab (Vergleich).
 // API: LOD4 · PC4 · lodSimplify(P,I,ziel,o) · lodPrep(gltf) · lodApply(root) · pcWarm(grund) · ldHold(tok,tShow) · lodInfo()
-const LOD4={on:true,T:{fig:2800,terra:2000},cache:new WeakMap(),pend:0,done:0,ms:[],w:null,jobs:new Map(),id:0,near:8,holdMax:1500,err:0};
+const LOD4={on:true,T:{fig:2800,figS:3200,terra:2000},cache:new WeakMap(),pend:0,done:0,ms:[],w:null,jobs:new Map(),id:0,near:8,holdMax:1500,err:0,prot:true,wK:12};// prot/wK: Figuren R5 (Schutzgewicht _LODW)
 const PC4={n:0,log:[],need:0,rt:null,off:false,clr:0,hold:[],tEnd:0,nach:[],wasLd:false};
-try{if(/[?&]lod=0/.test(location.search))LOD4.on=false;}catch(e){}
+try{if(/[?&]lod=0/.test(location.search))LOD4.on=false;if(/[?&]lodschutz=0/.test(location.search))LOD4.prot=false;}catch(e){}
 // ---------- 1a) Vereinfachen: Halbkanten-Kollaps a→b (Quadrik-Fehler nach Garland/Heckbert), keine neuen Positionen ----------
 // Rückgabe {idx, pv, av, tris}: idx über neue Ecken; pv[i] = Original-Ecke für Position/Normale/Skinning, av[i] = Original-Ecke für UV/Farbe/Masken.
 // Ohne o.free bleiben Nähte (gleiche Position, andere UV) erhalten (Kollaps nur entlang der Naht); mit o.free darf eine Ecke über die Naht wandern und
 // behält ihre eigenen UV/Farben (Textur dehnt sich etwas, statt fremde Farben zu ziehen). Muss eigenständig bleiben (läuft als Text im Worker).
+// Figuren R5: o.w = Schutzgewicht je Ecke (0…1, GLB-Attribut _LODW: Haar/Schirm/Krone) → Kosten, eine geschützte Ecke zu verschieben, × (1 + o.wK·w);
+// so behalten Strähnen ihre Spitzen und der Schirm bleibt flach und breit, die Reduktion tragen Körper/Kleidung. Ohne o.w unverändert.
 function lodSimplify(P,I,target,o){
  o=o||{};const nV=(P.length/3)|0,nF=(I.length/3)|0,free=!!o.free;
  const pid=new Int32Array(nV),mp=new Map(),PX=[],rep=[];let np=0;const q=1e5;
  for(let v=0;v<nV;v++){const k=Math.round(P[v*3]*q)+','+Math.round(P[v*3+1]*q)+','+Math.round(P[v*3+2]*q);let id=mp.get(k);if(id===undefined){id=np++;mp.set(k,id);PX.push(P[v*3],P[v*3+1],P[v*3+2]);rep.push(v);}pid[v]=id;}
  const X=Float64Array.from(PX),F=Int32Array.from(I),FP=new Int32Array(nF*3),alive=new Uint8Array(nF),VF=new Array(np),dead=new Uint8Array(np),border=new Uint8Array(np),lock=new Uint8Array(np);
  for(let i=0;i<nF*3;i++)FP[i]=pid[F[i]];for(let i=0;i<np;i++)VF[i]=[];let live=0;
+ const WP=o.w?new Float32Array(np):null,wK=o.wK!=null?o.wK:12;if(WP)for(let v=0;v<nV;v++){const x=o.w[v]||0;if(x>WP[pid[v]])WP[pid[v]]=x;}
  for(let f=0;f<nF;f++){const a=FP[f*3],b=FP[f*3+1],c=FP[f*3+2];if(a===b||b===c||a===c)continue;alive[f]=1;live++;VF[a].push(f);VF[b].push(f);VF[c].push(f);}
  const Q=new Float64Array(np*10);
  const addQ=(i,a,b,c,d,w)=>{const k=i*10;Q[k]+=w*a*a;Q[k+1]+=w*a*b;Q[k+2]+=w*a*c;Q[k+3]+=w*a*d;Q[k+4]+=w*b*b;Q[k+5]+=w*b*c;Q[k+6]+=w*b*d;Q[k+7]+=w*c*c;Q[k+8]+=w*c*d;Q[k+9]+=w*d*d;};
@@ -51,7 +56,7 @@ function lodSimplify(P,I,target,o){
   return(Q[i]+Q[j])*x*x+2*(Q[i+1]+Q[j+1])*x*y+2*(Q[i+2]+Q[j+2])*x*z+2*(Q[i+3]+Q[j+3])*x+(Q[i+4]+Q[j+4])*y*y+2*(Q[i+5]+Q[j+5])*y*z+2*(Q[i+6]+Q[j+6])*y+(Q[i+7]+Q[j+7])*z*z+2*(Q[i+8]+Q[j+8])*z+Q[i+9]+Q[j+9];};
  const lenW=o.lenW!=null?o.lenW:.03;
  const hsw=(i,j)=>{let t=HC[i];HC[i]=HC[j];HC[j]=t;t=HA[i];HA[i]=HA[j];HA[j]=t;t=HB[i];HB[i]=HB[j];HB[j]=t;t=HS[i];HS[i]=HS[j];HS[j]=t;t=HT[i];HT[i]=HT[j];HT[j]=t;};
- const hpush=(a,b)=>{const dx=X[a*3]-X[b*3],dy=X[a*3+1]-X[b*3+1],dz=X[a*3+2]-X[b*3+2],c=Math.max(0,qev(a,b))+lenW*aAvg*(dx*dx+dy*dy+dz*dz);
+ const hpush=(a,b)=>{const dx=X[a*3]-X[b*3],dy=X[a*3+1]-X[b*3+1],dz=X[a*3+2]-X[b*3+2],c=(Math.max(0,qev(a,b))+lenW*aAvg*(dx*dx+dy*dy+dz*dz))*(WP?1+wK*WP[a]:1);
   let i=HC.length;HC.push(c);HA.push(a);HB.push(b);HS.push(stamp[a]);HT.push(stamp[b]);while(i>0){const p=(i-1)>>1;if(HC[p]<=HC[i])break;hsw(p,i);i=p;}};
  let ra=0,rb=0,rsa=0,rsb=0;
  const hpop=()=>{const n=HC.length-1;ra=HA[0];rb=HB[0];rsa=HS[0];rsb=HT[0];HC[0]=HC[n];HA[0]=HA[n];HB[0]=HB[n];HS[0]=HS[n];HT[0]=HT[n];HC.pop();HA.pop();HB.pop();HS.pop();HT.pop();
@@ -82,22 +87,22 @@ function lodSimplify(P,I,target,o){
  return{idx:pv.length<65536?Uint16Array.from(idx):idx,pv:Uint32Array.from(pv),av:Uint32Array.from(av),tris:live};}
 // ---------- 1b) Hintergrund-Arbeit: Web Worker (Blob), Rückfall Leerlauf im Hauptthread ----------
 function lodWorker(){if(LOD4.w!==null)return LOD4.w;try{
-  const src='var S='+lodSimplify.toString()+';self.onmessage=function(e){var d=e.data,r;try{r=S(d.P,d.I,d.t,{});if(r.tris>d.t*1.12)r=S(d.P,d.I,d.t,{free:1});'+
+  const src='var S='+lodSimplify.toString()+';self.onmessage=function(e){var d=e.data,r;try{r=S(d.P,d.I,d.t,{w:d.W,wK:d.K});if(r.tris>d.t*1.12)r=S(d.P,d.I,d.t,{free:1,w:d.W,wK:d.K});'+
    'self.postMessage({id:d.id,r:r},[r.idx.buffer,r.pv.buffer,r.av.buffer]);}catch(x){self.postMessage({id:d.id,err:String(x&&x.message||x)});}};';
   const w=new Worker(URL.createObjectURL(new Blob([src],{type:'text/javascript'})));
   w.onmessage=e=>{const d=e.data,j=LOD4.jobs.get(d.id);if(!j)return;LOD4.jobs.delete(d.id);d.err?j.rej(new Error(d.err)):j.res(d.r);};
   w.onerror=e=>{try{e.preventDefault&&e.preventDefault();}catch(x){}LOD4.w=false;for(const[id,j]of LOD4.jobs){LOD4.jobs.delete(id);lodLocal(j.d).then(j.res,j.rej);}};
   LOD4.w=w;}catch(e){LOD4.w=false;}return LOD4.w;}
-function lodLocal(d){return new Promise((res,rej)=>{const run=()=>{try{let r=lodSimplify(d.P,d.I,d.t,{});if(r.tris>d.t*1.12)r=lodSimplify(d.P,d.I,d.t,{free:1});res(r);}catch(e){rej(e);}};
+function lodLocal(d){return new Promise((res,rej)=>{const run=()=>{try{let r=lodSimplify(d.P,d.I,d.t,{w:d.W,wK:d.K});if(r.tris>d.t*1.12)r=lodSimplify(d.P,d.I,d.t,{free:1,w:d.W,wK:d.K});res(r);}catch(e){rej(e);}};
  try{if(window.requestIdleCallback){requestIdleCallback(run,{timeout:1500});return;}}catch(e){}setTimeout(run,30);});}
-function lodRun0(P,I,t){const d={P,I,t};const w=lodWorker();if(!w)return lodLocal(d);const id=++LOD4.id;d.id=id;
- return new Promise((res,rej)=>{LOD4.jobs.set(id,{res,rej,d:{P:P.slice(),I:I.slice(),t}});try{w.postMessage(d,[P.buffer,I.buffer]);}catch(e){LOD4.jobs.delete(id);lodLocal({P,I,t}).then(res,rej);}});}
+function lodRun0(P,I,t,W){const d={P,I,t,W:W||null,K:LOD4.wK};const w=lodWorker();if(!w)return lodLocal(d);const id=++LOD4.id;d.id=id;
+ return new Promise((res,rej)=>{LOD4.jobs.set(id,{res,rej,d:{P:P.slice(),I:I.slice(),t,W:W?W.slice():null,K:LOD4.wK}});try{w.postMessage(d,W?[P.buffer,I.buffer,W.buffer]:[P.buffer,I.buffer]);}catch(e){LOD4.jobs.delete(id);lodLocal({P,I,t,W,K:LOD4.wK}).then(res,rej);}});}
 // Eins nach dem anderen und erst, wenn die Modell-Warteschlange ruht (oder ein Ladebildschirm deckt) – keine Konkurrenz um die CPU mit Draco/Parsen
 const LOD_Q=[];let lodBusy=false;
 function lodIdle(){try{const Q=VMODEL_QUEUE;return(typeof LADEN==='object'&&LADEN.active)||!Q.busy&&!Q.q.length;}catch(e){return true;}}
 function lodPump(){if(lodBusy||!LOD_Q.length)return;if(!lodIdle()){setTimeout(lodPump,200);return;}lodBusy=true;const j=LOD_Q.shift();
- lodRun0(j.P,j.I,j.t).then(j.res,j.rej).finally(()=>{lodBusy=false;setTimeout(lodPump,0);});}
-function lodRun(P,I,t){return new Promise((res,rej)=>{LOD_Q.push({P,I,t,res,rej});lodPump();});}
+ lodRun0(j.P,j.I,j.t,j.W).then(j.res,j.rej).finally(()=>{lodBusy=false;setTimeout(lodPump,0);});}
+function lodRun(P,I,t,W){return new Promise((res,rej)=>{LOD_Q.push({P,I,t,W,res,rej});lodPump();});}
 const lodTris=g=>g.index?g.index.count/3:g.attributes.position.count/3;
 function lodArr(A){const n=A.count,s=A.itemSize,o=new Float32Array(n*s);if(!A.isInterleavedBufferAttribute&&A.array instanceof Float32Array&&!A.normalized){o.set(A.array.subarray(0,n*s));return o;}
  for(let i=0;i<n;i++){o[i*s]=A.getX(i);if(s>1)o[i*s+1]=A.getY(i);if(s>2)o[i*s+2]=A.getZ(i);}return o;}
@@ -112,12 +117,14 @@ function lodBuild(src,R){const g=new THREE.BufferGeometry(),PA={position:1,norma
 function lodJob(geo,t){if(LOD4.cache.has(geo))return Promise.resolve(LOD4.cache.get(geo));if(geo.userData._lodP)return geo.userData._lodP;
  if(geo.morphAttributes&&geo.morphAttributes.position&&geo.morphAttributes.position.length)return Promise.resolve(null);// Shape Keys: unverändert lassen
  const t0=performance.now(),P=lodArr(geo.attributes.position),n=geo.attributes.position.count,I=geo.index?(geo.index.array.length&&n<65536?Uint16Array.from(geo.index.array):Uint32Array.from(geo.index.array)):(()=>{const a=new Uint32Array(n);for(let i=0;i<n;i++)a[i]=i;return a;})();
- LOD4.pend++;return geo.userData._lodP=lodRun(P,I,t).then(R=>{const g=lodBuild(geo,R);LOD4.cache.set(geo,g);LOD4.done++;LOD4.ms.push([geo.name||'?',lodTris(geo),R.tris,Math.round(performance.now()-t0)]);if(LOD4.ms.length>40)LOD4.ms.shift();return g;})
+ const W=LOD4.prot&&geo.attributes._lodw?lodArr(geo.attributes._lodw):null;if(W)LOD4.wN=(LOD4.wN||0)+1;// Figuren R5: Schutzgewicht (Haar/Kappe) aus dem GLB
+ LOD4.pend++;return geo.userData._lodP=lodRun(P,I,t,W).then(R=>{const g=lodBuild(geo,R);LOD4.cache.set(geo,g);LOD4.done++;LOD4.ms.push([geo.name||'?',lodTris(geo),R.tris,Math.round(performance.now()-t0)]);if(LOD4.ms.length>40)LOD4.ms.shift();return g;})
   .catch(e=>{LOD4.err++;console.warn('LOD-Netz nicht erzeugt – volles Netz bleibt:',e&&e.message||e);return null;}).finally(()=>{LOD4.pend--;delete geo.userData._lodP;});}
 // Modell geladen → Körpernetze vereinfachen (Figur: „Koerper“ mit „Koerper_LOD1“; Terra: „…_Koerper“/„…_Kopf“ mit LOD1-Gegenstück)
 function lodPrep(g){if(!LOD4.on||!g||!g.scene||!window.THREE)return Promise.resolve();const L=[];g.scene.traverse(m=>{if(m.isMesh&&m.userData.outline!==1)L.push(m);});
  const has=n=>L.some(m=>m.name===n+'_LOD1'),jobs=[];
- const fig=L.find(m=>m.name==='Koerper'&&m.isSkinnedMesh);if(fig&&has('Koerper'))jobs.push([fig,LOD4.T.fig]);
+ // Figuren R5: Körper mit Schutzgewicht (_lodw: Haar/Kappe) → Ziel 3,2 k statt 2,8 k: Haar-/Kappen-Umriss −60 %, Körper-Umriss wie bisher
+ const fig=L.find(m=>m.name==='Koerper'&&m.isSkinnedMesh);if(fig&&has('Koerper'))jobs.push([fig,LOD4.prot&&fig.geometry.attributes._lodw?LOD4.T.figS:LOD4.T.fig]);
  const ter=L.filter(m=>m.isSkinnedMesh&&/_(Koerper|Kopf)$/.test(m.name)&&has(m.name));
  if(ter.length){const tot=ter.reduce((s,m)=>s+lodTris(m.geometry),0);for(const m of ter)jobs.push([m,Math.max(150,Math.round(LOD4.T.terra*lodTris(m.geometry)/tot))]);}
  return Promise.all(jobs.map(([m,t])=>lodJob(m.geometry,t)));}
@@ -208,7 +215,7 @@ if(typeof stabLong==='function'&&!stabLong._pc4){const _sl4=stabLong;stabLong=fu
    if(!ld&&(LADEN.count||0)!==(PC4.ldN||0)){PC4.ldN=LADEN.count;PC4.tEnd=now;PC4.nach=[];}/* neuer Ladebildschirm beendet (auch wenn währenddessen kein Bild der Schleife lief) */const r=STAB.fr;
    if(r&&!ld&&PC4.tEnd&&now-PC4.tEnd<15000&&PC4.nach.length<120)PC4.nach.push({at:Math.round(now-PC4.tEnd),ms:Math.round(cost),js:r.js,prog:r.prog,tex:r.tex,geo:r.geo,ev:r.ev.slice(0,3)});}catch(e){}
   return _sl4.apply(this,arguments);};stabLong._pc4=1;}
-function lodInfo(){const N=PC4.nach;return{lod:{on:LOD4.on,done:LOD4.done,pend:LOD4.pend,err:LOD4.err,worker:LOD4.w?'ja':LOD4.w===false?'nein':'–',ms:LOD4.ms.slice(-12),frz:LOD4.frz||0},
+function lodInfo(){const N=PC4.nach;return{lod:{on:LOD4.on,done:LOD4.done,pend:LOD4.pend,err:LOD4.err,schutz:LOD4.wN||0,worker:LOD4.w?'ja':LOD4.w===false?'nein':'–',ms:LOD4.ms.slice(-12),frz:LOD4.frz||0},
  pc:{n:PC4.n,log:PC4.log.slice(-6),hold:PC4.hold.slice(-4),off:PC4.off,clears:PC4.clears||0},
  nach:{bilder:N.length,prog:N.reduce((s,f)=>s+(f.prog||0),0),tex:N.reduce((s,f)=>s+(f.tex||0),0),jsMax:N.reduce((s,f)=>Math.max(s,f.js||0),0),msMax:N.reduce((s,f)=>Math.max(s,f.ms||0),0),lang:N.filter(f=>f.prog>0||f.tex>0||f.js>100).slice(0,6)}};}
 if(typeof stabInfo==='function'&&!stabInfo._lod4){const _si4=stabInfo;stabInfo=function(){const o=_si4.apply(this,arguments);try{Object.assign(o,lodInfo());}catch(e){}return o;};stabInfo._lod4=1;}

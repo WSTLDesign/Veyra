@@ -20,8 +20,8 @@ _vf = {}
 for p_ in BODY.data.polygons:
     if p_.material_index in _skin:
         for vi in p_.vertices: _vf[vi] = 1
-if SPEC.get('r4'):
-    # Runde 4: Haar/Krone bekommen ruhige Stellvertreter-Normalen (großes Kopf-Ellipsoid bzw. Achse des Pferdeschwanzes) → weiche, runde Toon-Schattierung
+if D.r4:
+    # Runde 4 (ab Runde 5 alle R5-Figuren): Haar/Krone bekommen ruhige Stellvertreter-Normalen (großes Kopf-Ellipsoid bzw. Achse des Pferdeschwanzes) → weiche, runde Toon-Schattierung
     # und ein sauberes Glanzband statt Facetten je Strähne; Gesicht wie bisher (Ellipsoid-Mischung)
     _me = BODY.data; _ms = list(_me.materials); _vr = {}
     for p_ in _me.polygons:
@@ -172,6 +172,7 @@ log('Shape Keys', [k.name for k in FACE.data.shape_keys.key_blocks])
 
 # ---------------- Masken ----------------
 for o in (BODY, FACE, EYE): write_masks(o)
+PREG = {p_.index: BODY.data.materials[p_.material_index].name for p_ in BODY.data.polygons}   # Region je Fläche (vor dem Materialtausch) – für _LODW
 
 # ---------------- UV-Atlas ----------------
 dec_uv = {}
@@ -268,15 +269,28 @@ if D.T['stoop']:   # ältere Haut: leichte Falten unter den Augen / Lachfalten (
         mix(skin_b, '#d7a088', .25 * (np.abs(((X - s * .42 * hw) ** 2 + ((Z - (HC.z - .25 * hh)) * 1.5) ** 2) ** .5 - .16 * hw) < .006 * hw * 1.6) * frontM * (Z < HC.z - .15 * hh))
         mix(skin_b, '#d7a088', .22 * (np.abs(((X - s * .3 * hw) ** 2 + ((Z - (HC.z - .55 * hh)) * .9) ** 2) ** .5 - .22 * hw) < .006 * hw * 1.6) * frontM * (np.abs(X) > .25 * hw))
 mix(skin_b & isArm, '#e9b89c', .2 * ss(L_ - .03 * H, L_ + .06 * H, armT))   # Hände wärmer
+if D.r5:   # Runde 5: Finger am Block nur angedeutet – drei weiche Trennlinien (Farbe + Normalkarte), Knöchel leicht rosig
+    for s_ in (-1, 1):
+        W_ = Lr(D.WR, s_); A_v = Lr(D.ARM, s_); fw_ = .0215 * H / 1.45 * (1.08 if not D.kid else 1)
+        th_ = (X - W_.x) * A_v.x + (Y - W_.y) * A_v.y + (Z - W_.z) * A_v.z; lat = -(Y - W_.y)
+        selH = skin_b & (np.sign(X) == s_) & (th_ > D.L_HA * .58) & (th_ < D.L_HA * 1.1)
+        for mo in (-.342, .018, .378):
+            ln = selH & (np.abs(lat - (mo + .02) * fw_) < .0012 * kk); mix(ln, '#c08068', .55 * ss(D.L_HA * .58, D.L_HA * .68, th_)); hgt -= ln * .8
+        mix(selH, '#f0a898', .18 * gauss((th_ - D.L_HA * .58) ** 2, .012 * kk))
 # --- Haare: dunkler zum Ansatz, Strähnen, Glanzband, Spitzen (haar_hi) ---
 hair = M('haar'); dist = np.sqrt((X - HC.x) ** 2 + (Y - HC.y) ** 2 + (Z - HC.z) ** 2)
 hc = hexrgb(FC['haar']); dark = '#%02x%02x%02x' % tuple(int(c * 255 * .72) for c in hc); lite = '#%02x%02x%02x' % tuple(min(255, int(c * 255 * 1.25 + 18)) for c in hc)
-if SPEC.get('r4'):
+if D.r4:
     # Runde 4: Verlauf vom Ansatz (unter dem Kronenrand: dunkler, warm) zu den Spitzen (heller, Spitzenfarbe), weich – Licht/Schatten macht der Toon-Shader
-    rimP = np.array([tuple(q) for q in D.CAP_RIM], np.float32); hi = np.nonzero(hair); Ph = Pm[hi]
-    dm = np.full(len(Ph), 9.0, np.float32)
-    for q in rimP: dm = np.minimum(dm, np.sqrt(((Ph - q) ** 2).sum(-1)))
-    tt = np.zeros(X.shape, np.float32); tt[hi] = ss(.004 * kk, .1 * kk, dm)
+    # Runde 5: ohne Kopfbedeckung (Noa) zählt der Abstand von der Kopfform (Spitzen stehen weiter ab bzw. hängen tiefer)
+    hi = np.nonzero(hair); Ph = Pm[hi]; tt = np.zeros(X.shape, np.float32)
+    if D.CAP_RIM:
+        rimP = np.array([tuple(q) for q in D.CAP_RIM], np.float32); dm = np.full(len(Ph), 9.0, np.float32)
+        for q in rimP: dm = np.minimum(dm, np.sqrt(((Ph - q) ** 2).sum(-1)))
+        tt[hi] = ss(.004 * kk, .1 * kk, dm)
+    else:
+        dz = (Ph[:, 2] - HC.z) / hh; rr_ = np.sqrt(((Ph[:, 0] - HC.x) / hw) ** 2 + ((Ph[:, 1] - HC.y) / hd) ** 2 + dz ** 2)
+        tt[hi] = np.clip(ss(1.08, 1.42, rr_) * .7 + ss(.0, -.9, dz) * .5, 0, 1)
     mix(hair, shade_of('haar', .72) if 'haar' in FC else dark, .38 * (1 - ss(0, .4, tt)) * hair)
     mix(hair, FC.get('haar_spitze', lite), .5 * ss(.35, 1, tt) * hair)
     streak = vnoise(Pn * np.array([1, 1, .2]), 330); mix(hair, shade_of('haar', .86), .18 * ss(.55, .8, streak) * hair); hgt += hair * (streak - .5) * .02
@@ -391,6 +405,14 @@ if 'muetze' in FC and K_.get('muetze') == 'kappe4':
         mix(fr, shade_of('muetze2', .62), (dv < .0062).astype(np.float32)); mix(fr, FC['muetze2'], (dv < .0043).astype(np.float32)); hgt += fr * (dv < .0062) * .8
         sx, sy = lu - .0205, lv - .0135; star = (np.abs(sx) ** .55 + np.abs(sy) ** .55) < .0052 ** .55 * 1.9
         mix(fr, FC.get('knopf', '#f2c94c'), star.astype(np.float32))
+    if 'kappe_laden' in SPEC.get('extras', []):   # Runde 5 – Ladenbesitzer: eigenes Zeichen „Laden-Häuschen“ (Dach, Tür) auf hellem Rund, leicht erhaben
+        th0 = .7; C0 = Vector(cap_pt(th0, 0)); upv = Vector((0, math.cos(th0), math.sin(th0)))
+        lu = (X - C0.x) / kk; lv = ((Y - C0.y) * upv.y + (Z - C0.z) * upv.z) / kk; fr = mk & (Y < HC.y - .2 * hd); r_ = np.sqrt(lu ** 2 + lv ** 2)
+        mix(fr, shade_of('muetze', .7), (r_ < .0205).astype(np.float32)); mix(fr, FC.get('logo', '#efe6d2'), (r_ < .0185).astype(np.float32)); hgt += fr * (r_ < .0205) * .7
+        roof = (lv > .001) & (lv < .0115) & (np.abs(lu) < (.0115 - lv) * 1.05); wall = (lv <= .0015) & (lv > -.0105) & (np.abs(lu) < .0078)
+        door = (lv <= .0015) & (lv > -.0105) & (np.abs(lu - .0018) < .0024) & (lv < -.002); win = (np.abs(lu + .0042) < .0018) & (np.abs(lv + .0035) < .0018)
+        hs = roof | wall; mix(fr, FC['muetze'], hs.astype(np.float32)); mix(fr, FC.get('logo', '#efe6d2'), ((door | win) & hs).astype(np.float32) * .85)
+        mix(fr, shade_of('muetze', .65), (roof & (lv < .0028)).astype(np.float32) * .6)
     br = M('muetze2') & (Z < HC.z + .55 * hh) & (Y < HC.y)   # Schirm-Oberseite: drei Steppbögen
     if br.any() and D.BRIM:
         ba = np.array([b_[0] for b_ in D.BRIM]); b0 = np.array([b_[1] for b_ in D.BRIM]); b1 = np.array([b_[2] for b_ in D.BRIM])
@@ -398,6 +420,18 @@ if 'muetze' in FC and K_.get('muetze') == 'kappe4':
         for tl in (.5, .66, .82):
             st = br & (np.abs(tb_ - tl) < .022) & (np.sin(phT * 150) > -.1) & (np.abs(phT) < ba.max() * .93); mix(st, shade_of('muetze2', .74), .7); hgt -= st * .4
         mix(br, shade_of('muetze2', 1.12), .35 * ss(.15, .0, tb_))
+elif 'muetze' in FC and K_.get('muetze') == 'beanie5':
+    # Runde 5 Mütze: Rippenstrick (Krone feiner, Umschlag kräftiger), Kranz am Scheitel, eigenes Etikett am Umschlag (Berg mit Sonne)
+    dX, dY, dZ = X - HC.x, Y - HC.y, Z - HC.z; dl = np.sqrt(dX ** 2 + dY ** 2 + dZ ** 2) + 1e-6; phT = np.arctan2(dX, -dY); thT = np.arccos(np.clip(dZ / dl, -1, 1))
+    mk = M('muetze'); mk2 = M('muetze2')
+    rib = .5 + .5 * np.sin(phT * 46); mix(mk, shade_of('muetze', .84), .32 * ss(.35, .75, rib) * ss(.12, .35, thT)); hgt += mk * (rib - .5) * .55 * ss(.12, .35, thT)
+    mix(mk, shade_of('muetze', .8), .5 * ss(.14, .06, thT))
+    rib2 = .5 + .5 * np.sin(phT * 60); mix(mk2, shade_of('muetze2', .8), .38 * ss(.3, .8, rib2)); hgt += mk2 * (rib2 - .5) * .8
+    if 'muetze_etikett' in SPEC.get('extras', []):
+        pc = .55; eu = ((phT - pc + math.pi) % (2 * math.pi) - math.pi) * np.sqrt(dX ** 2 + dY ** 2) / kk; ev = (dZ - (head_dir_point(sdir(beanie_edge(pc) - .085, pc), 0).z - HC.z)) / kk
+        lab = mk2 & (np.abs(eu) < .0125) & (np.abs(ev) < .0085) & (dY < 0); mix(lab, FC.get('logo', '#2e62a8'), 1.0); hgt += lab * .5
+        mtn = lab & (ev < .0045 - np.abs(eu + .002) * .95) & (ev > -.006); mix(mtn, '#f2f0ea', mtn.astype(np.float32))
+        sun = lab & (((eu - .0068) ** 2 + (ev - .0035) ** 2) < .0022 ** 2); mix(sun, FC.get('muetze', '#e0b030'), sun.astype(np.float32))
 elif 'muetze' in FC:
     mk = M('muetze'); rib = np.sin(np.arctan2(Y - HC.y, X - HC.x) * 40) > 0; mix(mk, shade_of('muetze', .85), .35 * rib); hgt += mk * rib * .5
     mix(mk, shade_of('muetze', .82), ss(HC.z + .2 * hh, HC.z + .12 * hh, Z) * .8)
@@ -425,7 +459,7 @@ mix(M('schirm'), '#e8ffff', .5 * ss(.3, .9, vnoise(Pn, 900)))
 mix(M('leder'), shade_of('leder', 1.2), .25 * ss(.5, .9, n2)); hgt += M('leder') * (n3 - .5) * .4
 # AO einrechnen (weich), Gesicht schwächer
 aoN = np.clip(ao, 0, 1); faceM = M('haut_kopf', 'lid', 'nase') & frontM
-col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), (.8 + .2 * aoN) if SPEC.get('r4') else (.88 + .12 * aoN), .6 + .4 * aoN))[..., None]
+col *= np.where(faceM, .88 + .12 * aoN, np.where(M('haar', 'bart'), (.8 + .2 * aoN) if D.r4 else (.88 + .12 * aoN), .6 + .4 * aoN))[..., None]
 col = np.clip(col, 0, 1); alb = dilate(col, COV, 6); alb = np.where(COV[..., None], col, alb); log('Malen fertig')
 IMG_ALB = to_image(alb, FID + '_Farbe'); IMG_ALB.colorspace_settings.name = 'sRGB'
 hg = dilate(np.repeat(hgt[..., None], 3, 2), COV, 4)[..., 0]
@@ -589,9 +623,22 @@ CLIPS['jubeln'] = make_action(ARMO, 'jubeln', 42, jubeln, loop=False)
 CLIPS['werfen'] = make_action(ARMO, 'werfen', 36, werfen, loop=False)
 rest_pose(ARMO)
 
+# ---------------- Runde 5: Schutzgewicht für den Laufzeit-Vereinfacher (src/62-lod.js) ----------------
+# Eigenes Attribut _LODW (0 … 1) je Ecke des Körpers: Haar und Schirm 1, Krone/Umschlag 0,8, Knopf/Riegel/Haargummi/Bart 0,6, sonst 0.
+# 62-lod verteuert damit das Verschieben geschützter Ecken → Strähnen behalten Länge/Spitzen, der Schirm bleibt flach und breit. Ohne Attribut: altes Verhalten.
+LODW_REG = {'haar': 1.0, 'muetze3': 1.0, 'muetze2': .9, 'muetze': .8, 'blume': .6, 'bart': .6}
+if D.r5:
+    _wv = np.zeros(len(BODY.data.vertices), np.float32)
+    for p_ in BODY.data.polygons:
+        rg = PREG.get(p_.index, '')
+        w_ = LODW_REG.get(rg, 0.)
+        if w_:
+            for vi in p_.vertices: _wv[vi] = max(_wv[vi], w_)
+    at = BODY.data.attributes.new('_LODW', 'FLOAT', 'POINT'); at.data.foreach_set('value', _wv)
+    log('Schutzgewicht _LODW', int((_wv > 0).sum()), 'von', len(_wv), 'Ecken')
 # ---------------- Export ----------------
 for o in (BODY, FACE, EYE, LOD1): o.data.update()
-export_glb(OUT, [BODY, FACE, EYE, LOD1], ARMO)
+export_glb(OUT, [BODY, FACE, EYE, LOD1], ARMO, attrs=D.r5)
 meta = {'modell': FID, 'typ': D.spec['typ'], 'dreiecke': {'koerper': tris(BODY), 'gesicht': tris(FACE), 'augen': tris(EYE)}, 'lod1': tris(LOD1), 'knochen': len(B),
         'shapeKeys': [k.name for k in FACE.data.shape_keys.key_blocks][1:], 'clips': {n: round(CLIPS[n].frame_range[1] / 30, 3) for n in CLIPS},
         'schritt': {'walk': [round(STRIDE_W, 3), FR['walk'] / 30], 'jog': [round(STRIDE_J, 3), FR['jog'] / 30], 'run': [round(STRIDE_R, 3), FR['run'] / 30]},

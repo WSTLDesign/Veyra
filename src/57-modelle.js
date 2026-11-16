@@ -90,7 +90,8 @@ function figModelFor(col,hat,oe){if(oe&&oe.body)return oe.body==='held'?'fig_noa
  if(oe&&oe.look){const id=figIdByLook(oe.look);return id&&FIG_BY_ID[id]||null;}
  if(oe)return null;if(col==='#e8623a'&&hat==='#1f8a7a')return null;// Platzhalter der Spielfigur vor dem Outfit
  if(col==='#6aa0e0')return 'fig_haendler';// Laden (02-world: t:'shop')
- let h=7;for(const ch of String(col))h=(h*31+ch.charCodeAt(0))>>>0;h=(h^(h>>>13))*2654435761>>>0;return FIG_BUERGER[h%FIG_BUERGER.length];}
+ // Figuren R5: Math.imul statt „*“ – das Produkt lag über 2^53, die unteren Bits fielen weg ⇒ bisher wurde JEDE Bürgerfarbe zu fig_buerger_a (b/c/d nie sichtbar)
+ let h=7;for(const ch of String(col))h=(h*31+ch.charCodeAt(0))>>>0;h=Math.imul(h^(h>>>13),2654435761)>>>0;return FIG_BUERGER[h%FIG_BUERGER.length];}
 function figMake(id,oe){const M=FIG_MODELS[id],o=pilotMake(id,M.h);if(!o)return null;const d=new THREE.Object3D(),d2=new THREE.Object3D();o.add(d);o.add(d2);o.userData.legs=[d,d2];o.userData.rig={pilot:1};
  o.userData.char={heads:M.H/(M.h>1.4?.24:.25),H:M.h,head:M.h/(M.h>1.4?7:5.75),hip:M.h*.5,k:1,build:'model',look:oe&&oe.look||null,model:id};return o;}
 // Szene ersetzt nachträglich geladene Figuren (Modell kam nach dem Bau der Szene an)

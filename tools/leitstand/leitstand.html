@@ -114,6 +114,17 @@ h2{margin:0 0 12px;font-size:13px;font-weight:600;letter-spacing:.06em;text-tran
 h2 .mono{margin-left:auto;text-transform:none;letter-spacing:0}
 .empty{color:var(--ink3);font-size:14px;margin:0}
 .hint{font-size:13px;color:var(--ink3);margin:8px 0 0}
+.zw{margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.zw h2{margin-bottom:4px}
+.zw .zwl{display:grid;gap:6px;margin-top:10px}
+.zw .row{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(0,1fr) minmax(0,.8fr) 64px;gap:8px;align-items:center;min-width:0}
+.zw .row b{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zw .row select{min-height:34px;font-size:13px;width:100%}
+.zw .row .st{font-size:12px;color:var(--ink3);text-align:right}
+.zw .row .st.ok{color:var(--ok,#2a8a4a)}
+.zw .row .st.err{color:var(--bad,#c33)}
+.zw .lead{font-size:13px;color:var(--ink2);margin:0}
+@media (max-width:520px){.zw .row{grid-template-columns:1fr 1fr;row-gap:4px}.zw .row b{grid-column:1/-1}.zw .row .st{grid-column:1/-1;text-align:left}}
 
 /* Agenten */
 .sum{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
@@ -224,6 +235,11 @@ form{display:grid;gap:8px}
         <div class="sum" id="agSum"></div>
         <div class="agl" id="agents"><p class="empty">Noch keine Meldungen. Sobald der Dirigent Agenten startet, erscheinen sie hier mit Auftrag und Fortschritt.</p></div>
         <p class="hint">Antippen zeigt Auftrag, Dateien, Protokoll und Feedback des Agenten</p>
+        <div class="zw" id="zw" hidden>
+          <h2>Modell-Zuweisung</h2>
+          <p class="lead">Welches Modell und welche Stufe jeder Agent beim nächsten Start bekommt. Der Dirigent liest die Zuweisung, bevor er einen Agenten startet; ein laufender Agent wechselt nicht mitten in der Arbeit.</p>
+          <div class="zwl" id="zwl"></div>
+        </div>
       </div>
       <div class="det" id="det"></div>
     </section>
@@ -367,11 +383,32 @@ db.collection('agents').onSnapshot(s => {
   $('#agMeta').textContent = AG.length ? 'Stand ' + ago(Math.max(...AG.map(r => +r.updatedAt || 0))) : '';
   const sel = $('#fbTo'), v = sel.value; sel.innerHTML = '<option value="alle">Alle / Dirigent</option>' + AG.filter(r => r.id !== 'dirigent').map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join(''); sel.value = [...sel.options].some(o => o.value === v) ? v : 'alle';
   const lf = $('#logFilter'), lv = lf.value; lf.innerHTML = '<option value="">Alle</option>' + AG.map(r => `<option value="${esc(r.name)}">${esc(r.name)}</option>`).join(''); lf.value = lv;
+  drawZw();
   route();
 }, () => { $('#agMeta').textContent = 'Agenten konnten nicht geladen werden'; });
 
+// Modell-Zuweisung (nur wer den Leitstand bearbeiten darf, kann sie ändern)
+const MODELLE = [['opus-5.5', 'Opus 5.5'], ['sonnet-5.5', 'Sonnet 5.5'], ['haiku-5.5', 'Haiku 5.5'], ['fable-5.1', 'Fable 5.1 (Dirigent)']];
+const STUFEN = [['niedrig', 'niedrig'], ['mittel', 'mittel'], ['hoch', 'hoch'], ['max', 'max']];
+const opts = (list, v) => list.map(([k, n]) => `<option value="${k}"${k === v ? ' selected' : ''}>${n}</option>`).join('');
+let ZW_EDIT = false;
+(async () => { try { ZW_EDIT = !!(user && user.canEdit && await user.canEdit()); } catch (e) { ZW_EDIT = false; } $('#zw').hidden = !ZW_EDIT; drawZw(); })();
+function drawZw() {
+  const el = $('#zwl'); if (!el || !ZW_EDIT) return;
+  const rows = AG.filter(r => r.id !== 'dirigent');
+  el.innerHTML = rows.length ? rows.map(r => { const m = r.zuModell || 'opus-5.5', s = r.zuStufe || 'hoch';
+    return `<div class="row" data-id="${esc(r.id)}"><b title="${esc(r.name || r.id)}">${esc(r.name || r.id)}</b><select data-k="zuModell">${opts(MODELLE, m)}</select><select data-k="zuStufe">${opts(STUFEN, s)}</select><span class="st">${r.zuZeit ? 'gesetzt ' + ago(r.zuZeit) : 'Standard'}</span></div>`; }).join('') : '<p class="empty">Noch keine Agenten</p>';
+  el.querySelectorAll('select').forEach(sel => sel.addEventListener('change', async () => {
+    const row = sel.closest('.row'), id = row.dataset.id, st = row.querySelector('.st');
+    const data = { zuModell: row.querySelector('[data-k=zuModell]').value, zuStufe: row.querySelector('[data-k=zuStufe]').value, zuZeit: Date.now() };
+    st.className = 'st'; st.textContent = 'speichert …';
+    try { await db.collection('agents').doc(id).update(data); st.className = 'st ok'; st.textContent = 'gespeichert'; }
+    catch (e) { st.className = 'st err'; st.textContent = 'nicht gespeichert'; }
+  }));
+}
+
 // Protokoll
-const drawLog = () => { const f = $('#logFilter').value; $('#log').innerHTML = logHtml(LOG.filter(r => !f || r.agent === f).slice(0, 80)); };
+const drawLog =() => { const f = $('#logFilter').value; $('#log').innerHTML = logHtml(LOG.filter(r => !f || r.agent === f).slice(0, 80)); };
 $('#logFilter').addEventListener('change', drawLog);
 db.collection('log').orderBy('ts', 'desc').limit(150).onSnapshot(s => { LOG = s.docs.map(d => d.data()); drawLog(); if (CUR) renderDet(); }, () => {});
 

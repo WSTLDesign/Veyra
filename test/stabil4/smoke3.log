@@ -1,0 +1,48 @@
+✓ Intro startet
+✓ Intro überspringen
+✓ Neues Spiel
+✓ Zum Labor laufen
+✓ Labor betreten
+✓ Starter wählen
+✓ Team vorhanden
+✓ Route 1 & wilde Kreaturen
+✓ 3D-Ansicht 3. Person
+✓ Freies Laufen
+✓ Ego-Ansicht
+✓ Kampf starten (Runde)
+✓ Kampf-Intro durch
+✓ Attacke ausführen
+✓ Kapsel werfen
+✓ Rundenkampf + KO
+✓ Menü Team/Detail
+✓ Menü Beutel/Missionen/Dex/Optionen
+✓ Feldfähigkeit
+✓ Laden & Heilzentrum
+✓ Neue Karte 2D+3D (Glutschlucht, Flüstertal)
+✓ Kartenrand route3 <-> glutschlucht
+✓ Zielführung auf allen Karten
+✓ Nebenmission (Hook Henrik)
+✓ Fang-Karte schließt
+✓ Sheet schließt (schnell auf/zu, Laden)
+✓ Speichern & Laden
+✓ Wetter durchschalten (3D)
+✓ Begleiter folgt ohne Sprünge
+✓ Mimik & Glanzform & Rufe (alle 153 Kanon-Arten)
+✓ Draw-Calls route1 <= 170 (3D, volle Roamer)
+✓ Glanz-Roamer: Sequenz & Fang übernimmt shiny
+✓ Intro-Kurzpfad (webdriver): Standardwerte, Start zuhause
+✓ Schwimmen & Rückkehr (2D)
+✓ Reiten entfernt (Knopf, Taste R, Zustand)
+✓ Chronik-Stress (30×) + Hüllen
+✓ Schnellreise (Chronik → Heilstation)
+✓ Runde: Doppeltippen löst genau eine Attacke aus
+✓ Kampfkern: Zustand & Weltwetter (Runde)
+✓ Doppelkampf 2v2 (Runde)
+✓ Resonanz (Runde)
+✓ Status-Attacke wirkt (Sporenwolke)
+✓ Fang kritisch (Sequenz)
+✓ Entwicklung per Kristall (nicht abbrechbar)
+✓ Heilstation-Sequenz
+✓ Querformat
+
+Keine Fehler.

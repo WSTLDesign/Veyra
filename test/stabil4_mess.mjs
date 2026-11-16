@@ -50,6 +50,10 @@ const SUMF = F => { const a = F.filter(f => !f.ld), sum = k => a.reduce((s, f) =
 if (TEIL.includes('check')) { OUT.check = await p.evaluate(() => { const tri = g => g ? (g.index ? g.index.count : g.attributes.position.count) / 3 : 0; const o = { info: typeof lodInfo === 'function' ? lodInfo() : null, heldin: [] };
   R3.player.traverse(m => { if (m.isMesh) o.heldin.push([m.name || (m.userData.outline === 1 ? 'Hülle' : '?'), tri(m.geometry), m.visible, m.castShadow, m.userData.outline === 1 ? 'H' : m.userData.shadowOnly ? 'S' : '']); });
   o.prog = R3.r.info.programs.length; o.links = window.__links; return o; }); log('check: ' + JSON.stringify(OUT.check).slice(0, 2500)); }
+// ---------- probe: Bildfolge nach Ladebildschirm (Fehlersuche) ----------
+if (TEIL.includes('probe')) { for (const [id, x, y] of [['kupferhain', 4, 11], ['route1', 9, 20]]) {
+  await p.evaluate(([id, x, y]) => { LOD4.holdMax = 90000; transit(() => loadMap(id, x, y), id); }, [id, x, y]);
+  for (let i = 0; i < 40; i++) { const st = await p.evaluate(() => ({ fr: STAB.frames, cnt: LADEN.count, ldN: PC4.ldN, act: LADEN.active, nach: PC4.nach.length, tEnd: Math.round(PC4.tEnd), paused: LOOP.paused, lr: Math.round(STAB.lr), now: Math.round(performance.now()), stopped: STAB.stopped, mode })); log(id + ' ' + JSON.stringify(st)); if (!st.act && st.nach >= 3) break; await p.waitForTimeout(1000); } } }
 // ---------- laden: drei Ladebildschirme ----------
 if (TEIL.includes('laden')) { OUT.laden = {};
   for (const [id, x, y] of [['route1', 9, 20], ['kupferhain', 4, 11], ['morgenau', 9, 8]]) {

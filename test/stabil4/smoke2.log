@@ -31,3 +31,18 @@
 ✓ Draw-Calls route1 <= 170 (3D, volle Roamer)
 ✓ Glanz-Roamer: Sequenz & Fang übernimmt shiny
 ✓ Intro-Kurzpfad (webdriver): Standardwerte, Start zuhause
+✓ Schwimmen & Rückkehr (2D)
+✓ Reiten entfernt (Knopf, Taste R, Zustand)
+✓ Chronik-Stress (30×) + Hüllen
+✓ Schnellreise (Chronik → Heilstation)
+✓ Runde: Doppeltippen löst genau eine Attacke aus
+✓ Kampfkern: Zustand & Weltwetter (Runde)
+✓ Doppelkampf 2v2 (Runde)
+✓ Resonanz (Runde)
+✓ Status-Attacke wirkt (Sporenwolke)
+✓ Fang kritisch (Sequenz)
+✓ Entwicklung per Kristall (nicht abbrechbar)
+✓ Heilstation-Sequenz
+✓ Querformat
+
+Keine Fehler.

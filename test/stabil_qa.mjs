@@ -197,7 +197,7 @@ if (!process.env.STAB_SKIP_M) for (const [w, h] of [[844, 390], [932, 430]]) {
         await draw(2); const a1 = L(); for (const t of ['low', 'mid', 'low', 'mid']) { GFX.force = t; STAB.lim = STAB.ceil = t; perfSet(t); draw3d(); await draw(2); } return { vorher: a1 - a, wechsel: L() - a1, tier: PERF.tier, schattenAus: stabInfo().pc.clears }; });
       R.mess.r4_stufe = sw; t('R4 Stufenwechsel mittel ↔ niedrig (Schatten an/aus): keine neu kompilierten Shader-Programme', sw.wechsel === 0, sw); }
     // R4: Ladebildschirm → Route 1 → Kupferhain: Modelle des Ortes + Vorkompilieren hinter dem Ladebildschirm, danach keine neuen Programme, kein Bild mit JS > 100 ms
-    for (const [id, x, y] of [['route1', 9, 20], ['kupferhain', 4, 11]]) {
+    for (const [id, x, y] of [['morgenau', 9, 8], ['kupferhain', 4, 11]]) {// vorher steht die Heldin auf Route 1 (Budget-Messung) → jeder Wechsel hat einen Ladebildschirm
       // Emulation: SwiftShader lädt ein Modell in 0,1–20 s (echtes Handy ≈ 0,2–0,5 s) → Haltefrist hier 90 s statt 1,5 s, damit geprüft wird, was das Handy in 1,5 s schafft
       await mp.evaluate(([id, x, y]) => { LOD4.holdMax = 90000; transit(() => loadMap(id, x, y), id); }, [id, x, y]);
       await mp.waitForFunction(() => !LADEN.active, null, { timeout: 180000, polling: 100 }); await mp.waitForTimeout(8000);

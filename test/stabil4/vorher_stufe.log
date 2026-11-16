@@ -1,0 +1,6 @@
+[vorher_stufe] Start Morgenau, Warteschlange leer nach timeout s
+[vorher_stufe] Stufe → low: {"bilder":2,"kompiliert":12,"neueProgramme":12,"neueTexturen":0,"neueGeo":0,"bilderMitProgramm":1,"jsMax":472,"jsUeber100":1,"kostenMax":3383,"trisMax":153738,"callsMax":62,"ursachen":["3368ms js472 k12 p12 t0 g0 Stufe low"]}
+[vorher_stufe] Stufe → mid: {"bilder":3,"kompiliert":0,"neueProgramme":0,"neueTexturen":1,"neueGeo":0,"bilderMitProgramm":0,"jsMax":4,"jsUeber100":0,"kostenMax":2267,"trisMax":151896,"callsMax":63,"ursachen":["2271ms js4 k0 p0 t1 g0 Stufe mid"]}
+[vorher_stufe] Stufe → low: {"bilder":3,"kompiliert":0,"neueProgramme":0,"neueTexturen":0,"neueGeo":0,"bilderMitProgramm":0,"jsMax":9,"jsUeber100":0,"kostenMax":2117,"trisMax":151896,"callsMax":63,"ursachen":[]}
+[vorher_stufe] Stufe → mid: {"bilder":3,"kompiliert":0,"neueProgramme":0,"neueTexturen":1,"neueGeo":0,"bilderMitProgramm":0,"jsMax":6,"jsUeber100":0,"kostenMax":2117,"trisMax":130883,"callsMax":61,"ursachen":["2099ms js6 k0 p0 t1 g0 Stufe mid"]}
+[vorher_stufe] Fehler: []

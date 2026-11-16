@@ -90,8 +90,14 @@ function lodWorker(){if(LOD4.w!==null)return LOD4.w;try{
   LOD4.w=w;}catch(e){LOD4.w=false;}return LOD4.w;}
 function lodLocal(d){return new Promise((res,rej)=>{const run=()=>{try{let r=lodSimplify(d.P,d.I,d.t,{});if(r.tris>d.t*1.12)r=lodSimplify(d.P,d.I,d.t,{free:1});res(r);}catch(e){rej(e);}};
  try{if(window.requestIdleCallback){requestIdleCallback(run,{timeout:1500});return;}}catch(e){}setTimeout(run,30);});}
-function lodRun(P,I,t){const d={P,I,t};const w=lodWorker();if(!w)return lodLocal(d);const id=++LOD4.id;d.id=id;
+function lodRun0(P,I,t){const d={P,I,t};const w=lodWorker();if(!w)return lodLocal(d);const id=++LOD4.id;d.id=id;
  return new Promise((res,rej)=>{LOD4.jobs.set(id,{res,rej,d:{P:P.slice(),I:I.slice(),t}});try{w.postMessage(d,[P.buffer,I.buffer]);}catch(e){LOD4.jobs.delete(id);lodLocal({P,I,t}).then(res,rej);}});}
+// Eins nach dem anderen und erst, wenn die Modell-Warteschlange ruht (oder ein Ladebildschirm deckt) – keine Konkurrenz um die CPU mit Draco/Parsen
+const LOD_Q=[];let lodBusy=false;
+function lodIdle(){try{const Q=VMODEL_QUEUE;return(typeof LADEN==='object'&&LADEN.active)||!Q.busy&&!Q.q.length;}catch(e){return true;}}
+function lodPump(){if(lodBusy||!LOD_Q.length)return;if(!lodIdle()){setTimeout(lodPump,200);return;}lodBusy=true;const j=LOD_Q.shift();
+ lodRun0(j.P,j.I,j.t).then(j.res,j.rej).finally(()=>{lodBusy=false;setTimeout(lodPump,0);});}
+function lodRun(P,I,t){return new Promise((res,rej)=>{LOD_Q.push({P,I,t,res,rej});lodPump();});}
 const lodTris=g=>g.index?g.index.count/3:g.attributes.position.count/3;
 function lodArr(A){const n=A.count,s=A.itemSize,o=new Float32Array(n*s);if(!A.isInterleavedBufferAttribute&&A.array instanceof Float32Array&&!A.normalized){o.set(A.array.subarray(0,n*s));return o;}
  for(let i=0;i<n;i++){o[i*s]=A.getX(i);if(s>1)o[i*s+1]=A.getY(i);if(s>2)o[i*s+2]=A.getZ(i);}return o;}
@@ -199,7 +205,7 @@ if(typeof init3d==='function'&&!init3d._pc4){const _i34=init3d;init3d=function()
 try{if(typeof R3==='object'&&R3)pcSetup();}catch(e){}
 // Protokoll: die ersten 15 s nach dem Ausblenden des Ladebildschirms (je gezeichnetes Bild: Kosten, JS, neue Programme/Texturen, Ereignisse) → VSTAB.info().nach
 if(typeof stabLong==='function'&&!stabLong._pc4){const _sl4=stabLong;stabLong=function(cost){try{const ld=typeof LADEN==='object'&&LADEN.active,now=performance.now();
-   if(!ld&&(LADEN.count||0)!==(PC4.ldN||0)){PC4.ldN=LADEN.count;PC4.tEnd=now;PC4.nach=[];}// neuer Ladebildschirm beendet (auch wenn währenddessen kein Bild der Schleife lief)const r=STAB.fr;
+   if(!ld&&(LADEN.count||0)!==(PC4.ldN||0)){PC4.ldN=LADEN.count;PC4.tEnd=now;PC4.nach=[];}/* neuer Ladebildschirm beendet (auch wenn währenddessen kein Bild der Schleife lief) */const r=STAB.fr;
    if(r&&!ld&&PC4.tEnd&&now-PC4.tEnd<15000&&PC4.nach.length<120)PC4.nach.push({at:Math.round(now-PC4.tEnd),ms:Math.round(cost),js:r.js,prog:r.prog,tex:r.tex,geo:r.geo,ev:r.ev.slice(0,3)});}catch(e){}
   return _sl4.apply(this,arguments);};stabLong._pc4=1;}
 function lodInfo(){const N=PC4.nach;return{lod:{on:LOD4.on,done:LOD4.done,pend:LOD4.pend,err:LOD4.err,worker:LOD4.w?'ja':LOD4.w===false?'nein':'–',ms:LOD4.ms.slice(-12),frz:LOD4.frz||0},

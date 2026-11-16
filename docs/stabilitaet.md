@@ -230,7 +230,7 @@ In der Emulation lädt ein Modell 0,1–20 s (echtes Handy: Draco im Worker ≈ 
 | Kupferhain | 0 / 38 ms (13 Texturen) | **0 / 15 ms** (≤ 10 kleine Texturen ohne Ereignis) |
 | Morgenau | 0 / 32 ms | **0 / 43 ms** |
 | Modelle des Ortes beim Ausblenden fertig | nein (5–8 warten) | ja (Warten 3,1 s in der Emulation, Vorkompilieren 3,8 s SwiftShader; danach 0 offen) |
-| Stufenwechsel mittel ↔ niedrig (Schatten an/aus) | alle beleuchteten Materialien neu (Licht-Schlüssel) – bisher als „0“ gemessen | **0 neu kompiliert** (4 Wechsel) |
+| Stufenwechsel mittel ↔ niedrig (Schatten an/aus) | erster Wechsel auf „niedrig“: **12 Programme neu, 472 ms JS in einem Bild** (weitere Wechsel 0, solange beide Varianten leben) – bisher als „0“ gemessen | **0 neu kompiliert** (4 Wechsel, auch in stabil_qa) |
 
 | Handy-Budget (stehend, Budget eingeschwungen) | vorher: Dreiecke / Calls / Stufe / Umrisse | nachher |
 |---|---|---|
@@ -240,7 +240,7 @@ In der Emulation lädt ein Modell 0,1–20 s (echtes Handy: Draco im Worker ≈ 
 | Spielfigur (Noa): Körper + Hülle + Schatten | 11,7 k + 11,7 k + 11,7 k (Hülle ab Stufe 4 aus) | 11,7 k + **2,8 k + 2,8 k** (das während der Runde neu gebaute Heldin-GLB, Körper 7,6 k, läuft durch dasselbe Verfahren) |
 | Figur LOD1 / Terra LOD1 | 5,8 k ohne Umriss / 3,6 k + 3,6 k Umriss | **2,8 k** mit Umriss / **2,0 k** + 2,0 k Umriss |
 
-Weitere Werte und Rohdaten: `test/stabil4/mess_vorher.json`, `mess_nachher.json` (Haltefrist 1,5 s), `mess_nachher_hold.json` (Haltefrist 90 s), `mess_budget2.json`; Sichtvergleich `test/stabil4/zoom_nah.png` (links Original-Hülle, rechts Hülle aus dem leichten Netz).
+Weitere Werte und Rohdaten: `test/stabil4/mess_vorher.json`, `mess_vorher_stufe.json`, `mess_nachher.json` (Haltefrist 1,5 s), `mess_nachher_hold.json` (Haltefrist 90 s), `mess_budget2.json`; Sichtvergleich `test/stabil4/zoom_nah.png` (links Original-Hülle, rechts Hülle aus dem leichten Netz).
 
 ### Offen / Grenzen (ehrlich)
 - **Alles nur in Emulation belegt** (Playwright 1.63, Chromium SwiftShader, 2 Kerne; zeitweise liefen fremde Chromium-Tests und Blender parallel, Last 5–6). Echte Bildzeiten am iPhone sind nicht gemessen. Belegt sind: keine neu kompilierten Shader und keine JS-Zeit > 100 ms im Bild nach dem Ladebildschirm, Dreiecke/Draw-Calls, sichtbare Umrisse, Stufenwechsel ohne Kompilieren. „Kein Bild > 100 ms“ als echte Bildzeit kann SwiftShader nicht zeigen (jedes Weltbild ≈ 1–10 s).
@@ -258,3 +258,9 @@ Weitere Werte und Rohdaten: `test/stabil4/mess_vorher.json`, `mess_nachher.json`
 2. Plakette: Dreiecke ≤ 100 k; **Umrisse an der Heldin und an den 2 nächsten Figuren/Terras** sichtbar (vorher am Handy keine).
 3. Qualität Mittel ↔ Niedrig umschalten: kein langes Standbild beim Umschalten.
 4. Konsole/Werkstatt: `VSTAB.info().nach` (Bilder nach dem letzten Ladebildschirm: `prog` = neu kompiliert, `jsMax`), `VSTAB.info().pc.hold` (Wartezeit, `offen` = Modelle, die nicht rechtzeitig fertig waren).
+
+### Tests (16.11., Endstand Runde 4)
+`node build.mjs` ✓ · `node test/smoke.mjs` „Keine Fehler.“ · `node test/uebergaenge_qa.mjs` **97 ✓ / 0 ✗** (28/28) · `node test/stabil_qa.mjs` **62 ✓ / 0 ✗** (52 + 10 neu) · `node test/terras2/terras2_test.mjs` **35 ✓ / 0 ✗** (auch auf dem Vorher-Stand 35/0; in zwei Zwischenläufen schlug je ein 1,5-s-Zeitfenster der Kampf-Fälle unter Fremdlast fehl, einmal „spät geladen“, einmal „geladen“ – Zeitverhalten, nicht reproduzierbar).
+Neu in `stabil_qa` (Handy 844×390/932×430): Budget Morgenau/Route 1/Kupferhain **mit sichtbaren Umrissen** (Heldin + 2 nächste Modelle bis 8 Felder), LOD-Netze Figur (LOD1 = Hülle = Schatten 2,5–3,1 k, Hauptnetz unverändert) und Terra (≈ 2 k), Worker ohne Fehler, Stufenwechsel ohne neu kompilierte Programme, zwei Ladebildschirme (→ Morgenau, → Kupferhain): danach 0 neue Programme und kein Bild mit JS > 100 ms (Haltefrist in der Emulation 90 s, s. o.).
+Angepasst: der Wackel-Fall nimmt die wandernden Dorfbewohner (`VILL.list`, blockieren Felder) für die Dauer der Messung aus der Liste – in einem Lauf stand eine Bewohnerin auf der Messstrecke (Heldin blieb bei 0,6 Feld/s stehen).
+Während der Runde hat der Dirigent Zwischenstände mit `src/62-lod.js` committet (WIP 45dde05, 3fc8905); dieser Agent hat nichts committet.

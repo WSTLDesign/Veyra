@@ -36,11 +36,13 @@ Diese Datei ist der Startauftrag für einen NEUEN Chat im Projekt „App Entwick
 7. Klären mit dem Nutzer: Wie kommt der Stand auf Netlify (Produktions-Chat oder Repo-Anbindung)? Netlify-Staging-Site verbinden. Umriss dünn/fast keiner. Kampfarena für alle?
 
 ## 6. Letzter Stand bei Übergabe (vom alten Dirigenten auszufüllen)
-- Datum/Uhrzeit:
-- Letzter Commit auf `staging`:
-- Laufende/abgebrochene Runden je Agent:
-- Werkstatt-Build-Stand:
-- Offene Nutzerfragen:
+- Datum/Uhrzeit: 16.11.2026, 17:30 (Pause bis Mi 18.11. 02:00 auf Nutzerwunsch)
+- Letzter Commit auf `staging`: 9a56060 (Figuren R6). Davor 4297dfc (Art-Direktion D1), 07c2ddc (Figuren R5), 37b3d5b (Stabilität R4).
+- Laufende/abgebrochene Runden je Agent: keine laufend. Figuren R6 fertig, aber stabil_qa 60/62 (61 Draw-Calls bei 932×430 Morgenau – Regler wählt Stufe 6, weil die neuen Figuren leichter sind; Draw-Calls fehlen im Regler) → erster Auftrag an Stabilität (Opus 5.5 hoch): Draw-Calls in den Regler aufnehmen, dann stabil_qa 62 ✓.
+- Werkstatt-Build-Stand: Leitstand V16 = Spielstand 07c2ddc (ohne R6). Netlify-Zip 6 = 07c2ddc. Nach dem Stabilitäts-Fix: Werkstatt neu, Zip 7.
+- Art-Direktion Durchgang 1 (docs/art-direktion.md): ≈ 52 % Handy. Nutzer-Entscheidungen 16.11. 17:15: E1 JA Terras im Kampf als gemalte Bildfiguren; E2 Umriss dünn+farbig, keiner an Bäumen/Häusern; E3 JA erste Version = polierte erste Spielstunde (Titel→Morgenau→Route 1→Kupferhain mit Kampf/Fang/Station); E4 erlaubt: Projektion eigener Bilder auf Modelle, CC0-Basismodelle/Bewegungsdaten (Lizenz in docs/), leichtes Post-Processing am Handy testweise (AGENTS.md-Regel anpassen); NICHT erlaubt: Bild-zu-3D-Werkzeuge. E6 (Titelbild mit Heldin/Partner) offen.
+- Reihenfolge nächste Schritte: (1) Stabilität Draw-Call-Regler; (2) Maßnahme 1+2 Kampf mit Bildfiguren + Kampf-Kamera (terras-serie, Opus hoch); (3) Maßnahme 3 Kamera Welt/Dialog (welt-grafik); (4) Maßnahme 4 einheitlicher Toon-Look nach E2; weiter nach Top-12 in docs/art-direktion.md. Modell je Agent laut Leitstand „Modell-Zuweisung“ (agents/<id>.zuModell/zuStufe) lesen.
+- Offene Nutzerfragen: Handy-Test Zip 5/6 (Häuser, Lag, Umrisse); Icon schwarz oder hell; E6; war „2 Uhr“ 02:00 oder 14:00?
 
 ## 7. Startsatz für den neuen Chat (vom Nutzer einzufügen)
 > Dies ist die neue Staging-Sitzung für Veyra. Lies zuerst im Projekt `claude/uebergabe-staging-2.md` und `claude/projektgedaechtnis.md`, richte die Umgebung wie dort beschrieben ein und mach als Dirigent mit den nächsten Schritten weiter. Nenne bei jedem Schritt Modell und Stufe.

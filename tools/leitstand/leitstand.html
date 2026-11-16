@@ -395,7 +395,7 @@ let ZW_EDIT = false;
 (async () => { try { ZW_EDIT = !!(user && user.canEdit && await user.canEdit()); } catch (e) { ZW_EDIT = false; } $('#zw').hidden = !ZW_EDIT; drawZw(); })();
 function drawZw() {
   const el = $('#zwl'); if (!el || !ZW_EDIT) return;
-  const rows = AG.filter(r => r.id !== 'dirigent');
+  const rows = AG.filter(r => r.id !== 'dirigent' && (r.state !== 'fertig' || r.zuModell));
   el.innerHTML = rows.length ? rows.map(r => { const m = r.zuModell || 'opus-5.5', s = r.zuStufe || 'hoch';
     return `<div class="row" data-id="${esc(r.id)}"><b title="${esc(r.name || r.id)}">${esc(r.name || r.id)}</b><select data-k="zuModell">${opts(MODELLE, m)}</select><select data-k="zuStufe">${opts(STUFEN, s)}</select><span class="st">${r.zuZeit ? 'gesetzt ' + ago(r.zuZeit) : 'Standard'}</span></div>`; }).join('') : '<p class="empty">Noch keine Agenten</p>';
   el.querySelectorAll('select').forEach(sel => sel.addEventListener('change', async () => {

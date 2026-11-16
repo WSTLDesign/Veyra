@@ -50,7 +50,7 @@ def setup(spec):
     D.NECK0 = Vector((0, .006 * H, t['shz'] * H + .022 * H)); D.CHIN = H - D.head
     D.kid = spec['typ'] == 'kind'; D.fem = bool(t['fem'])
     D.kk4 = D.hh / .127; D.CAP_OPEN = spec.get('kappe_offen', .36); D.r4 = bool(spec.get('r4') or spec.get('r5'))   # Runde 4 (Heldin): Maßstab Kopf, Öffnung hinten an der Kappe
-    D.r5 = bool(spec.get('r5')); D.COVER = None; D.CAP_RIM = None; D.PONY = []   # Runde 5: Block-Hände, Haar-Technik R4 für weitere Figuren; COVER = Kanten-Funktion der Kopfbedeckung
+    D.r5 = bool(spec.get('r5')); D.COVER = None; D.CAP_RIM = None; D.PONY = []; D.PONY_R = .045 * H / 1.45   # Runde 5: Block-Hände, Haar-Technik R4 für weitere Figuren; COVER = Kanten-Funktion der Kopfbedeckung; Runde 6: PONY_R = Radius um die Achse (Pferdeschwanz/Dutt), in dem die Haar-Normalen zur Achse zeigen
     return D
 
 # ---------------- Regionen ----------------
@@ -474,14 +474,14 @@ def hair_r4():
             t = q / 6; ph = ph0 + sw * t ** 1.3 * -1; th = lerp(E(ph0) - .04, th1, t)
             off = (.0085 + .008 * ss(0, .3, t) * (1 - .4 * ss(.4, 1, t)) + .003 * ss(.8, 1, t)) * k
             P.append(head_dir_point(sdir(th, ph), off))
-        out.append(strand(P, w * k, w * .40 * k, ring=8, n=8, tip=.1, puff=.12, root=.3))
+        out.append(strand(P, w * k, w * .40 * k, ring=12 if D.r5 else 8, n=8, tip=.1, puff=.12, root=.3))   # Runde 6: Pony Ring 12 (Nahaufnahmen im Dialog)
     # Seitensträhnen vor den Ohren (lang, bis zum Kinn, rahmen das Gesicht, Spitze zuletzt leicht nach außen) + kürzere hinter den Ohren
     # Runde 5: voller Querschnitt (Superellipse, Ansatz nicht mehr flach) → von der Seite echtes Volumen statt Paddel; Spitzen nach außen gebogen
     for s in (-1, 1):
         ph = s * 1.22; P = [head_dir_point(sdir(E(ph) - .2, ph), .009 * k), head_dir_point(sdir(E(ph) + .06, ph * 1.02), .017 * k), head_dir_point(sdir(1.82, ph * 1.04), .018 * k)]
         p2 = P[-1]; ins = Vector((-s, -.25, 0)).normalized()
         P += [p2 + Vector((0, 0, -.045 * k)) + ins * .004 * k, p2 + Vector((0, 0, -.082 * k)) + ins * .006 * k]
-        out.append(strand(P, .033 * k, .026 * k, ring=8, n=9, tip=.08, puff=.1, up=(s * .4, -1, 0), rnd=.62, sexp=2.5, bend=.005 * k))
+        out.append(strand(P, .033 * k, .026 * k, ring=12 if D.r5 else 8, n=9, tip=.08, puff=.1, up=(s * .4, -1, 0), rnd=.62, sexp=2.5, bend=.005 * k))   # Runde 6: Ring 12
         ph = s * 1.95; P = [head_dir_point(sdir(E(ph) - .18, ph), .010 * k), head_dir_point(sdir(E(ph) + .05, ph), .019 * k), head_dir_point(sdir(2.0, ph * 1.02), .019 * k)]
         p2 = P[-1]; P += [p2 + Vector((s * .003, .006, -.03)) * k, p2 + Vector((s * .004, .009, -.056)) * k]
         out.append(strand(P, .030 * k, .027 * k, ring=8, n=8, tip=.08, puff=.08, rnd=.75, sexp=2.6, bend=.011 * k))
@@ -601,6 +601,138 @@ def hair_beanie5():
         ph = math.pi + a; out.append(st5(sflow5(ph, E(ph) - .1, hl(ph) + .08, 0, .005, .009, n=4, lift=.002), .036, .013, bend=.005, rnd=.5, n=6, tp=1.8))
     return out
 
+
+# =====================================================================
+# Runde 6 (16.11.): Haar-Technik R5 (Schale + runde Volumen-Strähnen, rnd/sexp/bend/tp) für Rayan, Prof. Veyran, Mama, Mirael, Bürger a/b/c –
+# jede Figur behält ihre Frisur-Art (Stacheln, Wolkenhaar, Dutt, Pferdeschwanz, Locken, kurz mit Seitenscheitel)
+# =====================================================================
+def dome5(hl, fr_off=.009, extra=.0, U_=6, name='Haarschale'):
+    """Haarschale ab dem Scheitelpunkt bis zum Haaransatz hl(ph) – ruhige Grundform (Normalen später zum Kopf-Ellipsoid)"""
+    return shell5(lambda ph: 0., lambda ph: hl(ph) + extra, lambda u, ph, th: fr_off + .005 * math.sin(math.pi * min(1, u * 1.05)) ** .7 - .004 * ss(.85, 1, u), U_=U_, pole=True, name=name)
+def swirl_back(ph, a=.25):
+    """seitliches Zurückstreichen: Strähnen auf der linken Seite laufen zu größerem ph (hinten), rechts zu kleinerem"""
+    return a * (1 if math.sin(ph) >= 0 else -1) * (.5 + .5 * math.cos(ph))
+
+def hair_stachel5():
+    """Rayan: Kappe + 12 kräftige, spitz zulaufende Stacheln nach hinten/oben (runder Querschnitt), 9 anliegende Strähnen seitlich/hinten, 3 Strähnen in die Stirn"""
+    out = []; rnd = random.Random(11); k = D.kk4; hl = hairline_std(.95, 1.55, 2.0)
+    out.append(dome5(hl, .009, .02))
+    for i in range(12):
+        ph = (i / 12) * 2 * math.pi + .22 + rnd.uniform(-.07, .07); th0 = .17 + .27 * rnd.random(); b = head_dir_point(sdir(th0, ph), .010 * k)
+        dirv = (sdir(th0 + .7, ph) - sdir(th0, ph)).normalized() * .6 + Vector((0, .55, .5)).normalized() * .7
+        if math.cos(ph) > .5: dirv = (dirv + Vector((0, .2, .5))).normalized()
+        L = (.13 + .06 * rnd.random()) * k; ou = (b - D.HC).normalized() * .012 * k
+        P = [b, b + dirv * L * .4 + ou, b + dirv * L * .8 + Vector((0, .01, .02)) * k, b + dirv * L * 1.15 + Vector((0, .02, .015)) * k]
+        out.append(strand(P, .05 * k, .04 * k, ring=8, n=7, tip=.04, puff=.05, rnd=.72, sexp=2.3, tp=1.25))
+    for i in range(9):   # anliegend seitlich/hinten, Spitzen leicht nach außen
+        ph = .9 + i / 8 * (2 * math.pi - 1.8) + rnd.uniform(-.04, .04)
+        out.append(st5(sflow5(ph, .6, hl(ph) + .12, rnd.uniform(-.15, .15), .012, .016, n=5, lift=.006), .05, .023, bend=.012, tip=.04, tp=1.7))
+    for ph, th1 in ((-.25, 1.2), (.1, 1.12), (.42, 1.25)):   # Strähnen in die Stirn
+        out.append(st5(sflow5(ph, .28, th1, .25, .013, .015, n=6, lift=.012), .044, .021, bend=.006, tip=.05, tp=1.9))
+    return out
+
+def hair_wolke5():
+    """Prof. Veyran: hohe Stirn, dünnes Haar oben, weiße Wolken-Büschel (dicke runde Volumen) seitlich und hinten in zwei Lagen, Wisps vom Scheitel"""
+    out = []; rnd = random.Random(21); k = D.kk4; hl = hairline_std(.7, 1.55, 2.1)
+    out.append(dome5(hl, .007, .0))
+    for row, (th, nrow, w, d) in enumerate(((1.0, 8, .058, .042), (1.34, 9, .062, .046))):   # obere / untere Lage; Lücke vorn (hohe Stirn)
+        for i in range(nrow):
+            ph = (.75 + (i + (.5 if row else 0)) / nrow * (2 * math.pi - 1.5)) + rnd.uniform(-.05, .05); t0 = th + rnd.uniform(-.06, .06)
+            if t0 > hl(ph) + .1: t0 = hl(ph) + .02
+            a = head_dir_point(sdir(t0, ph), .012 * k); m = head_dir_point(sdir(t0 + .16, ph + .04 * (1 if math.sin(ph) > 0 else -1)), (.034 + .01 * rnd.random()) * k)
+            e = head_dir_point(sdir(t0 + .36, ph + .1 * (1 if math.sin(ph) > 0 else -1)), (.03 + .008 * rnd.random()) * k) + Vector((0, 0, (.012 + .01 * rnd.random()) * k))
+            out.append(strand([a, a.lerp(m, .55), m, e], w * k, d * k, ring=10, n=7, tip=.1, puff=.3, rnd=.85, sexp=2.2, tp=2.0))
+    for i in range(7):   # Wisps vom Scheitel nach außen
+        ph = i / 7 * 2 * math.pi + .3
+        out.append(st5(sflow5(ph, .06, .58 + rnd.uniform(0, .18), rnd.uniform(-.3, .3), .011, .022, n=5, lift=.016), .04, .017, bend=.014, tip=.05, tp=1.8))
+    return out
+
+def bun5(bc, R_, turns=1.25, ph0=0.):
+    """Dutt als Spirale (Zopf eingerollt): dicke runde Strähne in der Ebene hinten am Kopf, nach innen zulaufend + Mittelstück"""
+    k = D.kk4; P = []
+    for q in range(13):
+        t = q / 12; a = ph0 + t * 2 * math.pi * turns; R = R_ * (1 - .62 * t)
+        P.append(bc + Vector((math.cos(a) * R, .012 * k * math.sin(t * 3), math.sin(a) * R)))
+    o = [strand(P, .045 * k, .042 * k, ring=8, n=13, tip=.4, puff=0., rnd=.9, sexp=2.6, tp=3.0)]
+    c = blob('Dutt', bc + Vector((0, .016 * k, 0)), (R_ * .62, R_ * .5, R_ * .62), 2); set_region(c, 'haar'); o.append(c)
+    return o
+
+def hair_dutt5(lose=False):
+    """Mama / Mirael: glatt nach hinten gestrichen (anliegende Strähnen vom Scheitel), Dutt hinten als eingerollter Zopf, bei Mama zwei lose Strähnen vor den Ohren"""
+    out = []; rnd = random.Random(5); k = D.kk4; hl = hairline_std(1.02, 1.62, 2.12)
+    out.append(dome5(hl, .009, .015))
+    for i in range(14):
+        ph = i / 14 * 2 * math.pi + .12 + rnd.uniform(-.03, .03)
+        out.append(st5(sflow5(ph, .13, hl(ph) - .02, swirl_back(ph, .3), .0095, .012, n=5, lift=.003), .058, .018, bend=.004, tip=.04, tp=1.8, rnd=.6))
+    bc = head_dir_point(sdir(.95, math.pi), .04 * k); D.PONY = [bc - Vector((0, .02 * k, 0)), bc + Vector((0, .03 * k, 0))]; D.PONY_R = .11 * k   # Normalen des Duttes: kugelig
+    out += bun5(bc, .055 * k)
+    if lose:
+        for s in (-1, 1):
+            b = head_dir_point(sdir(1.0, s * .9), .011 * k)
+            P = [b, b + Vector((s * .008, -.014, -.045)) * k, b + Vector((s * .013, -.018, -.1)) * k, b + Vector((s * .008, -.012, -.155)) * k]
+            out.append(strand(P, .03 * k, .018 * k, ring=8, n=7, tip=.08, puff=.06, rnd=.6, sexp=2.4, bend=.006 * k, tp=2.0, up=(s * .3, -1, 0)))
+    return out
+
+def ponytail5(b, M, tie='blume', side=True):
+    """Pferdeschwanz (Technik der Heldin R4): ein Hauptvolumen + zwei Nebenstränge mit getrennten Spitzen, Haargummi; setzt D.PONY (Normalen-Achse)"""
+    k = D.kk4; out = []; D.PONY = bezier(M, 24)
+    def pt(y, z, x=0.): return b + Vector((x, y, z)) * k
+    o = loft('Pferdeschwanz', M, lambda t: (.022 + .034 * ss(.0, .22, t) * (1 - ss(.45, 1, t))) * (1 - t ** 3) * k + .002 * k * (1 - t),
+             lambda t: (.02 + .028 * ss(.0, .22, t) * (1 - ss(.5, 1, t))) * (1 - t ** 2.6) * k + .0015 * k * (1 - t), ring=10, n=12, flat_up=(1, 0, 0), cap0=True)
+    set_region(o, 'haar'); out.append(fix_inside_out(o))
+    if side:
+        for s in (-1, 1):
+            P = [pt(.03, .0, s * .01), pt(.062, -.04, s * .018), pt(.074, -.11, s * .022), pt(.066, -.18, s * .026), pt(.05, -.235, s * .032)]
+            out.append(strand(P, .022 * k, .016 * k, ring=7, n=8, tip=.06, up=(0, 1, 0), rnd=.7, sexp=2.4, bend=.004 * k))
+    tie_ = [b + (Vector((math.cos(a) * .026, .022, math.sin(a) * .024)) * k) for a in [q / 12 * 2 * math.pi for q in range(13)]]
+    o = loft('Haargummi', tie_, lambda t: .0065 * k, lambda t: .0075 * k, ring=5, n=13, cap0=False, flat_up=(0, 1, 0)); set_region(o, tie); out.append(o)
+    return out
+
+def hair_pferd5():
+    """Bürgerin a: hoher Pferdeschwanz hinten (Haargummi), anliegendes Haar, Pony seitlich gekämmt"""
+    out = []; rnd = random.Random(9); k = D.kk4; hl = hairline_std(1.0, 1.6, 2.1)
+    out.append(dome5(hl, .009, .015))
+    for i in range(13):
+        ph = i / 13 * 2 * math.pi + .1 + rnd.uniform(-.03, .03)
+        if abs(((ph - math.pi) + math.pi) % (2 * math.pi) - math.pi) < .35: continue   # hinten oben bleibt für den Pferdeschwanz frei
+        out.append(st5(sflow5(ph, .14, hl(ph) - .02, swirl_back(ph, .22), .0095, .012, n=5, lift=.003), .058, .018, bend=.004, tip=.04, tp=1.8, rnd=.6))
+    for i in range(5):   # Pony: seitlich gekämmt
+        a = (i - 2) / 2; ph = a * .48 - .08
+        out.append(st5(sflow5(ph, .3, 1.22 - .05 * a * a, .3, .013, .015, n=6, lift=.011), .05, .023, bend=.006, tip=.05, tp=2.0, rnd=.6))
+    b = head_dir_point(sdir(.75, math.pi), .02 * k)
+    M = [b + Vector(v) * k for v in ((0, -.01, 0), (0, .03, .01), (0, .06, -.035), (0, .078, -.11), (0, .07, -.19), (0, .05, -.26), (0, .034, -.31))]
+    D.PONY_R = .05 * k
+    out += ponytail5(b, [Vector((q.x, q.y, q.z)) for q in M], 'blume')
+    return out
+
+def hair_locken5():
+    """Bürgerin b: kurze graue Locken – Schale + 37 kurze, dicke, eingerollte Strähnen (runde Haken), dicht über den Kopf verteilt"""
+    out = []; rnd = random.Random(3); k = D.kk4; hl = hairline_std(1.0, 1.55, 2.0)
+    out.append(dome5(hl, .011, .0))
+    rows = ((0.0, 1), (.38, 5), (.76, 8), (1.12, 11), (1.42, 12))
+    for th, n in rows:
+        for i in range(n):
+            ph = i / max(1, n) * 2 * math.pi + (.3 if th > .5 else 0) + .4 * th + rnd.uniform(-.1, .1); t0 = th + rnd.uniform(-.05, .05)
+            if t0 > hl(ph) - .06: t0 = hl(ph) - .08
+            if t0 < 0: t0 = 0
+            A = head_dir_point(sdir(t0, ph), .012 * k); nrm = (A - D.HC).normalized()
+            tg = (sdir(t0 + .1, ph) - sdir(t0, ph)).normalized(); tg = (tg * math.cos(rnd.uniform(0, 6.28)) + nrm.cross(tg) * math.sin(rnd.uniform(0, 6.28))).normalized()
+            P = [A, A + nrm * .02 * k + tg * .008 * k, A + nrm * .033 * k + tg * .028 * k, A + nrm * .024 * k + tg * .052 * k]
+            out.append(strand(P, (.034 + .006 * rnd.random()) * k, .03 * k, ring=8, n=6, tip=.12, puff=.15, rnd=.8, sexp=2.2, tp=2.0, up=tuple(nrm)))
+    return out
+
+def hair_kurz5():
+    """Bürger c: kurzes dunkles Haar mit Seitenscheitel – Schale, Strähnen vom Scheitel zur Seite, anliegend rund um den Kopf, Spitzen leicht nach außen"""
+    out = []; rnd = random.Random(13); k = D.kk4; hl = hairline_std(1.05, 1.58, 2.0)
+    out.append(dome5(hl, .009, .015))
+    for i in range(8):   # Oberseite: vom Scheitel (Seitenscheitel links) nach rechts/vorn gekämmt
+        a = (i - 3.5) / 3.5; ph = a * .7 + .25 + rnd.uniform(-.03, .03)
+        out.append(st5(sflow5(ph, .2, 1.05 + .05 * abs(a) + rnd.uniform(-.02, .02), .5, .011, .014, n=6, lift=.009), .052, .019, bend=.005, tip=.04, tp=1.9, rnd=.6))
+    for i in range(11):   # seitlich/hinten
+        ph = 1.0 + i / 10 * (2 * math.pi - 2.0) + rnd.uniform(-.03, .03)
+        out.append(st5(sflow5(ph, .45, hl(ph) + .06, .1, .01, .013, n=5, lift=.005), .05, .019, bend=.009, tip=.04, tp=1.7, rnd=.6))
+    return out
+
 def build_hair(style):
     H = D.H; hw = D.hw; out = []; rnd = random.Random(7); k = D.hh / .127   # Maßstab relativ zum Kinderkopf
     if style == 'pferd_kappe4':      # Heldin Runde 4: weiche Volumen + echte Schirmmütze (Krone separat in cap4)
@@ -608,6 +740,13 @@ def build_hair(style):
     if style == 'wuschel5': return hair_noa5()          # Runde 5
     if style == 'kurz_kappe5': return hair_kurz_kappe5()
     if style == 'beanie5_haar': return hair_beanie5()
+    if style == 'stachel5': return hair_stachel5()          # Runde 6
+    if style == 'wolke5': return hair_wolke5()
+    if style == 'dutt5': return hair_dutt5(False)
+    if style == 'dutt5_lose': return hair_dutt5(True)
+    if style == 'pferd5': return hair_pferd5()
+    if style == 'locken5': return hair_locken5()
+    if style == 'kurz5': return hair_kurz5()
     if style == 'pferd_muetze':      # Heldin: Haar unter der Kappe (Pony + Seiten) + Pferdeschwanz als Volumen durch die Kappe hinten
         out = build_hair('muetze'); b = head_dir_point(sdir(1.3, math.pi), .03 * k)
         for i in range(5):

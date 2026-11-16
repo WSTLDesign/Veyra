@@ -140,3 +140,55 @@ R4-Stände: `test/fixtures/figuren/fig_{heldin,noa,haendler,buerger_d}_r4.glb`; 
 - Haarmaske wirkt auf alle Figuren mit Haar-/Bart-Maske, auch auf die noch nicht überarbeiteten (gewollt, dort aber nicht einzeln geprüft).
 - Übrige Figuren (Rayan, Prof. Veyran, Mama, Mirael, Bürger a–c) sind noch Stand R2 (13,3 k, ohne `_LODW`). Durch die korrigierte Bürger-Verteilung erscheinen jetzt auch Bürger b/c/d im Spiel (gleiche Dreiecke je Figur wie a, aber bis zu 3 GLBs mehr zu laden/vorzukompilieren).
 - Weltvergleich: der Himmel unterscheidet sich zwischen den beiden Aufnahmen (Himmelsbild lädt nach), unabhängig von den Figuren.
+
+## 11. Runde 6 (16.11.) – die übrigen 7 Figuren auf R5-Stand, Heldin Ring 12
+Agent „Figuren R6“ (Sonnet 5.5 · hoch). Rezept aus R5 unverändert angewendet: Steckbrief-Schalter `r5=True` (+ neu `r6=True`), Haar als Schale (`dome5`/`shell5`) + runde Volumen-Strähnen (`strand`/`st5` mit `rnd`/`sexp`/`bend`/`tp`), geglättete Stellvertreter-Normalen, `fix_inside_out`, Fingerblock-Hände, gewichtetes Reduzieren auf `gesamt = 8 900`, Schutzgewicht `_LODW`. Jede Figur behält Frisur-Art und Kleidung (kein Redesign). Keine der sieben trägt Kappe/Mütze → kein Logo nötig (das „V“ der Heldin kommt nirgends vor). Rig (32 Knochen), 7 Clips und 9 Shape Keys sind bitgleich zu den bisherigen GLB (Gehen 1,9 / Rennen 5 bleiben).
+
+### Was je Figur (alle in `tools/modelle/figuren/fkit.py`, Steckbriefe in `figuren.py`)
+| Figur | Frisur R5-Technik | Hinweise |
+|---|---|---|
+| Rayan (Kind) | `stachel5`: Schale, 12 kräftige, spitz zulaufende Stacheln nach hinten/oben (rund, `tp` 1,25), 9 anliegende Strähnen seitlich/hinten, 3 in die Stirn | rote Spitzen weiter über `haar_hi` (Abstand zum Kopf), Haaransatz-Verlauf dunkel statt heller (`haar_spitze`) |
+| Prof. Veyran | `wolke5`: dünne Schale (hohe Stirn bleibt), 17 dicke weiße Wolken-Büschel in zwei Lagen (Ring 10, `puff` 0,3), 7 Wisps vom Scheitel | Vollbart-Schale + runder Schnurrbart (R5-Pfad) unverändert, Bart `_LODW` 0,6 |
+| Mama | `dutt5_lose`: Schale, 14 glatt zurückgestrichene Strähnen vom Scheitel, **Dutt als eingerollte Spirale** (dicke Strähne + Mittelstück, `bun5`), 2 lose Strähnen vor den Ohren | Dutt-Normalen kugelig (`D.PONY_R`, neu) |
+| Mirael | `dutt5`: wie Mama ohne lose Strähnen, Blüte bleibt (`blume`, `_LODW` 0,6) | Sommersprossen, Kittel, Kreuz-Blatt unverändert |
+| Bürgerin a | `pferd5`: Schale, anliegende Strähnen, Pony seitlich gekämmt (5), **hoher Pferdeschwanz** mit Haargummi (`ponytail5`, wie Heldin R4: Hauptvolumen + 2 Nebenstränge, `fix_inside_out`) | Haargummi jetzt Region `blume` (rostrot, `_LODW` 0,6) statt `knopf` |
+| Bürgerin b | `locken5`: Schale + 37 kurze eingerollte Haken-Strähnen (Ring 8, 6 Stützpunkte) statt 26 Kugeln | dichter besetzt, Silhouette bleibt „lockig“ |
+| Bürger c | `kurz5`: Schale, 8 Strähnen vom Seitenscheitel zur Seite, 11 anliegend rund um den Kopf, Spitzen leicht nach außen | Kurzbart-Schale + runder Schnurrbart (R5) |
+
+Weitere Änderungen
+- **Hände leicht geschützt** (`r6=True`): `_LODW` 0,4 für Hand-Ecken (Arm-Koordinate hinter dem Handgelenk), damit der Fingerblock beim Vereinfachen (62-lod) seine Form behält. Gilt für die 7 Figuren; Heldin/Noa/Ladenbesitzer/Jugendlicher bleiben bei R5 (Heldin: „sonst nichts anfassen“). Gesamt-`_LODW`: Haar 1, Schirm-Unterseite 1, Schirm/Knopf/Umschlag 0,9, Krone/Mütze 0,8, Haargummi/Bart/Blüte 0,6, Hände 0,4.
+- **Heldin**: Pony (5 Strähnen) und vordere Seitensträhnen (2) Ring 8 → 12; Rest unverändert. +392 Dreiecke → Steckbrief `gesamt=9290`, `lod=.48` (GLB-LOD1 3 835 ≤ 4 000). Der Mehrbedarf des geschützten Haars kommt fast vollständig aus dem Budget zurück (ungeschützter Körper nur −43 Dreiecke).
+- `D.PONY_R` (fkit.py/fkit2.py): Radius, in dem Haar-Normalen zur Pferdeschwanz-/Dutt-Achse zeigen; Standard `0,045·H/1,45` = bisheriges Verhalten (Heldin bitgleich).
+- Alte Stände: `test/fixtures/figuren/fig_<id>_r5alt.glb` (Heldin R5; die übrigen sieben sind der Stand R2 – R5 hatte sie nicht angefasst).
+
+### Messwerte (aus den geladenen GLB, three nach Draco; „Hülle“ = leichtes Netz aus 62-lod = LOD1/Umriss/Schatten)
+| Figur | Hauptnetz vorher → nachher | GLB-LOD1 vorher → nachher | Hülle vorher → nachher | Datei vorher → nachher |
+|---|---|---|---|---|
+| Heldin | 8 897 → **9 289** | 3 799 → **3 835** | 3 199 → **3 200** | 651 → 668 KB |
+| Rayan | 13 320 → **8 899** | 5 871 → **3 799** | 2 799 → **3 199** | 708 → 640 KB |
+| Prof. Veyran | 13 319 → **8 899** | 5 871 → **3 800** | 2 799 → **3 200** | 733 → 699 KB |
+| Mama | 13 320 → **8 897** | 5 872 → **3 800** | 2 800 → **3 200** | 679 → 642 KB |
+| Mirael | 13 320 → **8 899** | 5 872 → **3 799** | 2 799 → **3 199** | 720 → 692 KB |
+| Bürgerin a | 13 320 → **8 899** | 5 872 → **3 800** | 2 799 → **3 200** | 704 → 682 KB |
+| Bürgerin b | 13 319 → **8 899** | 5 870 → **3 800** | 2 800 → **3 200** | 736 → 716 KB |
+| Bürger c | 13 320 → **8 900** | 5 872 → **3 802** | 2 800 → **3 200** | 689 → 621 KB |
+
+Je Bild nah (Hauptnetz + Hülle + Schatten): −3,6 k je alter Figur (R2 → R6: 13,3 k + 2,8 k + 2,8 k → 8,9 k + 3,2 k + 3,2 k), Heldin +0,4 k. Fern (LOD1 + Hülle): −2,1 k je alter Figur (5,9 + 2,8 → 3,8 + 3,2), Heldin +0,04 k.
+
+Silhouette der vereinfachten Hülle (Test: Haar-/Bart-Dreiecke, orthografisch vorn/seitlich/oben, Ø XOR in %, R6-Hülle mit Schutz gegen „R4-Verfahren“ = 2,8 k ohne Schutz auf demselben Netz):
+Heldin 1,26 / 3,65 · Rayan 2,13 / 4,96 · Veyran 2,08 / 3,63 · Mama 1,27 / 3,78 · Mirael 1,51 / 3,61 · Bürgerin a 1,67 / 4,23 · Bürgerin b 3,23 / 4,71 · Bürger c 2,59 / 4,76 (R5-Figuren: Noa 1,15 · Ladenbesitzer 1,31 · Jugendlicher 0,78). Die R6-Figuren mit vielen kleinen Haarvolumen (Locken, Wolken, Stacheln, Bart) liegen etwas über den R5-Figuren, bleiben aber bei 34–69 % des R4-Verfahrens.
+
+### Tests / Bilder
+- `test/figuren2/test_modelle.mjs` (jetzt 101 Prüfungen): für alle elf R5/R6-Figuren Budget (Haupt ≤ 9 000, Heldin ≤ 9 300; GLB-LOD1 ≤ 4 000), `_LODW` im GLB, Hülle 2 900 … 3 300, Silhouette (R5-Figuren < 1,8 %/≤ 60 %, R6-Figuren < 3,4 %/≤ 70 % des R4-Verfahrens – Grenze für die R6-Figuren bewusst großzügiger, siehe oben), Hülle verdeckt keine Haarteile; neu **Rig/Clips/Shape Keys gegen die Fixtures** (`_r5alt`: 32 Knochen gleiche Namen/Reihenfolge/Lage, 7 Clips gleiche Namen/Dauer/Spuren, 9 Keys gleiche Namen).
+- Bilder `test/figuren/r6_vergleich_{studio,nah,welt}.webp` (Vorher oben grau / Nachher grün; `node test/figuren/r6_vergleich.mjs [studio|nah|welt|alle]`, Chromium-Sperre, vorher `node build.mjs`): studio = 8 Figuren ganz; nah = Köpfe vorn/schräg + von hinten; welt = echtes Spielbild Morgenau (Spielkamera, Umrisshülle an). Messwerte in `r6_vergleich.json`.
+
+### Offen / ehrlich
+- Aus Nahaufnahme sind Strähnen/Büschel noch leicht facettiert (Ring 8–10); Wolken (Veyran) und Locken (Bürgerin b) wirken eher „Pappmaché“ als weich – mehr Ringe kosten das geschützte Haar-Budget der Hülle (Locken mit 5 statt 6 Stützpunkten: Hülle schien durch, Haken knickt).
+- Alter Mangel, nicht Teil von R6: Ärmel von Mirael/Bürgerin a/Veyran zeigen dunkle AO-Flecken, Veyrans Mantelsaum wirkt nach dem Reduzieren etwas fleckig (Kittel/Mantel-Schale trägt jetzt die Reduktion).
+- Rayan: Stacheln sind nach hinten/oben gerichtet, von vorn lesen sie sich als rote „Krone“ (wie R2), nicht als einzelne Zacken.
+- Mama/Mirael: Dutt als Spirale wirkt von hinten schön rund, von der Seite etwas hoch; Mirael-Blüte sitzt knapp neben dem Dutt.
+- Im Weltbild (`r6_vergleich_welt.webp`) verdeckt die Kamera Mirael und Bürger c hinter den vorderen NPCs; Ansicht aller Figuren in `studio`/`nah`.
+- Hände (Fingerblock) in Faust-/Wurfposen weiterhin als Block; `_LODW` 0,4 für Hände nur bei den 7 Figuren der Runde.
+
+**Abschluss-Tests Runde 6 (16.11.):** build ok · smoke „Keine Fehler.“ (2. Lauf, 1. Lauf Timeouts unter Last) · test_modelle 101 ✓ · uebergaenge_qa 97 ✓ · name_eingabe 4 ✓ · terras2 35 ✓ (3. Lauf; 2 Läufe mit je 1 flackernden Kampf-Fenster) · **stabil_qa 60 ✓ / 2 ✗** (zweiter Lauf; erster 58/4).
+Offen/Ursache stabil_qa: „M 932×430 Budget Handy Morgenau“ und „R4 Budget Morgenau hält MIT sichtbaren Umrissen“ – 93 458 Dreiecke (≤ 100 k ok), aber **61 Draw-Calls (> 60)**, deterministisch bei 932×430. A/B mit den alten `_r5alt`-Modellen in dist/: 62 ✓ (89 465 Dreiecke, 59 Calls, Stufe 5). Ursache: Die neuen Figuren sind leichter („vorher“ 80 144 statt 102 223 Dreiecke), der Qualitätsregler (dreiecksgesteuert) bleibt deshalb auf Stufe 6 statt 5, und Stufe 6 kostet 61 statt 59 Calls. Kein Modell-Defekt (gleiche Mesh-/Material-Struktur, 4 Meshes, 2 Materialien); die Draw-Call-Grenze wird im Regler nicht berücksichtigt. Schwellen unverändert. Vorschlag: Regler um Call-Budget ergänzen (src/, nicht Figuren-Aufgabe).

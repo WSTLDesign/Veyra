@@ -40,7 +40,7 @@
     "e": 0.36
    },
    "ok": true,
-   "ms": 750,
+   "ms": 733,
    "arrive": {
     "id": "haus_spieler",
     "x": 5,
@@ -70,7 +70,7 @@
     "e": -0.36
    },
    "ok": true,
-   "ms": 1300,
+   "ms": 1317,
    "arrive": {
     "id": "morgenau",
     "x": 4,
@@ -160,7 +160,7 @@
     "e": 0.36
    },
    "ok": true,
-   "ms": 483,
+   "ms": 500,
    "arrive": {
     "id": "labor",
     "x": 5,
@@ -270,9 +270,9 @@
     "log": {
      "from": "morgenau",
      "to": "route1",
-     "t0": 41192,
-     "shown": 565,
-     "ms": 5020
+     "t0": 38596,
+     "shown": 530,
+     "ms": 4995
     }
    },
    "expLd": true
@@ -307,9 +307,9 @@
     "log": {
      "from": "morgenau",
      "to": "route1",
-     "t0": 51195,
+     "t0": 48023,
      "shown": 243,
-     "ms": 4514
+     "ms": 3841
     }
    },
    "expLd": true
@@ -344,9 +344,9 @@
     "log": {
      "from": "route1",
      "to": "morgenau",
-     "t0": 59466,
+     "t0": 56599,
      "shown": 243,
-     "ms": 3486
+     "ms": 3017
     }
    },
    "expLd": true
@@ -381,9 +381,9 @@
     "log": {
      "from": "route1",
      "to": "morgenau",
-     "t0": 65884,
-     "shown": 243,
-     "ms": 3239
+     "t0": 63184,
+     "shown": 548,
+     "ms": 2976
     }
    },
    "expLd": true
@@ -418,9 +418,9 @@
     "log": {
      "from": "route1",
      "to": "kupferhain",
-     "t0": 71904,
-     "shown": 243,
-     "ms": 3887
+     "t0": 69536,
+     "shown": 244,
+     "ms": 3449
     }
    },
    "expLd": true
@@ -455,9 +455,9 @@
     "log": {
      "from": "route1",
      "to": "kupferhain",
-     "t0": 79419,
-     "shown": 658,
-     "ms": 3058
+     "t0": 76265,
+     "shown": 459,
+     "ms": 3590
     }
    },
    "expLd": true
@@ -492,9 +492,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 85497,
-     "shown": 249,
-     "ms": 3631
+     "t0": 83823,
+     "shown": 575,
+     "ms": 3659
     }
    },
    "expLd": true
@@ -529,9 +529,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 92189,
-     "shown": 249,
-     "ms": 3671
+     "t0": 90205,
+     "shown": 244,
+     "ms": 2762
     }
    },
    "expLd": true
@@ -566,9 +566,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 92189,
-     "shown": 249,
-     "ms": 3671
+     "t0": 90205,
+     "shown": 244,
+     "ms": 2762
     }
    },
    "expLd": false
@@ -603,9 +603,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 92189,
-     "shown": 249,
-     "ms": 3671
+     "t0": 90205,
+     "shown": 244,
+     "ms": 2762
     }
    },
    "expLd": false
@@ -640,9 +640,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 92189,
-     "shown": 249,
-     "ms": 3671
+     "t0": 90205,
+     "shown": 244,
+     "ms": 2762
     }
    },
    "expLd": false
@@ -677,9 +677,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route1",
-     "t0": 92189,
-     "shown": 249,
-     "ms": 3671
+     "t0": 90205,
+     "shown": 244,
+     "ms": 2762
     }
    },
    "expLd": false
@@ -714,9 +714,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route2",
-     "t0": 114064,
-     "shown": 251,
-     "ms": 4016
+     "t0": 109405,
+     "shown": 535,
+     "ms": 3896
     }
    },
    "expLd": true
@@ -751,9 +751,9 @@
     "log": {
      "from": "kupferhain",
      "to": "route2",
-     "t0": 120935,
-     "shown": 246,
-     "ms": 3639
+     "t0": 115961,
+     "shown": 242,
+     "ms": 3462
     }
    },
    "expLd": true
@@ -788,46 +788,46 @@
     "log": {
      "from": "route2",
      "to": "nebelgrotte",
-     "t0": 127914,
-     "shown": 243,
-     "ms": 4683
-    }
-   },
-   "expLd": true
-  },
-  {
-   "name": "Route 2 → Nebelgrotte (erste Höhle)",
-   "side": "rechts",
-   "run": true,
-   "plan": {
-    "th": -0.44,
-    "L": 3.2,
-    "e": 0.36
-   },
-   "ok": true,
-   "ms": 867,
-   "arrive": {
-    "id": "nebelgrotte",
-    "x": 9,
-    "y": 12,
-    "px": 9,
-    "py": 12,
-    "ld": 1,
-    "fd": 0,
-    "bumps": 0,
-    "inZ": false,
-    "ret": {
-     "map": "route2",
-     "x": 10,
-     "y": 3
-    },
-    "mode": "world",
-    "log": {
-     "from": "route2",
-     "to": "nebelgrotte",
-     "t0": 137529,
+     "t0": 122299,
      "shown": 244,
-     "ms": 3345
+     "ms": 4279
+    }
+   },
+   "expLd": true
+  },
+  {
+   "name": "Route 2 → Nebelgrotte (erste Höhle)",
+   "side": "rechts",
+   "run": true,
+   "plan": {
+    "th": -0.44,
+    "L": 3.2,
+    "e": 0.36
+   },
+   "ok": true,
+   "ms": 867,
+   "arrive": {
+    "id": "nebelgrotte",
+    "x": 9,
+    "y": 12,
+    "px": 9,
+    "py": 12,
+    "ld": 1,
+    "fd": 0,
+    "bumps": 0,
+    "inZ": false,
+    "ret": {
+     "map": "route2",
+     "x": 10,
+     "y": 3
+    },
+    "mode": "world",
+    "log": {
+     "from": "route2",
+     "to": "nebelgrotte",
+     "t0": 130847,
+     "shown": 242,
+     "ms": 2924
     }
    },
    "expLd": true
@@ -862,9 +862,9 @@
     "log": {
      "from": "nebelgrotte",
      "to": "route2",
-     "t0": 145250,
-     "shown": 243,
-     "ms": 2794
+     "t0": 137927,
+     "shown": 631,
+     "ms": 2772
     }
    },
    "expLd": true
@@ -899,9 +899,9 @@
     "log": {
      "from": "nebelgrotte",
      "to": "route2",
-     "t0": 150424,
-     "shown": 660,
-     "ms": 3504
+     "t0": 143564,
+     "shown": 242,
+     "ms": 2883
     }
    },
    "expLd": true
@@ -936,9 +936,9 @@
     "log": {
      "from": "route2",
      "to": "kupferhain",
-     "t0": 157829,
-     "shown": 243,
-     "ms": 3552
+     "t0": 149346,
+     "shown": 520,
+     "ms": 3690
     }
    },
    "expLd": true
@@ -973,9 +973,9 @@
     "log": {
      "from": "route2",
      "to": "kupferhain",
-     "t0": 164662,
-     "shown": 245,
-     "ms": 3781
+     "t0": 155677,
+     "shown": 243,
+     "ms": 3825
     }
    },
    "expLd": true
@@ -1053,83 +1053,83 @@
  "laden": [
   {
    "to": "route1",
-   "ms": 5020,
-   "shown": 565
+   "ms": 4995,
+   "shown": 530
   },
   {
    "to": "route1",
-   "ms": 4514,
+   "ms": 3841,
    "shown": 243
   },
   {
    "to": "morgenau",
-   "ms": 3486,
+   "ms": 3017,
    "shown": 243
   },
   {
    "to": "morgenau",
-   "ms": 3239,
-   "shown": 243
+   "ms": 2976,
+   "shown": 548
   },
   {
    "to": "kupferhain",
-   "ms": 3887,
-   "shown": 243
+   "ms": 3449,
+   "shown": 244
   },
   {
    "to": "kupferhain",
-   "ms": 3058,
-   "shown": 658
+   "ms": 3590,
+   "shown": 459
   },
   {
    "to": "route1",
-   "ms": 3631,
-   "shown": 249
+   "ms": 3659,
+   "shown": 575
   },
   {
    "to": "route1",
-   "ms": 3671,
-   "shown": 249
-  },
-  {
-   "to": "route2",
-   "ms": 4016,
-   "shown": 251
-  },
-  {
-   "to": "route2",
-   "ms": 3639,
-   "shown": 246
-  },
-  {
-   "to": "nebelgrotte",
-   "ms": 4683,
-   "shown": 243
-  },
-  {
-   "to": "nebelgrotte",
-   "ms": 3345,
+   "ms": 2762,
    "shown": 244
   },
   {
    "to": "route2",
-   "ms": 2794,
-   "shown": 243
+   "ms": 3896,
+   "shown": 535
   },
   {
    "to": "route2",
-   "ms": 3504,
-   "shown": 660
+   "ms": 3462,
+   "shown": 242
+  },
+  {
+   "to": "nebelgrotte",
+   "ms": 4279,
+   "shown": 244
+  },
+  {
+   "to": "nebelgrotte",
+   "ms": 2924,
+   "shown": 242
+  },
+  {
+   "to": "route2",
+   "ms": 2772,
+   "shown": 631
+  },
+  {
+   "to": "route2",
+   "ms": 2883,
+   "shown": 242
   },
   {
    "to": "kupferhain",
-   "ms": 3552,
+   "ms": 3690,
+   "shown": 520
+  },
+  {
+   "to": "kupferhain",
+   "ms": 3825,
    "shown": 243
-  },
-  {
-   "to": "kupferhain",
-   "ms": 3781,
-   "shown": 245
   }
  ]
 }

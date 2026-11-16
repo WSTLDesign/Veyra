@@ -1,0 +1,188 @@
+{
+ "laden": {
+  "laden": {
+   "fig_heldin": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_rayan": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_veyran": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_mama": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_mirael": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_buerger_a": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_buerger_b": {
+    "alt": true,
+    "neu": true
+   },
+   "fig_buerger_c": {
+    "alt": true,
+    "neu": true
+   }
+  },
+  "lodPend": 0
+ },
+ "dreiecke": {
+  "fig_heldin_r5alt": {
+   "haupt": 8897,
+   "lod1Glb": 3799,
+   "huelle": 3199,
+   "schutz": true,
+   "geschuetzteEcken": 2790
+  },
+  "fig_heldin": {
+   "haupt": 9289,
+   "lod1Glb": 3835,
+   "huelle": 3200,
+   "schutz": true,
+   "geschuetzteEcken": 3207
+  },
+  "fig_rayan_r5alt": {
+   "haupt": 13320,
+   "lod1Glb": 5871,
+   "huelle": 2799,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_rayan": {
+   "haupt": 8899,
+   "lod1Glb": 3799,
+   "huelle": 3199,
+   "schutz": true,
+   "geschuetzteEcken": 3358
+  },
+  "fig_veyran_r5alt": {
+   "haupt": 13319,
+   "lod1Glb": 5871,
+   "huelle": 2799,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_veyran": {
+   "haupt": 8899,
+   "lod1Glb": 3800,
+   "huelle": 3200,
+   "schutz": true,
+   "geschuetzteEcken": 4694
+  },
+  "fig_mama_r5alt": {
+   "haupt": 13320,
+   "lod1Glb": 5872,
+   "huelle": 2800,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_mama": {
+   "haupt": 8897,
+   "lod1Glb": 3800,
+   "huelle": 3200,
+   "schutz": true,
+   "geschuetzteEcken": 3057
+  },
+  "fig_mirael_r5alt": {
+   "haupt": 13320,
+   "lod1Glb": 5872,
+   "huelle": 2799,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_mirael": {
+   "haupt": 8899,
+   "lod1Glb": 3799,
+   "huelle": 3199,
+   "schutz": true,
+   "geschuetzteEcken": 3414
+  },
+  "fig_buerger_a_r5alt": {
+   "haupt": 13320,
+   "lod1Glb": 5872,
+   "huelle": 2799,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_buerger_a": {
+   "haupt": 8899,
+   "lod1Glb": 3800,
+   "huelle": 3200,
+   "schutz": true,
+   "geschuetzteEcken": 3483
+  },
+  "fig_buerger_b_r5alt": {
+   "haupt": 13319,
+   "lod1Glb": 5870,
+   "huelle": 2800,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_buerger_b": {
+   "haupt": 8899,
+   "lod1Glb": 3800,
+   "huelle": 3200,
+   "schutz": true,
+   "geschuetzteEcken": 4531
+  },
+  "fig_buerger_c_r5alt": {
+   "haupt": 13320,
+   "lod1Glb": 5872,
+   "huelle": 2800,
+   "schutz": false,
+   "geschuetzteEcken": 0
+  },
+  "fig_buerger_c": {
+   "haupt": 8900,
+   "lod1Glb": 3802,
+   "huelle": 3200,
+   "schutz": true,
+   "geschuetzteEcken": 3677
+  }
+ },
+ "fehlerStudio": [],
+ "weltSetup": {
+  "best": [
+   13,
+   10
+  ],
+  "col": {
+   "fig_buerger_a": "#404040",
+   "fig_buerger_b": "#c48799",
+   "fig_buerger_c": "#68c123"
+  }
+ },
+ "welt": [
+  {
+   "label": "Vorher R5-Stand",
+   "held": true,
+   "modelle": 8,
+   "umrisse": 27,
+   "aufloesung": [
+    800,
+    450
+   ]
+  },
+  {
+   "label": "Nachher R6",
+   "held": true,
+   "modelle": 8,
+   "umrisse": 27,
+   "aufloesung": [
+    800,
+    450
+   ]
+  }
+ ],
+ "fehlerWelt": []
+}

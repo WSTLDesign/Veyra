@@ -1,5 +1,6 @@
 // Figuren Runde 2 – Test mit Schalter an: lädt alle Figuren-GLB, baut sie (figMake), prüft Clips/Shape Keys/LOD, Zuordnung figModelFor,
 // Runde 5: Budgets Heldin/Noa/Ladenbesitzer/Jugendlicher (≤ 9 k, LOD1 ≤ 4 k), Schutzgewicht _LODW, Haar-/Kappen-Silhouette der vereinfachten Hülle (62-lod), Hülle verdeckt keine Haarteile,
+// Runde 6: dasselbe für Rayan, Prof. Veyran, Mama, Mirael, Bürger a/b/c (Heldin Haupt ≤ 9 300), Hülle ≈ 3,2 k, Rig/Clips/Shape Keys bitgleich zum R5-Stand (test/fixtures/figuren/fig_<id>_r5alt.glb),
 // Morgenau mit Held + NPCs (person3d-Haken) und Gang-Tick – ohne Konsolenfehler.  Sperre nehmen!  node test/figuren2/test_modelle.mjs
 import { start, page, newGame, reporter } from '../qa_lc_lib.mjs';
 const R = reporter('figuren2/test_modelle.txt', 'Figuren Runde 2 – Modelle (Schalter an)');
@@ -19,8 +20,9 @@ for (const c of chk) {
   R.t(c.id + ' 9 Shape Keys', c.keys === 9, c.keys);
   R.t(c.id + ' Dreiecke 8–14 k, LOD ≈ 50 %', c.tris >= 8000 && c.tris <= 14000 && c.lod && c.lodTris < c.tris * .62, { tris: c.tris, lod: c.lodTris });
 }
-// ---------- Figuren Runde 5: Budgets der neu bearbeiteten Figuren, Schutzgewicht _LODW, Haar-/Kappen-Silhouette der vereinfachten Hülle (62-lod) ----------
-const R5 = ['fig_heldin', 'fig_noa', 'fig_haendler', 'fig_buerger_d'];
+// ---------- Figuren Runde 5 + 6: Budgets der neu bearbeiteten Figuren, Schutzgewicht _LODW, Haar-/Kappen-Silhouette der vereinfachten Hülle (62-lod) ----------
+const R6 = ['fig_rayan', 'fig_veyran', 'fig_mama', 'fig_mirael', 'fig_buerger_a', 'fig_buerger_b', 'fig_buerger_c'];
+const R5 = ['fig_heldin', 'fig_noa', 'fig_haendler', 'fig_buerger_d', ...R6];   // alle Figuren auf R5-Technik (Heldin ab R6 mit Ring 12: Haupt ≤ 9 300)
 const r5 = await p.evaluate(async (ids) => {
   for (let i = 0; i < 900 && (LOD4.pend > 0 || LOD_Q.length); i++) await new Promise(r => setTimeout(r, 100));
   // orthografische Maske (Kopfbereich) aus Dreiecken: tri = [[a,b,c] Eckindizes in P]; Ansicht vorn (x,y), links (z,y), oben (x,-z)
@@ -51,9 +53,10 @@ const r5 = await p.evaluate(async (ids) => {
     out[id] = o; }
   return { figs: out, schutzNetze: LOD4.wN || 0 }; }, R5);
 for (const id of R5) { const o = r5.figs[id];
-  R.t(id + ' R5-Budget: Hauptnetz ≤ 9 000, GLB-LOD1 ≤ 4 000', o && o.haupt <= 9000 && o.lod1Glb <= 4000, o && { haupt: o.haupt, lod1Glb: o.lod1Glb });
+  R.t(id + (id === 'fig_heldin' ? ' R6-Budget: Hauptnetz ≤ 9 300 (Pony/Seiten Ring 12), GLB-LOD1 ≤ 4 000' : ' R5/R6-Budget: Hauptnetz ≤ 9 000, GLB-LOD1 ≤ 4 000'), o && o.haupt <= (id === 'fig_heldin' ? 9300 : 9000) && o.lod1Glb <= 4000, o && { haupt: o.haupt, lod1Glb: o.lod1Glb });
   R.t(id + ' Schutzgewicht _LODW im GLB, Laufzeit-Hülle/LOD1 ≈ 3,2 k (≤ 3 300)', o && o.schutz && o.huelle > 2900 && o.huelle <= 3300, o && { schutz: o.schutz, huelle: o.huelle });
-  R.t(id + ' Haar-/Kappen-Silhouette der Hülle: Ø XOR < 1,8 % und ≤ 60 % des R4-Verfahrens', o && o.silR5 < 1.8 && o.silR5 <= o.silR4 * .6, o && { r5: o.silR5, r4Verfahren: o.silR4, je: o.sil });
+  const lim = R6.includes(id) ? [3.4, .7] : [1.8, .6];   // R6-Figuren haben viele kleine Haarvolumen (Locken, Wolken, Stacheln) → etwas großzügiger; Ziel bleibt klar unter dem R4-Verfahren
+  R.t(id + ' Haar-/Kappen-Silhouette der Hülle: Ø XOR < ' + String(lim[0]).replace('.', ',') + ' % und ≤ ' + lim[1] * 100 + ' % des R4-Verfahrens', o && o.silR5 < lim[0] && o.silR5 <= o.silR4 * lim[1], o && { r5: o.silR5, r4Verfahren: o.silR4, je: o.sil });
 }
 // Hülle darf geschlossene Haarteile nicht verdecken (R4: Pferdeschwanz war nach innen gewickelt → BackSide-Hülle lag davor, „Schattenseite zu dunkel“)
 const hb = await p.evaluate(async (ids) => { const rr = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true }); rr.setPixelRatio(1); rr.setSize(160, 240);
@@ -68,6 +71,17 @@ const hb = await p.evaluate(async (ids) => { const rr = new THREE.WebGLRenderer(
     hs.forEach(x => x.visible = true); S.remove(o); out[id] = res; }
   PILOT.lodD = lodD; rr.dispose(); return out; }, R5);
 for (const id of R5) R.t(id + ' Umrisshülle verdeckt keine Haarteile (Bildanteil verändert < 8 % je Ansicht hinten/seitlich/schräg)', hb[id] && hb[id].every(x => x < 8), hb[id]);
+// ---------- Runde 6: Rig (32 Knochen: Namen, Reihenfolge, Lage), 7 Clips (Namen, Dauer, Spuren), 9 Shape Keys bitgleich zum R5-Stand (Fixture) ----------
+const rig = await p.evaluate(async (ids) => { const out = {};
+  const info = (g) => { let sk = null, fk = []; g.scene.traverse(m => { if (m.isSkinnedMesh && m.name === 'Koerper') sk = m.skeleton; if (m.isMesh && /^Gesicht/.test(m.name) && m.morphTargetDictionary && !fk.length) fk = Object.keys(m.morphTargetDictionary); });
+    g.scene.updateMatrixWorld(true); const v = new THREE.Vector3(); return { bones: sk.bones.map(b => [b.name, b.getWorldPosition(v.clone()).toArray()]), clips: g.animations.map(a => [a.name, +a.duration.toFixed(3), a.tracks.length, a.tracks.map(t => t.name).sort().join('|')]), keys: fk }; };
+  for (const id of ids) { const k = id + '_r5alt'; FIG_MODELS[k] = Object.assign({}, FIG_MODELS[id]); PILOT.fix[k] = Object.assign({}, PILOT.fix[id]); PILOT.src[k] = 'fixtures/figuren/' + id + '_r5alt.glb'; const a = await pilotLoad(k), b = PILOT.gltf[id];
+    if (!a || !b) { out[id] = { fehler: 'nicht geladen', alt: !!a, neu: !!b }; continue; }
+    const A = info(a), B = info(b); let dmax = 0; if (A.bones.length === B.bones.length) A.bones.forEach((q, i) => { for (let j = 0; j < 3; j++) dmax = Math.max(dmax, Math.abs(q[1][j] - B.bones[i][1][j])); });
+    out[id] = { knochen: B.bones.length, namenGleich: JSON.stringify(A.bones.map(q => q[0])) === JSON.stringify(B.bones.map(q => q[0])), lageMax: +dmax.toFixed(6), clipsGleich: JSON.stringify(A.clips) === JSON.stringify(B.clips), clips: B.clips.map(c => c[0]).join(','), keysGleich: JSON.stringify(A.keys) === JSON.stringify(B.keys), keys: B.keys.length }; }
+  return out; }, ['fig_heldin', ...R6]);
+for (const id of ['fig_heldin', ...R6]) { const o = rig[id];
+  R.t(id + ' Rig/Clips/Shape Keys unverändert gegen R5-Fixture (32 Knochen gleiche Namen + Lage ≤ 0,001 m, 7 Clips gleiche Namen/Dauer/Spuren, 9 Keys gleiche Namen)', o && o.knochen === 32 && o.namenGleich && o.lageMax <= .001 && o.clipsGleich && /idle,walk,jog,run,winken,jubeln,werfen/.test(o.clips) && o.keysGleich && o.keys === 9, o); }
 R.note('R5 Silhouette (Ø XOR %, R5 / R4-Verfahren): ' + R5.map(id => id + ' ' + (r5.figs[id] && r5.figs[id].silR5) + ' / ' + (r5.figs[id] && r5.figs[id].silR4)).join(' · '));
 const map = await p.evaluate(() => ({ held: figModelFor('#000', '#000', { body: 'held' }), heldin: figModelFor('#000', '#000', { body: 'heldin' }), veyran: figModelFor('#fff', '#fff', { look: FIGURES.veyran.look }),
   mirael: figModelFor('#fff', '#fff', { look: FIGURES.mirael.look }), shop: figModelFor('#6aa0e0', '#333'), buerger: figModelFor('#7a9a5a', '#333'), tarek: figModelFor('#fff', '#fff', { look: FIGURES.tarek.look }) }));

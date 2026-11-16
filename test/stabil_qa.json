@@ -23,8 +23,8 @@
     "calls": 0,
     "modelle": true,
     "oneoff": 0,
-    "frames": 1,
-    "work": 0,
+    "frames": 3,
+    "work": 158.1,
     "emerg": 0,
     "downs": 0,
     "ups": 0,
@@ -34,7 +34,20 @@
     "stopped": 0,
     "ws": false,
     "gls": 0,
-    "long": [],
+    "long": [
+     {
+      "js": 0,
+      "ev": [],
+      "prog": 0,
+      "tex": 0,
+      "geo": 0,
+      "map": "",
+      "mode": "title",
+      "tier": "mid",
+      "t": 0.4,
+      "ms": 350
+     }
+    ],
     "q": {
      "wait": 0,
      "done": 0,
@@ -43,7 +56,7 @@
      "busy": true
     },
     "log": [
-     "332 GPU igpu · Start mid · Deckel mid · ∞ fps"
+     "242 GPU igpu · Start mid · Deckel mid · ∞ fps"
     ],
     "lod": {
      "on": true,
@@ -73,28 +86,28 @@
    }
   },
   "morgenau": {
-   "loadS": "31.0",
+   "loadS": "28.9",
    "queue": {
     "w": 0,
     "b": false,
     "d": 12
    },
    "laden": {
-    "ltMax": 4923,
-    "ltN": 9,
-    "ltSum": 13044
+    "ltMax": 4966,
+    "ltN": 5,
+    "ltSum": 15030
    },
    "danach": {
     "ms": 15000,
-    "rafN": 565,
-    "rafAvg": 26.6,
-    "rafMax": 1017,
+    "rafN": 662,
+    "rafAvg": 22.7,
+    "rafMax": 2300,
     "slow": 0.01,
-    "ltMax": 1021,
-    "ltN": 6,
-    "ltSum": 5704,
-    "lag": 940,
-    "frames": 6,
+    "ltMax": 2312,
+    "ltN": 4,
+    "ltSum": 4060,
+    "lag": 2280,
+    "frames": 3,
     "tier": "low",
     "scale": 0.5,
     "stab": {
@@ -102,41 +115,41 @@
      "lim": "low",
      "smax": 0.5,
      "fps": 0,
-     "emerg": 3,
-     "downs": 0,
+     "emerg": 1,
+     "downs": 1,
      "q": {
       "wait": 0,
       "done": 12,
       "fail": 0,
-      "max": 8,
+      "max": 6,
       "busy": false
      }
     },
-    "occ": 0.38
+    "occ": 0.27
    }
   },
   "route1": {
-   "loadS": "13.9",
+   "loadS": "14.1",
    "queue": {
     "w": 0,
     "b": false,
     "d": 15
    },
    "laden": {
-    "ltMax": 3975,
-    "ltN": 3,
-    "ltSum": 6378
+    "ltMax": 3118,
+    "ltN": 4,
+    "ltSum": 5210
    },
    "danach": {
     "ms": 15000,
-    "rafN": 575,
-    "rafAvg": 26.1,
-    "rafMax": 1117,
+    "rafN": 593,
+    "rafAvg": 25.3,
+    "rafMax": 1183,
     "slow": 0.01,
-    "ltMax": 1127,
+    "ltMax": 1196,
     "ltN": 5,
-    "ltSum": 5494,
-    "lag": 1086,
+    "ltSum": 5184,
+    "lag": 1188,
     "frames": 5,
     "tier": "low",
     "scale": 0.5,
@@ -145,17 +158,17 @@
      "lim": "low",
      "smax": 0.5,
      "fps": 0,
-     "emerg": 4,
-     "downs": 0,
+     "emerg": 3,
+     "downs": 1,
      "q": {
       "wait": 0,
       "done": 15,
       "fail": 0,
-      "max": 8,
+      "max": 6,
       "busy": false
      }
     },
-    "occ": 0.37
+    "occ": 0.35
    }
   },
   "models": {
@@ -182,59 +195,59 @@
     ],
     [
      "fig_buerger_b",
-     919
+     180
     ],
     [
      "haus",
-     87
+     109
     ],
     [
      "station",
-     1105
+     242
     ],
     [
      "labor",
-     2063
+     184
     ],
     [
      "laden",
-     1206
+     2290
     ],
     [
      "fig_mama",
-     167
+     171
     ],
     [
      "fig_buerger_c",
-     340
+     213
     ],
     [
      "fig_buerger_d",
-     2045
+     111
     ],
     [
      "fig_buerger_a",
-     167
+     669
     ],
     [
      "t001",
-     331
+     133
     ],
     [
      "t004",
-     3201
+     194
     ],
     [
      "t059",
-     250
+     3474
     ],
     [
      "t112",
-     179
+     1687
     ],
     [
      "t061",
-     211
+     346
     ]
    ]
   },
@@ -247,7 +260,7 @@
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 1,
+   "lag": 5,
    "frames": 0,
    "tier": "low",
    "scale": 0.5,
@@ -256,20 +269,20 @@
     "lim": "low",
     "smax": 0.5,
     "fps": 0,
-    "emerg": 4,
+    "emerg": 3,
     "downs": 3,
     "q": {
      "wait": 0,
      "done": 15,
      "fail": 0,
-     "max": 8,
+     "max": 6,
      "busy": false
     }
    }
   }
  },
  "haeuser_sofort_844": {
-  "anteil": 0.419,
+  "anteil": 0.42,
   "kasten": true,
   "modell": 0,
   "hausSt": 1
@@ -287,10 +300,10 @@
    102223,
    57
   ],
-  "tris": 79393,
-  "calls": 55,
+  "tris": 89465,
+  "calls": 59,
   "tier": "mid",
-  "modelle": 6,
+  "modelle": 7,
   "umriss": {
    "heldin": {
     "lod4": true,
@@ -298,7 +311,15 @@
     "sichtbar": 1,
     "tris": 3200
    },
-   "naechste": []
+   "naechste": [
+    {
+     "k": "t001",
+     "d": 0.6,
+     "n": 5,
+     "sichtbar": 3,
+     "tris": 7814
+    }
+   ]
   }
  },
  "mobil_844": {
@@ -307,16 +328,16 @@
   "base": "mid",
   "blur": false,
   "off": false,
-  "cap": 30,
+  "cap": 60,
   "dpr": 1.75,
   "models": true,
-  "frames": 2,
+  "frames": 3,
   "touch": true,
   "ws": false,
   "url": ""
  },
  "haeuser_sofort_932": {
-  "anteil": 0.409,
+  "anteil": 0.411,
   "kasten": true,
   "modell": 0,
   "hausSt": 1
@@ -334,10 +355,10 @@
    102223,
    57
   ],
-  "tris": 79393,
-  "calls": 55,
+  "tris": 89465,
+  "calls": 59,
   "tier": "mid",
-  "modelle": 6,
+  "modelle": 7,
   "umriss": {
    "heldin": {
     "lod4": true,
@@ -345,15 +366,23 @@
     "sichtbar": 1,
     "tris": 3200
    },
-   "naechste": []
+   "naechste": [
+    {
+     "k": "t001",
+     "d": 0.6,
+     "n": 5,
+     "sichtbar": 3,
+     "tris": 2616
+    }
+   ]
   }
  },
  "budget_kupferhain_932": {
   "dev": "touch",
   "lvl": 6,
   "vorher": [
-   139701,
-   82
+   135231,
+   87
   ],
   "tris": 80831,
   "calls": 57,
@@ -386,13 +415,13 @@
  },
  "budget_route1_932": {
   "dev": "touch",
-  "lvl": 6,
+  "lvl": 5,
   "vorher": [
-   74628,
-   59
+   74258,
+   56
   ],
-  "tris": 70454,
-  "calls": 60,
+  "tris": 74258,
+  "calls": 56,
   "tier": "mid",
   "modelle": 10,
   "umriss": {
@@ -407,15 +436,8 @@
      "k": "t001",
      "d": 1,
      "n": 5,
-     "sichtbar": 2,
-     "tris": 2000
-    },
-    {
-     "k": "t059",
-     "d": 3.2,
-     "n": 5,
-     "sichtbar": 2,
-     "tris": 2010
+     "sichtbar": 3,
+     "tris": 2616
     }
    ]
   }
@@ -433,76 +455,76 @@
      "?",
      11772,
      2800,
-     87798
+     62095
     ],
     [
      "?",
      11772,
      2800,
-     73860
+     54659
     ],
     [
      "?",
      7601,
      3199,
-     57068
+     48339
     ],
     [
      "?",
      11772,
      2799,
-     33470
+     27284
     ],
     [
      "?",
      2999,
      833,
-     17055
+     13140
     ],
     [
      "?",
      4199,
      1167,
-     19769
-    ],
-    [
-     "?",
-     4599,
-     1132,
-     23262
-    ],
-    [
-     "?",
-     3600,
-     878,
-     25692
+     14851
     ],
     [
      "?",
      3200,
      984,
-     16350
+     29007
     ],
     [
      "?",
      3304,
      1016,
-     18755
+     31252
+    ],
+    [
+     "?",
+     4599,
+     1132,
+     17103
+    ],
+    [
+     "?",
+     3600,
+     878,
+     19254
     ],
     [
      "?",
      2954,
      901,
-     11008
+     9929
     ],
     [
      "?",
      3600,
      1099,
-     12842
+     11723
     ]
    ],
-   "frz": 363
+   "frz": 465
   },
   "heldin": {
    "koerper": 7602,
@@ -524,28 +546,19 @@
  },
  "r4_laden_morgenau": {
   "nach": {
-   "bilder": 13,
+   "bilder": 15,
    "prog": 0,
-   "tex": 12,
-   "jsMax": 31,
-   "msMax": 1033,
+   "tex": 7,
+   "jsMax": 32,
+   "msMax": 733,
    "lang": [
     {
-     "at": 770,
-     "ms": 783,
-     "js": 31,
+     "at": 624,
+     "ms": 617,
+     "js": 32,
      "prog": 0,
-     "tex": 7,
+     "tex": 9,
      "geo": 5,
-     "ev": []
-    },
-    {
-     "at": 1753,
-     "ms": 983,
-     "js": 10,
-     "prog": 0,
-     "tex": 5,
-     "geo": 2,
      "ev": []
     }
    ]
@@ -555,52 +568,42 @@
    "wait": 0,
    "busy0": false,
    "offen": [],
-   "warm": 16,
+   "warm": 7,
    "prog": 0,
-   "tex": 2
+   "tex": 1
   },
   "lade": {
    "from": "route1",
    "to": "morgenau",
-   "t0": 334445,
-   "shown": 1457,
-   "ms": 6216
+   "t0": 299844,
+   "shown": 1364,
+   "ms": 5601
   }
  },
  "r4_laden_kupferhain": {
   "nach": {
-   "bilder": 13,
+   "bilder": 14,
    "prog": 0,
-   "tex": -8,
-   "jsMax": 30,
-   "msMax": 1000,
-   "lang": [
-    {
-     "at": 7980,
-     "ms": 700,
-     "js": 11,
-     "prog": 0,
-     "tex": 2,
-     "geo": 0,
-     "ev": []
-    }
-   ]
+   "tex": -17,
+   "jsMax": 12,
+   "msMax": 1233,
+   "lang": []
   },
   "hold": {
    "map": "kupferhain",
    "wait": 0,
    "busy0": false,
    "offen": [],
-   "warm": 51,
+   "warm": 33,
    "prog": 0,
-   "tex": 22
+   "tex": 21
   },
   "lade": {
    "from": "morgenau",
    "to": "kupferhain",
-   "t0": 351358,
-   "shown": 1321,
-   "ms": 7603
+   "t0": 315059,
+   "shown": 1216,
+   "ms": 6403
   }
  },
  "wackel": {
@@ -612,8 +615,8 @@
    "abstandSd": 0.2,
    "heldinQuer": 0,
    "heldinQuerMax": 0,
-   "kameraQuer": 0.0874,
-   "kameraQuerMax": 0.1575,
+   "kameraQuer": 0.0875,
+   "kameraQuerMax": 0.1574,
    "kameraHoeheSd": 0.1629,
    "rollMaxGrad": 0,
    "tempoCV": 0.001,
@@ -629,7 +632,7 @@
    "deckel": 30,
    "n": 40,
    "bilderAbstand": 33.4,
-   "abstandSd": 0.2,
+   "abstandSd": 0.3,
    "heldinQuer": 0,
    "heldinQuerMax": 0,
    "kameraQuer": 0.0009,
@@ -639,7 +642,7 @@
    "tempoCV": 0.015,
    "kameraTempoCV": 0.039,
    "figurRuckelPx": 0,
-   "figurRuckelPxY": 0.13,
+   "figurRuckelPxY": 0.12,
    "schulterWechsel": 0,
    "kamAbstandSd": 0.007,
    "seitSd": 0.002
@@ -651,16 +654,16 @@
   "base": "mid",
   "blur": false,
   "off": false,
-  "cap": 60,
+  "cap": 30,
   "dpr": 1.75,
   "models": true,
-  "frames": 2,
+  "frames": 3,
   "touch": true,
   "ws": false,
   "url": ""
  },
  "werkstatt_haeuser": {
-  "anteil": 0.417,
+  "anteil": 0.416,
   "kasten": true,
   "modell": 0,
   "hausSt": 1
@@ -669,12 +672,12 @@
   "ws": true,
   "cls": "mobil",
   "tier": "low",
-  "emerg": 32,
-  "oneoff": 28,
+  "emerg": 50,
+  "oneoff": 46,
   "halb": false,
   "long": [
    {
-    "js": 33,
+    "js": 14,
     "ev": [],
     "prog": 2,
     "tex": 1,
@@ -682,25 +685,11 @@
     "map": "morgenau",
     "mode": "world",
     "tier": "mid",
-    "t": 26.1,
-    "ms": 6150
+    "t": 22.4,
+    "ms": 5633
    },
    {
-    "js": 6,
-    "ev": [
-     "Skala 0.6"
-    ],
-    "prog": 0,
-    "tex": 0,
-    "geo": 0,
-    "map": "morgenau",
-    "mode": "world",
-    "tier": "mid",
-    "t": 47.6,
-    "ms": 5716
-   },
-   {
-    "js": 14,
+    "js": 7,
     "ev": [],
     "prog": 0,
     "tex": 1,
@@ -708,23 +697,11 @@
     "map": "morgenau",
     "mode": "world",
     "tier": "mid",
-    "t": 17.9,
-    "ms": 5500
+    "t": 14.8,
+    "ms": 5050
    },
    {
-    "js": 9,
-    "ev": [],
-    "prog": 0,
-    "tex": 0,
-    "geo": 0,
-    "map": "morgenau",
-    "mode": "world",
-    "tier": "mid",
-    "t": 35,
-    "ms": 5450
-   },
-   {
-    "js": 811,
+    "js": 814,
     "ev": [
      "Ansicht",
      "Karte morgenau",
@@ -737,11 +714,25 @@
     "map": "morgenau",
     "mode": "world",
     "tier": "mid",
-    "t": 10.5,
-    "ms": 5417
+    "t": 8.3,
+    "ms": 4867
    },
    {
-    "js": 700,
+    "js": 3,
+    "ev": [
+     "Skala 0.6"
+    ],
+    "prog": 0,
+    "tex": 0,
+    "geo": 0,
+    "map": "morgenau",
+    "mode": "world",
+    "tier": "mid",
+    "t": 30.6,
+    "ms": 3900
+   },
+   {
+    "js": 732,
     "ev": [
      "Karte haus_spieler",
      "Ansicht",
@@ -754,19 +745,32 @@
     "map": "haus_spieler",
     "mode": "dialog",
     "tier": "mid",
-    "t": 4.1,
-    "ms": 4316
+    "t": 3.3,
+    "ms": 3833
+   },
+   {
+    "js": 8,
+    "ev": [],
+    "prog": 0,
+    "tex": 0,
+    "geo": 0,
+    "map": "morgenau",
+    "mode": "world",
+    "tier": "mid",
+    "t": 37.4,
+    "ms": 2950
    }
   ],
   "log": [
-   "1148 GPU mobil · Start mid · Deckel mid · ∞ fps",
-   "2766 Deckel → 30 (Ø 42 ms)",
-   "47617 NOTBREMSE 1 Handy: Skala 0,6 (Ø 247 ms)",
-   "99123 NOTBREMSE 20 (2 Bilder > 250 ms)"
+   "517 GPU mobil · Start mid · Deckel mid · ∞ fps",
+   "2224 Deckel → 30 (Ø 35 ms)",
+   "30592 NOTBREMSE 1 Handy: Skala 0,6 (Ø 436 ms)",
+   "76574 NOTBREMSE 20 (2 Bilder > 250 ms)",
+   "116280 NOTBREMSE 40 (2 Bilder > 250 ms)"
   ]
  },
  "haeuser_ohne_modelle": {
-  "anteil": 0.417,
+  "anteil": 0.418,
   "kasten": true,
   "modell": 0,
   "hausSt": 0
@@ -790,13 +794,13 @@
   "laden": {
    "ms": 3000,
    "rafN": 2,
-   "rafAvg": 1983.3,
-   "rafMax": 1983,
+   "rafAvg": 1816.6,
+   "rafMax": 1817,
    "slow": 1,
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 4240,
+   "lag": 4138,
    "frames": 0,
    "tier": "?",
    "scale": "?",
@@ -805,18 +809,18 @@
   "queue": {
    "w": 0,
    "b": false,
-   "d": 9
+   "d": 12
   },
   "lauf": {
    "ms": 20000,
-   "rafN": 801,
-   "rafAvg": 25.9,
-   "rafMax": 817,
-   "slow": 0.01,
+   "rafN": 766,
+   "rafAvg": 26.5,
+   "rafMax": 783,
+   "slow": 0.02,
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 759,
+   "lag": 766,
    "frames": 0,
    "tier": "?",
    "scale": "?",
@@ -837,14 +841,14 @@
     "dpr": 1.25,
     "cap": 30,
     "fps": 1,
-    "avg": 755.5,
-    "tris": 123410,
-    "calls": 74,
+    "avg": 416.6,
+    "tris": 115769,
+    "calls": 69,
     "modelle": true,
     "oneoff": 4,
     "frames": 27,
-    "work": 811,
-    "emerg": 4,
+    "work": 637.4,
+    "emerg": 5,
     "downs": 0,
     "ups": 0,
     "off": false,
@@ -855,7 +859,7 @@
     "gls": 1,
     "long": [
      {
-      "js": 719,
+      "js": 843,
       "ev": [
        "Ansicht",
        "Karte morgenau",
@@ -868,11 +872,11 @@
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 8.2,
-      "ms": 5417
+      "t": 6.6,
+      "ms": 4800
      },
      {
-      "js": 648,
+      "js": 511,
       "ev": [
        "Karte haus_spieler",
        "Ansicht",
@@ -885,44 +889,44 @@
       "map": "haus_spieler",
       "mode": "dialog",
       "tier": "mid",
-      "t": 1.8,
-      "ms": 4533
+      "t": 1.7,
+      "ms": 3800
      },
      {
-      "js": 40,
+      "js": 9,
       "ev": [],
-      "prog": 2,
-      "tex": 1,
-      "geo": 11,
+      "prog": 0,
+      "tex": 0,
+      "geo": 0,
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 19.4,
-      "ms": 3033
+      "t": 10.6,
+      "ms": 2417
      },
      {
-      "js": 171,
+      "js": 125,
       "ev": [
-       "Modell fig_buerger_a",
+       "Modell laden",
+       "Modell fig_buerger_b",
        "Figuren-Tausch",
        "Figuren-Tausch",
-       "Figuren-Tausch",
-       "Figuren-Tausch",
+       "Modell fig_mama",
        "Figuren-Tausch",
        "Szene bauen",
        "Vorkompilieren bau"
       ],
       "prog": 3,
-      "tex": 33,
+      "tex": 18,
       "geo": 42,
       "map": "morgenau",
       "mode": "world",
       "tier": "low",
-      "t": 31.9,
-      "ms": 2600
+      "t": 24.5,
+      "ms": 2233
      },
      {
-      "js": 8,
+      "js": 5,
       "ev": [],
       "prog": 0,
       "tex": 0,
@@ -931,10 +935,10 @@
       "mode": "world",
       "tier": "mid",
       "t": 13,
-      "ms": 2350
+      "ms": 1817
      },
      {
-      "js": 13,
+      "js": 7,
       "ev": [],
       "prog": 0,
       "tex": 0,
@@ -942,35 +946,11 @@
       "map": "morgenau",
       "mode": "world",
       "tier": "mid",
-      "t": 22.4,
-      "ms": 2150
+      "t": 14.8,
+      "ms": 1817
      },
      {
-      "js": 8,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "morgenau",
-      "mode": "world",
-      "tier": "mid",
-      "t": 17.3,
-      "ms": 2083
-     },
-     {
-      "js": 6,
-      "ev": [],
-      "prog": 0,
-      "tex": 0,
-      "geo": 0,
-      "map": "morgenau",
-      "mode": "world",
-      "tier": "mid",
-      "t": 15.3,
-      "ms": 1983
-     },
-     {
-      "js": 152,
+      "js": 133,
       "ev": [
        "Stufe low",
        "Skala 0.5",
@@ -984,16 +964,19 @@
       "map": "morgenau",
       "mode": "world",
       "tier": "low",
-      "t": 27.5,
-      "ms": 1300
+      "t": 19.9,
+      "ms": 1233
      },
      {
-      "js": 76,
+      "js": 91,
       "ev": [
-       "Modell fig_mama",
+       "Modell fig_buerger_a",
+       "Figuren-Tausch",
        "Figuren-Tausch",
        "Modell t001",
-       "Terra t001"
+       "Terra t001",
+       "Modell t004",
+       "Terra t004"
       ],
       "prog": 2,
       "tex": 11,
@@ -1001,79 +984,122 @@
       "map": "morgenau",
       "mode": "world",
       "tier": "low",
-      "t": 36.7,
-      "ms": 1250
+      "t": 32.8,
+      "ms": 1100
+     },
+     {
+      "js": 7,
+      "ev": [],
+      "prog": 0,
+      "tex": 0,
+      "geo": 0,
+      "map": "haus_spieler",
+      "mode": "dialog",
+      "tier": "mid",
+      "t": 4.8,
+      "ms": 983
+     },
+     {
+      "js": 18,
+      "ev": [],
+      "prog": 0,
+      "tex": 0,
+      "geo": 0,
+      "map": "morgenau",
+      "mode": "world",
+      "tier": "low",
+      "t": 45.4,
+      "ms": 783
      }
     ],
     "q": {
      "wait": 0,
-     "done": 9,
+     "done": 12,
      "fail": 0,
-     "max": 8,
+     "max": 11,
      "busy": false
     },
     "log": [
-     "550 GPU igpu · Start mid · Deckel mid · ∞ fps",
-     "24545 NOTBREMSE 1 (Ø 756 ms)"
+     "592 GPU igpu · Start mid · Deckel mid · ∞ fps",
+     "16662 NOTBREMSE 1 (Ø 417 ms)"
     ],
     "lod": {
      "on": true,
-     "done": 7,
+     "done": 10,
      "pend": 0,
      "err": 0,
+     "schutz": 2,
      "worker": "ja",
      "ms": [
       [
        "?",
+       7602,
+       3200,
+       17001
+      ],
+      [
+       "?",
        11771,
        2800,
-       13885
+       10863
+      ],
+      [
+       "?",
+       11772,
+       2800,
+       9937
+      ],
+      [
+       "?",
+       11772,
+       2800,
+       6790
+      ],
+      [
+       "?",
+       7601,
+       3199,
+       5856
       ],
       [
        "?",
        11772,
        2799,
-       7329
-      ],
-      [
-       "?",
-       11772,
-       2800,
-       4160
+       4320
       ],
       [
        "?",
        2999,
        833,
-       3164
+       3217
       ],
       [
        "?",
        4199,
        1167,
-       3302
+       3287
       ],
       [
        "?",
        2800,
        800,
-       1381
+       2279
       ],
       [
        "?",
        4200,
        1200,
-       1497
+       2378
       ]
      ],
-     "frz": 13
+     "frz": 0
     },
     "pc": {
      "n": 3,
      "log": [
       {
        "why": "bau",
-       "ms": 36,
+       "ms": 18,
        "prog": 10,
        "tex": 2,
        "temps": 0,
@@ -1082,8 +1108,8 @@
       },
       {
        "why": "bau",
-       "ms": 94,
-       "prog": 2,
+       "ms": 140,
+       "prog": 3,
        "tex": 1,
        "temps": 2,
        "map": "morgenau",
@@ -1091,9 +1117,9 @@
       },
       {
        "why": "bau",
-       "ms": 72,
+       "ms": 54,
        "prog": 2,
-       "tex": 9,
+       "tex": 3,
        "temps": 0,
        "map": "morgenau",
        "err": null
@@ -1113,7 +1139,7 @@
     }
    }
   },
-  "beendenMs": 894,
+  "beendenMs": 921,
   "nach": {
    "ms": 3000,
    "rafN": 180,
@@ -1123,7 +1149,7 @@
    "ltMax": 0,
    "ltN": 0,
    "ltSum": 0,
-   "lag": 1,
+   "lag": 0,
    "frames": 0,
    "tier": "?",
    "scale": "?",

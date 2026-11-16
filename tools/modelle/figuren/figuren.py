@@ -17,30 +17,35 @@ SPECS = {
  # Runde 4 (15.11.): echte Schirmmütze (runde Krone aus 5 Bahnen, Wulst, Knopf, Riegel hinten, gebogener Schirm, eigenes „V“-Logo mit Kristall-Funke),
  # Haar als weiche Volumen (Pony, Seitensträhnen, Nacken, Pferdeschwanz durch die Öffnung hinten), Verlauf Ansatz dunkel → Spitzen hell; Budget gesamt ≤ 9 k
  # Runde 5 (16.11.): Seiten-/Nackensträhnen mit vollem Querschnitt + nach außen gebogenen Spitzen, Block-Hände, Schutzgewicht _LODW für 62-lod
- 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, r5=True, gesamt=8900, ao_samples=28,
+ # Runde 6 (16.11.): Pony und vordere Seitensträhnen Ring 12 (+≈ 430 Dreiecke, Haupt ≤ 9 300, LOD1 ≤ 4 000), sonst unverändert
+ 'heldin': dict(typ='kind', augen='#8a5a2a', haar='pferd_kappe4', gesicht=dict(mund_laune=.035, lid_o=40), r4=True, r5=True, gesamt=9290, lod=.48, ao_samples=28,
    farben=dict(haut='#f6d3b3', haar='#a4532a', haar_spitze='#d27a3e', braue='#6a3418', top='#4c8a3c', saum='#f1e8d6', hose='#7a5a3a', saum2='#5e4430', socke='#4a3a32', muetze='#f1e9d6', muetze2='#4c8a3c', muetze3='#35583a',
                blume='#f2c94c', schuh='#7a5434', sohle='#3e2c22', leder='#7a4a2a', akzent='#d81b72', streifen='#efe6d2', emblem='#f2c94c', metall='#b08a48', dunkel='#3a3f4a', knopf='#f2c94c'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.008), unten=dict(art='cargo', bund=.575, bis=.31, weit=.012), schuhe='stiefel', socken=.215, muetze='kappe4'),
    extras=['geraet', 'tasche', 'kappe_v', 'tasche_sonne'], muster=['blatt'], groesse='kind'),
  # Rivale Rayan: schwarze Stacheln mit roten Spitzen, dunkle Zip-Jacke (rot abgesetzt) über grauem Shirt, dunkle Cargohose, Stiefel
- 'rayan': dict(typ='kind', augen='#c0302a', haar='stachel', gesicht=dict(mund_laune=.0, braue_z=.27, lid_o=27),
-   farben=dict(haut='#f1cfae', haar='#1e1a22', haar_hi='#d0303a', braue='#1e1a22', top='#7a7680', jacke='#2a2730', saum='#c0303a', hose='#2c2a32', saum2='#24222a',
+ # Runde 6 (16.11.): R5-Technik – Stacheln/Strähnen als runde, spitz zulaufende Volumen (strand), geglättete Normalen, Block-Hände, Budget ≤ 9 k, Schutzgewicht _LODW
+ 'rayan': dict(typ='kind', augen='#c0302a', haar='stachel5', gesicht=dict(mund_laune=.0, braue_z=.27, lid_o=27), r5=True, r6=True, gesamt=8900, ao_samples=28,
+   farben=dict(haut='#f1cfae', haar='#1e1a22', haar_spitze='#2c2630', haar_hi='#d0303a', braue='#1e1a22', top='#7a7680', jacke='#2a2730', saum='#c0303a', hose='#2c2a32', saum2='#24222a',
                schuh='#26232c', sohle='#8a8890', leder='#3a3038', metall='#c0303a', dunkel='#3a3038', akzent='#e04040'),
    kleidung=dict(top=dict(art='tshirt', saum=.565, arm=.25, weit=.006), jacke=dict(saum=.552, arm=.78, offen=.026, abstand=.011), unten=dict(art='cargo', bund=.575, bis=0, weit=.008), schuhe='stiefel'),
    extras=['cargotaschen', 'reissverschluss'], muster=['flamme'], groesse='kind'),
  # Prof. Veyran: weiße Wolkenhaare, Vollbart, runde Brille, cremefarbenes Hemd, grüner Forschermantel mit Goldsaum
- 'veyran': dict(typ='alt_m', augen='#5a7a4a', haar='wolke', bart='vollbart', gesicht=dict(mund_laune=.035, auge_r=.19, lid_o=24),
+ # Runde 6 (16.11.): R5-Technik – Wolkenhaar als dicke runde Volumen-Büschel (2 Lagen), Vollbart-Schale + runder Schnurrbart, Block-Hände, ≤ 9 k, _LODW
+ 'veyran': dict(typ='alt_m', augen='#5a7a4a', haar='wolke5', bart='vollbart', gesicht=dict(mund_laune=.035, auge_r=.19, lid_o=24), r5=True, r6=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f0cdb0', haar='#eeeae4', bart='#f2efe8', braue='#d8d4cc', top='#e9e2cf', kittel='#4c8a4a', saum='#d9c27a', hose='#6a5e50', saum2='#5a5044',
                schuh='#6a4a30', sohle='#3a2e26', metall='#c9a24a', glas='#dff2f6', knopf='#d9c27a'),
    kleidung=dict(top=dict(art='hemd', saum=.56, arm=.98, weit=.007), kittel=dict(saum=.57, arm=.93, offen=.034, bis=.30, abstand=.013), unten=dict(art='hose', bund=.565, bis=0, weit=.009), schuhe='halbschuh'),
    extras=['brille_rund', 'kragen'], muster=['blatt_wappen'], groesse='alt'),
  # Mama: Dutt mit losen Strähnen, korallfarbene Bluse, Schürze, blauer Rock, Stiefeletten
- 'mama': dict(typ='frau', augen='#6a4a2a', haar='dutt_lose', gesicht=dict(mund_laune=.035),
+ # Runde 6 (16.11.): R5-Technik – glatt gestrichene Strähnen, Dutt als eingerollter Zopf, 2 lose Strähnen, Block-Hände, ≤ 9 k, _LODW
+ 'mama': dict(typ='frau', augen='#6a4a2a', haar='dutt5_lose', gesicht=dict(mund_laune=.035), r5=True, r6=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f3cfae', haar='#7a4a26', braue='#5a3418', top='#e07a6a', saum='#b8564a', rock='#6a8ab8', schuerze='#f3ead8', saum2='#d8c8a8', schuh='#7a5434', sohle='#4a3426', knopf='#ffffff', socke='#efe6d2'),
    kleidung=dict(top=dict(art='bluse', saum=.555, arm=.86, weit=.008), rock=dict(oben=.575, bis=.25, weite=.05), schuerze=dict(oben=.70, bis=.33), unten=dict(art='beine', bund=.5, bis=0), schuhe='stiefel', socken=.04),
    extras=['kragen'], muster=['karo_schuerze'], groesse='frau'),
  # Mirael (Kreaturenstation): Dutt mit weißer Blüte, Sommersprossen, weißer Heilerkittel mit grünem Saum, grüner Rock
- 'mirael': dict(typ='frau', augen='#3a9a4a', haar='dutt', gesicht=dict(mund_laune=.04, sommersprossen=1),
+ # Runde 6 (16.11.): R5-Technik wie Mama (Dutt ohne lose Strähnen, Blüte), Block-Hände, ≤ 9 k, _LODW
+ 'mirael': dict(typ='frau', augen='#3a9a4a', haar='dutt5', gesicht=dict(mund_laune=.04, sommersprossen=1), r5=True, r6=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f6d6bc', haar='#8a4a26', braue='#6a3418', top='#eaf3e4', kittel='#f6f1e6', saum='#5cb85a', rock='#4c8a4a', schuh='#7a5434', sohle='#4a3426', socke='#efe6d2', blume='#ffffff', knopf='#5cb85a', metall='#d0d8e0'),
    kleidung=dict(top=dict(art='hemd', saum=.555, arm=.86, weit=.006), kittel=dict(saum=.56, arm=.86, offen=.03, bis=.33, abstand=.012), rock=dict(oben=.565, bis=.36, weite=.03), unten=dict(art='beine', bund=.5, bis=0), schuhe='stiefel', socken=.07),
    extras=['blume', 'kragen', 'kreuz_blatt'], muster=[], groesse='frau'),
@@ -53,17 +58,20 @@ SPECS = {
    kleidung=dict(top=dict(art='hemd', saum=.55, arm=.5, weit=.008), schuerze=dict(oben=.74, bis=.30), unten=dict(art='hose', bund=.56, bis=0, weit=.01), schuhe='halbschuh', muetze='kappe4'),
    extras=['kragen', 'aufschlag', 'kappe_laden'], muster=[], groesse='kraeftig'),
  # Stadtbewohnerin (jung): blonder Pferdeschwanz, rostrote kurze Jacke über weißem Shirt, Jeans, Turnschuhe
- 'buerger_a': dict(typ='frau', augen='#3a6aa8', haar='pferd', gesicht=dict(mund_laune=.03),
-   farben=dict(haut='#f3cfae', haar='#c8a050', braue='#8a6a3a', top='#f2f0ea', jacke='#c8603a', saum='#a84a2a', hose='#3a4a6a', saum2='#2e3c58', schuh='#f2f0ea', sohle='#c8c4bc', knopf='#e0d0a0', akzent='#c8603a'),
+ # Runde 6 (16.11.): R5-Technik – hoher Pferdeschwanz als Volumen (Haargummi), Pony seitlich, Block-Hände, ≤ 9 k, _LODW
+ 'buerger_a': dict(typ='frau', augen='#3a6aa8', haar='pferd5', gesicht=dict(mund_laune=.03), r5=True, r6=True, gesamt=8900, ao_samples=28,
+   farben=dict(haut='#f3cfae', haar='#c8a050', haar_spitze='#dcc070', blume='#c8603a', braue='#8a6a3a', top='#f2f0ea', jacke='#c8603a', saum='#a84a2a', hose='#3a4a6a', saum2='#2e3c58', schuh='#f2f0ea', sohle='#c8c4bc', knopf='#e0d0a0', akzent='#c8603a'),
    kleidung=dict(top=dict(art='tshirt', saum=.56, arm=.2, weit=.005), jacke=dict(saum=.585, arm=.9, offen=.04, abstand=.011), unten=dict(art='hose', bund=.56, bis=0, weit=.006), schuhe='sneaker'),
    extras=[], muster=[], groesse='frau'),
  # Stadtbewohnerin (älter): kurze graue Locken, violette Strickjacke über heller Bluse, grauer Rock, Brille
- 'buerger_b': dict(typ='alt_w', augen='#5a5a5a', haar='locken_kurz', gesicht=dict(mund_laune=.035, auge_r=.19),
+ # Runde 6 (16.11.): R5-Technik – Locken als kurze runde Haken-Strähnen, Block-Hände, ≤ 9 k, _LODW
+ 'buerger_b': dict(typ='alt_w', augen='#5a5a5a', haar='locken5', gesicht=dict(mund_laune=.035, auge_r=.19), r5=True, r6=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#f1c8a0', haar='#d8d4cc', braue='#b8b4ac', top='#efe6d2', jacke='#8a6aa8', saum='#6a4a88', rock='#5a5a62', schuh='#3a3030', sohle='#2a2222', socke='#c8b8a8', glas='#dff2f6', metall='#9a8a78', knopf='#e8d8a8'),
    kleidung=dict(top=dict(art='bluse', saum=.555, arm=.86, weit=.006), jacke=dict(saum=.535, arm=.92, offen=.035, abstand=.012, weit=1.4), rock=dict(oben=.565, bis=.22, weite=.035), unten=dict(art='beine', bund=.5, bis=0), schuhe='halbschuh', socken=.06),
    extras=['brille_rund'], muster=['strick'], groesse='alt_w'),
  # Stadtbewohner (Mann): kurzes dunkles Haar, kurzer Bart, grünes Hemd mit gekrempelten Ärmeln, braune Hose, Stiefel, Umhängetasche
- 'buerger_c': dict(typ='mann', augen='#3a6aa8', haar='kurz', bart='kurzbart', gesicht=dict(mund_laune=.025),
+ # Runde 6 (16.11.): R5-Technik – kurzes Haar mit Seitenscheitel aus anliegenden Strähnen, Kurzbart + runder Schnurrbart, Block-Hände, ≤ 9 k, _LODW
+ 'buerger_c': dict(typ='mann', augen='#3a6aa8', haar='kurz5', bart='kurzbart', gesicht=dict(mund_laune=.025), r5=True, r6=True, gesamt=8900, ao_samples=28,
    farben=dict(haut='#e2b48c', haar='#2a1d16', bart='#2a1d16', braue='#2a1d16', top='#5a8a6a', saum='#4a7a5a', hose='#5a4a36', saum2='#4a3c2c', schuh='#4a3426', sohle='#2a2020', leder='#8a5a30', knopf='#e8dcc0', metall='#c9a24a'),
    kleidung=dict(top=dict(art='hemd', saum=.555, arm=.5, weit=.008), unten=dict(art='hose', bund=.56, bis=0, weit=.009), schuhe='stiefel'),
    extras=['kragen', 'aufschlag', 'tasche'], muster=[], groesse='mann'),

@@ -43,7 +43,7 @@ if D.r4:
             for a_, b_ in zip(_PN, _PN[1:]):
                 d_, t_ = seg_dist(p, a_, b_)
                 if d_ < dmin: dmin, qb = d_, a_.lerp(b_, t_)
-            if dmin < .045 * kk and p.y > D.HC.y + .07 * D.hd: e = (p - qb).normalized(); w = .4
+            if dmin < D.PONY_R and p.y > D.HC.y + .07 * D.hd: e = (p - qb).normalized(); w = .4
             else: e = _ell(p, _HE_C, _HE_R); w = .5 if l.vertex_index in _sch else .28   # Strähnen behalten ihre Rundung
         elif rg == 'muetze': e = _ell(p, D.HC + Vector((0, 0, -.05 * D.hh)), (D.hw * 1.15, D.hd * 1.1, D.hh * 1.1)); w = .35
         else: e = _ell(p, ELL_C, ELL_R); w = face_w_body(p)
@@ -624,7 +624,7 @@ CLIPS['werfen'] = make_action(ARMO, 'werfen', 36, werfen, loop=False)
 rest_pose(ARMO)
 
 # ---------------- Runde 5: Schutzgewicht für den Laufzeit-Vereinfacher (src/62-lod.js) ----------------
-# Eigenes Attribut _LODW (0 … 1) je Ecke des Körpers: Haar und Schirm 1, Krone/Umschlag 0,8, Knopf/Riegel/Haargummi/Bart 0,6, sonst 0.
+# Eigenes Attribut _LODW (0 … 1) je Ecke des Körpers: Haar und Schirm-Unterseite 1, Schirm/Knopf/Umschlag 0,9, Krone/Mütze 0,8, Haargummi/Bart 0,6, Hände 0,4 (ab Runde 6, Steckbrief r6), sonst 0.
 # 62-lod verteuert damit das Verschieben geschützter Ecken → Strähnen behalten Länge/Spitzen, der Schirm bleibt flach und breit. Ohne Attribut: altes Verhalten.
 LODW_REG = {'haar': 1.0, 'muetze3': 1.0, 'muetze2': .9, 'muetze': .8, 'blume': .6, 'bart': .6}
 if D.r5:
@@ -634,6 +634,11 @@ if D.r5:
         w_ = LODW_REG.get(rg, 0.)
         if w_:
             for vi in p_.vertices: _wv[vi] = max(_wv[vi], w_)
+    if SPEC.get('r6'):   # Runde 6: Hände leicht geschützt (0,4) – Finger-Block behält Form beim Vereinfachen
+        _LH = D.L_UA + D.L_FA - .004 * H
+        for v_ in BODY.data.vertices:
+            ac_ = arm_coord(v_.co)
+            if ac_ is not None and ac_[1] > _LH: _wv[v_.index] = max(_wv[v_.index], .4)
     at = BODY.data.attributes.new('_LODW', 'FLOAT', 'POINT'); at.data.foreach_set('value', _wv)
     log('Schutzgewicht _LODW', int((_wv > 0).sum()), 'von', len(_wv), 'Ecken')
 # ---------------- Export ----------------

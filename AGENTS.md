@@ -326,3 +326,11 @@ Recht: alles eigene Entwürfe; Intro-Stills sind Nutzermaterial. Performance-Gre
 
 # PROJEKTGEDÄCHTNIS (ab 13.11. 10:55)
 - docs/projektgedaechtnis.md (Kopie im Claude-Projekt: claude/projektgedaechtnis.md) hält alle Entscheidungen, Zugänge und den Stand je Agent fest. Der Dirigent ergänzt es nach jeder Nutzerentscheidung und jedem Agentenbericht und lädt es ins Projekt hoch (project_write). Nach einer Chat-Komprimierung zuerst dieses Dokument lesen.
+
+## Code-Wissensgraph (Graphify)
+
+Für Fragen zur Code-Struktur zuerst den Graphify-MCP-Server nutzen statt Dateien zu greppen:
+`query_graph` (Suchbegriffe auf Englisch, wie die Bezeichner im Code), `get_node`, `get_neighbors`,
+`shortest_path`, `god_nodes`. Der Graph liegt in `graphify-out/graph.json` und wird beim
+Sitzungsstart per Hook aktualisiert (`.claude/hooks/graphify-setup.sh`). Fremdbibliotheken
+sind über `.graphifyignore` ausgeschlossen.

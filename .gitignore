@@ -12,3 +12,6 @@ tools/leitstand/*.webp
 tools/leitstand/pilot/
 tools/leitstand/spiel/
 tools/leitstand/n/
+
+# Graphify-Ausgabe wird pro Sitzung neu gebaut
+graphify-out/

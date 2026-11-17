@@ -1,0 +1,7 @@
+# Fremdbibliotheken/Bundles nicht in den Wissensgraphen
+*.min.js
+public/vendor/
+public/art_ref/
+dist/
+node_modules/
+graphify-out/
